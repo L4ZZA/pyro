@@ -13,4 +13,6 @@ namespace pyro
         void run();
     };
 
+
+    application* create_application();
 }

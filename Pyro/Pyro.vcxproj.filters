@@ -24,6 +24,9 @@
     <ClInclude Include="src\pyro\application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\pyro\entry_point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pyro\application.cpp">

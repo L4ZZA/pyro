@@ -2,4 +2,7 @@
 
 // For whoever wants to use Pyro library
 
-#include "Pyro\Application.h"
+#include "pyro/application.h"
+
+
+#include "pyro/entry_point.h"

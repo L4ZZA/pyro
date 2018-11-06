@@ -14,9 +14,8 @@ class SandboxApp : public pyro::application
     }
 };
 
-int main()
+
+pyro::application * pyro::create_application()
 {
-    auto sandbox = new SandboxApp();
-    sandbox->run();
-    delete sandbox;
+    return new SandboxApp();
 }
