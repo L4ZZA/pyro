@@ -15,9 +15,11 @@
     <ClInclude Include="src\pyro\application.h" />
     <ClInclude Include="src\pyro\core.h" />
     <ClInclude Include="src\pyro\entry_point.h" />
+    <ClInclude Include="src\pyro\logger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pyro\application.cpp" />
+    <ClCompile Include="src\pyro\logger.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
