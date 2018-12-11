@@ -22,10 +22,10 @@ namespace  pyro
     enum event_category_e
     {
         none = 0,
-        event_category_application = BIT(0),
-        event_category_input = BIT(1),
-        event_category_keyboard = BIT(2),
-        event_category_mouse = BIT(3),
+        event_category_application  = BIT(0),
+        event_category_input        = BIT(1),
+        event_category_keyboard     = BIT(2),
+        event_category_mouse        = BIT(3),
         event_category_mouse_button = BIT(4),
     };
 
