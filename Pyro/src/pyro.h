@@ -4,5 +4,4 @@
 
 #include "pyro/application.h"
 
-
 #include "pyro/entry_point.h"
