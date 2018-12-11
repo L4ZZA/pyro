@@ -147,6 +147,10 @@
     <ClInclude Include="src\pyro\application.h" />
     <ClInclude Include="src\pyro\core.h" />
     <ClInclude Include="src\pyro\entry_point.h" />
+    <ClInclude Include="src\pyro\events\application_event.h" />
+    <ClInclude Include="src\pyro\events\event.h" />
+    <ClInclude Include="src\pyro\events\key_event.h" />
+    <ClInclude Include="src\pyro\events\mouse_event.h" />
     <ClInclude Include="src\pyro\logger.h" />
   </ItemGroup>
   <ItemGroup>
