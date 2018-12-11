@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "core.h"
-#include "events/event.h"
 
 namespace pyro
 {

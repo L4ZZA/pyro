@@ -4,6 +4,9 @@
     <Filter Include="pyro">
       <UniqueIdentifier>{CF8B9C7C-BBC2-9D0D-64AF-831050C5190F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="pyro\events">
+      <UniqueIdentifier>{F30C0893-5FC2-8088-E8B6-7A5F546B778C}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pyro.h" />
@@ -16,13 +19,21 @@
     <ClInclude Include="src\pyro\entry_point.h">
       <Filter>pyro</Filter>
     </ClInclude>
+    <ClInclude Include="src\pyro\events\application_event.h">
+      <Filter>pyro\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pyro\events\event.h">
+      <Filter>pyro\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pyro\events\key_event.h">
+      <Filter>pyro\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pyro\events\mouse_event.h">
+      <Filter>pyro\events</Filter>
+    </ClInclude>
     <ClInclude Include="src\pyro\logger.h">
       <Filter>pyro</Filter>
     </ClInclude>
-    <ClInclude Include="src\pyro\events\event.h" />
-    <ClInclude Include="src\pyro\events\key_event.h" />
-    <ClInclude Include="src\pyro\events\mouse_event.h" />
-    <ClInclude Include="src\pyro\events\application_event.h" />
     <ClInclude Include="src\pyro_pch.h" />
   </ItemGroup>
   <ItemGroup>

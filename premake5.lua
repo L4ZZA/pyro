@@ -21,6 +21,9 @@ project "Pyro"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("inter/" .. outputdir .. "/%{prj.name}")
+	
+	pchheader "pyro_pch.h"
+	pchsource "Pyro/src/pyro_pch.cpp"
 
 	files
 	{
