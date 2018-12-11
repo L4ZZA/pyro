@@ -11,3 +11,9 @@
 #else
     #error Pyro only supports Windows!
 #endif
+
+// 1 shifted by x places
+// 1 << 0 = `0000 0001`
+// 1 << 1 = `0000 0010`
+// 1 << 2 = `0000 0100`
+#define BIT(x) 1 << x
