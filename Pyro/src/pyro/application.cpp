@@ -1,4 +1,4 @@
-﻿#include "Application.h"
+#include "application.h"
 
 
 pyro::application::application()

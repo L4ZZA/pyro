@@ -1,6 +1,6 @@
-﻿#pragma once
+#pragma once
 
-#include "Core.h"
+#include "core.h"
 
 namespace pyro
 {
