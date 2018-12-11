@@ -12,6 +12,13 @@ workspace "Pyro"
 -- example: debug-win-x64
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- include directories relative to root folder (sln dir)
+IncludeDir = {}
+IncludeDir["GLFW"] = "Pyro/external/GLFW/include"
+
+-- iclude GLFW premake file
+include "Pyro/external/GLFW"
+
 -- engine core project
 project "Pyro"
 	-- location makes sure that everything below will be relative to the project directory
@@ -35,7 +42,14 @@ project "Pyro"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/external/spdlog/include"
+		"%{prj.name}/external/spdlog/include",
+		"%{IncludeDir.GLFW}%"
+	}
+
+	links
+	{
+		"GLFW",
+		"opengl32.lib"
 	}
 
 	-- filters are used to apply property to some specific configurations only
