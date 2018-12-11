@@ -1,7 +1,5 @@
 #pragma once
 #include "pyro/core.h"
-#include <string>
-#include <functional>
 
 
 namespace  pyro

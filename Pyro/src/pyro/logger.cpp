@@ -1,4 +1,5 @@
-﻿#include "logger.h"
+﻿#include "pyro_pch.h"
+#include "logger.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 std::shared_ptr<spdlog::logger> pyro::logger::s_core_logger;

@@ -23,6 +23,7 @@
     <ClInclude Include="src\pyro\events\key_event.h" />
     <ClInclude Include="src\pyro\events\mouse_event.h" />
     <ClInclude Include="src\pyro\events\application_event.h" />
+    <ClInclude Include="src\pyro_pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pyro\application.cpp">
@@ -31,5 +32,6 @@
     <ClCompile Include="src\pyro\logger.cpp">
       <Filter>pyro</Filter>
     </ClCompile>
+    <ClCompile Include="src\pyro_pch.cpp" />
   </ItemGroup>
 </Project>

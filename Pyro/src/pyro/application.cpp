@@ -1,4 +1,5 @@
-﻿#include "application.h"
+﻿#include "pyro_pch.h"
+#include "application.h"
 
 #include "logger.h"
 #include "events/application_event.h"
