@@ -31,6 +31,7 @@ project "Pyro"
 
 	includedirs
 	{
+		"%{prj.name}/src",
 		"%{prj.name}/external/spdlog/include"
 	}
 
