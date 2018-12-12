@@ -11,6 +11,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "pyro/logger.h"
+
 #ifdef PYRO_PLATFORM_WIN
     #include <Windows.h>
 #endif 
