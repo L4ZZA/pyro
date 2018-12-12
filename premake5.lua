@@ -14,10 +14,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- include directories relative to root folder (sln dir)
 IncludeDir = {}
-IncludeDir["GLFW"] = "Pyro/external/GLFW/include"
+IncludeDir["GLFW"] = "Pyro/external/GLFW/include/"
 
 -- iclude GLFW premake file
-include "Pyro/external/GLFW"
+include "Pyro/external/GLFW/"
 
 -- engine core project
 project "Pyro"
@@ -43,7 +43,7 @@ project "Pyro"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/external/spdlog/include",
-		"%{IncludeDir.GLFW}%"
+		"%{IncludeDir.GLFW}"
 	}
 
 	links
