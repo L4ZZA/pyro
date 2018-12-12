@@ -7,6 +7,12 @@
     <Filter Include="pyro\events">
       <UniqueIdentifier>{F30C0893-5FC2-8088-E8B6-7A5F546B778C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="pyro\platform">
+      <UniqueIdentifier>{231D5D91-8FDD-D8C7-5818-2245C4971DA4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pyro\platform\windows">
+      <UniqueIdentifier>{7DD282C9-E93E-3EC4-B232-D6211E5E602C}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pyro.h" />
@@ -34,6 +40,9 @@
     <ClInclude Include="src\pyro\logger.h">
       <Filter>pyro</Filter>
     </ClInclude>
+    <ClInclude Include="src\pyro\platform\windows\win_window.h">
+      <Filter>pyro\platform\windows</Filter>
+    </ClInclude>
     <ClInclude Include="src\pyro\window.h">
       <Filter>pyro</Filter>
     </ClInclude>
@@ -45,6 +54,9 @@
     </ClCompile>
     <ClCompile Include="src\pyro\logger.cpp">
       <Filter>pyro</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pyro\platform\windows\win_window.cpp">
+      <Filter>pyro\platform\windows</Filter>
     </ClCompile>
     <ClCompile Include="src\pyro_pch.cpp" />
   </ItemGroup>
