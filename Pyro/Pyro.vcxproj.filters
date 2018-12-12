@@ -34,6 +34,9 @@
     <ClInclude Include="src\pyro\logger.h">
       <Filter>pyro</Filter>
     </ClInclude>
+    <ClInclude Include="src\pyro\window.h">
+      <Filter>pyro</Filter>
+    </ClInclude>
     <ClInclude Include="src\pyro_pch.h" />
   </ItemGroup>
   <ItemGroup>
