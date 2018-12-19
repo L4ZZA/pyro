@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "win_window.h"
 
 #include "pyro/events/event.h"
@@ -36,10 +36,10 @@ void pyro::win_window::on_update()
 
 void pyro::win_window::vsync(bool p_enabled)
 {
-    if(p_enabled)
+    if (p_enabled)
         glfwSwapInterval(1);
     else
-        glfwSwapInterval(1);
+        glfwSwapInterval(0);
 
     data_.vsync_ = p_enabled;
 }
@@ -57,7 +57,7 @@ void pyro::win_window::init(window_props const& p_props)
 
     PYRO_CORE_INFO("Creating window {0} [{1},{2}]", p_props.title_, p_props.width_, p_props.height_);
 
-    if(!s_glfw_initialized)
+    if (!s_glfw_initialized)
     {
         int success = glfwInit();
         PYRO_CORE_ASSERT(success, "Could not initialize GLFW!");
@@ -66,9 +66,9 @@ void pyro::win_window::init(window_props const& p_props)
     }
 
     window_ = glfwCreateWindow(
-        static_cast<int>(p_props.width_), 
-        static_cast<int>(p_props.height_), 
-        p_props.title_.c_str(), 
+        static_cast<int>(p_props.width_),
+        static_cast<int>(p_props.height_),
+        p_props.title_.c_str(),
         nullptr, nullptr);
 
     glfwMakeContextCurrent(window_);
@@ -131,7 +131,7 @@ void pyro::win_window::init(window_props const& p_props)
         {
             case GLFW_PRESS:
             {
-                mouse_button_pressed_event event(button);   
+                mouse_button_pressed_event event(button);
                 data.event_callback(event);
                 break;
             }
