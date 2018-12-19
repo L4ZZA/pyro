@@ -6,6 +6,8 @@
 
 namespace pyro
 {
+#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+
     class PYRO_API application
     {
     private:
@@ -17,6 +19,8 @@ namespace pyro
         virtual ~application();
 
         void run();
+
+        void on_event(event &p_event);
     };
 
 
