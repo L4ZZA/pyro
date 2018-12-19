@@ -1,6 +1,11 @@
 ﻿#include "pyro_pch.h"
 #include "win_window.h"
 
+#include "pyro/events/event.h"
+#include "pyro/events/application_event.h"
+#include "pyro/events/key_event.h"
+#include "pyro/events/mouse_event.h"
+
 //=============================================================================
 
 namespace pyro
@@ -71,6 +76,87 @@ void pyro::win_window::init(window_props const& p_props)
     // so that we ca work with our defined data.
     glfwSetWindowUserPointer(window_, &data_);
     vsync(true);
+
+
+    // GLFW callbacks
+    glfwSetWindowSizeCallback(window_, [](GLFWwindow* window, int width, int height)
+    {
+        window_data &data = *static_cast<window_data*>(glfwGetWindowUserPointer(window));
+        data.width_ = width;
+        data.height_ = height;
+
+        window_resize_event event(width, height);
+        data.event_callback(event);
+    });
+
+    glfwSetWindowCloseCallback(window_, [](GLFWwindow* window)
+    {
+        window_data &data = *static_cast<window_data*>(glfwGetWindowUserPointer(window));
+        window_closed_event event;
+        data.event_callback(event);
+    });
+
+    glfwSetKeyCallback(window_, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+    {
+        window_data &data = *static_cast<window_data*>(glfwGetWindowUserPointer(window));
+
+        switch (scancode)
+        {
+            case GLFW_PRESS:
+            {
+                key_pressed_event event(key, 0);
+                data.event_callback(event);
+                break;
+            }
+            case GLFW_RELEASE:
+            {
+                key_released_event event(key);
+                data.event_callback(event);
+                break;
+            }
+            case GLFW_REPEAT:
+            {
+                key_pressed_event event(key, 1);
+                data.event_callback(event);
+                break;
+            }
+        }
+    });
+
+    glfwSetMouseButtonCallback(window_, [](GLFWwindow* window, int button, int action, int mods)
+    {
+        window_data &data = *static_cast<window_data*>(glfwGetWindowUserPointer(window));
+
+        switch (action)
+        {
+            case GLFW_PRESS:
+            {
+                mouse_button_pressed_event event(button);   
+                data.event_callback(event);
+                break;
+            }
+            case GLFW_RELEASE:
+            {
+                mouse_button_release_event event(button);
+                data.event_callback(event);
+                break;
+            }
+        }
+    });
+
+    glfwSetScrollCallback(window_, [](GLFWwindow* window, double xOffset, double yOffset)
+    {
+        window_data &data = *static_cast<window_data*>(glfwGetWindowUserPointer(window));
+        mouse_scrolled_event event(static_cast<float>(xOffset), static_cast<float>(yOffset));
+        data.event_callback(event);
+    });
+
+    glfwSetCursorPosCallback(window_, [](GLFWwindow* window, double xPos, double yPos)
+    {
+        window_data &data = *static_cast<window_data*>(glfwGetWindowUserPointer(window));
+        mouse_moved_event event(static_cast<float>(xPos), static_cast<float>(yPos));
+        data.event_callback(event);
+    });
 }
 
 void pyro::win_window::shut_down()
