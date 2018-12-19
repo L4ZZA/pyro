@@ -82,8 +82,9 @@ namespace  pyro
 
         /// \brief 
         template<typename T>
-        bool Dispatch(EventFn<T> func)
+        bool dispatch(EventFn<T> func)
         {
+            // filtering events by type T
             if (event_.event_type() == T::static_type())
             {
                 event_.handled_ = func(*static_cast<T*>(&event_));
