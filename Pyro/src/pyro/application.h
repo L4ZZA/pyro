@@ -2,6 +2,8 @@
 
 #include "core.h"
 #include "events/event.h"
+#include "events/application_event.h"
+
 #include "window.h"
 
 namespace pyro
@@ -21,6 +23,9 @@ namespace pyro
         void run();
 
         void on_event(event &p_event);
+
+    private:
+        bool on_window_close(window_closed_event &p_event);
     };
 
 

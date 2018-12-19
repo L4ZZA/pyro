@@ -25,5 +25,15 @@ void pyro::application::run()
 
 void pyro::application::on_event(event& p_event)
 {   
-    PYRO_CORE_INFO("{0}", p_event);
+    event_dispatcher dispatcher(p_event);
+    dispatcher.dispatch<window_closed_event>(BIND_EVENT_FN(application::on_window_close));
+
+    PYRO_CORE_TRACE("{0}", p_event);
+}
+
+bool pyro::application::on_window_close(window_closed_event& p_event)
+{
+    running_ = false;
+
+    return true;
 }
