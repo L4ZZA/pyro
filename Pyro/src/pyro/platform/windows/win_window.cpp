@@ -1,4 +1,4 @@
-#include "pyro_pch.h"
+﻿#include "pyro_pch.h"
 #include "win_window.h"
 
 #include "pyro/events/event.h"
@@ -11,6 +11,11 @@
 namespace pyro
 {
     static bool s_glfw_initialized = false;
+
+    static void glfw_error_callback(int p_error_code, const char * p_description)
+    {
+        PYRO_CORE_ERROR("GLFW Error ({0}): {1}", p_error_code, p_description);
+    }
 }
 
 pyro::window* pyro::window::create(window_props const& p_props)
@@ -61,7 +66,7 @@ void pyro::win_window::init(window_props const& p_props)
     {
         int success = glfwInit();
         PYRO_CORE_ASSERT(success, "Could not initialize GLFW!");
-
+        glfwSetErrorCallback(glfw_error_callback);
         s_glfw_initialized = true;
     }
 
