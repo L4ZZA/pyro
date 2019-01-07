@@ -42,9 +42,7 @@ namespace  pyro
     /// \brief 
     class event
     {
-        friend class event_dispatcher;
 
-        //---------------------------------------------------------------------
     public:
         bool handled{ false };
 

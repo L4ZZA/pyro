@@ -122,12 +122,15 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "PYRO_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "PYRO_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "PYRO_DIST"
+		buildoptions "/MD"
 		optimize "On"
