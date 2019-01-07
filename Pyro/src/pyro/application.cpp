@@ -1,6 +1,6 @@
 ﻿#include "pyro_pch.h"
 #include "application.h"
-#include "GLFW/glfw3.h"
+#include "glad/glad.h"
 
 pyro::application::application()
 {

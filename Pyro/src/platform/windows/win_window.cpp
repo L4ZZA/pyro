@@ -5,6 +5,7 @@
 #include "pyro/events/application_event.h"
 #include "pyro/events/key_event.h"
 #include "pyro/events/mouse_event.h"
+#include "glad/glad.h"
 
 //=============================================================================
 
@@ -77,6 +78,10 @@ void pyro::win_window::init(window_props const& p_props)
         nullptr, nullptr);
 
     glfwMakeContextCurrent(m_window);
+
+    int status = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+    PYRO_ASSERT(status, "Could not load Glad!");
+
     // we're telling glfw to pass the window_data struct to all the defined callbacks
     // so that we ca work with our defined data.
     glfwSetWindowUserPointer(m_window, &m_data);
