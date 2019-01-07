@@ -105,7 +105,7 @@ void pyro::win_window::init(window_props const& p_props)
     {
         window_data &data = *static_cast<window_data*>(glfwGetWindowUserPointer(window));
 
-        switch (scancode)
+        switch (action)
         {
             case GLFW_PRESS:
             {
