@@ -46,6 +46,9 @@ namespace  pyro
 
         //---------------------------------------------------------------------
     public:
+        bool handled{ false };
+
+    public:
         virtual ~event() = default;
         virtual event_type_e event_type() const = 0;
         virtual const char* name() const = 0;
@@ -60,9 +63,6 @@ namespace  pyro
             return category_flags() & category;
         }
 
-        //---------------------------------------------------------------------
-    protected:
-        bool m_handled{ false };
     };
 
     //=========================================================================
@@ -87,7 +87,7 @@ namespace  pyro
             // filtering events by type T
             if (m_event.event_type() == T::static_type())
             {
-                m_event.m_handled = func(*static_cast<T*>(&m_event));
+                m_event.handled = func(*static_cast<T*>(&m_event));
                 return true;
             }
             return false;
