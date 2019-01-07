@@ -47,6 +47,7 @@
       <Filter>pyro</Filter>
     </ClInclude>
     <ClInclude Include="src\pyro_pch.h" />
+    <ClInclude Include="src\pyro\layer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pyro\application.cpp">
@@ -59,5 +60,6 @@
       <Filter>pyro\platform\windows</Filter>
     </ClCompile>
     <ClCompile Include="src\pyro_pch.cpp" />
+    <ClCompile Include="src\pyro\layer.cpp" />
   </ItemGroup>
 </Project>
