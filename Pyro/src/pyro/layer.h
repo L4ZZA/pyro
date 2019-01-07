@@ -27,5 +27,7 @@ namespace pyro
 
     protected:
         std::string m_debug_name;
+
+        //TODO: enabling/disabling layer
     };
 }
