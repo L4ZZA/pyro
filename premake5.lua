@@ -71,14 +71,17 @@ project "Pyro"
 
 	filter "configurations:Debug"
 		defines "PYRO_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "PYRO_RELEASE"
+		buildoptions "/MDd"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "PYRO_DIST"
+		buildoptions "/MDd"
 		optimize "On"
 
 -- sandbox application
