@@ -158,18 +158,18 @@
     <ClInclude Include="src\pyro\events\key_event.h" />
     <ClInclude Include="src\pyro\events\mouse_event.h" />
     <ClInclude Include="src\pyro\layer.h" />
-    <ClInclude Include="src\pyro\layer_stack.h" />
+    <ClInclude Include="src\pyro\layers_stack.h" />
     <ClInclude Include="src\pyro\logger.h" />
-    <ClInclude Include="src\pyro\platform\windows\win_window.h" />
+    <ClInclude Include="src\platform\windows\win_window.h" />
     <ClInclude Include="src\pyro\window.h" />
     <ClInclude Include="src\pyro_pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pyro\application.cpp" />
     <ClCompile Include="src\pyro\layer.cpp" />
-    <ClCompile Include="src\pyro\layer_stack.cpp" />
+    <ClCompile Include="src\pyro\layers_stack.cpp" />
     <ClCompile Include="src\pyro\logger.cpp" />
-    <ClCompile Include="src\pyro\platform\windows\win_window.cpp" />
+    <ClCompile Include="src\platform\windows\win_window.cpp" />
     <ClCompile Include="src\pyro_pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
