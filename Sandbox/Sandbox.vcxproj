@@ -134,7 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\SandboxApp.cpp" />
+    <ClCompile Include="src\sandbox_app.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Pyro\Pyro.vcxproj">

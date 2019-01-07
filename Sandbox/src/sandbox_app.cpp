@@ -1,9 +1,9 @@
 #include <pyro.h>
 
-class ExampleLayer : public pyro::layer
+class example_layer : public pyro::layer
 {
 public:
-    ExampleLayer() : layer("example") {  }
+    example_layer() : layer("example") {  }
 
     void on_update() override
     {
@@ -18,15 +18,15 @@ public:
 };
 
 
-class SandboxApp : public pyro::application
+class sandbox_app : public pyro::application
 {
     public:
-    SandboxApp()
+    sandbox_app()
     {
-        push_layer(new ExampleLayer());
+        push_layer(new example_layer());
     }
 
-    ~SandboxApp()
+    ~sandbox_app()
     {
         
     }
@@ -35,5 +35,5 @@ class SandboxApp : public pyro::application
 
 pyro::application * pyro::create_application()
 {
-    return new SandboxApp();
+    return new sandbox_app();
 }
