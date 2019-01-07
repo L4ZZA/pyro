@@ -48,6 +48,7 @@
     </ClInclude>
     <ClInclude Include="src\pyro_pch.h" />
     <ClInclude Include="src\pyro\layer.h" />
+    <ClInclude Include="src\pyro\layer_stack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pyro\application.cpp">
@@ -61,5 +62,6 @@
     </ClCompile>
     <ClCompile Include="src\pyro_pch.cpp" />
     <ClCompile Include="src\pyro\layer.cpp" />
+    <ClCompile Include="src\pyro\layer_stack.cpp" />
   </ItemGroup>
 </Project>
