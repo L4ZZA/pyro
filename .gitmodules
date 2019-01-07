@@ -4,3 +4,6 @@
 [submodule "Pyro/external/GLFW"]
 	path = Pyro/external/GLFW
 	url = https://github.com/L4ZZA/glfw
+[submodule "Pyro/external/imgui"]
+	path = Pyro/external/imgui
+	url = https://github.com/L4ZZA/imgui
