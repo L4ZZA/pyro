@@ -9,14 +9,16 @@ namespace pyro
     class PYRO_API key_event : public event
     {
     public:
-        int key_code() const { return key_code_; }
+        int key_code() const { return m_key_code; }
         EVENT_CLASS_CATEGORY(event_category_keyboard | event_category_input)
+
     protected:
         key_event(int p_keycode)
-            : key_code_(p_keycode)
+            : m_key_code(p_keycode)
         {
         }
-        int key_code_;
+
+        int m_key_code;
     };
 
     //=========================================================================
@@ -25,21 +27,23 @@ namespace pyro
     {
     public:
         key_pressed_event(int p_keycode, int repeatCount)
-            : key_event(p_keycode), repeats_count_(repeatCount)
+            : key_event(p_keycode), m_repeats_count(repeatCount)
         {
         }
-        int repeats_count() const { return repeats_count_; }
+        
+        int repeats_count() const { return m_repeats_count; }
+
         std::string to_string() const override
         {
             std::stringstream ss;
-            ss << "key_pressed_event: " << key_code_ << " (" << repeats_count_ << " repeats)";
+            ss << "key_pressed_event: " << m_key_code << " (" << m_repeats_count << " repeats)";
             return ss.str();
         }
 
         EVENT_CLASS_TYPE(key_pressed)
 
     private:
-        int repeats_count_;
+        int m_repeats_count;
     };
 
     //=========================================================================
@@ -51,10 +55,11 @@ namespace pyro
             : key_event(p_keycode)
         {
         }
+
         std::string to_string() const override
         {
             std::stringstream ss;
-            ss << "key_released_event: " << key_code_;
+            ss << "key_released_event: " << m_key_code;
             return ss.str();
         }
         EVENT_CLASS_TYPE(key_released)

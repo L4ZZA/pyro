@@ -18,14 +18,14 @@ namespace pyro
 
         //---------------------------------------------------------------------
 
-        void event_callback(event_callback_fn const& p_callback) override { data_.event_callback = p_callback; }
+        void event_callback(event_callback_fn const& p_callback) override { m_data.event_callback = p_callback; }
         void vsync(bool p_enabled) override;
         bool vsync() override;
 
         //---------------------------------------------------------------------
 
-        unsigned width() const override  { return data_.width_; }
-        unsigned height() const override { return data_.height_; }
+        unsigned width() const override  { return m_data.width; }
+        unsigned height() const override { return m_data.height; }
 
         //---------------------------------------------------------------------
 
@@ -34,20 +34,20 @@ namespace pyro
         virtual void shut_down();
 
     private:
-        GLFWwindow* window_;
+        GLFWwindow* m_window;
 
         /// \brief struct to pass to the glfw callback user_ptr
         struct window_data
         {
-            std::string title_;
-            unsigned int width_;
-            unsigned int height_;
-            bool vsync_;
+            std::string title;
+            unsigned int width;
+            unsigned int height;
+            bool vsync;
 
             event_callback_fn event_callback;
         };
 
-        window_data data_;
+        window_data m_data;
     };
 
 }

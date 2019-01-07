@@ -9,22 +9,25 @@ namespace pyro
     {
     public:
         mouse_moved_event(float p_x, float p_y)
-            : mouse_x(p_x), mouse_y_(p_y)
+            : m_mouse_x(p_x), m_mouse_y(p_y)
         {
         }
-        float x() const { return mouse_x; }
-        float y() const { return mouse_y_; }
+
+        float x() const { return m_mouse_x; }
+        float y() const { return m_mouse_y; }
+
         std::string to_string() const override
         {
             std::stringstream ss;
-            ss << "mouse_moved_event: " << mouse_x << ", " << mouse_y_;
+            ss << "mouse_moved_event: " << m_mouse_x << ", " << m_mouse_y;
             return ss.str();
         }
-        EVENT_CLASS_TYPE(mouse_moved)
 
+        EVENT_CLASS_TYPE(mouse_moved)
         EVENT_CLASS_CATEGORY(event_category_mouse | event_category_input)
+
     private:
-        float mouse_x, mouse_y_;
+        float m_mouse_x, m_mouse_y;
     };
 
     //=============================================================================
@@ -33,21 +36,25 @@ namespace pyro
     {
     public:
         mouse_scrolled_event(float p_x_offset, float p_y_offset)
-            : x_offset(p_x_offset), y_offset(p_y_offset)
+            : m_x_offset(p_x_offset), m_y_offset(p_y_offset)
         {
         }
-        float xoffset() const { return x_offset; }
-        float yoffset() const { return y_offset; }
+
+        float x_offset() const { return m_x_offset; }
+        float y_offset() const { return m_y_offset; }
+        
         std::string to_string() const override
         {
             std::stringstream ss;
-            ss << "mouse_scrolled_event: " << xoffset() << ", " << yoffset();
+            ss << "mouse_scrolled_event: " << x_offset() << ", " << y_offset();
             return ss.str();
         }
+        
         EVENT_CLASS_TYPE(mouse_scrolled)
         EVENT_CLASS_CATEGORY(event_category_mouse | event_category_input)
+
     private:
-        float x_offset, y_offset;
+        float m_x_offset, m_y_offset;
     };
 
     //=============================================================================
@@ -55,14 +62,15 @@ namespace pyro
     class PYRO_API mouse_button_event : public event
     {
     public:
-        int mouse_button() const { return button_; }
+        int mouse_button() const { return m_button; }
         EVENT_CLASS_CATEGORY(event_category_mouse | event_category_input)
+
     protected:
         mouse_button_event(int button)
-            : button_(button)
-        {
-        }
-        int button_;
+            : m_button(button)
+        { }
+
+        int m_button;
     };
 
     //=============================================================================
@@ -74,12 +82,14 @@ namespace pyro
             : mouse_button_event(button)
         {
         }
+        
         std::string to_string() const override
         {
             std::stringstream ss;
-            ss << "mouse_button_pressed_event: " << button_;
+            ss << "mouse_button_pressed_event: " << m_button;
             return ss.str();
         }
+
         EVENT_CLASS_TYPE(mouse_button_pressed)
     };
 
@@ -95,7 +105,7 @@ namespace pyro
         std::string to_string() const override
         {
             std::stringstream ss;
-            ss << "mouse_button_release_event: " << button_;
+            ss << "mouse_button_release_event: " << m_button;
             return ss.str();
         }
         EVENT_CLASS_TYPE(mouse_button_released)

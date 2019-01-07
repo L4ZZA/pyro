@@ -62,7 +62,7 @@ namespace  pyro
 
         //---------------------------------------------------------------------
     protected:
-        bool handled_{ false };
+        bool m_handled{ false };
     };
 
     //=========================================================================
@@ -76,7 +76,7 @@ namespace  pyro
         //---------------------------------------------------------------------
     public:
         event_dispatcher(event& event)
-            : event_(event)
+            : m_event(event)
         {
         }
 
@@ -85,9 +85,9 @@ namespace  pyro
         bool dispatch(EventFn<T> func)
         {
             // filtering events by type T
-            if (event_.event_type() == T::static_type())
+            if (m_event.event_type() == T::static_type())
             {
-                event_.handled_ = func(*static_cast<T*>(&event_));
+                m_event.m_handled = func(*static_cast<T*>(&m_event));
                 return true;
             }
             return false;
@@ -95,7 +95,7 @@ namespace  pyro
 
         //---------------------------------------------------------------------
     private:
-        event& event_;
+        event& m_event;
     };
 
     //=========================================================================

@@ -13,8 +13,8 @@ namespace pyro
     class PYRO_API application
     {
     private:
-        std::unique_ptr<window> window_;
-        bool running_ = true;
+        std::unique_ptr<window> m_window;
+        bool m_running = true;
 
     public:
         application();

@@ -9,21 +9,21 @@ namespace pyro
     {
     public:
         window_resize_event(unsigned int width, unsigned int height)
-            : width_(width), height_(height)
+            : m_width(width), m_height(height)
         {
         }
-        unsigned int GetWidth() const { return width_; }
-        unsigned int GetHeight() const { return height_; }
+        unsigned int GetWidth() const { return m_width; }
+        unsigned int GetHeight() const { return m_height; }
         std::string to_string() const override
         {
             std::stringstream ss;
-            ss << "window_resize_event: " << width_ << ", " << height_;
+            ss << "window_resize_event: " << m_width << ", " << m_height;
             return ss.str();
         }
         EVENT_CLASS_TYPE(window_resize)
         EVENT_CLASS_CATEGORY(event_category_application)
     private:
-        unsigned int width_, height_;
+        unsigned int m_width, m_height;
     };
 
     //=========================================================================
