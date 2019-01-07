@@ -16,7 +16,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "Pyro/external/GLFW/include/"
 IncludeDir["Glad"] = "Pyro/external/Glad/include/"
-IncludeDir["ImGui"] = "Pyro/external/imgui/include/"
+IncludeDir["ImGui"] = "Pyro/external/imgui/"
 
 -- iclude GLFW premake file
 include "Pyro/external/GLFW/"
