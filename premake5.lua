@@ -65,7 +65,8 @@ project "Pyro"
 		defines
 		{
 			"PYRO_PLATFORM_WIN",
-			"PYRO_BUILD_DLL"
+			"PYRO_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands
