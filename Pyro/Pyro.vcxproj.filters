@@ -13,6 +13,9 @@
     <Filter Include="pyro\events">
       <UniqueIdentifier>{F30C0893-5FC2-8088-E8B6-7A5F546B778C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="pyro\imgui">
+      <UniqueIdentifier>{79F83B14-65B0-7D61-CEB7-56BDBA8E1852}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\platform\windows\win_window.h">
@@ -40,6 +43,9 @@
     <ClInclude Include="src\pyro\events\mouse_event.h">
       <Filter>pyro\events</Filter>
     </ClInclude>
+    <ClInclude Include="src\pyro\imgui\imgui_layer.h">
+      <Filter>pyro\imgui</Filter>
+    </ClInclude>
     <ClInclude Include="src\pyro\layer.h">
       <Filter>pyro</Filter>
     </ClInclude>
@@ -53,6 +59,7 @@
       <Filter>pyro</Filter>
     </ClInclude>
     <ClInclude Include="src\pyro_pch.h" />
+    <ClInclude Include="src\platform\opengl\imgui_opengl_renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\platform\windows\win_window.cpp">
@@ -60,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="src\pyro\application.cpp">
       <Filter>pyro</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pyro\imgui\imgui_layer.cpp">
+      <Filter>pyro\imgui</Filter>
     </ClCompile>
     <ClCompile Include="src\pyro\layer.cpp">
       <Filter>pyro</Filter>
@@ -71,5 +81,6 @@
       <Filter>pyro</Filter>
     </ClCompile>
     <ClCompile Include="src\pyro_pch.cpp" />
+    <ClCompile Include="src\platform\opengl\imgui_opengl_renderer.cpp" />
   </ItemGroup>
 </Project>

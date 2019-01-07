@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -152,6 +152,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\platform\opengl\imgui_opengl_renderer.h" />
     <ClInclude Include="src\platform\windows\win_window.h" />
     <ClInclude Include="src\pyro.h" />
     <ClInclude Include="src\pyro\application.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="src\pyro_pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\platform\opengl\imgui_opengl_renderer.cpp" />
     <ClCompile Include="src\platform\windows\win_window.cpp" />
     <ClCompile Include="src\pyro\application.cpp" />
     <ClCompile Include="src\pyro\imgui\imgui_layer.cpp" />
