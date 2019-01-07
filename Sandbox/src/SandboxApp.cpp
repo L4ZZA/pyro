@@ -7,12 +7,12 @@ public:
 
     void on_update() override
     {
-        PYRO_INFO("ExampleLayer::on_update()");
+        //PYRO_INFO("ExampleLayer::on_update()");
     }
 
     void on_event(pyro::event& p_event) override
     {
-        PYRO_TRACE("{0}", p_event);
+        //PYRO_TRACE("{0}", p_event);
     }
 
 };

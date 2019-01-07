@@ -32,7 +32,7 @@ void pyro::application::on_event(event& p_event)
     event_dispatcher dispatcher(p_event);
     dispatcher.dispatch<window_closed_event>(BIND_EVENT_FN(application::on_window_close));
 
-    PYRO_CORE_TRACE("{0}", p_event);
+    //PYRO_CORE_TRACE("{0}", p_event);
 
     // events are executed from top of the stack to bottom (aka end to start of the list)
     for (auto it = m_layers_stack.end(); it != m_layers_stack.begin(); )
