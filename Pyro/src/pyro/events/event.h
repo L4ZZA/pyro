@@ -13,7 +13,7 @@ namespace  pyro
         none = 0,
         window_close, window_resize, window_focus, window_lost_focus, window_moved,
         app_tick, app_update, app_render,
-        key_pressed, key_released,
+        key_pressed, key_released, key_typed,
         mouse_button_pressed, mouse_button_released, mouse_moved, mouse_scrolled
     };
 

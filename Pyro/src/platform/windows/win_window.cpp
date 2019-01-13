@@ -132,6 +132,14 @@ void pyro::win_window::init(window_props const& p_props)
             }
         }
     });
+    
+    glfwSetCharCallback(m_window, [](GLFWwindow* window, unsigned int key)
+    {
+        window_data &data = *static_cast<window_data*>(glfwGetWindowUserPointer(window));
+
+        key_typed_event event(key);
+        data.event_callback(event);
+    });
 
     glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods)
     {
