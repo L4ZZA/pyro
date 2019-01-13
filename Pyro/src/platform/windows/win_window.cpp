@@ -147,7 +147,7 @@ void pyro::win_window::init(window_props const& p_props)
             }
             case GLFW_RELEASE:
             {
-                mouse_button_release_event event(button);
+                mouse_button_released_event event(button);
                 data.event_callback(event);
                 break;
             }
