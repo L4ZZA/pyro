@@ -5,3 +5,5 @@ inter/
 
 #Files
 *.user
+
+*.filters
