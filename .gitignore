@@ -5,3 +5,7 @@ inter/
 
 #Files
 *.user
+
+*.filters
+
+Sandbox/imgui\.ini
