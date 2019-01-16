@@ -2,8 +2,13 @@
 #include "application.h"
 #include "glad/glad.h"
 
+pyro::application* pyro::application::s_instance{ nullptr };
+
 pyro::application::application()
 {
+    PYRO_ASSERT(!s_instance, "Application already exists!");
+    s_instance = this;
+
     m_window = std::unique_ptr<window>(window::create());
     m_window->event_callback(BIND_EVENT_FN(application::on_event));
 }
@@ -47,11 +52,13 @@ void pyro::application::on_event(event& p_event)
 void pyro::application::push_layer(layer* p_layer)
 {
     m_layers_stack.push_layer(p_layer);
+    p_layer->on_attach();
 }
 
 void pyro::application::push_overlay(layer* p_overlay)
 {
     m_layers_stack.push_overlay(p_overlay);
+    p_overlay->on_attach();
 }
 
 bool pyro::application::on_window_close(window_closed_event& p_event)

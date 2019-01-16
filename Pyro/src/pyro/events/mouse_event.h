@@ -95,10 +95,10 @@ namespace pyro
 
     //=============================================================================
 
-    class PYRO_API mouse_button_release_event : public mouse_button_event
+    class PYRO_API mouse_button_released_event : public mouse_button_event
     {
     public:
-        mouse_button_release_event(int button)
+        mouse_button_released_event(int button)
             : mouse_button_event(button)
         {
         }

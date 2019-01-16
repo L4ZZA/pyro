@@ -62,7 +62,30 @@ namespace pyro
             ss << "key_released_event: " << m_key_code;
             return ss.str();
         }
+
         EVENT_CLASS_TYPE(key_released)
+    };
+
+    //=========================================================================
+
+    /// \brief Represents the char value of the key pressed. 
+    /// [Most commonly known as char_event in windows]
+    class PYRO_API key_typed_event : public key_event
+    {
+    public:
+        key_typed_event(int p_keycode)
+            : key_event(p_keycode)
+        {
+        }
+
+        std::string to_string() const override
+        {
+            std::stringstream ss;
+            ss << "key_typed_event: " << m_key_code;
+            return ss.str();
+        }
+
+        EVENT_CLASS_TYPE(key_typed)
     };
 
     //=========================================================================

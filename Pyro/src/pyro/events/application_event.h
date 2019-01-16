@@ -12,8 +12,8 @@ namespace pyro
             : m_width(width), m_height(height)
         {
         }
-        unsigned int GetWidth() const { return m_width; }
-        unsigned int GetHeight() const { return m_height; }
+        unsigned int width() const { return m_width; }
+        unsigned int height() const { return m_height; }
         std::string to_string() const override
         {
             std::stringstream ss;

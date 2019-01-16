@@ -80,7 +80,7 @@
       <PrecompiledHeaderFile>pyro_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>PYRO_PLATFORM_WIN;PYRO_BUILD_DLL;GLFW_INCLUDE_NONE;PYRO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;external\spdlog\include;external\GLFW\include;external\Glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;external\spdlog\include;external\GLFW\include;external\Glad\include;external\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -103,7 +103,7 @@
       <PrecompiledHeaderFile>pyro_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>PYRO_PLATFORM_WIN;PYRO_BUILD_DLL;GLFW_INCLUDE_NONE;PYRO_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;external\spdlog\include;external\GLFW\include;external\Glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;external\spdlog\include;external\GLFW\include;external\Glad\include;external\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -130,7 +130,7 @@
       <PrecompiledHeaderFile>pyro_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>PYRO_PLATFORM_WIN;PYRO_BUILD_DLL;GLFW_INCLUDE_NONE;PYRO_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;external\spdlog\include;external\GLFW\include;external\Glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;external\spdlog\include;external\GLFW\include;external\Glad\include;external\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -152,6 +152,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\platform\opengl\imgui_opengl_renderer.h" />
     <ClInclude Include="src\platform\windows\win_window.h" />
     <ClInclude Include="src\pyro.h" />
     <ClInclude Include="src\pyro\application.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="src\pyro\events\event.h" />
     <ClInclude Include="src\pyro\events\key_event.h" />
     <ClInclude Include="src\pyro\events\mouse_event.h" />
+    <ClInclude Include="src\pyro\imgui\imgui_layer.h" />
     <ClInclude Include="src\pyro\layer.h" />
     <ClInclude Include="src\pyro\layers_stack.h" />
     <ClInclude Include="src\pyro\logger.h" />
@@ -168,8 +170,10 @@
     <ClInclude Include="src\pyro_pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\platform\opengl\imgui_opengl_renderer.cpp" />
     <ClCompile Include="src\platform\windows\win_window.cpp" />
     <ClCompile Include="src\pyro\application.cpp" />
+    <ClCompile Include="src\pyro\imgui\imgui_layer.cpp" />
     <ClCompile Include="src\pyro\layer.cpp" />
     <ClCompile Include="src\pyro\layers_stack.cpp" />
     <ClCompile Include="src\pyro\logger.cpp" />
@@ -183,6 +187,9 @@
     </ProjectReference>
     <ProjectReference Include="external\Glad\Glad.vcxproj">
       <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
+    </ProjectReference>
+    <ProjectReference Include="external\ImGui\ImGui.vcxproj">
+      <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -24,6 +24,7 @@ class sandbox_app : public pyro::application
     sandbox_app()
     {
         push_layer(new example_layer());
+        push_overlay(new pyro::imgui_layer());
     }
 
     ~sandbox_app()

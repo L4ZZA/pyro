@@ -16,10 +16,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "Pyro/external/GLFW/include/"
 IncludeDir["Glad"] = "Pyro/external/Glad/include/"
+IncludeDir["ImGui"] = "Pyro/external/imgui/"
 
 -- iclude GLFW premake file
 include "Pyro/external/GLFW/"
 include "Pyro/external/Glad/"
+include "Pyro/external/ImGui/"
 
 -- engine core project
 project "Pyro"
@@ -46,14 +48,16 @@ project "Pyro"
 		"%{prj.name}/src",
 		"%{prj.name}/external/spdlog/include",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}"
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.ImGui}"
 	}
 
 	links
 	{
 		"GLFW",
 		"Glad",
-		"opengl32.lib"
+		"opengl32.lib",
+		"ImGui"
 	}
 
 	-- filters are used to apply property to some specific configurations only
