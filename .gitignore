@@ -7,3 +7,5 @@ inter/
 *.user
 
 *.filters
+
+Sandbox/imgui\.ini
