@@ -5,6 +5,9 @@
 #include "GLFW/glfw3.h"
 #include "pyro/application.h"
 
+// temporary
+#include "glad/glad.h"
+
 pyro::imgui_layer::imgui_layer()
     : layer("imgui_layer")
 {
@@ -77,4 +80,95 @@ void pyro::imgui_layer::on_update()
 
 void pyro::imgui_layer::on_event(event& p_event)
 {
+    event_dispatcher dispatcher(p_event);
+    dispatcher.dispatch<mouse_button_pressed_event>(BIND_EVENT_FN(imgui_layer::on_mouse_button_pressed_event));
+    dispatcher.dispatch<mouse_button_released_event>(BIND_EVENT_FN(imgui_layer::on_mouse_button_released_event));
+    dispatcher.dispatch<mouse_moved_event>(BIND_EVENT_FN(imgui_layer::on_mouse_moved_event));
+    dispatcher.dispatch<mouse_scrolled_event>(BIND_EVENT_FN(imgui_layer::on_mouse_scrolled_event));
+    dispatcher.dispatch<key_pressed_event>(BIND_EVENT_FN(imgui_layer::on_key_pressed_event));
+    dispatcher.dispatch<key_released_event>(BIND_EVENT_FN(imgui_layer::on_key_released_event));
+    dispatcher.dispatch<key_typed_event>(BIND_EVENT_FN(imgui_layer::on_key_typed_event));
+    dispatcher.dispatch<window_resize_event>(BIND_EVENT_FN(imgui_layer::on_window_resize_event));
+}
+
+bool pyro::imgui_layer::on_mouse_button_pressed_event(mouse_button_pressed_event& e)
+{
+    ImGuiIO &io = ImGui::GetIO();
+    io.MouseDown[e.mouse_button()] = true;
+
+    // handled flag
+    return false;
+}
+
+bool pyro::imgui_layer::on_mouse_button_released_event(mouse_button_released_event& e)
+{
+    ImGuiIO &io = ImGui::GetIO();
+    io.MouseDown[e.mouse_button()] = false;
+
+    // handled flag
+    return false;
+}
+
+bool pyro::imgui_layer::on_mouse_moved_event(mouse_moved_event& e)
+{
+    ImGuiIO &io = ImGui::GetIO();
+    io.MousePos = ImVec2(e.x(), e.y());
+
+    // handled flag
+    return false;
+}
+
+bool pyro::imgui_layer::on_mouse_scrolled_event(mouse_scrolled_event& e)
+{
+    ImGuiIO &io = ImGui::GetIO();
+    io.MouseWheelH += e.x_offset();
+    io.MouseWheel += e.y_offset();
+
+    // handled flag
+    return false;
+}
+
+bool pyro::imgui_layer::on_key_pressed_event(key_pressed_event& e)
+{
+    ImGuiIO &io = ImGui::GetIO();
+    io.KeysDown[e.key_code()] = true;
+
+    io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
+    io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
+    io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
+    // cmd/super/window key, depending on OS
+    io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+
+    // handled flag
+    return false;
+}
+
+bool pyro::imgui_layer::on_key_released_event(key_released_event& e)
+{
+    ImGuiIO &io = ImGui::GetIO();
+    io.KeysDown[e.key_code()] = false;
+
+    // handled flag
+    return false;
+}
+
+bool pyro::imgui_layer::on_key_typed_event(key_typed_event & e)
+{
+    ImGuiIO &io = ImGui::GetIO();
+    int key_code = e.key_code();
+    if(key_code > 0 && key_code < 0x10000)
+        io.AddInputCharacter((unsigned short)key_code);
+    return false;
+}
+
+bool pyro::imgui_layer::on_window_resize_event(window_resize_event& e)
+{
+    ImGuiIO &io = ImGui::GetIO();
+    io.DisplaySize = ImVec2(e.width(), e.height());
+    io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+    // Temporary TODO: abstract
+    glViewport(0,0, e.width(), e.height());
+
+    // handled flag
+    return false;
 }
