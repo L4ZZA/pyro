@@ -1,6 +1,7 @@
 -- workspace is the solution
 workspace "Pyro"
 	architecture "x64"
+	startproject "Sandbox"
 
 	configurations
 	{
