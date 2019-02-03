@@ -1,6 +1,7 @@
 ﻿#include "pyro_pch.h"
 #include "application.h"
 #include "glad/glad.h"
+#include "pyro/input.h"
 
 pyro::application* pyro::application::s_instance{ nullptr };
 
@@ -15,7 +16,7 @@ pyro::application::application()
 
 pyro::application::~application()
 {
-    
+
 }
 
 void pyro::application::run()
@@ -28,12 +29,16 @@ void pyro::application::run()
         for (auto* layer : m_layers_stack)
             layer->on_update();
 
+        auto[x, y] = input::mouse_position();
+        if (input::mouse_button_pressed(0) || input::mouse_button_pressed(1))
+            PYRO_CORE_TRACE("{0}, {1}", x, y);
+
         m_window->on_update();
     }
 }
 
 void pyro::application::on_event(event& p_event)
-{   
+{
     event_dispatcher dispatcher(p_event);
     dispatcher.dispatch<window_closed_event>(BIND_EVENT_FN(application::on_window_close));
 
