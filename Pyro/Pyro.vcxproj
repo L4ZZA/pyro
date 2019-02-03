@@ -153,6 +153,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\platform\opengl\imgui_opengl_renderer.h" />
+    <ClInclude Include="src\platform\windows\win_input.h" />
     <ClInclude Include="src\platform\windows\win_window.h" />
     <ClInclude Include="src\pyro.h" />
     <ClInclude Include="src\pyro\application.h" />
