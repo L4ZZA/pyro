@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -164,6 +164,7 @@
     <ClInclude Include="src\pyro\events\key_event.h" />
     <ClInclude Include="src\pyro\events\mouse_event.h" />
     <ClInclude Include="src\pyro\imgui\imgui_layer.h" />
+    <ClInclude Include="src\pyro\input.h" />
     <ClInclude Include="src\pyro\layer.h" />
     <ClInclude Include="src\pyro\layers_stack.h" />
     <ClInclude Include="src\pyro\logger.h" />
@@ -172,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\platform\opengl\imgui_opengl_renderer.cpp" />
+    <ClCompile Include="src\platform\windows\win_input.cpp" />
     <ClCompile Include="src\platform\windows\win_window.cpp" />
     <ClCompile Include="src\pyro\application.cpp" />
     <ClCompile Include="src\pyro\imgui\imgui_layer.cpp" />
