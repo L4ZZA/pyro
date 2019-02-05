@@ -26,8 +26,8 @@ namespace pyro
 
         //---------------------------------------------------------------------
 
-        unsigned width() const override { return m_data.width; }
-        unsigned height() const override { return m_data.height; }
+        unsigned int width() const override { return m_data.width; }
+        unsigned int height() const override { return m_data.height; }
 
         //---------------------------------------------------------------------
 
