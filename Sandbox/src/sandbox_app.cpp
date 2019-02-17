@@ -1,4 +1,5 @@
 #include <pyro.h>
+#include "../../Pyro/external/GLFW/include/GLFW/glfw3.h"
 
 class example_layer : public pyro::layer
 {
@@ -7,6 +8,8 @@ public:
 
     void on_update() override
     {
+        if(pyro::input::key_pressed(pyro::key_codes::KEY_TAB))
+            PYRO_INFO("Tab pressed");
         //PYRO_INFO("ExampleLayer::on_update()");
     }
 
