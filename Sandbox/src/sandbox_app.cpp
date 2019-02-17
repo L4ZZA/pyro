@@ -9,13 +9,19 @@ public:
     void on_update() override
     {
         if(pyro::input::key_pressed(pyro::key_codes::KEY_TAB))
-            PYRO_INFO("Tab pressed");
+            PYRO_INFO("Tab pressed (poll)");
         //PYRO_INFO("ExampleLayer::on_update()");
     }
 
     void on_event(pyro::event& p_event) override
     {
-        //PYRO_TRACE("{0}", p_event);
+        if(p_event.event_type() == pyro::event_type_e::key_pressed)
+        {
+            auto& e = dynamic_cast<pyro::key_pressed_event&>(p_event);
+            if(e.key_code() == pyro::key_codes::KEY_TAB)
+                PYRO_TRACE("Tab pressed (event)");
+            PYRO_TRACE("{0}", static_cast<char>(e.key_code()));
+        }
     }
 
 };
