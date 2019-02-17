@@ -165,9 +165,11 @@
     <ClInclude Include="src\pyro\events\mouse_event.h" />
     <ClInclude Include="src\pyro\imgui\imgui_layer.h" />
     <ClInclude Include="src\pyro\input.h" />
+    <ClInclude Include="src\pyro\key_codes.h" />
     <ClInclude Include="src\pyro\layer.h" />
     <ClInclude Include="src\pyro\layers_stack.h" />
     <ClInclude Include="src\pyro\logger.h" />
+    <ClInclude Include="src\pyro\mouse_buttons_codes.h" />
     <ClInclude Include="src\pyro\window.h" />
     <ClInclude Include="src\pyro_pch.h" />
   </ItemGroup>
