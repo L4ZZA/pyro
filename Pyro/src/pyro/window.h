@@ -42,6 +42,7 @@ namespace pyro
         virtual void vsync(bool p_enabled) = 0;
         virtual bool vsync() = 0;
 
+        virtual void* native_window() const = 0;
 
         //---------------------------------------------------------------------
 

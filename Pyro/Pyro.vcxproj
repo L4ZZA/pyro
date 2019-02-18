@@ -94,7 +94,7 @@
       <ImportLibrary>..\bin\Debug-windows-x86_64\Pyro\Pyro.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Debug-windows-x86_64\Pyro\Pyro.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Pyro\Pyro.dll ..\bin\Debug-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Pyro\Pyro.dll ..\bin\Debug-windows-x86_64\Sandbox &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Debug-windows-x86_64\Pyro\Pyro.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Pyro\Pyro.dll "..\bin\Debug-windows-x86_64\Sandbox\" &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Pyro\Pyro.dll "..\bin\Debug-windows-x86_64\Sandbox\" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -121,7 +121,7 @@
       <ImportLibrary>..\bin\Release-windows-x86_64\Pyro\Pyro.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Release-windows-x86_64\Pyro\Pyro.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Pyro\Pyro.dll ..\bin\Release-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Pyro\Pyro.dll ..\bin\Release-windows-x86_64\Sandbox &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Release-windows-x86_64\Pyro\Pyro.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Pyro\Pyro.dll "..\bin\Release-windows-x86_64\Sandbox\" &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Pyro\Pyro.dll "..\bin\Release-windows-x86_64\Sandbox\" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -148,11 +148,12 @@
       <ImportLibrary>..\bin\Dist-windows-x86_64\Pyro\Pyro.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Dist-windows-x86_64\Pyro\Pyro.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Pyro\Pyro.dll ..\bin\Dist-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Pyro\Pyro.dll ..\bin\Dist-windows-x86_64\Sandbox &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Dist-windows-x86_64\Pyro\Pyro.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Pyro\Pyro.dll "..\bin\Dist-windows-x86_64\Sandbox\" &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Pyro\Pyro.dll "..\bin\Dist-windows-x86_64\Sandbox\" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\platform\opengl\imgui_opengl_renderer.h" />
+    <ClInclude Include="src\platform\windows\win_input.h" />
     <ClInclude Include="src\platform\windows\win_window.h" />
     <ClInclude Include="src\pyro.h" />
     <ClInclude Include="src\pyro\application.h" />
@@ -163,14 +164,18 @@
     <ClInclude Include="src\pyro\events\key_event.h" />
     <ClInclude Include="src\pyro\events\mouse_event.h" />
     <ClInclude Include="src\pyro\imgui\imgui_layer.h" />
+    <ClInclude Include="src\pyro\input.h" />
+    <ClInclude Include="src\pyro\key_codes.h" />
     <ClInclude Include="src\pyro\layer.h" />
     <ClInclude Include="src\pyro\layers_stack.h" />
     <ClInclude Include="src\pyro\logger.h" />
+    <ClInclude Include="src\pyro\mouse_buttons_codes.h" />
     <ClInclude Include="src\pyro\window.h" />
     <ClInclude Include="src\pyro_pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\platform\opengl\imgui_opengl_renderer.cpp" />
+    <ClCompile Include="src\platform\windows\win_input.cpp" />
     <ClCompile Include="src\platform\windows\win_window.cpp" />
     <ClCompile Include="src\pyro\application.cpp" />
     <ClCompile Include="src\pyro\imgui\imgui_layer.cpp" />

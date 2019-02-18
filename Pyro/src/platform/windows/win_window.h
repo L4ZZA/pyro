@@ -22,10 +22,12 @@ namespace pyro
         void vsync(bool p_enabled) override;
         bool vsync() override;
 
+        virtual void* native_window() const override { return m_window; }
+
         //---------------------------------------------------------------------
 
-        unsigned width() const override  { return m_data.width; }
-        unsigned height() const override { return m_data.height; }
+        unsigned int width() const override { return m_data.width; }
+        unsigned int height() const override { return m_data.height; }
 
         //---------------------------------------------------------------------
 

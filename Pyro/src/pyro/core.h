@@ -18,6 +18,9 @@
 // 1 << 2 = `0000 0100`
 #define BIT(x) 1 << x
 
+#if PYRO_DEBUG
+    #define PYRO_ENABLE_ASSERTS
+#endif
 
 #ifdef PYRO_ENABLE_ASSERTS
     #define PYRO_ASSERT(x, ...) { if(!x) {PYRO_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();}}
