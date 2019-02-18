@@ -1,5 +1,4 @@
 #include <pyro.h>
-#include "../../Pyro/external/GLFW/include/GLFW/glfw3.h"
 
 class example_layer : public pyro::layer
 {
