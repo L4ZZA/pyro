@@ -1,11 +1,13 @@
-#Folders
+## Folders
 .vs/
 bin/
 inter/
 
-#Files
+## Files
 *.user
-
 *.filters
-
 Sandbox/imgui\.ini
+
+## VisualStudio Specific
+*.vcxproj
+*.sln

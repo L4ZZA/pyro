@@ -6,6 +6,7 @@
 #include "layers_stack.h"
 #include "events/event.h"
 #include "events/application_event.h"
+#include "imgui/imgui_layer.h"
 
 
 namespace pyro
@@ -36,12 +37,13 @@ namespace pyro
         bool on_window_close(window_closed_event &p_event);
 
     private:
-        std::unique_ptr<window> m_window;
-        bool                    m_running{ true };
-        layers_stack            m_layers_stack;
+        std::unique_ptr<window>         m_window;
+        imgui_layer*                    m_imgui_layer{ nullptr };
+        bool                            m_running{ true };
+        layers_stack                    m_layers_stack;
 
     private:
-        static application*     s_instance;
+        static application*             s_instance;
 
     };
 

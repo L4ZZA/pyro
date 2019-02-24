@@ -7,3 +7,6 @@
 [submodule "Pyro/external/imgui"]
 	path = Pyro/external/imgui
 	url = https://github.com/L4ZZA/imgui
+[submodule "Pyro/external/glm"]
+	path = Pyro/external/glm
+	url = https://github.com/g-truc/glm

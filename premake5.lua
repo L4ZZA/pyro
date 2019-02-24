@@ -18,6 +18,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Pyro/external/GLFW/include/"
 IncludeDir["Glad"] = "Pyro/external/Glad/include/"
 IncludeDir["ImGui"] = "Pyro/external/imgui/"
+IncludeDir["glm"] = "Pyro/external/glm/"
 
 -- iclude GLFW premake file
 include "Pyro/external/GLFW/"
@@ -50,7 +51,8 @@ project "Pyro"
 		"%{prj.name}/external/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
 	}
 
 	links
@@ -112,7 +114,8 @@ project "Sandbox"
 	includedirs
 	{
 		"Pyro/external/spdlog/include",
-		"Pyro/src"
+		"Pyro/src",
+		"%{IncludeDir.glm}"
 	}
 
 	links

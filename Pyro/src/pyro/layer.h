@@ -19,6 +19,8 @@ namespace pyro
         /// \brief Runs when application calls the on_update method.
         /// Should happen every frame.
         virtual void on_update() {}
+        /// \brief Render method specific to imgui.
+        virtual void on_imgui_render() {}
         /// \brief Runs whenever an event gets sent to the layer.
         virtual void on_event(event &p_event) {}
 
