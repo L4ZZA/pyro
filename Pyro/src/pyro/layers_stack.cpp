@@ -3,7 +3,6 @@
 
 pyro::layers_stack::layers_stack()
 {
-    m_layers_insert = m_layers.begin();
 }
 
 pyro::layers_stack::~layers_stack()
@@ -14,7 +13,8 @@ pyro::layers_stack::~layers_stack()
 
 void pyro::layers_stack::push_layer(layer* p_layer)
 {
-    m_layers_insert = m_layers.emplace(m_layers_insert, p_layer);
+     m_layers.emplace(m_layers.begin() + m_layers_insert_index, p_layer);
+     m_layers_insert_index++;
 }
 
 void pyro::layers_stack::push_overlay(layer* p_overlay)
@@ -28,7 +28,7 @@ void pyro::layers_stack::pop_layer(layer* p_layer)
     if(it != m_layers.end())
     {
         m_layers.erase(it);
-        --m_layers_insert;
+        --m_layers_insert_index;
     }
 }
 

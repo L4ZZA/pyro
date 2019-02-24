@@ -31,6 +31,6 @@ namespace pyro
 
     private:
         std::vector<layer*> m_layers;
-        std::vector<layer*>::iterator m_layers_insert;
+        unsigned int m_layers_insert_index{ 0 };
     };
 }
