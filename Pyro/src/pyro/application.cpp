@@ -12,6 +12,9 @@ pyro::application::application()
 
     m_window = std::unique_ptr<window>(window::create());
     m_window->event_callback(BIND_EVENT_FN(application::on_event));
+
+    m_imgui_layer = new imgui_layer();
+    push_overlay(m_imgui_layer);
 }
 
 pyro::application::~application()
@@ -29,9 +32,15 @@ void pyro::application::run()
         for (auto* layer : m_layers_stack)
             layer->on_update();
 
-        auto[x, y] = input::mouse_position();
-        if (input::mouse_button_pressed(0) || input::mouse_button_pressed(1))
-            PYRO_CORE_TRACE("{0}, {1}", x, y);
+        // this will be on the renderer thread.
+        m_imgui_layer->begin();
+        for (auto* layer : m_layers_stack)
+            layer->on_imgui_render();
+        m_imgui_layer->end();
+
+        //auto[x, y] = input::mouse_position();
+        //if (input::mouse_button_pressed(0) || input::mouse_button_pressed(1))
+        //    PYRO_CORE_TRACE("{0}, {1}", x, y);
 
         m_window->on_update();
     }
