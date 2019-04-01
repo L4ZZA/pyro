@@ -4,6 +4,8 @@
 #include <glm/vec4.hpp> // glm::vec4
 #include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
+#include "imgui.h"
+
 glm::mat4 camera(float Translate, glm::vec2 const & Rotate)
 {
     glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.f);
@@ -14,27 +16,38 @@ glm::mat4 camera(float Translate, glm::vec2 const & Rotate)
     return Projection * View * Model;
 }
 
-class example_layer : public pyro::layer
+class example_layer : public pyro::imgui_layer
 {
 public:
-    example_layer() : layer("example")
+    example_layer() : imgui_layer()
     {
         auto cam = camera(5.f, { .5f,.5f });
     }
 
     void on_update() override
     {
-        if (pyro::input::key_pressed(pyro::key_codes::KEY_TAB))
+        if(pyro::input::key_pressed(pyro::key_codes::KEY_TAB))
             PYRO_INFO("Tab pressed (poll)");
         //PYRO_INFO("ExampleLayer::on_update()");
     }
 
+    void on_imgui_render() override
+    {
+        static bool show = true;
+        ImGui::ShowDemoWindow(&show);
+
+        ImGui::Begin("Test");
+        ImGui::Text("Rendered text with ImGui.");
+        ImGui::End();
+    }
+
+
     void on_event(pyro::event& p_event) override
     {
-        if (p_event.event_type() == pyro::event_type_e::key_pressed)
+        if(p_event.event_type() == pyro::event_type_e::key_pressed)
         {
             auto& e = dynamic_cast<pyro::key_pressed_event&>(p_event);
-            if (e.key_code() == pyro::key_codes::KEY_TAB)
+            if(e.key_code() == pyro::key_codes::KEY_TAB)
                 PYRO_TRACE("Tab pressed (event)");
             PYRO_TRACE("{0}", static_cast<char>(e.key_code()));
         }
