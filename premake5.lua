@@ -73,7 +73,8 @@ project "Pyro"
 		{
 			"PYRO_PLATFORM_WIN",
 			"PYRO_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
+			"GLFW_INCLUDE_NONE",
+			"IMGUI_API=__declspec(dllexport)"
 		}
 
 		postbuildcommands
@@ -115,12 +116,14 @@ project "Sandbox"
 	{
 		"Pyro/external/spdlog/include",
 		"Pyro/src",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}",
 	}
 
 	links
 	{
-		"Pyro"
+		"Pyro",
+		"ImGui"
 	}
 
 	filter "system:windows"
@@ -130,7 +133,8 @@ project "Sandbox"
 
 		defines
 		{
-			"PYRO_PLATFORM_WIN"
+			"PYRO_PLATFORM_WIN",
+			"IMGUI_API=__declspec(dllimport)"
 		}
 
 	filter "configurations:Debug"
