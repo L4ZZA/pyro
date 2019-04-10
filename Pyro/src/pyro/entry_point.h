@@ -8,7 +8,7 @@ int main(int argc, char** argv)
 {
 #ifdef PYRO_DEBUG
     auto hwnd = GetConsoleWindow();
-    SetWindowPos(hwnd, HWND_TOP, 0, 1080 * 0.72, 1920, 1080 * 0.25, SWP_NOZORDER);
+    SetWindowPos(hwnd, HWND_TOP, 0, static_cast<int>(1080 * 0.72), 1920, static_cast<int>(1080 * 0.25), SWP_NOZORDER);
     ShowWindow(hwnd, SW_SHOW);
 #else
     ShowWindow(GetConsoleWindow(), SW_HIDE);
