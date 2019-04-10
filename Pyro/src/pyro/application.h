@@ -38,7 +38,6 @@ namespace pyro
 
     private:
         std::unique_ptr<window>         m_window;
-        imgui_layer*                    m_imgui_layer{ nullptr };
         bool                            m_running{ true };
         layers_stack                    m_layers_stack;
 

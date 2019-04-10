@@ -79,7 +79,7 @@ void pyro::imgui_layer::end() const
 {
     ImGuiIO& io = ImGui::GetIO();
     auto& app = application::instance();
-    io.DisplaySize = ImVec2(app.get_window().width(), app.get_window().height());
+    io.DisplaySize = ImVec2(static_cast<float>(app.get_window().width()), static_cast<float>(app.get_window().height()));
 
     // Rendering
     ImGui::Render();

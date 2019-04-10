@@ -1,10 +1,6 @@
 ﻿#pragma once
 #include "pyro/layer.h"
 
-#include "pyro/events/application_event.h"
-#include "pyro/events/mouse_event.h"
-#include "pyro/events/key_event.h"
-
 namespace pyro
 {
     class PYRO_API imgui_layer : public pyro::layer
