@@ -3,11 +3,17 @@
 // all common Pyro definitions
 
 #ifdef PYRO_PLATFORM_WIN
+
+#if PYRO_DYNAMIC
     #ifdef PYRO_BUILD_DLL
         #define PYRO_API __declspec(dllexport)
     #else
         #define PYRO_API __declspec(dllimport)
     #endif
+#else
+    #define PYRO_API
+#endif
+
 #else
     #error Pyro only supports Windows!
 #endif
