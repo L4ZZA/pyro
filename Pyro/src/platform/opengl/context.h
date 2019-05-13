@@ -3,12 +3,12 @@
 
 struct GLFWwindow;
 
-namespace pyro
+namespace pyro::opengl
 {
-	class opengl_context : public graphics_context
+	class context : public graphics_context
 	{
 	public:
-		opengl_context(GLFWwindow* window_handle);
+		context(GLFWwindow* window_handle);
 
 		void init() override;
 		void swap_buffers() override;
