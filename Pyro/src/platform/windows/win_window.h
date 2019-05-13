@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "pyro/window.h"
+#include "pyro/renderer/graphics_context.h"
 #include "GLFW/glfw3.h"
 
 namespace pyro
@@ -37,6 +38,7 @@ namespace pyro
 
     private:
         GLFWwindow* m_window;
+		graphics_context* m_graphics_context;
 
         /// \brief struct to pass to the glfw callback user_ptr
         struct window_data

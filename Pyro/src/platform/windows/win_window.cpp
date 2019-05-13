@@ -1,11 +1,13 @@
 ﻿#include "pyro_pch.h"
 #include "win_window.h"
 
-#include "pyro/events/event.h"
 #include "pyro/events/application_event.h"
 #include "pyro/events/key_event.h"
 #include "pyro/events/mouse_event.h"
-#include "glad/glad.h"
+
+#include "pyro/core.h"
+#include "platform/opengl/context.h"
+#include "GLFW/glfw3.h"
 
 //=============================================================================
 
@@ -36,8 +38,8 @@ pyro::win_window::~win_window()
 
 void pyro::win_window::on_update()
 {
-    glfwPollEvents();
-    glfwSwapBuffers(m_window);
+	glfwPollEvents();
+	m_graphics_context->swap_buffers();
 }
 
 void pyro::win_window::vsync(bool p_enabled)
@@ -79,14 +81,13 @@ void pyro::win_window::init(window_props const& p_props)
 
     glfwMakeContextCurrent(m_window);
 
-    int status = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
-    PYRO_ASSERT(status, "Could not load Glad!");
+	m_graphics_context = new opengl_context(m_window);
+	m_graphics_context->init();
 
-    // we're telling glfw to pass the window_data struct to all the defined callbacks
-    // so that we ca work with our defined data.
-    glfwSetWindowUserPointer(m_window, &m_data);
-    vsync(true);
-
+	// we're telling glfw to pass the window_data struct to all the defined callbacks
+	// so that we ca work with our defined data.
+	glfwSetWindowUserPointer(m_window, &m_data);
+	vsync(true);
 
     // GLFW callbacks
     glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height)
