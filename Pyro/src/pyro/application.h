@@ -41,6 +41,9 @@ namespace pyro
         bool                            m_running{ true };
         layers_stack                    m_layers_stack;
 
+		unsigned int					m_vertex_array;
+		unsigned int					m_vertex_buffer;
+		unsigned int					m_index_buffer;
     private:
         static application*             s_instance;
 
