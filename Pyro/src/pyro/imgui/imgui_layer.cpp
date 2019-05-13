@@ -15,6 +15,7 @@
 pyro::imgui_layer::imgui_layer()
     : layer("imgui_layer")
 {
+	m_imgui = true;
 }
 
 pyro::imgui_layer::~imgui_layer()

@@ -9,9 +9,9 @@ namespace pyro
         imgui_layer();
         ~imgui_layer();
 
-        virtual void on_attach() override;
-        virtual void on_detach() override;
-        virtual void on_imgui_render() override;
+        void on_attach() override;
+        void on_detach() override;
+        void on_imgui_render() override;
 
         void begin() const;
         void end() const;

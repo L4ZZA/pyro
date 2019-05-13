@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "application.h"
 #include "glad/glad.h"
 #include "pyro/input.h"
@@ -21,21 +21,21 @@ pyro::application::~application()
 
 void pyro::application::run()
 {
-    while (m_running)
+	while(m_running)
     {
         glClearColor(1, 0, 1, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        for (auto* layer : m_layers_stack)
+		for(auto* layer : m_layers_stack)
         {
             layer->on_update();
 
-            auto imgui_layer = (pyro::imgui_layer*)layer;
-            if(imgui_layer)
-            {
-                imgui_layer->begin();
-                imgui_layer->on_imgui_render();
-                imgui_layer->end();
+			if(layer->is_imgui())
+			{
+				auto imgui_layer = static_cast<pyro::imgui_layer*>(layer);
+				imgui_layer->begin();
+				imgui_layer->on_imgui_render();
+				imgui_layer->end();
             }
         }
 
