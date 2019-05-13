@@ -29,8 +29,8 @@
 #endif
 
 #ifdef PYRO_ENABLE_ASSERTS
-    #define PYRO_ASSERT(x, ...) { if(!x) {PYRO_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();}}
-    #define PYRO_CORE_ASSERT(x, ...) { if(!x) {PYRO_CORE_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();}}
+    #define PYRO_ASSERT(x, ...) { if(!(x)) {PYRO_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();}}
+    #define PYRO_CORE_ASSERT(x, ...) { if(!(x)) {PYRO_CORE_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();}}
 #else
     #define PYRO_ASSERT(x, ...)
     #define PYRO_CORE_ASSERT(x, ...)
