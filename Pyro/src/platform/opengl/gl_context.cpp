@@ -1,5 +1,5 @@
 #include "pyro_pch.h"
-#include "platform/opengl/context.h"
+#include "platform/opengl/gl_context.h"
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
 

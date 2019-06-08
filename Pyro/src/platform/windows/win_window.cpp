@@ -6,7 +6,7 @@
 #include "pyro/events/mouse_event.h"
 
 #include "pyro/core.h"
-#include "platform/opengl/context.h"
+#include "platform/opengl/gl_context.h"
 #include "GLFW/glfw3.h"
 
 //=============================================================================
