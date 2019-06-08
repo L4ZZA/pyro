@@ -7,6 +7,7 @@
 #include "events/event.h"
 #include "events/application_event.h"
 #include "imgui/imgui_layer.h"
+#include "renderer/shader.h"
 
 
 namespace pyro
@@ -44,6 +45,8 @@ namespace pyro
 		unsigned int					m_vertex_array;
 		unsigned int					m_vertex_buffer;
 		unsigned int					m_index_buffer;
+        std::unique_ptr<shader>         m_shader{};
+
     private:
         static application*             s_instance;
 
