@@ -3,13 +3,13 @@
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
 
-pyro::opengl::context::context(GLFWwindow* window_handle)
+pyro::gl_context::gl_context(GLFWwindow* window_handle)
 	: m_window_handle(window_handle)
 {
-	PYRO_ASSERT(m_window_handle, "[opengl_context] window handle is null!");
+	PYRO_ASSERT(m_window_handle, "[gl_context] window handle is null!");
 }
 
-void pyro::opengl::context::init()
+void pyro::gl_context::init()
 {
 	glfwMakeContextCurrent(m_window_handle);
 	const int status = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
@@ -21,7 +21,7 @@ void pyro::opengl::context::init()
 	PYRO_CORE_INFO("\tVersion: {}", glGetString(GL_VERSION));
 }
 
-void pyro::opengl::context::swap_buffers()
+void pyro::gl_context::swap_buffers()
 {
 	glfwSwapBuffers(m_window_handle);
 }

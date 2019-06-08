@@ -81,7 +81,7 @@ void pyro::win_window::init(window_props const& p_props)
 
     glfwMakeContextCurrent(m_window);
 
-	m_graphics_context = new opengl::context(m_window);
+	m_graphics_context = new gl_context(m_window);
 	m_graphics_context->init();
 
 	// we're telling glfw to pass the window_data struct to all the defined callbacks
