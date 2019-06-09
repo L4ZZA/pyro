@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "core.h"
 
@@ -8,6 +8,7 @@
 #include "events/application_event.h"
 #include "imgui/imgui_layer.h"
 #include "renderer/shader.h"
+#include "renderer/buffer.h"
 
 
 namespace pyro
@@ -43,9 +44,9 @@ namespace pyro
         layers_stack                    m_layers_stack;
 
         uint32_t					    m_vertex_array;
-		unsigned int					m_vertex_buffer;
-		unsigned int					m_index_buffer;
         std::unique_ptr<shader>         m_shader{};
+        std::unique_ptr<vertex_buffer>  m_vertex_buffer{};
+        std::unique_ptr<index_buffer>   m_index_buffer{};
 
     private:
         static application*             s_instance;
