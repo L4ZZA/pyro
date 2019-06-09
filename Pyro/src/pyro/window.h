@@ -9,12 +9,12 @@ namespace pyro
     struct window_props
     {
         std::string     m_title;
-        unsigned int    m_width;
-        unsigned int    m_height;
+        uint32_t    m_width;
+        uint32_t    m_height;
 
         window_props(std::string const &p_title = "pyro",
-                     unsigned int p_width = 1280,
-                     unsigned int p_height = 720)
+                     uint32_t p_width = 1280,
+                     uint32_t p_height = 720)
                 : m_title(p_title), m_width(p_width), m_height(p_height)
         {
         }
@@ -46,8 +46,8 @@ namespace pyro
 
         //---------------------------------------------------------------------
 
-        virtual unsigned int width()  const = 0;
-        virtual unsigned int height() const = 0;
+        virtual uint32_t width()  const = 0;
+        virtual uint32_t height() const = 0;
 
     };
 }

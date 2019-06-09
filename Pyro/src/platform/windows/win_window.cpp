@@ -134,7 +134,7 @@ void pyro::win_window::init(window_props const& p_props)
         }
     });
     
-    glfwSetCharCallback(m_window, [](GLFWwindow* window, unsigned int key)
+    glfwSetCharCallback(m_window, [](GLFWwindow* window, uint32_t key)
     {
         window_data &data = *static_cast<window_data*>(glfwGetWindowUserPointer(window));
 

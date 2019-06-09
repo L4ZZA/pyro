@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "core.h"
 
@@ -42,7 +42,7 @@ namespace pyro
         bool                            m_running{ true };
         layers_stack                    m_layers_stack;
 
-		unsigned int					m_vertex_array;
+        uint32_t					    m_vertex_array;
 		unsigned int					m_vertex_buffer;
 		unsigned int					m_index_buffer;
         std::unique_ptr<shader>         m_shader{};

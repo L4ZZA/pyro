@@ -27,8 +27,8 @@ namespace pyro
 
         //---------------------------------------------------------------------
 
-        unsigned int width() const override { return m_data.width; }
-        unsigned int height() const override { return m_data.height; }
+        uint32_t width() const override { return m_data.width; }
+        uint32_t height() const override { return m_data.height; }
 
         //---------------------------------------------------------------------
 
@@ -44,8 +44,8 @@ namespace pyro
         struct window_data
         {
             std::string title;
-            unsigned int width;
-            unsigned int height;
+            uint32_t width;
+            uint32_t height;
             bool vsync;
 
             event_callback_fn event_callback;
