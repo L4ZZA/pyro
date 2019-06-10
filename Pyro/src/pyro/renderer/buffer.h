@@ -4,6 +4,7 @@ namespace pyro
 {
     //=================== vertex buffer ===================================
 
+    /// \brief Vertex buffer (platform agnostic) interface
     class vertex_buffer
     {
     public:
@@ -17,6 +18,7 @@ namespace pyro
 
     //=================== index buffer ========================================
 
+    /// \brief Index buffer (platform agnostic) interface
     class index_buffer
     {
     public:

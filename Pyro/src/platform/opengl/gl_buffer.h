@@ -5,6 +5,7 @@ namespace pyro
 {
     //=================== vertex buffer =======================================
 
+    /// \brief OpenGL specific implementation of the vertex_buffer interface
     class gl_vertex_buffer final : public vertex_buffer
     {
     public:
@@ -20,6 +21,7 @@ namespace pyro
 
     //=================== index buffer ========================================
 
+    /// \brief OpenGL specific implementation of the index_buffer interface
     class gl_index_buffer final : public index_buffer
     {
     public:
@@ -30,6 +32,7 @@ namespace pyro
         void unbind() const override;
 
         uint32_t count() const override;
+
     private:
         uint32_t m_id{ 0 };
         uint32_t m_count{ 0 };
