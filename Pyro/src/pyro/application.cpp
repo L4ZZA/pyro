@@ -6,6 +6,27 @@
 
 pyro::application* pyro::application::s_instance{ nullptr };
 
+static GLenum to_opengl_type(pyro::e_shader_data_type type)
+{
+    switch (type)
+    {
+        case pyro::e_shader_data_type::float1:    return GL_FLOAT;
+        case pyro::e_shader_data_type::float2:    return GL_FLOAT;
+        case pyro::e_shader_data_type::float3:    return GL_FLOAT;
+        case pyro::e_shader_data_type::float4:    return GL_FLOAT;
+        case pyro::e_shader_data_type::int1:      return GL_INT;
+        case pyro::e_shader_data_type::int2:      return GL_INT;
+        case pyro::e_shader_data_type::int3:      return GL_INT;
+        case pyro::e_shader_data_type::int4:      return GL_INT;
+        case pyro::e_shader_data_type::mat3:      return GL_FLOAT;
+        case pyro::e_shader_data_type::mat4:      return GL_FLOAT;
+        case pyro::e_shader_data_type::boolean:   return GL_BOOL;
+    }
+
+    PYRO_ASSERT(false, "[to_opengl] Unknown shader_data_type!");
+    return 0;
+}
+
 pyro::application::application()
 {
     PYRO_ASSERT(!s_instance, "Application already exists!");
@@ -25,10 +46,22 @@ pyro::application::application()
     };
 
     m_vertex_buffer.reset(vertex_buffer::create(vertices, sizeof(vertices)));
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+    buffer_layout layout{
+        {e_shader_data_type::float3, "a_position"}
+    };
+
+
+    for (const auto& element : layout)
+    {
+        glEnableVertexAttribArray(element.index);
+        glVertexAttribPointer(element.index, 
+            element.components_count(), 
+            to_opengl_type(element.type), 
+            element.normalised ? GL_TRUE : GL_FALSE, 
+            layout.stride(), 
+            reinterpret_cast<const void*>(element.offset));
+    }
 
     //glGenBuffers(1, &m_index_buffer);
     //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);
