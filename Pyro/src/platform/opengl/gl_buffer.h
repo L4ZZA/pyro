@@ -15,8 +15,12 @@ namespace pyro
         void bind() const override;
         void unbind() const override;
 
+        void layout(const buffer_layout& layout) override;
+        const buffer_layout& layout() const override;
+
     private:
         uint32_t m_id{ 0 };
+        buffer_layout m_layout;
     };
 
     //=================== index buffer ========================================

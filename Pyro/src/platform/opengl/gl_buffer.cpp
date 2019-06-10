@@ -26,6 +26,16 @@ void pyro::gl_vertex_buffer::unbind() const
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void pyro::gl_vertex_buffer::layout(const buffer_layout& layout)
+{
+    m_layout = layout;
+}
+
+const pyro::buffer_layout& pyro::gl_vertex_buffer::layout() const
+{
+    return m_layout;
+}
+
 //=================== index buffer ========================================
 
 pyro::gl_index_buffer::gl_index_buffer(uint32_t* vertices, uint32_t count)
