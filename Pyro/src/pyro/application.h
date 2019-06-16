@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "core.h"
 
@@ -45,9 +45,10 @@ namespace pyro
         layers_stack                    m_layers_stack;
 
         std::shared_ptr<shader>         m_shader{};
+        std::shared_ptr<vertex_array>   m_vertex_array{};
         std::shared_ptr<vertex_buffer>  m_vertex_buffer{};
         std::shared_ptr<index_buffer>   m_index_buffer{};
-        std::shared_ptr<vertex_array>   m_vertex_array{};
+
 
     private:
         static application*             s_instance;

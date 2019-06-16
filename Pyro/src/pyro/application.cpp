@@ -16,17 +16,18 @@ pyro::application::application()
 
     m_vertex_array.reset(vertex_array::create());
 
-    float vertices[3 * 3]
+    float vertices[3 * 7]
     {
-        -.5f, -.5f, .0f,
-         .5f, -.5f, .0f,
-         .0f,  .5f, .0f,
+        -.5f, -.5f, .0f,    .8f, .2f, .8f, 1.0f,
+         .5f, -.5f, .0f,    .2f, .3f, .8f, 1.0f,
+         .0f,  .5f, .0f,    .8f, .8f, .2f, 1.0f,
     };
 
     m_vertex_buffer.reset(vertex_buffer::create(vertices, sizeof(vertices)));
 
     buffer_layout layout{
-        {e_shader_data_type::float3, "a_position"}
+        {e_shader_data_type::float3, "a_position"},
+        {e_shader_data_type::float4, "a_color"},
     };
 
     m_vertex_buffer->layout(layout);
@@ -41,11 +42,15 @@ pyro::application::application()
         #version 430
 
         layout(location = 0) in vec3 a_position;
+        layout(location = 1) in vec4 a_color;
+
         out vec3 v_position;
+        out vec4 v_color;
 
         void main()
         {
             v_position = a_position;
+            v_color = a_color;
             gl_Position = vec4(a_position, 1.0);
         }
     )";
@@ -54,11 +59,13 @@ pyro::application::application()
         #version 430
 
         layout(location = 0) out vec4 o_color;
+
         in vec3 v_position;
+        in vec4 v_color;
 
         void main()
         {
-            o_color = vec4(v_position * 0.5 + 0.5, 1.0);
+            o_color = v_color;
         }
     )";
 
