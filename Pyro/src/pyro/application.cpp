@@ -6,27 +6,6 @@
 
 pyro::application* pyro::application::s_instance{ nullptr };
 
-static GLenum to_opengl_type(pyro::e_shader_data_type type)
-{
-    switch (type)
-    {
-        case pyro::e_shader_data_type::float1:    return GL_FLOAT;
-        case pyro::e_shader_data_type::float2:    return GL_FLOAT;
-        case pyro::e_shader_data_type::float3:    return GL_FLOAT;
-        case pyro::e_shader_data_type::float4:    return GL_FLOAT;
-        case pyro::e_shader_data_type::int1:      return GL_INT;
-        case pyro::e_shader_data_type::int2:      return GL_INT;
-        case pyro::e_shader_data_type::int3:      return GL_INT;
-        case pyro::e_shader_data_type::int4:      return GL_INT;
-        case pyro::e_shader_data_type::mat3:      return GL_FLOAT;
-        case pyro::e_shader_data_type::mat4:      return GL_FLOAT;
-        case pyro::e_shader_data_type::boolean:   return GL_BOOL;
-    }
-
-    PYRO_ASSERT(false, "[to_opengl] Unknown shader_data_type!");
-    return 0;
-}
-
 pyro::application::application()
 {
     PYRO_ASSERT(!s_instance, "Application already exists!");
@@ -35,8 +14,7 @@ pyro::application::application()
     m_window = std::unique_ptr<window>(window::create());
     m_window->event_callback(BIND_EVENT_FN(application::on_event));
 
-    glGenVertexArrays(1, &m_vertex_array);
-    glBindVertexArray(m_vertex_array);
+    m_vertex_array.reset(vertex_array::create());
 
     float vertices[3 * 3]
     {
@@ -51,24 +29,13 @@ pyro::application::application()
         {e_shader_data_type::float3, "a_position"}
     };
 
+    m_vertex_buffer->layout(layout);
 
-    for (const auto& element : layout)
-    {
-        glEnableVertexAttribArray(element.index);
-        glVertexAttribPointer(element.index, 
-            element.components_count(), 
-            to_opengl_type(element.type), 
-            element.normalised ? GL_TRUE : GL_FALSE, 
-            layout.stride(), 
-            reinterpret_cast<const void*>(element.offset));
-    }
-
-    //glGenBuffers(1, &m_index_buffer);
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);
+    m_vertex_array->add_buffer(m_vertex_buffer);
 
     uint32_t indices[3]{ 0,1,2 };
     m_index_buffer.reset(index_buffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    m_vertex_array->add_buffer(m_index_buffer);
 
     const std::string vertex_shader = R"(
         #version 430
@@ -111,7 +78,7 @@ void pyro::application::run()
         glClear(GL_COLOR_BUFFER_BIT);
 
         m_shader->bind();
-        glBindVertexArray(m_vertex_array);
+        m_vertex_array->bind();
         glDrawElements(GL_TRIANGLES, m_index_buffer->count(), GL_UNSIGNED_INT, nullptr);
 
         for (auto* layer : m_layers_stack)

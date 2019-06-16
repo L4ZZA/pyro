@@ -9,6 +9,7 @@
 #include "imgui/imgui_layer.h"
 #include "renderer/shader.h"
 #include "renderer/buffer.h"
+#include "renderer/vertex_array.h"
 
 
 namespace pyro
@@ -43,10 +44,10 @@ namespace pyro
         bool                            m_running{ true };
         layers_stack                    m_layers_stack;
 
-        uint32_t					    m_vertex_array;
-        std::unique_ptr<shader>         m_shader{};
-        std::unique_ptr<vertex_buffer>  m_vertex_buffer{};
-        std::unique_ptr<index_buffer>   m_index_buffer{};
+        std::shared_ptr<shader>         m_shader{};
+        std::shared_ptr<vertex_buffer>  m_vertex_buffer{};
+        std::shared_ptr<index_buffer>   m_index_buffer{};
+        std::shared_ptr<vertex_array>   m_vertex_array{};
 
     private:
         static application*             s_instance;
