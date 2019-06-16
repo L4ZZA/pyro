@@ -7,7 +7,7 @@
 pyro::gl_vertex_buffer::gl_vertex_buffer(float* vertices, uint32_t size)
 {
     glGenBuffers(1, &m_id);
-    bind();
+    glBindBuffer(GL_ARRAY_BUFFER, m_id);
     glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 }
 
@@ -42,7 +42,7 @@ pyro::gl_index_buffer::gl_index_buffer(uint32_t* vertices, uint32_t count)
     : m_count(count)
 {
     glGenBuffers(1, &m_id);
-    bind();
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), vertices, GL_STATIC_DRAW);
 }
 
