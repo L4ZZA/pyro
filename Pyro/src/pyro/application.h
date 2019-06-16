@@ -46,9 +46,6 @@ namespace pyro
 
         std::shared_ptr<shader>         m_shader{};
         std::shared_ptr<vertex_array>   m_vertex_array{};
-        std::shared_ptr<vertex_buffer>  m_vertex_buffer{};
-        std::shared_ptr<index_buffer>   m_index_buffer{};
-
 
     private:
         static application*             s_instance;

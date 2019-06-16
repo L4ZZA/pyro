@@ -23,20 +23,20 @@ pyro::application::application()
          .0f,  .5f, .0f,    .8f, .8f, .2f, 1.0f,
     };
 
-    m_vertex_buffer.reset(vertex_buffer::create(vertices, sizeof(vertices)));
+    std::shared_ptr<vertex_buffer> vb(vertex_buffer::create(vertices, sizeof(vertices)));
 
     buffer_layout layout{
         {e_shader_data_type::float3, "a_position"},
         {e_shader_data_type::float4, "a_color"},
     };
 
-    m_vertex_buffer->layout(layout);
+    vb->layout(layout);
 
-    m_vertex_array->add_buffer(m_vertex_buffer);
+    m_vertex_array->add_buffer(vb);
 
     uint32_t indices[3]{ 0,1,2 };
-    m_index_buffer.reset(index_buffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
-    m_vertex_array->add_buffer(m_index_buffer);
+    std::shared_ptr<index_buffer> ib(index_buffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
+    m_vertex_array->add_buffer(ib);
 
     const std::string vertex_shader = R"(
         #version 430
@@ -86,7 +86,7 @@ void pyro::application::run()
 
         m_shader->bind();
         m_vertex_array->bind();
-        glDrawElements(GL_TRIANGLES, m_index_buffer->count(), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, m_vertex_array->index_buffer()->count(), GL_UNSIGNED_INT, nullptr);
 
         for (auto* layer : m_layers_stack)
         {
