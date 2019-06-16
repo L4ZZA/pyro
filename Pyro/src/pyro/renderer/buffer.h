@@ -70,13 +70,13 @@ namespace pyro
     class buffer_layout
     {
     public:
-        /// \brief
+        /// \brief Default ctor.
         buffer_layout() = default;
-        /// \brief
+        /// \brief Initializer list constructor.
         buffer_layout(std::initializer_list<buffer_element>);
-        /// \brief
+        /// \brief Elements getter
         const std::vector<buffer_element>& elements() const;
-        /// \brief
+        /// \brief Stride getter
         uint32_t stride() const;
 
         // To iterate through a range-based for-loop [i.e. for( auto elem : elements)]
@@ -91,7 +91,7 @@ namespace pyro
 
 
     private:
-        /// \brief
+        /// \brief 
         void calculate_offset_and_stride();
 
     private:
@@ -110,7 +110,9 @@ namespace pyro
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
 
+        /// \brief Layout setter.
         virtual void layout(const buffer_layout& layout) = 0;
+        /// \brief Layout getter.
         virtual const buffer_layout& layout() const = 0;
 
         static vertex_buffer* create(float* vertices, uint32_t size);
@@ -127,6 +129,7 @@ namespace pyro
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
 
+        /// \brief Count getter.
         virtual uint32_t count() const = 0;
 
         static index_buffer* create(uint32_t* indices, uint32_t count);
