@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "application.h"
 #include "glad/glad.h"
 
@@ -14,7 +14,6 @@ pyro::application::application()
     m_window = std::unique_ptr<window>(window::create());
     m_window->event_callback(BIND_EVENT_FN(application::on_event));
 
-    m_vertex_array.reset(vertex_array::create());
 
     float vertices[3 * 7]
     {
@@ -29,13 +28,13 @@ pyro::application::application()
         {e_shader_data_type::float3, "a_position"},
         {e_shader_data_type::float4, "a_color"},
     };
-
     vb->layout(layout);
-
-    m_vertex_array->add_buffer(vb);
 
     uint32_t indices[3]{ 0,1,2 };
     std::shared_ptr<index_buffer> ib(index_buffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
+
+    m_vertex_array.reset(vertex_array::create());
+    m_vertex_array->add_buffer(vb);
     m_vertex_array->add_buffer(ib);
 
     const std::string vertex_shader = R"(
