@@ -1,4 +1,4 @@
-#include "pyro_pch.h"
+﻿#include "pyro_pch.h"
 #include "application.h"
 #include "glad/glad.h"
 
@@ -37,6 +37,28 @@ pyro::application::application()
     m_vertex_array->add_buffer(vb);
     m_vertex_array->add_buffer(ib);
 
+
+    float rect_vertices[]
+    {
+        -0.75f, -0.75f, 0.0f, 
+         0.75f, -0.75f, 0.0f, 
+         0.75f,  0.75f, 0.0f, 
+        -0.75f,  0.75f, 0.0f, 
+    };
+
+    const std::shared_ptr<vertex_buffer> rect_vb(vertex_buffer::create(rect_vertices, sizeof(rect_vertices)));
+
+    uint32_t rect_indices[]{ 0,1,2, 2,3,0 };
+    const std::shared_ptr<index_buffer> rect_ib(index_buffer::create(rect_indices, sizeof(rect_indices) / sizeof(uint32_t)));
+
+    rect_vb->layout({
+        {e_shader_data_type::float3, "a_position"},
+    });
+
+    m_rect_va.reset(vertex_array::create());
+    m_rect_va->add_buffer(rect_vb);
+    m_rect_va->add_buffer(rect_ib);
+
     const std::string vertex_shader = R"(
         #version 430
 
@@ -68,7 +90,35 @@ pyro::application::application()
         }
     )";
 
+    const std::string rect_vertex_shader = R"(
+        #version 430
+
+        layout(location = 0) in vec3 a_position;
+
+        out vec3 v_position;
+
+        void main()
+        {
+            v_position = a_position;
+            gl_Position = vec4(a_position, 1.0);
+        }
+    )";
+
+    const std::string rect_fragment_shader = R"(
+        #version 430
+
+        layout(location = 0) out vec4 o_color;
+
+        in vec3 v_position;
+
+        void main()
+        {
+            o_color = vec4(.9f, .1f, .6f, 1.f);
+        }
+    )";
+
     m_shader.reset(new gl_shader(vertex_shader, fragment_shader));
+    m_blue_shader.reset(new gl_shader(rect_vertex_shader, rect_fragment_shader));
 }
 
 pyro::application::~application()
@@ -82,6 +132,10 @@ void pyro::application::run()
     {
         glClearColor(0.1f, 0.1f, 0.1f, 1);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        m_blue_shader->bind();
+        m_rect_va->bind();
+        glDrawElements(GL_TRIANGLES, m_rect_va->index_buffer()->count(), GL_UNSIGNED_INT, nullptr);
 
         m_shader->bind();
         m_vertex_array->bind();
