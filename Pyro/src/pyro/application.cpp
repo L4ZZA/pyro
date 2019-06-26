@@ -1,8 +1,8 @@
 ﻿#include "pyro_pch.h"
 #include "application.h"
-#include "glad/glad.h"
 
 #include "platform/opengl/gl_shader.h"
+#include "renderer/renderer.h"
 
 pyro::application* pyro::application::s_instance{ nullptr };
 
@@ -130,16 +130,19 @@ void pyro::application::run()
 {
     while (m_running)
     {
-        glClearColor(0.1f, 0.1f, 0.1f, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
 
+        render_command::clear_color({ 0.1f, 0.1f, 0.1f, 1.f });
+        render_command::clear();
+
+        renderer::begin_scene();
+        
         m_blue_shader->bind();
-        m_rect_va->bind();
-        glDrawElements(GL_TRIANGLES, m_rect_va->index_buffer()->count(), GL_UNSIGNED_INT, nullptr);
-
+        renderer::submit(m_rect_va);
+        
         m_shader->bind();
-        m_vertex_array->bind();
-        glDrawElements(GL_TRIANGLES, m_vertex_array->index_buffer()->count(), GL_UNSIGNED_INT, nullptr);
+        renderer::submit(m_vertex_array);
+        
+        renderer::end_scene();
 
         for (auto* layer : m_layers_stack)
         {
