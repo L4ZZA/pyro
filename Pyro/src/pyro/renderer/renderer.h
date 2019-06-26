@@ -1,18 +1,17 @@
 #pragma once
 
+#include "render_command.h"
+
 namespace pyro
 {
-    enum class e_renderer_api
-    {
-        none = 0, open_gl = 1
-    };
-
     class renderer
     {
     public:
-        static e_renderer_api api() { return s_renderer_api; }
+        static void begin_scene();
+        static void end_scene();
 
-    private:
-        static inline e_renderer_api s_renderer_api = e_renderer_api::open_gl;
+        static void submit(const std::shared_ptr<vertex_array>& vertex_array);
+
+        inline static renderer_api::e_api api() { return renderer_api::api(); }
     };
 }
