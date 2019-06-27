@@ -10,6 +10,14 @@
 #include "pyro/key_codes.h"
 #include "pyro/mouse_buttons_codes.h"
 
+#include "pyro/events/key_event.h"
+
+#include "pyro/renderer/buffer.h"
+#include "pyro/renderer/vertex_array.h"
+#include "pyro/renderer/renderer.h"
+
+#include "platform/opengl/gl_shader.h"
+
 #include "pyro/imgui/imgui_layer.h"
 
 // --------- Entry Point ---------------
