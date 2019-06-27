@@ -44,12 +44,6 @@ namespace pyro
         bool                            m_running{ true };
         layers_stack                    m_layers_stack;
 
-        std::shared_ptr<shader>         m_shader{};
-        std::shared_ptr<vertex_array>   m_vertex_array{};
-
-        std::shared_ptr<shader>         m_blue_shader{};
-        std::shared_ptr<vertex_array>   m_rect_va{};
-
     private:
         static application*             s_instance;
 
