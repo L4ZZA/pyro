@@ -20,9 +20,6 @@
 class example_layer : public pyro::imgui_layer
 {
 public:
-    example_layer()
-    {
-    }
 
     void on_attach() override
     {
