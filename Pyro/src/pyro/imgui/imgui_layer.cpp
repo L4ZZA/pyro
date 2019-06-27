@@ -9,7 +9,7 @@
 #include "pyro/application.h"
 
 // temporary
-#include "glad/glad.h"
+//#include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
 pyro::imgui_layer::imgui_layer()
