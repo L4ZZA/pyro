@@ -19,6 +19,3 @@
 #include "platform/opengl/gl_shader.h"
 
 #include "pyro/imgui/imgui_layer.h"
-
-// --------- Entry Point ---------------
-#include "pyro/entry_point.h"
