@@ -1,4 +1,5 @@
 #pragma once
+#include "application.h"
 
 #ifdef PYRO_PLATFORM_WIN
 
