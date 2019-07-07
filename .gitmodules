@@ -1,12 +1,12 @@
-[submodule "Pyro/external/spdlog"]
-	path = Pyro/external/spdlog
+[submodule "pyro/external/spdlog"]
+	path = pyro/external/spdlog
 	url = https://github.com/gabime/spdlog
-[submodule "Pyro/external/GLFW"]
-	path = Pyro/external/GLFW
+[submodule "pyro/external/GLFW"]
+	path = pyro/external/GLFW
 	url = https://github.com/L4ZZA/glfw
-[submodule "Pyro/external/imgui"]
-	path = Pyro/external/imgui
+[submodule "pyro/external/imgui"]
+	path = pyro/external/imgui
 	url = https://github.com/L4ZZA/imgui
-[submodule "Pyro/external/glm"]
-	path = Pyro/external/glm
+[submodule "pyro/external/glm"]
+	path = pyro/external/glm
 	url = https://github.com/g-truc/glm
