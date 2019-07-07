@@ -10,3 +10,6 @@
 [submodule "pyro/external/glm"]
 	path = pyro/external/glm
 	url = https://github.com/g-truc/glm
+[submodule "pyro/external/assimp"]
+	path = pyro/external/assimp
+	url = https://github.com/L4ZZA/assimp/
