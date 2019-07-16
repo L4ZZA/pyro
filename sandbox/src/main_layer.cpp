@@ -16,6 +16,11 @@
 //    return Projection * View * Model;
 //}
 
+example_layer::example_layer()
+    :m_camera(-1.f, 1.f, -1.f, 1.f)
+{   
+}
+
 void example_layer::on_attach()
 {
     imgui_layer::on_attach();
@@ -72,6 +77,8 @@ void example_layer::on_attach()
             layout(location = 0) in vec3 a_position;
             layout(location = 1) in vec4 a_color;
 
+            uniform mat4 u_view_projection;
+
             out vec3 v_position;
             out vec4 v_color;
 
@@ -79,7 +86,7 @@ void example_layer::on_attach()
             {
                 v_position = a_position;
                 v_color = a_color;
-                gl_Position = vec4(a_position, 1.0);
+                gl_Position = u_view_projection * vec4(a_position, 1.0);
             }
         )";
 
@@ -102,12 +109,14 @@ void example_layer::on_attach()
 
             layout(location = 0) in vec3 a_position;
 
+            uniform mat4 u_view_projection;
+
             out vec3 v_position;
 
             void main()
             {
                 v_position = a_position;
-                gl_Position = vec4(a_position, 1.0);
+                gl_Position = u_view_projection * vec4(a_position, 1.0);
             }
         )";
 
@@ -156,9 +165,11 @@ void example_layer::on_imgui_render()
     pyro::renderer::begin_scene();
 
     m_blue_shader->bind();
+    m_blue_shader->set_uniform("u_view_projection", m_camera.projection_matrix());
     pyro::renderer::submit(m_rect_va);
 
     m_shader->bind();
+    m_shader->set_uniform("u_view_projection", m_camera.projection_matrix());
     pyro::renderer::submit(m_vertex_array);
 
     pyro::renderer::end_scene();
