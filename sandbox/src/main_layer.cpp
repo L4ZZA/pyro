@@ -16,15 +16,71 @@
 //    return Projection * View * Model;
 //}
 
+static const std::string vertex_shader = R"(
+    #version 430
+
+    layout(location = 0) in vec3 a_position;
+    layout(location = 1) in vec4 a_color;
+
+    uniform mat4 u_view_projection;
+
+    out vec3 v_position;
+    out vec4 v_color;
+
+    void main()
+    {
+        v_position = a_position;
+        v_color = a_color;
+        gl_Position = u_view_projection * vec4(a_position, 1.0);
+    }
+)";
+
+static const std::string fragment_shader = R"(
+    #version 430
+
+    layout(location = 0) out vec4 o_color;
+
+    in vec3 v_position;
+    in vec4 v_color;
+
+    void main()
+    {
+        o_color = v_color;
+    }
+)";
+
+static const std::string rect_vertex_shader = R"(
+    #version 430
+
+    layout(location = 0) in vec3 a_position;
+
+    uniform mat4 u_view_projection;
+
+    out vec3 v_position;
+
+    void main()
+    {
+        v_position = a_position;
+        gl_Position = u_view_projection * vec4(a_position, 1.0);
+    }
+)";
+
+static const std::string rect_fragment_shader = R"(
+    #version 430
+
+    layout(location = 0) out vec4 o_color;
+
+    in vec3 v_position;
+
+    void main()
+    {
+        o_color = vec4(.9f, .1f, .6f, 1.f);
+    }
+)";
+
 example_layer::example_layer()
     :m_camera(-1.6f, 1.6f, -0.9f, 0.9f)
-{   
-}
-
-void example_layer::on_attach()
 {
-    imgui_layer::on_attach();
-
     float vertices[3 * 7]
     {
         -.5f, -.5f, .0f,    .8f, .2f, .8f, 1.0f,
@@ -62,8 +118,7 @@ void example_layer::on_attach()
     uint32_t rect_indices[]{ 0,1,2, 2,3,0 };
     const std::shared_ptr<pyro::index_buffer> rect_ib(pyro::index_buffer::create(rect_indices, sizeof(rect_indices) / sizeof(uint32_t)));
 
-    rect_vb->layout(
-    {
+    rect_vb->layout({
         {pyro::e_shader_data_type::float3, "a_position"},
     });
 
@@ -71,70 +126,13 @@ void example_layer::on_attach()
     m_rect_va->add_buffer(rect_vb);
     m_rect_va->add_buffer(rect_ib);
 
-    const std::string vertex_shader = R"(
-            #version 430
-
-            layout(location = 0) in vec3 a_position;
-            layout(location = 1) in vec4 a_color;
-
-            uniform mat4 u_view_projection;
-
-            out vec3 v_position;
-            out vec4 v_color;
-
-            void main()
-            {
-                v_position = a_position;
-                v_color = a_color;
-                gl_Position = u_view_projection * vec4(a_position, 1.0);
-            }
-        )";
-
-    const std::string fragment_shader = R"(
-            #version 430
-
-            layout(location = 0) out vec4 o_color;
-
-            in vec3 v_position;
-            in vec4 v_color;
-
-            void main()
-            {
-                o_color = v_color;
-            }
-        )";
-
-    const std::string rect_vertex_shader = R"(
-            #version 430
-
-            layout(location = 0) in vec3 a_position;
-
-            uniform mat4 u_view_projection;
-
-            out vec3 v_position;
-
-            void main()
-            {
-                v_position = a_position;
-                gl_Position = u_view_projection * vec4(a_position, 1.0);
-            }
-        )";
-
-    const std::string rect_fragment_shader = R"(
-            #version 430
-
-            layout(location = 0) out vec4 o_color;
-
-            in vec3 v_position;
-
-            void main()
-            {
-                o_color = vec4(.9f, .1f, .6f, 1.f);
-            }
-        )";
-
     m_shader.reset(new pyro::gl_shader(vertex_shader, fragment_shader));
-    m_blue_shader.reset(new pyro::gl_shader(rect_vertex_shader, rect_fragment_shader));
+    m_blue_shader.reset(new pyro::gl_shader(rect_vertex_shader, rect_fragment_shader));   
+}
+
+void example_layer::on_attach()
+{
+    imgui_layer::on_attach();
 }
 
 void example_layer::on_detach()
