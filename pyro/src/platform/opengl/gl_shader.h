@@ -13,7 +13,14 @@ namespace pyro
         void bind() const override;
         void unbind() const override;
 
+        void set_uniform(const std::string& name, int32_t val) override; 
+        void set_uniform(const std::string& name, float val) override; 
+        void set_uniform(const std::string& name, const glm::vec2& vec) override; 
+        void set_uniform(const std::string& name, const glm::vec3& vec) override; 
+        void set_uniform(const std::string& name, const glm::vec4& vec) override; 
+        void set_uniform(const std::string& name, const glm::mat4& mat) override; 
+
     private:
-        uint32_t m_id{0};
+        uint32_t m_program_id{0};
     };
 }
