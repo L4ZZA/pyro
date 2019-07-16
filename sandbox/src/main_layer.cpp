@@ -144,12 +144,23 @@ void example_layer::on_detach()
 
 void example_layer::on_update()
 {
-    if (pyro::input::key_pressed(pyro::key_codes::KEY_TAB))
-        PYRO_INFO("Tab pressed (poll)");
-    //PYRO_INFO("ExampleLayer::on_update()");
+    if (pyro::input::key_pressed(pyro::key_codes::KEY_A)) // left
+    {
+        m_camera.move(pyro::camera::e_direction::left); 
+    }
+    else if (pyro::input::key_pressed(pyro::key_codes::KEY_D)) // right
+    {
+        m_camera.move(pyro::camera::e_direction::right); 
+    }
 
-    m_camera.position({0.5f, 0.5f, 0.f});
-    m_camera.rotation(45.f);
+    if (pyro::input::key_pressed(pyro::key_codes::KEY_S)) // bottom
+    {
+        m_camera.move(pyro::camera::e_direction::down); 
+    }
+    else if (pyro::input::key_pressed(pyro::key_codes::KEY_W)) // top
+    {
+        m_camera.move(pyro::camera::e_direction::up); 
+    }
 }
 
 void example_layer::on_imgui_render()
@@ -175,11 +186,4 @@ void example_layer::on_imgui_render()
 
 void example_layer::on_event(pyro::event& p_event)
 {
-    if (p_event.event_type() == pyro::event_type_e::key_pressed)
-    {
-        auto& e = dynamic_cast<pyro::key_pressed_event&>(p_event);
-        if (e.key_code() == pyro::key_codes::KEY_TAB)
-            PYRO_TRACE("Tab pressed (event)");
-        PYRO_TRACE("{0}", static_cast<char>(e.key_code()));
-    }
 }
