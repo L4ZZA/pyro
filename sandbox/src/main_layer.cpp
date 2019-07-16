@@ -52,8 +52,8 @@ void example_layer::on_attach()
     float rect_vertices[]
     {
         -0.75f, -0.75f, 0.0f,
-        0.75f, -0.75f, 0.0f,
-        0.75f,  0.75f, 0.0f,
+         0.75f, -0.75f, 0.0f,
+         0.75f,  0.75f, 0.0f,
         -0.75f,  0.75f, 0.0f,
     };
 
@@ -162,15 +162,10 @@ void example_layer::on_imgui_render()
     pyro::render_command::clear_color({ 0.1f, 0.1f, 0.1f, 1.f });
     pyro::render_command::clear();
 
-    pyro::renderer::begin_scene();
+    pyro::renderer::begin_scene(m_camera);
 
-    m_blue_shader->bind();
-    m_blue_shader->set_uniform("u_view_projection", m_camera.projection_matrix());
-    pyro::renderer::submit(m_rect_va);
-
-    m_shader->bind();
-    m_shader->set_uniform("u_view_projection", m_camera.projection_matrix());
-    pyro::renderer::submit(m_vertex_array);
+    pyro::renderer::submit(m_blue_shader, m_rect_va);
+    pyro::renderer::submit(m_shader, m_vertex_array);
 
     pyro::renderer::end_scene();
 }
