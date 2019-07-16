@@ -147,6 +147,9 @@ void example_layer::on_update()
     if (pyro::input::key_pressed(pyro::key_codes::KEY_TAB))
         PYRO_INFO("Tab pressed (poll)");
     //PYRO_INFO("ExampleLayer::on_update()");
+
+    m_camera.position({0.5f, 0.5f, 0.f});
+    m_camera.rotation(45.f);
 }
 
 void example_layer::on_imgui_render()

@@ -11,7 +11,7 @@ pyro::orthographic_camera::orthographic_camera(float left, float right, float bo
 void pyro::orthographic_camera::update_view_matrix()
 {
     glm::mat4 transform = glm::translate(glm::mat4{1}, m_position) * 
-        glm::rotate(glm::mat4(1), m_rotation, glm::vec3(0,0,1));
+        glm::rotate(glm::mat4(1), glm::radians(m_rotation), glm::vec3(0,0,1));
 
     // inverting the transform matrix 
     m_view_mat = glm::inverse(transform);
