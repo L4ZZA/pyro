@@ -17,7 +17,7 @@
 //}
 
 example_layer::example_layer()
-    :m_camera(-1.f, 1.f, -1.f, 1.f)
+    :m_camera(-1.6f, 1.6f, -0.9f, 0.9f)
 {   
 }
 
@@ -28,8 +28,8 @@ void example_layer::on_attach()
     float vertices[3 * 7]
     {
         -.5f, -.5f, .0f,    .8f, .2f, .8f, 1.0f,
-        .5f, -.5f, .0f,    .2f, .3f, .8f, 1.0f,
-        .0f,  .5f, .0f,    .8f, .8f, .2f, 1.0f,
+         .5f, -.5f, .0f,    .2f, .3f, .8f, 1.0f,
+         .0f,  .5f, .0f,    .8f, .8f, .2f, 1.0f,
     };
 
     std::shared_ptr<pyro::vertex_buffer> vb(pyro::vertex_buffer::create(vertices, sizeof(vertices)));
