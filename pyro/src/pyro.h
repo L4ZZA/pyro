@@ -6,6 +6,8 @@
 #include "pyro/layer.h"
 #include "pyro/logger.h"
 
+#include "pyro/core/timestep.h"
+
 #include "pyro/input.h"
 #include "pyro/key_codes.h"
 #include "pyro/mouse_buttons_codes.h"

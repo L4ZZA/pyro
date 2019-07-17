@@ -1,4 +1,4 @@
-﻿#include "main_layer.h"
+#include "main_layer.h"
 #include "imgui.h"
 
 #include <glm/vec3.hpp> // glm::vec3
@@ -140,7 +140,7 @@ void example_layer::on_detach()
     imgui_layer::on_detach();
 }
 
-void example_layer::on_update()
+void example_layer::on_update(pyro::timestep timestep)
 {
     if (pyro::input::key_pressed(pyro::key_codes::KEY_A)) // left
     {
