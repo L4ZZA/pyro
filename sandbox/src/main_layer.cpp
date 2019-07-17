@@ -1,4 +1,4 @@
-#include "main_layer.h"
+﻿#include "main_layer.h"
 #include "imgui.h"
 
 #include <glm/vec3.hpp> // glm::vec3
@@ -143,22 +143,19 @@ void example_layer::on_detach()
 void example_layer::on_update(pyro::timestep timestep)
 {
     if (pyro::input::key_pressed(pyro::key_codes::KEY_A)) // left
-    {
-        m_camera.move(pyro::camera::e_direction::left); 
-    }
+        m_camera.move(pyro::camera::e_direction::left, timestep); 
     else if (pyro::input::key_pressed(pyro::key_codes::KEY_D)) // right
-    {
-        m_camera.move(pyro::camera::e_direction::right); 
-    }
+        m_camera.move(pyro::camera::e_direction::right, timestep); 
 
     if (pyro::input::key_pressed(pyro::key_codes::KEY_S)) // bottom
-    {
-        m_camera.move(pyro::camera::e_direction::down); 
-    }
+        m_camera.move(pyro::camera::e_direction::down, timestep); 
     else if (pyro::input::key_pressed(pyro::key_codes::KEY_W)) // top
-    {
-        m_camera.move(pyro::camera::e_direction::up); 
-    }
+        m_camera.move(pyro::camera::e_direction::up, timestep); 
+
+    if (pyro::input::key_pressed(pyro::key_codes::KEY_Q)) // anticlockwise rotation
+        m_camera.rotate(pyro::camera::e_rotation::anticlock_wise, timestep); 
+    else if (pyro::input::key_pressed(pyro::key_codes::KEY_E)) // clockwise rotation
+        m_camera.rotate(pyro::camera::e_rotation::clock_wise, timestep); 
 }
 
 void example_layer::on_imgui_render()

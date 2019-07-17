@@ -1,6 +1,8 @@
 ﻿#pragma once
+#include "pyro/core/timestep.h"
 #define GLM_FORCE_CTOR_INIT
 #include "glm/glm.hpp"
+
 
 namespace pyro
 {
@@ -15,6 +17,12 @@ namespace pyro
             right
         };
 
+        enum e_rotation
+        {
+            clock_wise = 0,
+            anticlock_wise
+        };
+
     public:
         virtual ~camera() = default;
 
@@ -24,7 +32,8 @@ namespace pyro
         virtual float movement_speed() const = 0;
         virtual float rotation_speed() const = 0;
 
-        virtual void move(e_direction direction) = 0;
+        virtual void move(e_direction direction, timestep ts) = 0;
+        virtual void rotate(e_rotation rotation, timestep ts) = 0;
     };
 
     class orthographic_camera final : public camera
@@ -45,7 +54,8 @@ namespace pyro
         float movement_speed() const override { return s_movement_speed; }
         float rotation_speed() const override { return s_rotation_speed; }
 
-        void move(e_direction direction) override;
+        void move(e_direction direction, timestep ts) override;
+        void rotate(e_rotation rotation, timestep ts) override;
 
     private:
         void update_view_matrix();
@@ -58,8 +68,10 @@ namespace pyro
         glm::vec3   m_position{ 0 };
         float       m_rotation{ 0 };
 
-        inline static const float s_movement_speed = 0.1;
-        inline static const float s_rotation_speed = 0.1;
+        /// \bief Movement speed in units per second
+        inline static const float s_movement_speed = 1.0f;
+        /// \brief Rotation speed in degrees per second
+        inline static const float s_rotation_speed = 180.0f;
     };
 
     class perspective_camera

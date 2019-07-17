@@ -10,18 +10,35 @@ pyro::orthographic_camera::orthographic_camera(float left, float right, float bo
     m_view_projection_mat = m_projection_mat * m_view_mat;
 }
 
-void pyro::orthographic_camera::move(e_direction direction)
+void pyro::orthographic_camera::move(e_direction direction, timestep ts)
 {
-    float speed = 0.1f;
+    float speed = s_movement_speed;
+
     if (direction == up)
-        m_position.y += speed;
+        m_position.y += speed * ts;
     else if(direction == down)
-        m_position.y -= speed;
+        m_position.y -= speed * ts;
 
     if (direction == left)
-        m_position.x -= speed;
+        m_position.x -= speed * ts;
     else if(direction == right)
-        m_position.x += speed;
+        m_position.x += speed * ts;
+
+    update_view_matrix();
+}
+
+void pyro::orthographic_camera::rotate(e_rotation rotation, timestep ts)
+{
+    float speed = s_rotation_speed;
+    
+    if (rotation == clock_wise)
+    {
+        m_rotation -= speed * ts;
+    }
+    else if (rotation == anticlock_wise)
+    {
+        m_rotation += speed * ts;
+    }
 
     update_view_matrix();
 }
