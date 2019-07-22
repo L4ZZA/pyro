@@ -12,10 +12,15 @@ void pyro::renderer::end_scene()
 {
 }
 
-void pyro::renderer::submit(const std::shared_ptr<shader>& shader, const std::shared_ptr<vertex_array>& vertex_array)
+void pyro::renderer::submit(
+    const std::shared_ptr<shader>& shader, 
+    const std::shared_ptr<vertex_array>& vertex_array, 
+    const glm::mat4& transform /*= glm::mat4(1.f)*/)
 {
     shader->bind();
     shader->set_uniform("u_view_projection", s_scene_data->view_projection_matrix);
+    shader->set_uniform("u_transform", transform);
+
     vertex_array->bind();
     render_command::submit(vertex_array);
 }

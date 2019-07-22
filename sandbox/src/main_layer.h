@@ -10,7 +10,7 @@ public:
     void on_detach() override;
     void on_update(pyro::timestep timestep) override;
     void on_imgui_render() override;
-    void on_event(pyro::event& p_event) override;
+    void on_event(pyro::event& event) override;
 
 private:
     std::shared_ptr<pyro::shader>         m_shader{};
@@ -21,5 +21,7 @@ private:
 
     pyro::orthographic_camera             m_camera;
 
+    glm::vec3                             m_rect_pos{0};
+    const float                           m_rect_speed{1.f};
 };
 

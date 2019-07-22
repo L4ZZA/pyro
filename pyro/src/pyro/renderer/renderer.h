@@ -12,7 +12,10 @@ namespace pyro
         static void begin_scene(camera& camera);
         static void end_scene();
 
-        static void submit(const std::shared_ptr<shader>& shader, const std::shared_ptr<vertex_array>& vertex_array);
+        static void submit(
+            const std::shared_ptr<shader>& shader, 
+            const std::shared_ptr<vertex_array>& vertex_array, 
+            const glm::mat4& transform = glm::mat4(1.f));
 
         inline static renderer_api::e_api api() { return renderer_api::api(); }
 

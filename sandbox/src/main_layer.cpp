@@ -23,6 +23,7 @@ static const std::string vertex_shader = R"(
     layout(location = 1) in vec4 a_color;
 
     uniform mat4 u_view_projection;
+    uniform mat4 u_transform;
 
     out vec3 v_position;
     out vec4 v_color;
@@ -31,7 +32,7 @@ static const std::string vertex_shader = R"(
     {
         v_position = a_position;
         v_color = a_color;
-        gl_Position = u_view_projection * vec4(a_position, 1.0);
+        gl_Position = u_view_projection * u_transform * vec4(a_position, 1.0);
     }
 )";
 
@@ -55,13 +56,14 @@ static const std::string rect_vertex_shader = R"(
     layout(location = 0) in vec3 a_position;
 
     uniform mat4 u_view_projection;
+    uniform mat4 u_transform;
 
     out vec3 v_position;
 
     void main()
     {
         v_position = a_position;
-        gl_Position = u_view_projection * vec4(a_position, 1.0);
+        gl_Position = u_view_projection * u_transform * vec4(a_position, 1.0);
     }
 )";
 
@@ -147,15 +149,25 @@ void example_layer::on_update(pyro::timestep timestep)
     else if (pyro::input::key_pressed(pyro::key_codes::KEY_D)) // right
         m_camera.move(pyro::camera::e_direction::right, timestep); 
 
-    if (pyro::input::key_pressed(pyro::key_codes::KEY_S)) // bottom
+    if (pyro::input::key_pressed(pyro::key_codes::KEY_S)) // down
         m_camera.move(pyro::camera::e_direction::down, timestep); 
-    else if (pyro::input::key_pressed(pyro::key_codes::KEY_W)) // top
+    else if (pyro::input::key_pressed(pyro::key_codes::KEY_W)) // up
         m_camera.move(pyro::camera::e_direction::up, timestep); 
 
     if (pyro::input::key_pressed(pyro::key_codes::KEY_Q)) // anticlockwise rotation
         m_camera.rotate(pyro::camera::e_rotation::anticlock_wise, timestep); 
     else if (pyro::input::key_pressed(pyro::key_codes::KEY_E)) // clockwise rotation
         m_camera.rotate(pyro::camera::e_rotation::clock_wise, timestep); 
+
+    if(pyro::input::key_pressed(pyro::key_codes::KEY_LEFT)) // left
+        m_rect_pos.x -= m_rect_speed * timestep;
+    else if (pyro::input::key_pressed(pyro::key_codes::KEY_RIGHT)) // right
+        m_rect_pos.x += m_rect_speed * timestep;
+
+    if (pyro::input::key_pressed(pyro::key_codes::KEY_DOWN)) // down
+        m_rect_pos.y -= m_rect_speed * timestep;
+    else if (pyro::input::key_pressed(pyro::key_codes::KEY_UP)) // up
+        m_rect_pos.y += m_rect_speed * timestep;
 }
 
 void example_layer::on_imgui_render()
@@ -173,12 +185,14 @@ void example_layer::on_imgui_render()
 
     pyro::renderer::begin_scene(m_camera);
 
-    pyro::renderer::submit(m_blue_shader, m_rect_va);
+    auto transform = glm::translate(glm::mat4(1), m_rect_pos);
+
+    pyro::renderer::submit(m_blue_shader, m_rect_va, transform);
     pyro::renderer::submit(m_shader, m_vertex_array);
 
     pyro::renderer::end_scene();
 }
 
-void example_layer::on_event(pyro::event& p_event)
+void example_layer::on_event(pyro::event& event)
 {
 }
