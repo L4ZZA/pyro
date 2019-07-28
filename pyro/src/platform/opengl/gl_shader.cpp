@@ -1,6 +1,7 @@
 #include "pyro_pch.h"
 #include "gl_shader.h"
 #include "glad/glad.h"
+#include "glm/gtc/type_ptr.hpp"
 
 
 pyro::gl_shader::gl_shader(const std::string& vertex_source, const std::string& fragment_source)
@@ -70,7 +71,7 @@ pyro::gl_shader::gl_shader(const std::string& vertex_source, const std::string& 
     // Now time to link them together into a program.
     // Get a program object.
     GLuint program = glCreateProgram();
-    m_id = program;
+    m_program_id = program;
 
     // Attach our shaders to our program
     glAttachShader(program, vertexShader);
@@ -111,17 +112,65 @@ pyro::gl_shader::gl_shader(const std::string& vertex_source, const std::string& 
 
 pyro::gl_shader::~gl_shader()
 {
-    glDeleteProgram(m_id);
+    glDeleteProgram(m_program_id);
 }
 
 
 void pyro::gl_shader::bind() const
 {
-    glUseProgram(m_id);
+    glUseProgram(m_program_id);
 }
 
 void pyro::gl_shader::unbind() const
 {
     glUseProgram(0);
 }
+
+void pyro::gl_shader::set_uniform(const std::string& name, int32_t val) 
+{ 
+    const int32_t uniformLocation = glGetUniformLocation(m_program_id, name.c_str()); 
+    glUniform1i(uniformLocation, val); 
+
+    //PYRO_CORE_TRACE("[shader] set_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, val); 
+} 
+
+void pyro::gl_shader::set_uniform(const std::string& name, float val) 
+{ 
+    const int32_t uniformLocation = glGetUniformLocation(m_program_id, name.c_str()); 
+    glUniform1f(uniformLocation, val); 
+
+    //PYRO_CORE_TRACE("[shader] set_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, val); 
+} 
+
+void pyro::gl_shader::set_uniform(const std::string& name, const glm::vec2& vec) 
+{
+    const int32_t uniformLocation = glGetUniformLocation(m_program_id, name.c_str());
+    glUniform2f(uniformLocation, vec.x, vec.y);
+
+    //PYRO_CORE_TRACE("[shader] set_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, vec); 
+} 
+
+void pyro::gl_shader::set_uniform(const std::string& name, const glm::vec3& vec) 
+{
+    const int32_t uniformLocation = glGetUniformLocation(m_program_id, name.c_str());
+    glUniform3f(uniformLocation, vec.x, vec.y, vec.z);
+
+    //PYRO_CORE_TRACE("[shader] set_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, vec); 
+} 
+
+void pyro::gl_shader::set_uniform(const std::string& name, const glm::vec4& vec) 
+{
+    const int32_t uniformLocation = glGetUniformLocation(m_program_id, name.c_str());
+    glUniform4f(uniformLocation, vec.x, vec.y, vec.z, vec.w);
+
+    //PYRO_CORE_TRACE("[shader] set_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, vec); 
+} 
+
+void pyro::gl_shader::set_uniform(const std::string& name, const glm::mat4& mat) 
+{
+    const int32_t uniformLocation = glGetUniformLocation(m_program_id, name.c_str());
+    glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(mat));
+
+    //PYRO_CORE_TRACE("[shader] set_uniform (glm::mat4) (prog {0}): uniform: '{1}' = {2}(mat4)", m_program_id, name, mat); 
+} 
 

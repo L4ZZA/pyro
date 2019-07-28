@@ -7,9 +7,7 @@
 #include "events/event.h"
 #include "events/application_event.h"
 #include "imgui/imgui_layer.h"
-#include "renderer/shader.h"
-#include "renderer/buffer.h"
-#include "renderer/vertex_array.h"
+#include "pyro/core/timestep.h"
 
 
 namespace pyro
@@ -43,6 +41,7 @@ namespace pyro
         std::unique_ptr<window>         m_window;
         bool                            m_running{ true };
         layers_stack                    m_layers_stack;
+        float                           m_last_frame_time = 0.f;
 
     private:
         static application*             s_instance;

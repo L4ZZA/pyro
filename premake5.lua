@@ -15,15 +15,19 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- include directories relative to root folder (sln dir)
 IncludeDir = {}
-IncludeDir["GLFW"] = "Pyro/external/GLFW/include/"
-IncludeDir["Glad"] = "Pyro/external/Glad/include/"
+IncludeDir["GLFW"]  = "Pyro/external/GLFW/include/"
+IncludeDir["Glad"]  = "Pyro/external/Glad/include/"
 IncludeDir["ImGui"] = "Pyro/external/imgui/"
-IncludeDir["glm"] = "Pyro/external/glm/"
+IncludeDir["glm"]   = "Pyro/external/glm/"
+IncludeDir["stb"]   = "Pyro/external/stb"
 
--- iclude GLFW premake file
-include "Pyro/external/GLFW/"
-include "Pyro/external/Glad/"
-include "Pyro/external/ImGui/"
+group "dependencies"
+    include "Pyro/external/glfw"
+    include "Pyro/external/glad"
+    include "Pyro/external/imgui"
+    include "Pyro/external/stb"
+    -- include "ullr/external/assimp"
+group""
 
 -- engine core project
 project "Pyro"
@@ -61,6 +65,7 @@ project "Pyro"
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
         "%{IncludeDir.ImGui}",
+        "%{IncludeDir.stb}",
         "%{IncludeDir.glm}"
     }
 
@@ -68,8 +73,9 @@ project "Pyro"
     {
         "GLFW",
         "Glad",
-        "opengl32.lib",
-        "ImGui"
+        -- "opengl32.lib",
+        "ImGui",
+        "stb",
     }
 
     -- filters are used to apply property to some specific configurations only

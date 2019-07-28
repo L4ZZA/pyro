@@ -3,6 +3,7 @@
 
 #include "platform/opengl/gl_shader.h"
 #include "renderer/renderer.h"
+#include "GLFW/glfw3.h"
 
 pyro::application* pyro::application::s_instance{ nullptr };
 
@@ -25,9 +26,13 @@ void pyro::application::run()
 {
     while (m_running)
     {
+        float time = static_cast<float>(glfwGetTime()); //  platform independent
+        timestep timestep = time - m_last_frame_time;
+        m_last_frame_time = time;
+
         for (auto* layer : m_layers_stack)
         {
-            layer->on_update();
+            layer->on_update(timestep);
 
             if (layer->is_imgui())
             {

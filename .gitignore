@@ -11,3 +11,4 @@ Sandbox/imgui\.ini
 ## VisualStudio Specific
 *.vcxproj
 *.sln
+enc_temp_folder/
