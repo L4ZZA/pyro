@@ -18,7 +18,7 @@ namespace pyro
         virtual void clear_color(const glm::vec4 &color) = 0;
 
         /// \brief 
-        virtual void draw_indexed(const std::shared_ptr<vertex_array>& vertex_array) = 0;
+        virtual void draw_indexed(const ref<vertex_array>& vertex_array) = 0;
 
         static e_api api() { return s_renderer_api; }
     

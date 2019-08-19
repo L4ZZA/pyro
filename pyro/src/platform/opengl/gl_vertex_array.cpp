@@ -47,7 +47,7 @@ void pyro::gl_vertex_array::unbind() const
     glBindVertexArray(0);
 }
 
-void pyro::gl_vertex_array::add_buffer(const std::shared_ptr<vertex_buffer>& vertex_buffer)
+void pyro::gl_vertex_array::add_buffer(const ref<vertex_buffer>& vertex_buffer)
 {
     glBindVertexArray(m_id);
     vertex_buffer->bind();
@@ -65,7 +65,7 @@ void pyro::gl_vertex_array::add_buffer(const std::shared_ptr<vertex_buffer>& ver
     m_vertex_buffers.push_back(vertex_buffer);
 }
 
-void pyro::gl_vertex_array::add_buffer(const std::shared_ptr<pyro::index_buffer>& index_buffer)
+void pyro::gl_vertex_array::add_buffer(const ref<pyro::index_buffer>& index_buffer)
 {
     glBindVertexArray(m_id);
     index_buffer->bind();

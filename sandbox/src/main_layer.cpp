@@ -90,7 +90,7 @@ example_layer::example_layer()
          .0f,  .5f, .0f,    .8f, .8f, .2f, 1.0f,
     };
 
-    std::shared_ptr<pyro::vertex_buffer> vb(pyro::vertex_buffer::create(vertices, sizeof(vertices)));
+    pyro::ref<pyro::vertex_buffer> vb(pyro::vertex_buffer::create(vertices, sizeof(vertices)));
 
     const pyro::buffer_layout layout
     {
@@ -100,7 +100,7 @@ example_layer::example_layer()
     vb->layout(layout);
 
     uint32_t indices[3]{0,1,2};
-    const std::shared_ptr<pyro::index_buffer> ib(pyro::index_buffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
+    const pyro::ref<pyro::index_buffer> ib(pyro::index_buffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
 
     m_vertex_array.reset(pyro::vertex_array::create());
     m_vertex_array->add_buffer(vb);
@@ -115,10 +115,10 @@ example_layer::example_layer()
         -0.5f,  0.5f, 0.0f,
     };
 
-    const std::shared_ptr<pyro::vertex_buffer> rect_vb(pyro::vertex_buffer::create(rect_vertices, sizeof(rect_vertices)));
+    const pyro::ref<pyro::vertex_buffer> rect_vb(pyro::vertex_buffer::create(rect_vertices, sizeof(rect_vertices)));
 
     uint32_t rect_indices[]{0,1,2, 2,3,0};
-    const std::shared_ptr<pyro::index_buffer> rect_ib(pyro::index_buffer::create(rect_indices, sizeof(rect_indices) / sizeof(uint32_t)));
+    const pyro::ref<pyro::index_buffer> rect_ib(pyro::index_buffer::create(rect_indices, sizeof(rect_indices) / sizeof(uint32_t)));
 
     rect_vb->layout({
         {pyro::e_shader_data_type::float3, "a_position"},
