@@ -11,6 +11,6 @@ namespace pyro
         void clear() override;
         void clear_color(const glm::vec4& color) override;
 
-        void draw_indexed(const std::shared_ptr<vertex_array>& vertex_array) override;
+        void draw_indexed(const ref<vertex_array>& vertex_array) override;
     };
 }

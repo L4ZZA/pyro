@@ -37,3 +37,15 @@
 #endif
 
 #define BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+
+#include <memory>
+namespace pyro
+{
+    /// \brief safe and scoped pointer to an object. [Like unique_ptr]
+    template<typename T>
+    using scope = std::unique_ptr<T>;
+
+    /// \brief ref counted pointer to an object. [Usually used for resources]
+    template<typename T>
+    using ref = std::shared_ptr<T>;
+}
