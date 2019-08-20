@@ -1,4 +1,4 @@
-﻿#include "main_layer.h"
+#include "main_layer.h"
 #include "imgui.h"
 
 #include <glm/vec3.hpp> // glm::vec3
@@ -50,7 +50,7 @@ static const std::string fragment_shader = R"(
     }
 )";
 
-static const std::string rect_vertex_shader = R"(
+static const std::string flat_color_vertex_shader = R"(
     #version 430
 
     layout(location = 0) in vec3 a_position;
@@ -67,7 +67,7 @@ static const std::string rect_vertex_shader = R"(
     }
 )";
 
-static const std::string rect_fragment_shader = R"(
+static const std::string flat_color_fragment_shader = R"(
     #version 430
 
     layout(location = 0) out vec4 o_color;
@@ -164,7 +164,7 @@ example_layer::example_layer()
     m_rect_va->add_buffer(rect_ib);
 
     m_shader.reset(new pyro::gl_shader(vertex_shader, fragment_shader));
-    m_blue_shader.reset(new pyro::gl_shader(rect_vertex_shader, rect_fragment_shader));
+    m_flat_color_shader.reset(new pyro::gl_shader(flat_color_vertex_shader, flat_color_fragment_shader));
     m_textured_shader.reset(new pyro::gl_shader(textured_vertex_shader_3d, textured_fragment_shader_3d));
 }
 
@@ -228,7 +228,7 @@ void example_layer::on_imgui_render()
         {
             glm::vec3 pos(x * 0.11f, y * 0.11f, 0);
             auto transform = glm::translate(glm::mat4(1), m_rect_pos + pos) * scale;
-            pyro::renderer::submit(m_blue_shader, m_rect_va, transform);
+            pyro::renderer::submit(m_flat_color_shader, m_rect_va, transform);
         }
 
     // big square
