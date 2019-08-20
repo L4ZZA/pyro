@@ -22,6 +22,7 @@ private:
 
     pyro::orthographic_camera       m_camera;
 
+    glm::vec3                       m_rect_color{.2f, .3f, .6f};
     glm::vec3                       m_rect_pos{0};
     const float                     m_rect_speed{1.f};
 };

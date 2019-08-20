@@ -5,6 +5,7 @@
 #include <glm/vec4.hpp> // glm::vec4
 #include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
+#include <glm/gtc/type_ptr.hpp>
 
 //glm::mat4 camera(float Translate, glm::vec2 const & Rotate)
 //{
@@ -73,10 +74,12 @@ static const std::string flat_color_fragment_shader = R"(
     layout(location = 0) out vec4 o_color;
 
     in vec3 v_position;
+    
+    uniform vec3 u_color;
 
     void main()
     {
-        o_color = vec4(.2f, .3f, .6f, 1.f);
+        o_color = vec4(u_color, 1.f);
     }
 )";
 
@@ -211,8 +214,8 @@ void example_layer::on_imgui_render()
     static bool show = true;
     ImGui::ShowDemoWindow(&show);
 
-    ImGui::Begin("Test");
-    ImGui::Text("Rendered text with ImGui.");
+    ImGui::Begin("Settings");
+    ImGui::ColorEdit3("Squares color", glm::value_ptr(m_rect_color));
     ImGui::End();
 
 
@@ -222,6 +225,9 @@ void example_layer::on_imgui_render()
     pyro::renderer::begin_scene(m_camera);
 
     static auto scale = glm::scale(glm::mat4(1), glm::vec3(0.1f));
+
+    std::dynamic_pointer_cast<pyro::gl_shader>(m_flat_color_shader)->bind();
+    std::dynamic_pointer_cast<pyro::gl_shader>(m_flat_color_shader)->set_uniform("u_color", m_rect_color);
 
     for(int y = 0; y < 20; y++)
         for(int x = 0; x < 20; x++)
