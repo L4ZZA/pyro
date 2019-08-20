@@ -1,4 +1,4 @@
-#include "main_layer.h"
+﻿#include "main_layer.h"
 #include "imgui.h"
 
 #include <glm/vec3.hpp> // glm::vec3
@@ -105,8 +105,11 @@ static const std::string textured_fragment_shader_3d = R"(
  
     in vec2 v_tex_coord; 
  
+    uniform sampler2D u_sampler;  
+ 
     void main() 
     { 
+        //o_color = texture(u_sampler, v_tex_coord);  
         o_color = vec4(v_tex_coord, 0.0, 1.0);  
     } 
 )";
@@ -140,10 +143,10 @@ example_layer::example_layer()
 
     float rect_vertices[]
     {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.5f,  0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
+         0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
     };
 
     const pyro::ref<pyro::vertex_buffer> rect_vb(pyro::vertex_buffer::create(rect_vertices, sizeof(rect_vertices)));
@@ -153,7 +156,8 @@ example_layer::example_layer()
 
     rect_vb->layout({
         {pyro::e_shader_data_type::float3, "a_position"},
-        });
+        {pyro::e_shader_data_type::float2, "a_tex_coord"},
+    });
 
     m_rect_va.reset(pyro::vertex_array::create());
     m_rect_va->add_buffer(rect_vb);
@@ -225,10 +229,14 @@ void example_layer::on_imgui_render()
             glm::vec3 pos(x * 0.11f, y * 0.11f, 0);
             auto transform = glm::translate(glm::mat4(1), m_rect_pos + pos) * scale;
             pyro::renderer::submit(m_blue_shader, m_rect_va, transform);
-
         }
 
-    pyro::renderer::submit(m_shader, m_vertex_array);
+    // big square
+    pyro::renderer::submit(m_textured_shader, m_rect_va, glm::scale(glm::mat4(1), glm::vec3(1.5f)));
+
+
+    // triangle
+    //pyro::renderer::submit(m_shader, m_vertex_array);
 
     pyro::renderer::end_scene();
 }
