@@ -16,6 +16,8 @@
 
 #include "pyro/renderer/buffer.h"
 #include "pyro/renderer/vertex_array.h"
+#include "pyro/renderer/shader.h"
+#include "pyro/renderer/texture.h"
 #include "pyro/renderer/renderer.h"
 #include "pyro/renderer/camera.h"
 
