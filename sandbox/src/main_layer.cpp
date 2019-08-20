@@ -1,4 +1,4 @@
-﻿#include "main_layer.h"
+#include "main_layer.h"
 #include "imgui.h"
 
 #include <glm/vec3.hpp> // glm::vec3
@@ -80,6 +80,37 @@ static const std::string rect_fragment_shader = R"(
     }
 )";
 
+static const std::string textured_vertex_shader_3d = R"( 
+    #version 430 
+ 
+    layout(location = 0) in vec3 a_position; 
+    layout(location = 1) in vec2 a_tex_coord; 
+ 
+    uniform mat4 u_view_projection; 
+    uniform mat4 u_transform; 
+ 
+    out vec2 v_tex_coord;  
+ 
+    void main() 
+    { 
+        v_tex_coord = a_tex_coord; 
+        gl_Position = u_view_projection * u_transform * vec4(a_position, 1.0); 
+    } 
+)";
+
+static const std::string textured_fragment_shader_3d = R"( 
+    #version 430 
+ 
+    layout(location = 0) out vec4 o_color; 
+ 
+    in vec2 v_tex_coord; 
+ 
+    void main() 
+    { 
+        o_color = vec4(v_tex_coord, 0.0, 1.0);  
+    } 
+)";
+
 example_layer::example_layer()
     :m_camera(-1.6f, 1.6f, -0.9f, 0.9f)
 {
@@ -130,6 +161,7 @@ example_layer::example_layer()
 
     m_shader.reset(new pyro::gl_shader(vertex_shader, fragment_shader));
     m_blue_shader.reset(new pyro::gl_shader(rect_vertex_shader, rect_fragment_shader));
+    m_textured_shader.reset(new pyro::gl_shader(textured_vertex_shader_3d, textured_fragment_shader_3d));
 }
 
 void example_layer::on_attach()
