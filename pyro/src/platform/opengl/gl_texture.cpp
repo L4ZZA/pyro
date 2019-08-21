@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "gl_texture.h"
 #include "stb_image.h"
 #include "glad/glad.h"
@@ -16,7 +16,7 @@ pyro::gl_texture_2d::gl_texture_2d(const std::string& path)
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
     // allocating memory to gpu to store the texture data
     const int mipmap_levels = 1;
-    glTextureStorage2D(m_id, mipmap_levels, GL_RGB, m_width, m_height);
+		glTextureStorage2D(m_id, mipmap_levels, GL_RGB8, m_width, m_height);
 
     // set texture params 
     glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
