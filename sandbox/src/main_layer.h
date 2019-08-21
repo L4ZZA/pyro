@@ -16,11 +16,14 @@ private:
     pyro::ref<pyro::shader>         m_shader{};
     pyro::ref<pyro::vertex_array>   m_vertex_array{};
 
-    pyro::ref<pyro::shader>         m_blue_shader{};
+    pyro::ref<pyro::texture_2d>     m_texture{};
+    pyro::ref<pyro::shader>         m_textured_shader{};
+    pyro::ref<pyro::shader>         m_flat_color_shader{};
     pyro::ref<pyro::vertex_array>   m_rect_va{};
 
     pyro::orthographic_camera       m_camera;
 
+    glm::vec3                       m_rect_color{.2f, .3f, .6f};
     glm::vec3                       m_rect_pos{0};
     const float                     m_rect_speed{1.f};
 };

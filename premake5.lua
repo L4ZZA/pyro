@@ -1,7 +1,7 @@
 -- workspace is the solution
-workspace "Pyro"
-    architecture "x64"
-    startproject "Sandbox"
+workspace "pyro"
+	architecture "x64"
+	startproject "sandbox"
 
     configurations
     {
@@ -15,34 +15,34 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- include directories relative to root folder (sln dir)
 IncludeDir = {}
-IncludeDir["GLFW"]  = "Pyro/external/GLFW/include/"
-IncludeDir["Glad"]  = "Pyro/external/Glad/include/"
-IncludeDir["ImGui"] = "Pyro/external/imgui/"
-IncludeDir["glm"]   = "Pyro/external/glm/"
-IncludeDir["stb"]   = "Pyro/external/stb"
+IncludeDir["GLFW"]      = "pyro/external/GLFW/include"
+IncludeDir["Glad"]      = "pyro/external/Glad/include"
+IncludeDir["ImGui"]     = "pyro/external/imgui"
+IncludeDir["glm"]       = "pyro/external/glm"
+IncludeDir["stb_image"] = "pyro/external/stb_image"
 
 group "dependencies"
-    include "Pyro/external/glfw"
-    include "Pyro/external/glad"
-    include "Pyro/external/imgui"
-    include "Pyro/external/stb"
-    -- include "ullr/external/assimp"
-group""
+	include "pyro/external/GLFW"
+	include "pyro/external/Glad"
+	include "pyro/external/imgui"
+	include "pyro/external/stb_image"
+    -- include "pyro/external/assimp"
+group ""
 
 -- engine core project
-project "Pyro"
+project "pyro"
     -- location makes sure that everything below will be relative to the project directory
-    location "Pyro"
-    kind "StaticLib" -- Static library (.lib)
-    language "C++"
-    cppdialect "C++17"
-    staticruntime "on"
+	location "pyro"
+	kind "StaticLib" -- Static library (.lib)
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("inter/" .. outputdir .. "/%{prj.name}")
-    
-    pchheader "pyro_pch.h"
-    pchsource "Pyro/src/pyro_pch.cpp"
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("inter/" .. outputdir .. "/%{prj.name}")
+
+	pchheader "pyro_pch.h"
+	pchsource "pyro/src/pyro_pch.cpp"
 
     files
     {
@@ -53,107 +53,107 @@ project "Pyro"
         "%{prj.name}/external/glm/glm/**.inl",
     }
 
-    defines
-    {
-        "_CRT_SECURE_NO_WARNINGS",
-    }
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS"
+	}
 
-    includedirs
-    {
-        "%{prj.name}/src",
-        "%{prj.name}/external/spdlog/include",
-        "%{IncludeDir.GLFW}",
-        "%{IncludeDir.Glad}",
-        "%{IncludeDir.ImGui}",
-        "%{IncludeDir.stb}",
-        "%{IncludeDir.glm}"
-    }
+	includedirs
+	{
+		"%{prj.name}/src",
+		"%{prj.name}/external/spdlog/include",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb_image}"
+	}
 
-    links
-    {
-        "GLFW",
-        "Glad",
-        -- "opengl32.lib",
-        "ImGui",
-        "stb",
-    }
+	links 
+	{ 
+		"GLFW",
+		"Glad",
+		"ImGui",
+		"opengl32.lib",
+		"stb_image",
+	}
 
     -- filters are used to apply property to some specific configurations only
-    filter "system:windows"
+	filter "system:windows"
         systemversion "latest" -- windows SDK version
 
-        defines
-        {
-            "PYRO_PLATFORM_WIN",
-            "PYRO_BUILD_DLL",
+		defines
+		{
+			"PYRO_PLATFORM_WIN",
+			"PYRO_BUILD_DLL",
             "GLFW_INCLUDE_NONE",
-        }
+		}
 
-    filter "configurations:Debug"
-        defines "PYRO_DEBUG"
-        runtime "Debug"
-        symbols "on"
+	filter "configurations:Debug"
+		defines "PYRO_DEBUG"
+		runtime "Debug"
+		symbols "on"
 
-    filter "configurations:Release"
-        defines "PYRO_RELEASE"
-        runtime "Release"
-        optimize "on"
+	filter "configurations:Release"
+		defines "PYRO_RELEASE"
+		runtime "Release"
+		optimize "on"
 
-    filter "configurations:Dist"
-        defines "PYRO_DIST"
-        runtime "Release"
-        optimize "on"
+	filter "configurations:Dist"
+		defines "PYRO_DIST"
+		runtime "Release"
+		optimize "on"
 
 -- sandbox application
-project "Sandbox"
-    location "Sandbox"
-    kind "ConsoleApp"
-    language "C++"
-    cppdialect "C++17"
-    staticruntime "on"
+project "sandbox"
+	location "sandbox"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-     objdir ("inter/" .. outputdir .. "/%{prj.name}")
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("inter/" .. outputdir .. "/%{prj.name}")
 
-    files
-    {
-        "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
-    }
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
 
-    includedirs
-    {
-        "Pyro/external/spdlog/include",
-        "Pyro/src",
-        "%{IncludeDir.ImGui}",
-        "%{IncludeDir.glm}",
-    }
+	includedirs
+	{
+		"pyro/external/spdlog/include",
+		"pyro/src",
+		"pyro/external",
+        "%{IncludeDir.ImGui}", 
+		"%{IncludeDir.glm}"
+	}
 
-    links
-    {
-        "Pyro",
-    }
+	links
+	{
+		"pyro"
+	}
 
-    filter "system:windows"
-        systemversion "latest"
+	filter "system:windows"
+		systemversion "latest"
 
-        defines
-        {
-            "PYRO_PLATFORM_WIN",
-            "IMGUI_API=__declspec(dllimport)"
-        }
+		defines
+		{
+			"PYRO_PLATFORM_WIN"
+		}
 
-    filter "configurations:Debug"
-        defines "PYRO_DEBUG"
-        runtime "Debug"
-        symbols "on"
+	filter "configurations:Debug"
+		defines "PYRO_DEBUG"
+		runtime "Debug"
+		symbols "on"
 
-    filter "configurations:Release"
-        defines "PYRO_RELEASE"
-        runtime "Release"
-        optimize "on"
+	filter "configurations:Release"
+		defines "PYRO_RELEASE"
+		runtime "Release"
+		optimize "on"
 
-    filter "configurations:Dist"
-        defines "PYRO_DIST"
-        runtime "Release"
-        optimize "on"
+	filter "configurations:Dist"
+		defines "PYRO_DIST"
+		runtime "Release"
+		optimize "on"

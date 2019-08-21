@@ -5,7 +5,7 @@
 namespace pyro
 {
     /// \brief 
-    class gl_render_api final : public renderer_api
+    class gl_renderer_api final : public renderer_api
     {
     public:
         void clear() override;

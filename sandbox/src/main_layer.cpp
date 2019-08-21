@@ -1,10 +1,11 @@
-﻿#include "main_layer.h"
-#include "imgui.h"
+#include "main_layer.h"
+#include <imgui/imgui.h>
 
 #include <glm/vec3.hpp> // glm::vec3
 #include <glm/vec4.hpp> // glm::vec4
 #include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
+#include <glm/gtc/type_ptr.hpp>
 
 //glm::mat4 camera(float Translate, glm::vec2 const & Rotate)
 //{
@@ -50,7 +51,7 @@ static const std::string fragment_shader = R"(
     }
 )";
 
-static const std::string rect_vertex_shader = R"(
+static const std::string flat_color_vertex_shader = R"(
     #version 430
 
     layout(location = 0) in vec3 a_position;
@@ -67,17 +68,52 @@ static const std::string rect_vertex_shader = R"(
     }
 )";
 
-static const std::string rect_fragment_shader = R"(
+static const std::string flat_color_fragment_shader = R"(
     #version 430
 
     layout(location = 0) out vec4 o_color;
 
     in vec3 v_position;
+    
+    uniform vec3 u_color;
 
     void main()
     {
-        o_color = vec4(.2f, .3f, .6f, 1.f);
+        o_color = vec4(u_color, 1.f);
     }
+)";
+
+static const std::string textured_vertex_shader_3d = R"( 
+    #version 430 
+ 
+    layout(location = 0) in vec3 a_position; 
+    layout(location = 1) in vec2 a_tex_coord; 
+ 
+    uniform mat4 u_view_projection; 
+    uniform mat4 u_transform; 
+ 
+    out vec2 v_tex_coord;  
+ 
+    void main() 
+    { 
+        v_tex_coord = a_tex_coord; 
+        gl_Position = u_view_projection * u_transform * vec4(a_position, 1.0); 
+    } 
+)";
+
+static const std::string textured_fragment_shader_3d = R"( 
+    #version 430 
+ 
+    layout(location = 0) out vec4 o_color; 
+ 
+    in vec2 v_tex_coord; 
+ 
+    uniform sampler2D u_sampler;  
+ 
+    void main() 
+    { 
+        o_color = texture(u_sampler, v_tex_coord);
+    } 
 )";
 
 example_layer::example_layer()
@@ -109,10 +145,10 @@ example_layer::example_layer()
 
     float rect_vertices[]
     {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.5f,  0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
+         0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
     };
 
     const pyro::ref<pyro::vertex_buffer> rect_vb(pyro::vertex_buffer::create(rect_vertices, sizeof(rect_vertices)));
@@ -122,6 +158,7 @@ example_layer::example_layer()
 
     rect_vb->layout({
         {pyro::e_shader_data_type::float3, "a_position"},
+        {pyro::e_shader_data_type::float2, "a_tex_coord"},
         });
 
     m_rect_va.reset(pyro::vertex_array::create());
@@ -129,7 +166,11 @@ example_layer::example_layer()
     m_rect_va->add_buffer(rect_ib);
 
     m_shader.reset(new pyro::gl_shader(vertex_shader, fragment_shader));
-    m_blue_shader.reset(new pyro::gl_shader(rect_vertex_shader, rect_fragment_shader));
+    m_flat_color_shader.reset(new pyro::gl_shader(flat_color_vertex_shader, flat_color_fragment_shader));
+    m_textured_shader.reset(new pyro::gl_shader(textured_vertex_shader_3d, textured_fragment_shader_3d));
+    m_texture = pyro::texture_2d::create("assets/textures/checkerboard.png");
+    std::dynamic_pointer_cast<pyro::gl_shader>(m_textured_shader)->bind();
+    std::dynamic_pointer_cast<pyro::gl_shader>(m_textured_shader)->set_uniform("u_sampler", 0);
 }
 
 void example_layer::on_attach()
@@ -175,8 +216,8 @@ void example_layer::on_imgui_render()
     static bool show = true;
     ImGui::ShowDemoWindow(&show);
 
-    ImGui::Begin("Test");
-    ImGui::Text("Rendered text with ImGui.");
+    ImGui::Begin("Settings");
+    ImGui::ColorEdit3("Squares color", glm::value_ptr(m_rect_color));
     ImGui::End();
 
 
@@ -187,16 +228,24 @@ void example_layer::on_imgui_render()
 
     static auto scale = glm::scale(glm::mat4(1), glm::vec3(0.1f));
 
+    std::dynamic_pointer_cast<pyro::gl_shader>(m_flat_color_shader)->bind();
+    std::dynamic_pointer_cast<pyro::gl_shader>(m_flat_color_shader)->set_uniform("u_color", m_rect_color);
+
     for(int y = 0; y < 20; y++)
         for(int x = 0; x < 20; x++)
         {
             glm::vec3 pos(x * 0.11f, y * 0.11f, 0);
             auto transform = glm::translate(glm::mat4(1), m_rect_pos + pos) * scale;
-            pyro::renderer::submit(m_blue_shader, m_rect_va, transform);
-
+            pyro::renderer::submit(m_flat_color_shader, m_rect_va, transform);
         }
 
-    pyro::renderer::submit(m_shader, m_vertex_array);
+    // big square
+    m_texture->bind();
+    pyro::renderer::submit(m_textured_shader, m_rect_va, glm::scale(glm::mat4(1), glm::vec3(1.5f)));
+
+
+    // triangle
+    //pyro::renderer::submit(m_shader, m_vertex_array);
 
     pyro::renderer::end_scene();
 }
