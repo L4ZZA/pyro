@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <pyro.h>
 
 class example_layer : public pyro::imgui_layer
@@ -16,6 +16,7 @@ private:
     pyro::ref<pyro::shader>         m_shader{};
     pyro::ref<pyro::vertex_array>   m_vertex_array{};
 
+    pyro::ref<pyro::texture_2d>     m_texture{};
     pyro::ref<pyro::shader>         m_textured_shader{};
     pyro::ref<pyro::shader>         m_flat_color_shader{};
     pyro::ref<pyro::vertex_array>   m_rect_va{};

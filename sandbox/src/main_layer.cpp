@@ -1,5 +1,5 @@
 #include "main_layer.h"
-#include "imgui.h"
+#include <imgui/imgui.h>
 
 #include <glm/vec3.hpp> // glm::vec3
 #include <glm/vec4.hpp> // glm::vec4
@@ -112,8 +112,7 @@ static const std::string textured_fragment_shader_3d = R"(
  
     void main() 
     { 
-        //o_color = texture(u_sampler, v_tex_coord);  
-        o_color = vec4(v_tex_coord, 0.0, 1.0);  
+        o_color = texture(u_sampler, v_tex_coord);
     } 
 )";
 
@@ -160,7 +159,7 @@ example_layer::example_layer()
     rect_vb->layout({
         {pyro::e_shader_data_type::float3, "a_position"},
         {pyro::e_shader_data_type::float2, "a_tex_coord"},
-    });
+        });
 
     m_rect_va.reset(pyro::vertex_array::create());
     m_rect_va->add_buffer(rect_vb);
@@ -169,6 +168,9 @@ example_layer::example_layer()
     m_shader.reset(new pyro::gl_shader(vertex_shader, fragment_shader));
     m_flat_color_shader.reset(new pyro::gl_shader(flat_color_vertex_shader, flat_color_fragment_shader));
     m_textured_shader.reset(new pyro::gl_shader(textured_vertex_shader_3d, textured_fragment_shader_3d));
+    m_texture = pyro::texture_2d::create("assets/textures/checkerboard.png");
+    std::dynamic_pointer_cast<pyro::gl_shader>(m_textured_shader)->bind();
+    std::dynamic_pointer_cast<pyro::gl_shader>(m_textured_shader)->set_uniform("u_sampler", 0);
 }
 
 void example_layer::on_attach()
@@ -238,6 +240,7 @@ void example_layer::on_imgui_render()
         }
 
     // big square
+    m_texture->bind();
     pyro::renderer::submit(m_textured_shader, m_rect_va, glm::scale(glm::mat4(1), glm::vec3(1.5f)));
 
 
