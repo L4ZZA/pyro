@@ -231,6 +231,16 @@ void example_layer::on_update(pyro::timestep timestep)
     else if(pyro::input::key_pressed(pyro::key_codes::KEY_E)) // clockwise rotation
         m_3d_camera.rotate(pyro::camera::e_rotation::clock_wise, pyro::camera::e_axis::z, timestep);
 
+    if(pyro::input::key_pressed(pyro::key_codes::KEY_I)) // anticlockwise rotation
+        m_3d_camera.rotate(pyro::camera::e_rotation::clock_wise, pyro::camera::e_axis::x, timestep);
+    else if(pyro::input::key_pressed(pyro::key_codes::KEY_K)) // clockwise rotation
+        m_3d_camera.rotate(pyro::camera::e_rotation::anticlock_wise, pyro::camera::e_axis::x, timestep);
+
+    if(pyro::input::key_pressed(pyro::key_codes::KEY_J)) // anticlockwise rotation
+        m_3d_camera.rotate(pyro::camera::e_rotation::anticlock_wise, pyro::camera::e_axis::y, timestep);
+    else if(pyro::input::key_pressed(pyro::key_codes::KEY_L)) // clockwise rotation
+        m_3d_camera.rotate(pyro::camera::e_rotation::clock_wise, pyro::camera::e_axis::y, timestep);
+
     if(pyro::input::key_pressed(pyro::key_codes::KEY_LEFT)) // left
         m_rect_pos.x -= m_rect_speed * timestep;
     else if(pyro::input::key_pressed(pyro::key_codes::KEY_RIGHT)) // right
