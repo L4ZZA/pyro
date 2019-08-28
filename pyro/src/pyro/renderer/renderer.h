@@ -24,7 +24,8 @@ namespace pyro
     private:
         struct scene_data
         {
-            glm::mat4 view_projection_matrix;
+            glm::mat4 view_projection_matrix; 
+            ref<shader> shader; 
         };
 
         static scene_data* s_scene_data;

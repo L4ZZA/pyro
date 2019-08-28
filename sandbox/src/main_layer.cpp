@@ -117,8 +117,11 @@ static const std::string textured_fragment_shader_3d = R"(
 )";
 
 example_layer::example_layer()
-    :m_camera(-1.6f, 1.6f, -0.9f, 0.9f)
+    :m_2d_camera(-1.6f, 1.6f, -0.9f, 0.9f),
+    m_3d_camera(pyro::application::instance().get_window().width(), pyro::application::instance().get_window().height())
 {
+    //======= triangle =========
+
     float vertices[3 * 7]
     {
         -.5f, -.5f, .0f,    .8f, .2f, .8f, 1.0f,
@@ -126,22 +129,23 @@ example_layer::example_layer()
          .0f,  .5f, .0f,    .8f, .8f, .2f, 1.0f,
     };
 
-    pyro::ref<pyro::vertex_buffer> vb(pyro::vertex_buffer::create(vertices, sizeof(vertices)));
+    pyro::ref<pyro::vertex_buffer> triangle_vb(pyro::vertex_buffer::create(vertices, sizeof(vertices)));
 
     const pyro::buffer_layout layout
     {
         {pyro::e_shader_data_type::float3, "a_position"},
         {pyro::e_shader_data_type::float4, "a_color"},
     };
-    vb->layout(layout);
+    triangle_vb->layout(layout);
 
     uint32_t indices[3]{0,1,2};
-    const pyro::ref<pyro::index_buffer> ib(pyro::index_buffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
+    const pyro::ref<pyro::index_buffer> triangle_ib(pyro::index_buffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
 
-    m_vertex_array.reset(pyro::vertex_array::create());
-    m_vertex_array->add_buffer(vb);
-    m_vertex_array->add_buffer(ib);
+    m_triangle_va.reset(pyro::vertex_array::create());
+    m_triangle_va->add_buffer(triangle_vb);
+    m_triangle_va->add_buffer(triangle_ib);
 
+    //======== rectangle =========
 
     float rect_vertices[]
     {
@@ -165,13 +169,39 @@ example_layer::example_layer()
     m_rect_va->add_buffer(rect_vb);
     m_rect_va->add_buffer(rect_ib);
 
-    m_shader.reset(new pyro::gl_shader(vertex_shader, fragment_shader));
+    //======== cube =========
+
+    float cube_vertices[]
+    {
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
+         0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
+    };
+
+    const pyro::ref<pyro::vertex_buffer> cube_vb(pyro::vertex_buffer::create(cube_vertices, sizeof(cube_vertices)));
+
+    uint32_t cube_indices[]{0,1,2, 2,3,0};
+    const pyro::ref<pyro::index_buffer> cube_ib(pyro::index_buffer::create(cube_indices, sizeof(cube_indices) / sizeof(uint32_t)));
+
+    cube_vb->layout({
+        {pyro::e_shader_data_type::float3, "a_position"},
+        {pyro::e_shader_data_type::float2, "a_tex_coord"},
+        });
+
+    m_cube_va.reset(pyro::vertex_array::create());
+    m_cube_va->add_buffer(cube_vb);
+    m_cube_va->add_buffer(cube_ib);
+
+    m_color_shader.reset(new pyro::gl_shader(vertex_shader, fragment_shader));
     m_flat_color_shader.reset(new pyro::gl_shader(flat_color_vertex_shader, flat_color_fragment_shader));
     m_textured_shader.reset(new pyro::gl_shader(textured_vertex_shader_3d, textured_fragment_shader_3d));
-    m_texture = pyro::texture_2d::create("assets/textures/checkerboard.png");
-    m_face_texture = pyro::texture_2d::create("assets/textures/face.png");
+
     std::dynamic_pointer_cast<pyro::gl_shader>(m_textured_shader)->bind();
     std::dynamic_pointer_cast<pyro::gl_shader>(m_textured_shader)->set_uniform("u_sampler", 0);
+
+    m_texture = pyro::texture_2d::create("assets/textures/checkerboard.png");
+    m_face_texture = pyro::texture_2d::create("assets/textures/face.png");
 }
 
 void example_layer::on_attach()
@@ -187,19 +217,19 @@ void example_layer::on_detach()
 void example_layer::on_update(pyro::timestep timestep)
 {
     if(pyro::input::key_pressed(pyro::key_codes::KEY_A)) // left
-        m_camera.move(pyro::orthographic_camera::e_direction::left, timestep);
+        m_3d_camera.move(pyro::perspective_camera::e_direction::left, timestep);
     else if(pyro::input::key_pressed(pyro::key_codes::KEY_D)) // right
-        m_camera.move(pyro::orthographic_camera::e_direction::right, timestep);
+        m_3d_camera.move(pyro::perspective_camera::e_direction::right, timestep);
 
     if(pyro::input::key_pressed(pyro::key_codes::KEY_S)) // down
-        m_camera.move(pyro::orthographic_camera::e_direction::down, timestep);
+        m_3d_camera.move(pyro::perspective_camera::e_direction::back, timestep);
     else if(pyro::input::key_pressed(pyro::key_codes::KEY_W)) // up
-        m_camera.move(pyro::orthographic_camera::e_direction::up, timestep);
+        m_3d_camera.move(pyro::perspective_camera::e_direction::front, timestep);
 
     if(pyro::input::key_pressed(pyro::key_codes::KEY_Q)) // anticlockwise rotation
-        m_camera.rotate(pyro::camera::e_rotation::anticlock_wise, timestep);
+        m_3d_camera.rotate(pyro::camera::e_rotation::anticlock_wise, pyro::camera::e_axis::z, timestep);
     else if(pyro::input::key_pressed(pyro::key_codes::KEY_E)) // clockwise rotation
-        m_camera.rotate(pyro::camera::e_rotation::clock_wise, timestep);
+        m_3d_camera.rotate(pyro::camera::e_rotation::clock_wise, pyro::camera::e_axis::z, timestep);
 
     if(pyro::input::key_pressed(pyro::key_codes::KEY_LEFT)) // left
         m_rect_pos.x -= m_rect_speed * timestep;
@@ -225,19 +255,19 @@ void example_layer::on_imgui_render()
     pyro::render_command::clear_color({0.1f, 0.1f, 0.1f, 1.f});
     pyro::render_command::clear();
 
-    pyro::renderer::begin_scene(m_camera, m_textured_shader);
+    pyro::renderer::begin_scene(m_3d_camera, m_textured_shader);
 
     // big square
     m_texture->bind();
-    pyro::renderer::submit(m_textured_shader, m_rect_va, glm::scale(glm::mat4(1), glm::vec3(1.5f)));
+    pyro::renderer::submit(m_textured_shader, m_cube_va, glm::scale(glm::mat4(1), glm::vec3(1.5f)));
     m_face_texture->bind();
-    pyro::renderer::submit(m_textured_shader, m_rect_va, glm::scale(glm::mat4(1), glm::vec3(1.5f)));
+    pyro::renderer::submit(m_textured_shader, m_cube_va, glm::scale(glm::mat4(1), glm::vec3(1.5f)));
 
     pyro::renderer::end_scene();
 
 
 
-    pyro::renderer::begin_scene(m_camera, m_flat_color_shader);
+    pyro::renderer::begin_scene(m_2d_camera, m_flat_color_shader);
 
     static auto scale = glm::scale(glm::mat4(1), glm::vec3(0.1f));
 
@@ -252,7 +282,7 @@ void example_layer::on_imgui_render()
         }
 
     // triangle
-    //pyro::renderer::submit(m_shader, m_vertex_array);
+    //pyro::renderer::submit(m_triangle_shader, m_vertex_array);
 
     pyro::renderer::end_scene();
 }

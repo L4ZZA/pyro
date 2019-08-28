@@ -10,13 +10,15 @@ void pyro::renderer::init()
 
 void pyro::renderer::begin_scene(camera& camera, const ref<shader>& shader)
 {
+    s_scene_data->view_projection_matrix = camera.view_projection_matrix();
+    s_scene_data->shader = shader;
     shader->bind();
     shader->set_uniform("u_view_projection", s_scene_data->view_projection_matrix);
-    s_scene_data->view_projection_matrix = camera.view_projection_matrix();
 }
 
 void pyro::renderer::end_scene()
 {
+    s_scene_data->shader->unbind(); 
 }
 
 void pyro::renderer::submit(
