@@ -289,4 +289,14 @@ void example_layer::on_imgui_render()
 
 void example_layer::on_event(pyro::event& event)
 {
+    if (event.event_type() == pyro::event_type_e::key_pressed)
+    {
+        auto& e = dynamic_cast<pyro::key_pressed_event&>(event); 
+        if (e.key_code() == pyro::key_codes::KEY_TAB)
+        {
+            pyro::render_command::toggle_wireframe();
+        }
+        //PYRO_TRACE("{0}", static_cast<char>(e.key_code()));
+    }
+
 }
