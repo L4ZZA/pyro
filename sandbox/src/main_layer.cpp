@@ -226,6 +226,16 @@ void example_layer::on_imgui_render()
 
     pyro::renderer::begin_scene(m_camera);
 
+    // big square
+    m_texture->bind();
+    pyro::renderer::submit(m_textured_shader, m_rect_va, glm::scale(glm::mat4(1), glm::vec3(1.5f)));
+
+    pyro::renderer::end_scene();
+
+
+
+    pyro::renderer::begin_scene(m_camera);
+
     static auto scale = glm::scale(glm::mat4(1), glm::vec3(0.1f));
 
     std::dynamic_pointer_cast<pyro::gl_shader>(m_flat_color_shader)->bind();
@@ -238,11 +248,6 @@ void example_layer::on_imgui_render()
             auto transform = glm::translate(glm::mat4(1), m_rect_pos + pos) * scale;
             pyro::renderer::submit(m_flat_color_shader, m_rect_va, transform);
         }
-
-    // big square
-    m_texture->bind();
-    pyro::renderer::submit(m_textured_shader, m_rect_va, glm::scale(glm::mat4(1), glm::vec3(1.5f)));
-
 
     // triangle
     //pyro::renderer::submit(m_shader, m_vertex_array);
