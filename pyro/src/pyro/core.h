@@ -1,5 +1,4 @@
 #pragma once
-
 // all common Pyro definitions
 
 #ifdef PYRO_PLATFORM_WIN

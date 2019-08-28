@@ -69,14 +69,14 @@ project "pyro"
 		"%{IncludeDir.stb_image}"
 	}
 
-	links 
-	{ 
-		"GLFW",
-		"Glad",
-		"ImGui",
+    links
+    {
+        "GLFW",
+        "Glad",
+        "ImGui",
 		"opengl32.lib",
-		"stb_image",
-	}
+        "stb_image",
+    }
 
     -- filters are used to apply property to some specific configurations only
 	filter "system:windows"
@@ -121,27 +121,27 @@ project "sandbox"
 		"%{prj.name}/src/**.cpp"
 	}
 
-	includedirs
-	{
-		"pyro/external/spdlog/include",
-		"pyro/src",
+    includedirs
+    {
+        "pyro/external/spdlog/include",
+        "pyro/src",
 		"pyro/external",
-        "%{IncludeDir.ImGui}", 
-		"%{IncludeDir.glm}"
-	}
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.ImGui}",
+    }
 
-	links
-	{
+    links
+    {
 		"pyro"
-	}
+    }
 
 	filter "system:windows"
 		systemversion "latest"
 
-		defines
-		{
+        defines
+        {
 			"PYRO_PLATFORM_WIN"
-		}
+        }
 
 	filter "configurations:Debug"
 		defines "PYRO_DEBUG"
