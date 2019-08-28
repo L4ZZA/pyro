@@ -169,6 +169,7 @@ example_layer::example_layer()
     m_flat_color_shader.reset(new pyro::gl_shader(flat_color_vertex_shader, flat_color_fragment_shader));
     m_textured_shader.reset(new pyro::gl_shader(textured_vertex_shader_3d, textured_fragment_shader_3d));
     m_texture = pyro::texture_2d::create("assets/textures/checkerboard.png");
+    m_face_texture = pyro::texture_2d::create("assets/textures/face.png");
     std::dynamic_pointer_cast<pyro::gl_shader>(m_textured_shader)->bind();
     std::dynamic_pointer_cast<pyro::gl_shader>(m_textured_shader)->set_uniform("u_sampler", 0);
 }
@@ -228,6 +229,8 @@ void example_layer::on_imgui_render()
 
     // big square
     m_texture->bind();
+    pyro::renderer::submit(m_textured_shader, m_rect_va, glm::scale(glm::mat4(1), glm::vec3(1.5f)));
+    m_face_texture->bind();
     pyro::renderer::submit(m_textured_shader, m_rect_va, glm::scale(glm::mat4(1), glm::vec3(1.5f)));
 
     pyro::renderer::end_scene();

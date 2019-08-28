@@ -20,6 +20,7 @@ private:
     pyro::ref<pyro::shader>         m_textured_shader{};
     pyro::ref<pyro::shader>         m_flat_color_shader{};
     pyro::ref<pyro::vertex_array>   m_rect_va{};
+    pyro::ref<pyro::texture_2d>     m_face_texture{};
 
     pyro::orthographic_camera       m_camera;
 
