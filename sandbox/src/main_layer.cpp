@@ -186,14 +186,14 @@ void example_layer::on_detach()
 void example_layer::on_update(pyro::timestep timestep)
 {
     if(pyro::input::key_pressed(pyro::key_codes::KEY_A)) // left
-        m_camera.move(pyro::camera::e_direction::left, timestep);
+        m_camera.move(pyro::orthographic_camera::e_direction::left, timestep);
     else if(pyro::input::key_pressed(pyro::key_codes::KEY_D)) // right
-        m_camera.move(pyro::camera::e_direction::right, timestep);
+        m_camera.move(pyro::orthographic_camera::e_direction::right, timestep);
 
     if(pyro::input::key_pressed(pyro::key_codes::KEY_S)) // down
-        m_camera.move(pyro::camera::e_direction::down, timestep);
+        m_camera.move(pyro::orthographic_camera::e_direction::down, timestep);
     else if(pyro::input::key_pressed(pyro::key_codes::KEY_W)) // up
-        m_camera.move(pyro::camera::e_direction::up, timestep);
+        m_camera.move(pyro::orthographic_camera::e_direction::up, timestep);
 
     if(pyro::input::key_pressed(pyro::key_codes::KEY_Q)) // anticlockwise rotation
         m_camera.rotate(pyro::camera::e_rotation::anticlock_wise, timestep);
