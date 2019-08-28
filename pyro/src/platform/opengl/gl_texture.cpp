@@ -13,33 +13,6 @@ pyro::gl_texture_2d::gl_texture_2d(const std::string& path)
     PYRO_CORE_ASSERT(data, "[gl_texture_2d] Texture not loaded correctly");
     m_width = width;
     m_height = height;
-    glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
-    // allocating memory to gpu to store the texture data
-    const int mipmap_levels = 1;
-    glTextureStorage2D(m_id, mipmap_levels, internal_format, m_width, m_height);
-
-    // set texture params 
-    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    // upload texture to gpu 
-    if(channels == 3)
-        glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, data);
-    else if(channels == 4)
-        glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    stbi_image_free(data);
-}
-
-pyro::gl_texture_2d::~gl_texture_2d()
-{
-    glDeleteTextures(1, &m_id);
-}
-
-void pyro::gl_texture_2d::bind(uint32_t slot /*= 0*/) const
-{
-    glBindTextureUnit(slot, m_id);
-}
-
 
     GLenum internal_format = 0, data_format = 0;
     if(channels == 3)
@@ -53,4 +26,29 @@ void pyro::gl_texture_2d::bind(uint32_t slot /*= 0*/) const
         data_format = GL_RGBA;
     }
 
+    glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
+    // allocating memory to gpu to store the texture data
+    const int mipmap_levels = 1;
+    glTextureStorage2D(m_id, mipmap_levels, internal_format, m_width, m_height);
+
+    // set texture params 
+    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    // upload texture to gpu 
     glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, data_format, GL_UNSIGNED_BYTE, data);
+
+    // freeing allocated image buffer
+    stbi_image_free(data);
+}
+
+pyro::gl_texture_2d::~gl_texture_2d()
+{
+    glDeleteTextures(1, &m_id);
+}
+
+void pyro::gl_texture_2d::bind(uint32_t slot /*= 0*/) const
+{
+    glBindTextureUnit(slot, m_id);
+}
+
