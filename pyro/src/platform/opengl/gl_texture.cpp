@@ -24,8 +24,10 @@ pyro::gl_texture_2d::gl_texture_2d(const std::string& path)
     glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     // upload texture to gpu 
-    glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, data);
-
+    if(channels == 3)
+        glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, data);
+    else if(channels == 4)
+        glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, data);
     // free the data
     stbi_image_free(data);
 }
