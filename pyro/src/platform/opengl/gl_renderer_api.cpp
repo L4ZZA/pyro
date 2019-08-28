@@ -4,7 +4,8 @@
 
 void pyro::gl_renderer_api::init()
 {
-    enable_alpha(); 
+    enable_alpha();
+    enable_culling();
 }
 
 void pyro::gl_renderer_api::enable_wireframe()

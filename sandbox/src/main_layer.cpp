@@ -173,15 +173,56 @@ example_layer::example_layer()
 
     float cube_vertices[]
     {
-        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
-         0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
-         0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
-        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
+        // FRONT
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // A
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // B
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // C
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // D
+
+        // BACK
+        -0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // E
+         0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // F
+         0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // G
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // H
+
+        // LEFT 
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // E = 8
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // H = 9
+        -0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // D = 10
+        -0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // A = 11
+
+        // RIGHT
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // F = 12
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // G = 13
+         0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // C = 14
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // B = 15
+
+        // BOTTOM
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // E = 16
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // F = 17
+         0.5f, -0.5f,  0.5f,  1.0f, 1.0f, // B = 18
+        -0.5f, -0.5f,  0.5f,  0.0f, 1.0f, // A = 19
+
+        // TOP
+        -0.5f,  0.5f, -0.5f,  0.0f, 0.0f, // G = 20
+         0.5f,  0.5f, -0.5f,  1.0f, 0.0f, // H = 21
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // D = 22
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // C = 23
     };
 
     const pyro::ref<pyro::vertex_buffer> cube_vb(pyro::vertex_buffer::create(cube_vertices, sizeof(cube_vertices)));
 
-    uint32_t cube_indices[]{0,1,2, 2,3,0};
+    //uint32_t cube_indices[]{0,1,2, 2,3,0};
+    uint32_t cube_indices[]
+    {
+         0, 1, 2,    2, 3, 0, // FRONT
+         5, 4, 7,    7, 6, 5, // BACK
+         8,11,10,   10, 9, 8, // LEFT
+        15,12,13,   13,14,15, // RIGHT
+        16,17,18,   18,19,16, // BOTTOM
+        21,20,23,   23,22,21  // TOP
+        
+    };
     const pyro::ref<pyro::index_buffer> cube_ib(pyro::index_buffer::create(cube_indices, sizeof(cube_indices) / sizeof(uint32_t)));
 
     cube_vb->layout({
