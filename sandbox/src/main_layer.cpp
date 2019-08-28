@@ -224,7 +224,7 @@ void example_layer::on_imgui_render()
     pyro::render_command::clear_color({0.1f, 0.1f, 0.1f, 1.f});
     pyro::render_command::clear();
 
-    pyro::renderer::begin_scene(m_camera);
+    pyro::renderer::begin_scene(m_camera, m_textured_shader);
 
     // big square
     m_texture->bind();
@@ -234,11 +234,10 @@ void example_layer::on_imgui_render()
 
 
 
-    pyro::renderer::begin_scene(m_camera);
+    pyro::renderer::begin_scene(m_camera, m_flat_color_shader);
 
     static auto scale = glm::scale(glm::mat4(1), glm::vec3(0.1f));
 
-    std::dynamic_pointer_cast<pyro::gl_shader>(m_flat_color_shader)->bind();
     std::dynamic_pointer_cast<pyro::gl_shader>(m_flat_color_shader)->set_uniform("u_color", m_rect_color);
 
     for(int y = 0; y < 20; y++)

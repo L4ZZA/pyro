@@ -8,8 +8,10 @@ void pyro::renderer::init()
     render_command::init();
 }
 
-void pyro::renderer::begin_scene(camera& camera, shader& shader)
+void pyro::renderer::begin_scene(camera& camera, const ref<shader>& shader)
 {
+    shader->bind();
+    shader->set_uniform("u_view_projection", s_scene_data->view_projection_matrix);
     s_scene_data->view_projection_matrix = camera.view_projection_matrix();
 }
 
@@ -22,8 +24,6 @@ void pyro::renderer::submit(
     const ref<vertex_array>& vertex_array, 
     const glm::mat4& transform /*= glm::mat4(1.f)*/)
 {
-    shader->bind();
-    shader->set_uniform("u_view_projection", s_scene_data->view_projection_matrix);
     shader->set_uniform("u_transform", transform);
 
     vertex_array->bind();

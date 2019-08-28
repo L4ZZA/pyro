@@ -11,7 +11,7 @@ namespace pyro
     public:
         static void init();
 
-        static void begin_scene(camera& camera, shader& shader);
+        static void begin_scene(camera& camera, const ref<shader>& shader);
         static void end_scene();
 
         static void submit(
