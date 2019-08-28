@@ -5,7 +5,12 @@
 #include "renderer/renderer.h"
 #include "GLFW/glfw3.h"
 
-pyro::application* pyro::application::s_instance{ nullptr };
+//----------------------------------------------------------------------------- 
+
+pyro::application* pyro::application::s_instance{ nullptr }; 
+bool pyro::application::s_running{ true }; 
+
+//----------------------------------------------------------------------------- 
 
 pyro::application::application()
 {
@@ -26,7 +31,7 @@ pyro::application::~application()
 
 void pyro::application::run()
 {
-    while (m_running)
+    while (s_running)
     {
         float time = static_cast<float>(glfwGetTime()); //  platform independent
         timestep timestep = time - m_last_frame_time;
@@ -50,38 +55,43 @@ void pyro::application::run()
 
 }
 
-void pyro::application::on_event(event& p_event)
-{
-    event_dispatcher dispatcher(p_event);
-    dispatcher.dispatch<window_closed_event>(BIND_EVENT_FN(application::on_window_close));
+void pyro::application::on_event(event& event) 
+{ 
+    event_dispatcher dispatcher(event); 
+    // dispatch event on window X pressed 
+    dispatcher.dispatch<window_closed_event>(BIND_EVENT_FN(application::on_window_close)); 
 
-    //PYRO_CORE_TRACE("{0}", p_event);
+    //PYRO_CORE_TRACE("{0}", event); 
 
-    // events are executed from top of the stack to bottom (aka end to start of the list)
-    for (auto it = m_layers_stack.end(); it != m_layers_stack.begin(); )
-    {
-        (*--it)->on_event(p_event);
-        // stop event propagation to next layer if flagged as handled
-        if (p_event.handled)
-            break;
-    }
-}
+    // events are executed from top of the stack to bottom (aka end to start of the list) 
+    for (auto it = m_layers_stack.end(); it != m_layers_stack.begin(); ) 
+    { 
+        (*--it)->on_event(event); 
+        // stop event propagation to next layer if flagged as handled 
+        if (event.handled) 
+            break; 
+    } 
+} 
 
-void pyro::application::push_layer(layer* p_layer)
-{
-    m_layers_stack.push_layer(p_layer);
-    p_layer->on_attach();
-}
+void pyro::application::push_layer(layer* layer) 
+{ 
+    m_layers_stack.push_layer(layer); 
+    layer->on_attach(); 
+} 
 
-void pyro::application::push_overlay(layer* p_overlay)
-{
-    m_layers_stack.push_overlay(p_overlay);
-    p_overlay->on_attach();
-}
+void pyro::application::push_overlay(layer* overlay) 
+{ 
+    m_layers_stack.push_overlay(overlay); 
+    overlay->on_attach(); 
+} 
 
-bool pyro::application::on_window_close(window_closed_event& p_event)
-{
-    m_running = false;
+bool pyro::application::on_window_close(window_closed_event&) 
+{ 
+    exit(); 
+    return true; 
+} 
 
-    return true;
-}
+void pyro::application::exit() 
+{ 
+    s_running = false; 
+} 

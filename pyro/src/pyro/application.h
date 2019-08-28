@@ -22,12 +22,12 @@ namespace pyro
         void run();
 
         /// \brief
-        void on_event(event &p_event);
+        virtual void on_event(event &event);
 
         /// \brief Adds a layer to the stack.
-        void push_layer(layer *p_layer);
+        void push_layer(layer *layer);
         /// \brief Adds a overlay to the stack.
-        void push_overlay(layer *p_overlay);
+        void push_overlay(layer *overlay);
 
         /// \brief Returns a reference to the application window.
         window& get_window() const { return *m_window; }
@@ -35,16 +35,19 @@ namespace pyro
         static application& instance() { return *s_instance; }
 
     private:
-        bool on_window_close(window_closed_event &p_event);
+        bool on_window_close(window_closed_event &event);
 
     private:
         std::unique_ptr<window>         m_window;
-        bool                            m_running{ true };
         layers_stack                    m_layers_stack;
         float                           m_last_frame_time = 0.f;
 
     private:
         static application*             s_instance;
+        static bool                     s_running; 
+
+    public: 
+        static void exit(); 
 
     };
 
