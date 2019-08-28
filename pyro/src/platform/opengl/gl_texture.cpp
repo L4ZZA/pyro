@@ -13,11 +13,10 @@ pyro::gl_texture_2d::gl_texture_2d(const std::string& path)
     PYRO_CORE_ASSERT(data, "[gl_texture_2d] Texture not loaded correctly");
     m_width = width;
     m_height = height;
-
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
     // allocating memory to gpu to store the texture data
     const int mipmap_levels = 1;
-    glTextureStorage2D(m_id, mipmap_levels, GL_RGB8, m_width, m_height);
+    glTextureStorage2D(m_id, mipmap_levels, internal_format, m_width, m_height);
 
     // set texture params 
     glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -28,7 +27,6 @@ pyro::gl_texture_2d::gl_texture_2d(const std::string& path)
         glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, data);
     else if(channels == 4)
         glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    // free the data
     stbi_image_free(data);
 }
 
@@ -41,3 +39,18 @@ void pyro::gl_texture_2d::bind(uint32_t slot /*= 0*/) const
 {
     glBindTextureUnit(slot, m_id);
 }
+
+
+    GLenum internal_format = 0, data_format = 0;
+    if(channels == 3)
+    {
+        internal_format = GL_RGB8;
+        data_format = GL_RGB;
+    }
+    else if(channels == 4)
+    {
+        internal_format = GL_RGBA8;
+        data_format = GL_RGBA;
+    }
+
+    glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, data_format, GL_UNSIGNED_BYTE, data);

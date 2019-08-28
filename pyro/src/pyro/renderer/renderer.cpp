@@ -3,7 +3,12 @@
 
 pyro::renderer::scene_data* pyro::renderer::s_scene_data = new scene_data;
 
-void pyro::renderer::begin_scene(camera& camera)
+void pyro::renderer::init()
+{
+    render_command::init();
+}
+
+void pyro::renderer::begin_scene(camera& camera, shader& shader)
 {
     s_scene_data->view_projection_matrix = camera.view_projection_matrix();
 }

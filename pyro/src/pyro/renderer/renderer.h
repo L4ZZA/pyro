@@ -9,7 +9,9 @@ namespace pyro
     class renderer
     {
     public:
-        static void begin_scene(camera& camera);
+        static void init();
+
+        static void begin_scene(camera& camera, shader& shader);
         static void end_scene();
 
         static void submit(

@@ -14,6 +14,7 @@ namespace pyro
 
     public:
         virtual ~renderer_api() = default;
+        virtual void init() = 0;
         virtual void clear() = 0;
         virtual void clear_color(const glm::vec4 &color) = 0;
 
@@ -22,6 +23,10 @@ namespace pyro
 
         static e_api api() { return s_renderer_api; }
     
+    private:
+        virtual void enable_alpha() = 0;
+        virtual void enable_culling() = 0;
+
     private:
         inline static e_api s_renderer_api = e_api::open_gl;
 
