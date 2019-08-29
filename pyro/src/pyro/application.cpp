@@ -20,7 +20,7 @@ pyro::application::application()
     m_window = std::unique_ptr<window>(window::create());
     m_window->event_callback(BIND_EVENT_FN(application::on_event));
 
-    renderer::init();
+    render_command::init();
 
 }
 

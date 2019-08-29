@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "pyro/renderer/renderer_api.h"
 
 namespace pyro

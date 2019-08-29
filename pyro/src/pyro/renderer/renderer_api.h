@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
-#include "vertex_array.h"
+#include "pyro/renderer/vertex_array.h"
+#include "pyro/renderer/renderer_api.h" 
 
 namespace pyro
 {

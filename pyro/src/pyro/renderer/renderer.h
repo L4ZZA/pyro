@@ -9,8 +9,6 @@ namespace pyro
     class renderer
     {
     public:
-        static void init();
-
         static void begin_scene(camera& camera, const ref<shader>& shader);
         static void end_scene();
 
