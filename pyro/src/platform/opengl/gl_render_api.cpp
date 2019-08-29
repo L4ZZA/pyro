@@ -35,11 +35,6 @@ void pyro::gl_render_api::draw_indexed(const ref<vertex_array>& vertex_array)
     glDrawElements(GL_TRIANGLES, vertex_array->index_buffer()->count(), GL_UNSIGNED_INT, nullptr);
 }
 
-void pyro::gl_render_api::draw_indexed(const ref<mesh>& mesh)
-{
-    glDrawElements(GL_TRIANGLES, mesh->va()->index_buffer()->count(), GL_UNSIGNED_INT, nullptr);
-}
-
 //-------------------------------------------------------------------------------------------------
 
 void pyro::gl_render_api::enable_alpha()
