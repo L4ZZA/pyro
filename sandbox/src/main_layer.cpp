@@ -120,6 +120,10 @@ example_layer::example_layer()
     :m_2d_camera(-1.6f, 1.6f, -0.9f, 0.9f),
     m_3d_camera(pyro::application::instance().get_window().width(), pyro::application::instance().get_window().height())
 {
+    // hide the mouse and lock it inside the window
+    //pyro::input::anchor_mouse(true);
+    pyro::application::instance().get_window().hide_mouse_cursor();
+
     //======= triangle =========
 
     float vertices[3 * 7]

@@ -15,19 +15,21 @@ namespace pyro
         /// \brief Returns if the specified mouse button is being pressed.
         static bool mouse_button_pressed(int p_button) { return s_instance->mouse_button_pressed_impl(p_button); }
         
-        /// \brief 
+        /// \brief Returns the mouse position as a pair of float values.
         static std::pair<float, float> mouse_position() { return s_instance->mouse_position_impl(); }
-        /// \brief
+        /// \brief Returns the x coordinate of the mouse position.
         static float mouse_x() { return s_instance->mouse_x_impl(); }
-        /// \brief
+        /// \brief Returns the y coordinate of the mouse position.
         static float mouse_y() { return s_instance->mouse_y_impl(); }
 
     protected:
+        ~input() = default;
         virtual bool key_pressed_impl(int p_key_code) const = 0;
         virtual bool mouse_button_pressed_impl(int p_key_code) const = 0;
         virtual std::pair<float, float> mouse_position_impl() const = 0;
         virtual float mouse_x_impl() const = 0;
         virtual float mouse_y_impl() const = 0;
+
 
     private:
         static input* s_instance;

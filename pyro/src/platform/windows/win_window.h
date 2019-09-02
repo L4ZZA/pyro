@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "pyro/window.h"
 #include "pyro/renderer/graphics_context.h"
 #include "GLFW/glfw3.h"
@@ -20,8 +20,11 @@ namespace pyro
         //---------------------------------------------------------------------
 
         void event_callback(event_callback_fn const& p_callback) override { m_data.event_callback = p_callback; }
-        void vsync(bool p_enabled) override;
+        void vsync(bool enabled) override;
         bool vsync() override;
+        void show_mouse_cursor() override;
+        void hide_mouse_cursor() override;
+        bool is_cursor_visible() const override;
 
         virtual void* native_window() const override { return m_window; }
 
@@ -33,7 +36,7 @@ namespace pyro
         //---------------------------------------------------------------------
 
     private:
-        virtual void init(window_props const &p_props);
+        virtual void init(window_props const &props);
         virtual void shut_down();
 
     private:
@@ -46,7 +49,10 @@ namespace pyro
             std::string title;
             uint32_t width;
             uint32_t height;
+            float last_mouse_x;
+            float last_mouse_y;
             bool vsync;
+            bool is_mouse_cursor_visible;
 
             event_callback_fn event_callback;
         };

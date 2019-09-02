@@ -8,9 +8,10 @@ namespace pyro
 {
     struct window_props
     {
-        std::string     m_title;
+        std::string m_title;
         uint32_t    m_width;
         uint32_t    m_height;
+        bool        m_vsync;
 
         window_props(std::string const &p_title = "pyro",
                      uint32_t p_width = 1280,
@@ -41,6 +42,9 @@ namespace pyro
         virtual void event_callback(event_callback_fn const &p_callback) = 0;
         virtual void vsync(bool p_enabled) = 0;
         virtual bool vsync() = 0;
+        virtual void show_mouse_cursor() = 0;
+        virtual void hide_mouse_cursor() = 0;
+        virtual bool is_cursor_visible() const = 0;
 
         virtual void* native_window() const = 0;
 
@@ -48,6 +52,5 @@ namespace pyro
 
         virtual uint32_t width()  const = 0;
         virtual uint32_t height() const = 0;
-
     };
 }

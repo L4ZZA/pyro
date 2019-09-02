@@ -14,5 +14,8 @@ namespace pyro
         std::pair<float, float> mouse_position_impl() const override;
         float mouse_x_impl() const override;
         float mouse_y_impl() const override;
+
+    private:
+        inline static std::pair<float, float> s_last_position;
     };
 }

@@ -8,6 +8,7 @@
 #include "pyro/core.h"
 #include "platform/opengl/gl_context.h"
 #include "GLFW/glfw3.h"
+#include "pyro/input.h"
 
 //=============================================================================
 
@@ -15,20 +16,20 @@ namespace pyro
 {
     static bool s_glfw_initialized = false;
 
-    static void glfw_error_callback(int p_error_code, const char * p_description)
+    static void glfw_error_callback(int error_code, const char * description)
     {
-        PYRO_CORE_ERROR("GLFW Error ({0}): {1}", p_error_code, p_description);
+        PYRO_CORE_ERROR("GLFW Error ({0}): {1}", error_code, description);
     }
 }
 
-pyro::window* pyro::window::create(window_props const& p_props)
+pyro::window* pyro::window::create(window_props const& props)
 {
-    return new win_window(p_props);
+    return new win_window(props);
 }
 
-pyro::win_window::win_window(window_props const& p_props)
+pyro::win_window::win_window(window_props const& props)
 {
-    init(p_props);
+    init(props);
 }
 
 pyro::win_window::~win_window()
@@ -42,14 +43,14 @@ void pyro::win_window::on_update()
 	m_graphics_context->swap_buffers();
 }
 
-void pyro::win_window::vsync(bool p_enabled)
+void pyro::win_window::vsync(bool enabled)
 {
-    if (p_enabled)
+    if (enabled)
         glfwSwapInterval(1);
     else
         glfwSwapInterval(0);
 
-    m_data.vsync = p_enabled;
+    m_data.vsync = enabled;
 }
 
 bool pyro::win_window::vsync()
@@ -57,13 +58,32 @@ bool pyro::win_window::vsync()
     return m_data.vsync;
 }
 
-void pyro::win_window::init(window_props const& p_props)
+void pyro::win_window::show_mouse_cursor()
 {
-    m_data.title = p_props.m_title;
-    m_data.width = p_props.m_width;
-    m_data.height = p_props.m_height;
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    m_data.is_mouse_cursor_visible = true;
+}
 
-    PYRO_CORE_INFO("Creating window {0} [{1},{2}]", p_props.m_title, p_props.m_width, p_props.m_height);
+void pyro::win_window::hide_mouse_cursor()
+{
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    m_data.is_mouse_cursor_visible = false;
+}
+
+bool pyro::win_window::is_cursor_visible() const
+{
+    return m_data.is_mouse_cursor_visible;
+}
+
+void pyro::win_window::init(window_props const& props)
+{
+    m_data.title = props.m_title;
+    m_data.width = props.m_width;
+    m_data.height = props.m_height;
+    m_data.last_mouse_x = m_data.width  * 0.5f;
+    m_data.last_mouse_y = m_data.height * 0.5f;
+
+    PYRO_CORE_INFO("Creating window {0} [{1},{2}]", props.m_title, props.m_width, props.m_height);
 
     if (!s_glfw_initialized)
     {
@@ -74,9 +94,9 @@ void pyro::win_window::init(window_props const& p_props)
     }
 
     m_window = glfwCreateWindow(
-        static_cast<int>(p_props.m_width),
-        static_cast<int>(p_props.m_height),
-        p_props.m_title.c_str(),
+        static_cast<int>(props.m_width),
+        static_cast<int>(props.m_height),
+        props.m_title.c_str(),
         nullptr, nullptr);
 
     glfwMakeContextCurrent(m_window);
@@ -85,7 +105,7 @@ void pyro::win_window::init(window_props const& p_props)
 	m_graphics_context->init();
 
 	// we're telling glfw to pass the window_data struct to all the defined callbacks
-	// so that we ca work with our defined data.
+	// so that we can work with our defined data.
 	glfwSetWindowUserPointer(m_window, &m_data);
 	vsync(true);
 
@@ -170,11 +190,27 @@ void pyro::win_window::init(window_props const& p_props)
         data.event_callback(event);
     });
 
-    glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xPos, double yPos)
+    glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double x_pos, double y_pos)
     {
         window_data &data = *static_cast<window_data*>(glfwGetWindowUserPointer(window));
-        mouse_moved_event event(static_cast<float>(xPos), static_cast<float>(yPos));
-        data.event_callback(event);
+        mouse_moved_event event(static_cast<float>(x_pos), static_cast<float>(y_pos));
+
+        if (!data.is_mouse_cursor_visible)
+        {
+            const float deltaX = static_cast<float>(x_pos) - data.last_mouse_x;
+            const float deltaY = data.last_mouse_y - static_cast<float>(y_pos);
+            const float inverseDeltaX = data.last_mouse_x - static_cast<float>(x_pos);
+            const float inverseDeltaY = data.last_mouse_y - static_cast<float>(y_pos);
+            event = { deltaX, deltaY };
+            //glfwSetCursorPos(window, data.width * .5f, data.height * .5f);
+
+            PYRO_CORE_TRACE("Delta -> x: {0} | y: {1}", deltaX, deltaY);
+            //PYRO_CORE_TRACE("Delta Inverse -> x: {0} | y: {1}", inverseDeltaX, inverseDeltaY);
+        }
+
+        data.last_mouse_x = x_pos;
+        data.last_mouse_y = y_pos;
+        data.event_callback(event);   
     });
 }
 
