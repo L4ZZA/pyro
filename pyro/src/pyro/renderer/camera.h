@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "pyro/core/timestep.h"
 #define GLM_FORCE_CTOR_INIT
 #include "glm/glm.hpp"
@@ -25,6 +25,8 @@ namespace pyro
     public:
         virtual ~camera() = default;
 
+        virtual void on_update(const timestep& timestep) = 0;
+
         virtual const glm::mat4& projection_matrix() const = 0;
         virtual const glm::mat4& view_matrix() const = 0;
         virtual const glm::mat4& view_projection_matrix() const = 0;
@@ -46,7 +48,7 @@ namespace pyro
     public:
         orthographic_camera(float left, float right, float bottom, float top);
 
-        glm::vec3 position() const { return m_position; }
+        void on_update(const timestep& timestep) override{};
         void position(const glm::vec3& pos) { m_position = pos; update_view_matrix(); }
 
         float rotation() const { return m_rotation; }
@@ -96,6 +98,8 @@ namespace pyro
             const glm::vec3& start_position = {0.f,0.f,3.f},  
             float fov = 45.f,  
             float near_z = 0.1f, float far_z = 100.f); 
+
+        void on_update(const timestep& timestep) override;
         const glm::mat4& projection_matrix() const override; 
         const glm::mat4& view_matrix() const override; 
         const glm::mat4& view_projection_matrix() const override; 

@@ -259,32 +259,9 @@ void example_layer::on_detach()
     imgui_layer::on_detach();
 }
 
-void example_layer::on_update(pyro::timestep timestep)
+void example_layer::on_update(const pyro::timestep& timestep)
 {
-    if(pyro::input::key_pressed(pyro::key_codes::KEY_A)) // left
-        m_3d_camera.move(pyro::perspective_camera::e_direction::left, timestep);
-    else if(pyro::input::key_pressed(pyro::key_codes::KEY_D)) // right
-        m_3d_camera.move(pyro::perspective_camera::e_direction::right, timestep);
-
-    if(pyro::input::key_pressed(pyro::key_codes::KEY_S)) // down
-        m_3d_camera.move(pyro::perspective_camera::e_direction::back, timestep);
-    else if(pyro::input::key_pressed(pyro::key_codes::KEY_W)) // up
-        m_3d_camera.move(pyro::perspective_camera::e_direction::front, timestep);
-
-    if(pyro::input::key_pressed(pyro::key_codes::KEY_Q)) // anticlockwise rotation
-        m_3d_camera.rotate(pyro::camera::e_rotation::anticlock_wise, pyro::camera::e_axis::z, timestep);
-    else if(pyro::input::key_pressed(pyro::key_codes::KEY_E)) // clockwise rotation
-        m_3d_camera.rotate(pyro::camera::e_rotation::clock_wise, pyro::camera::e_axis::z, timestep);
-
-    if(pyro::input::key_pressed(pyro::key_codes::KEY_I)) // anticlockwise rotation
-        m_3d_camera.rotate(pyro::camera::e_rotation::clock_wise, pyro::camera::e_axis::x, timestep);
-    else if(pyro::input::key_pressed(pyro::key_codes::KEY_K)) // clockwise rotation
-        m_3d_camera.rotate(pyro::camera::e_rotation::anticlock_wise, pyro::camera::e_axis::x, timestep);
-
-    if(pyro::input::key_pressed(pyro::key_codes::KEY_J)) // anticlockwise rotation
-        m_3d_camera.rotate(pyro::camera::e_rotation::anticlock_wise, pyro::camera::e_axis::y, timestep);
-    else if(pyro::input::key_pressed(pyro::key_codes::KEY_L)) // clockwise rotation
-        m_3d_camera.rotate(pyro::camera::e_rotation::clock_wise, pyro::camera::e_axis::y, timestep);
+    m_3d_camera.on_update(timestep);
 
     if(pyro::input::key_pressed(pyro::key_codes::KEY_LEFT)) // left
         m_rect_pos.x -= m_rect_speed * timestep;

@@ -19,7 +19,7 @@ namespace pyro
 		virtual void on_detach() {}
 		/// \brief Runs when application calls the on_update method.
 		/// Should happen every frame.
-		virtual void on_update(timestep timestep) {}
+		virtual void on_update(const timestep& timestep) {}
 		/// \brief Render method specific to imgui.
 		virtual void on_imgui_render() {}
 		/// \brief Runs whenever an event gets sent to the layer.

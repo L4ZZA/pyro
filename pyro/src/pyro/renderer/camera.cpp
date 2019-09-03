@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "camera.h"
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -75,6 +75,22 @@ pyro::perspective_camera::perspective_camera(
     PYRO_CORE_TRACE("3d cam position: [{},{},{}]", m_position.x, m_position.y, m_position.z); 
     PYRO_CORE_TRACE("3d cam rotation: [{},{},{}]", m_rotation_angle.x, m_rotation_angle.y, m_rotation_angle.z); 
 } 
+
+void pyro::perspective_camera::on_update(const timestep& timestep)
+{
+    if(input::key_pressed(pyro::key_codes::KEY_A)) // left
+        move(e_direction::left, timestep);
+    else if(input::key_pressed(pyro::key_codes::KEY_D)) // right
+        move(e_direction::right, timestep);
+
+    if(input::key_pressed(pyro::key_codes::KEY_S)) // down
+        move(e_direction::backward, timestep);
+    else if(pyro::input::key_pressed(pyro::key_codes::KEY_W)) // up
+        move(e_direction::forward, timestep);
+
+    auto [mouse_delta_x, mouse_delta_y] = input::mouse_position();
+
+}
 
 const glm::mat4& pyro::perspective_camera::projection_matrix() const 
 { 
