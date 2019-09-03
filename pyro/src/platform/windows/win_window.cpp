@@ -197,19 +197,15 @@ void pyro::win_window::init(window_props const& props)
 
         if (!data.is_mouse_cursor_visible)
         {
-            const float deltaX = static_cast<float>(x_pos) - data.last_mouse_x;
-            const float deltaY = data.last_mouse_y - static_cast<float>(y_pos);
-            const float inverseDeltaX = data.last_mouse_x - static_cast<float>(x_pos);
-            const float inverseDeltaY = data.last_mouse_y - static_cast<float>(y_pos);
-            event = { deltaX, deltaY };
-            //glfwSetCursorPos(window, data.width * .5f, data.height * .5f);
+            const float delta_x = static_cast<float>(x_pos) - data.last_mouse_x;
+            const float delta_y = data.last_mouse_y - static_cast<float>(y_pos);
 
-            PYRO_CORE_TRACE("Delta -> x: {0} | y: {1}", deltaX, deltaY);
-            //PYRO_CORE_TRACE("Delta Inverse -> x: {0} | y: {1}", inverseDeltaX, inverseDeltaY);
+            //PYRO_CORE_TRACE("Delta -> x: {0} | y: {1}", delta_x, delta_y);
+            event = { delta_x, delta_y };
         }
 
-        data.last_mouse_x = x_pos;
-        data.last_mouse_y = y_pos;
+        data.last_mouse_x = static_cast<float>(x_pos);
+        data.last_mouse_y = static_cast<float>(y_pos);
         data.event_callback(event);   
     });
 }

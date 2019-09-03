@@ -30,7 +30,6 @@ namespace pyro
         virtual float mouse_x_impl() const = 0;
         virtual float mouse_y_impl() const = 0;
 
-
     private:
         static input* s_instance;
     };
