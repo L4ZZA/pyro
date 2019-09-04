@@ -87,7 +87,7 @@ void pyro::win_window::init(window_props const& props)
 
     if (!s_glfw_initialized)
     {
-        int success = glfwInit();
+        int32_t success = glfwInit();
         PYRO_CORE_ASSERT(success, "Could not initialize GLFW!");
         glfwSetErrorCallback(glfw_error_callback);
         s_glfw_initialized = true;
@@ -110,7 +110,7 @@ void pyro::win_window::init(window_props const& props)
 	vsync(true);
 
     // GLFW callbacks
-    glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height)
+    glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int32_t width, int32_t height)
     {
         window_data &data = *static_cast<window_data*>(glfwGetWindowUserPointer(window));
         data.width = width;
@@ -127,7 +127,7 @@ void pyro::win_window::init(window_props const& props)
         data.event_callback(event);
     });
 
-    glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+    glfwSetKeyCallback(m_window, [](GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods)
     {
         window_data &data = *static_cast<window_data*>(glfwGetWindowUserPointer(window));
 
@@ -162,7 +162,7 @@ void pyro::win_window::init(window_props const& props)
         data.event_callback(event);
     });
 
-    glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods)
+    glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int32_t button, int32_t action, int32_t mods)
     {
         window_data &data = *static_cast<window_data*>(glfwGetWindowUserPointer(window));
 

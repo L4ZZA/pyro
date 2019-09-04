@@ -11,17 +11,17 @@ namespace pyro
     static bool s_first_mouse = true;
 }
 
-bool pyro::win_input::key_pressed_impl(int p_key_code) const
+bool pyro::win_input::key_pressed_impl(int32_t key_code) const
 {
     auto window = application::instance().get_window().native_window();
-    auto state = glfwGetKey(static_cast<GLFWwindow*>(window), p_key_code);
+    auto state = glfwGetKey(static_cast<GLFWwindow*>(window), key_code);
     return state == GLFW_PRESS || state == GLFW_REPEAT;
 }
 
-bool pyro::win_input::mouse_button_pressed_impl(int p_button) const
+bool pyro::win_input::mouse_button_pressed_impl(int32_t button) const
 {
     auto window = application::instance().get_window().native_window();
-    auto state = glfwGetMouseButton(static_cast<GLFWwindow*>(window), p_button);
+    auto state = glfwGetMouseButton(static_cast<GLFWwindow*>(window), button);
     return state == GLFW_PRESS;
 }
 

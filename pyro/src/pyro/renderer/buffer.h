@@ -29,7 +29,7 @@ namespace pyro
         case e_shader_data_type::boolean:   return 1;
         }
 
-        PYRO_ASSERT(false, "[shader_data_size] Unknown shader_data_type!");
+        PYRO_CORE_ASSERT(false, "[shader_data_size] Unknown shader_data_type!");
         return 0;
     }
 
@@ -51,14 +51,14 @@ namespace pyro
         {
             switch (type)
             {
-                case e_shader_data_type::float3:    return 3;
                 case e_shader_data_type::float2:    return 2;
+                case e_shader_data_type::float3:    return 3;
                 case e_shader_data_type::float4:    return 4;
                 case e_shader_data_type::mat3:      return 3 * 3;
                 case e_shader_data_type::mat4:      return 4 * 4;
             }
 
-            PYRO_ASSERT(false, "[buffer_element] Uknown type!")
+            PYRO_CORE_ASSERT(false, "[buffer_element] Uknown type!")
             return 0;
         };
     };
@@ -114,7 +114,7 @@ namespace pyro
         /// \brief Layout getter.
         virtual const buffer_layout& layout() const = 0;
 
-        static vertex_buffer* create(float* vertices, uint32_t size);
+        static vertex_buffer* create(const float* vertices, uint32_t size);
     };
 
     //=================== index buffer ========================================
@@ -131,7 +131,7 @@ namespace pyro
         /// \brief Count getter.
         virtual uint32_t count() const = 0;
 
-        static index_buffer* create(uint32_t* indices, uint32_t count);
+        static index_buffer* create(const uint32_t* indices, uint32_t count);
     };
 
 }

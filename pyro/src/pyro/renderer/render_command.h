@@ -32,7 +32,12 @@ namespace pyro
 
             is_wireframe = !is_wireframe;
         }
-        
+
+        static void primitive_type(const e_primitive_type& type)
+        {
+            s_renderer_api->primitive_type(type);
+        }
+
         static void submit(const ref<vertex_array>& vertex_array)
         {
             s_renderer_api->draw_indexed(vertex_array);

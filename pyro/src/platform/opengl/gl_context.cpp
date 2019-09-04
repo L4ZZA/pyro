@@ -6,14 +6,14 @@
 pyro::gl_context::gl_context(GLFWwindow* window_handle)
 	: m_window_handle(window_handle)
 {
-	PYRO_ASSERT(m_window_handle, "[gl_context] window handle is null!");
+	PYRO_CORE_ASSERT(m_window_handle, "[gl_context] window handle is null!");
 }
 
 void pyro::gl_context::init()
 {
 	glfwMakeContextCurrent(m_window_handle);
 	const int status = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
-	PYRO_ASSERT(status, "Could not load Glad!");
+	PYRO_CORE_ASSERT(status, "Could not load Glad!");
 
 	PYRO_CORE_INFO("OpenGL Info:");
 	PYRO_CORE_INFO("\tVendor: {}", glGetString(GL_VENDOR));

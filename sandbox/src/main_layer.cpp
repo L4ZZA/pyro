@@ -6,13 +6,14 @@
 #include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <glm/gtc/type_ptr.hpp>
+#include "platform/opengl/gl_shader.h"
 
-//glm::mat4 camera(float Translate, glm::vec2 const & Rotate)
+//glm::mat4 camera(float translate, glm::vec2 const& rotate)
 //{
 //    glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.f);
-//    glm::mat4 View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -Translate));
-//    View = glm::rotate(View, Rotate.y, glm::vec3(-1.0f, 0.0f, 0.0f));
-//    View = glm::rotate(View, Rotate.x, glm::vec3(0.0f, 1.0f, 0.0f));
+//    glm::mat4 View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -translate));
+//    View = glm::rotate(View, rotate.y, glm::vec3(-1.0f, 0.0f, 0.0f));
+//    View = glm::rotate(View, rotate.x, glm::vec3(0.0f, 1.0f, 0.0f));
 //    glm::mat4 Model = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
 //    return Projection * View * Model;
 //}
@@ -138,8 +139,8 @@ example_layer::example_layer()
 
     const pyro::buffer_layout layout
     {
-        {pyro::e_shader_data_type::float3, "a_position"},
-        {pyro::e_shader_data_type::float4, "a_color"},
+        {pyro::e_shader_data_type::float3, "a_position"}, 
+        {pyro::e_shader_data_type::float2, "a_tex_coord"}, 
     };
     triangle_vb->layout(layout);
 

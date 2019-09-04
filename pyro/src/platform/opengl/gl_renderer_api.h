@@ -13,9 +13,11 @@ namespace pyro
         void clear_color(const glm::vec4& color) override;
 
         void draw_indexed(const ref<vertex_array>& vertex_array) override;
+        void draw_indexed(const ref<mesh>& mesh) override;
 
         void enable_wireframe() override;
         void disable_wireframe() override;
+        void primitive_type(const e_primitive_type& type) override;
 
     protected:
         void enable_alpha() override;

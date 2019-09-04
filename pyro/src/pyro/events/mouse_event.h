@@ -8,8 +8,8 @@ namespace pyro
     class PYRO_API mouse_moved_event : public event
     {
     public:
-        mouse_moved_event(float p_x, float p_y)
-            : m_mouse_x(p_x), m_mouse_y(p_y)
+        mouse_moved_event(float x, float y)
+            : m_mouse_x(x), m_mouse_y(y)
         {
         }
 
@@ -35,8 +35,8 @@ namespace pyro
     class PYRO_API mouse_scrolled_event : public event
     {
     public:
-        mouse_scrolled_event(float p_x_offset, float p_y_offset)
-            : m_x_offset(p_x_offset), m_y_offset(p_y_offset)
+        mouse_scrolled_event(float x_offset, float y_offset)
+            : m_x_offset(x_offset), m_y_offset(y_offset)
         {
         }
 

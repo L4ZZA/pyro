@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "camera.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "pyro/input.h"
@@ -17,12 +17,12 @@ void pyro::orthographic_camera::move(e_direction direction, timestep ts)
 {
     float speed = s_movement_speed;
 
-    if (direction == up)
+    if(direction == up)
         m_position.y += speed * ts;
     else if(direction == down)
         m_position.y -= speed * ts;
 
-    if (direction == left)
+    if(direction == left)
         m_position.x -= speed * ts;
     else if(direction == right)
         m_position.x += speed * ts;
@@ -30,15 +30,15 @@ void pyro::orthographic_camera::move(e_direction direction, timestep ts)
     update_view_matrix();
 }
 
-void pyro::orthographic_camera::rotate(e_rotation rotation, timestep ts)
+void pyro::orthographic_camera::rotate(e_rotation rotation, e_axis, timestep ts)
 {
     float speed = s_rotation_speed;
-    
-    if (rotation == clock_wise)
+
+    if(rotation == clock_wise)
     {
         m_rotation -= speed * ts;
     }
-    else if (rotation == anticlock_wise)
+    else if(rotation == anticlock_wise)
     {
         m_rotation += speed * ts;
     }

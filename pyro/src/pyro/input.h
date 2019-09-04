@@ -28,9 +28,8 @@ namespace pyro
         static float mouse_y() { return s_instance->mouse_y_impl(); }
 
     protected:
-        ~input() = default;
-        virtual bool key_pressed_impl(int p_key_code) const = 0;
-        virtual bool mouse_button_pressed_impl(int p_key_code) const = 0;
+        virtual bool key_pressed_impl(int key_code) const = 0;
+        virtual bool mouse_button_pressed_impl(int key_code) const = 0;
         virtual std::pair<float, float> mouse_position_impl() const = 0;
         virtual float mouse_x_impl() const = 0;
         virtual float mouse_y_impl() const = 0;

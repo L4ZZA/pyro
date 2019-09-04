@@ -21,6 +21,4 @@
 #include "pyro/renderer/renderer.h"
 #include "pyro/renderer/camera.h"
 
-#include "platform/opengl/gl_shader.h"
-
 #include "pyro/imgui/imgui_layer.h"

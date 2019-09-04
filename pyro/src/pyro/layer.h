@@ -10,7 +10,7 @@ namespace pyro
 	class PYRO_API layer
 	{
 	public:
-		layer(const std::string &p_name = "Layer");
+		layer(const std::string& name = "Layer");
 		virtual ~layer();
 
 		/// \brief Runs when a layer is pushed onto the layer stack
@@ -23,7 +23,7 @@ namespace pyro
 		/// \brief Render method specific to imgui.
 		virtual void on_imgui_render() {}
 		/// \brief Runs whenever an event gets sent to the layer.
-		virtual void on_event(event &p_event) {}
+		virtual void on_event(event& event) {}
 
 		/// \brief Gives you the name of the layer [for debug]
 		const std::string& name() const { return m_debug_name; }

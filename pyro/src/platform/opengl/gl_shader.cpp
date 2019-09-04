@@ -31,8 +31,8 @@ pyro::gl_shader::gl_shader(const std::string& vertex_source, const std::string& 
         // We don't need the shader anymore.
         glDeleteShader(vertexShader);
 
-        PYRO_CORE_ERROR("{}", infoLog.data());
-        PYRO_ASSERT(false, "Vertex shader compilation failed!");
+        PYRO_CORE_ERROR("{}\n{}", vertex_source, infoLog.data());
+        PYRO_CORE_ASSERT(false, "Vertex shader compilation failed!");
         return;
     }
 
@@ -62,8 +62,8 @@ pyro::gl_shader::gl_shader(const std::string& vertex_source, const std::string& 
         // Either of them. Don't leak shaders.
         glDeleteShader(vertexShader);
 
-        PYRO_CORE_ERROR("{}", infoLog.data());
-        PYRO_ASSERT(false, "Fragment shader compilation failed!");
+        PYRO_CORE_ERROR("{}\n{}", fragment_source, infoLog.data());
+        PYRO_CORE_ASSERT(false, "Fragment shader compilation failed!");
         return;
     }
 
@@ -99,7 +99,7 @@ pyro::gl_shader::gl_shader(const std::string& vertex_source, const std::string& 
         glDeleteShader(fragmentShader);
 
         PYRO_CORE_ERROR("{}", infoLog.data());
-        PYRO_ASSERT(false, "Shader program failed to compile!");
+        PYRO_CORE_ASSERT(false, "Shader program failed to compile!");
 
         // In this simple program, we'll just leave
         return;

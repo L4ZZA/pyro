@@ -2,6 +2,7 @@
 
 #include "render_command.h"
 #include "shader.h"
+#include "model.h"
 #include "camera.h"
 
 namespace pyro
@@ -15,6 +16,14 @@ namespace pyro
         static void submit(
             const ref<shader>& shader, 
             const ref<vertex_array>& vertex_array, 
+            const glm::mat4& transform = glm::mat4(1.f));
+        static void submit(
+            const ref<shader>& shader, 
+            const ref<mesh>& mesh,
+            const glm::mat4& transform = glm::mat4(1.f));
+        static void submit(
+            const ref<shader>& shader, 
+            const ref<model>& model,
             const glm::mat4& transform = glm::mat4(1.f));
 
         inline static renderer_api::e_api api() { return renderer_api::api(); }

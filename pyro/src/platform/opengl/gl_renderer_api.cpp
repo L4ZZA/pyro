@@ -2,6 +2,19 @@
 #include "gl_renderer_api.h"
 #include "glad/glad.h"
 
+enum class pyro::e_primitive_type 
+{ 
+    points = GL_POINTS, 
+    lines = GL_LINES, 
+    line_loop = GL_LINE_LOOP, 
+    line_strip = GL_LINE_STRIP, 
+    triangles = GL_TRIANGLES, 
+    triangle_strip = GL_TRIANGLE_STRIP, 
+    triangle_fan = GL_TRIANGLE_FAN, 
+};
+
+pyro::e_primitive_type pyro::renderer_api::s_primitive_type = pyro::e_primitive_type::triangles; 
+
 void pyro::gl_renderer_api::init()
 {
     glEnable(GL_DEPTH_TEST);
@@ -34,6 +47,15 @@ void pyro::gl_renderer_api::clear_color(const glm::vec4& color)
 void pyro::gl_renderer_api::draw_indexed(const ref<vertex_array>& vertex_array)
 {
     glDrawElements(GL_TRIANGLES, vertex_array->index_buffer()->count(), GL_UNSIGNED_INT, nullptr);
+}
+
+void pyro::gl_renderer_api::draw_indexed(const ref<mesh>& mesh)
+{
+}
+
+void pyro::gl_renderer_api::primitive_type(const e_primitive_type& type)
+{
+    s_primitive_type = type; 
 }
 
 //------------------------------------------------------------------------------------------------- 

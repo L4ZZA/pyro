@@ -10,7 +10,7 @@ namespace pyro
         //---------------------------------------------------------------------
 
     public:
-        win_window(window_props const &p_props);
+        win_window(window_props const& props);
         virtual ~win_window();
 
         //---------------------------------------------------------------------
@@ -19,8 +19,8 @@ namespace pyro
 
         //---------------------------------------------------------------------
 
-        void event_callback(event_callback_fn const& p_callback) override { m_data.event_callback = p_callback; }
-        void vsync(bool enabled) override;
+        void event_callback(event_callback_fn const& callback) override { m_data.event_callback = callback; }
+        void vsync(bool p_enabled) override;
         bool vsync() override;
         void show_mouse_cursor() override;
         void hide_mouse_cursor() override;
@@ -36,7 +36,7 @@ namespace pyro
         //---------------------------------------------------------------------
 
     private:
-        virtual void init(window_props const &props);
+        virtual void init(window_props const& props);
         virtual void shut_down();
 
     private:

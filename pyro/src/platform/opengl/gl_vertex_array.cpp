@@ -21,7 +21,7 @@ namespace pyro
             case pyro::e_shader_data_type::boolean:   return GL_BOOL;
         }
 
-        PYRO_ASSERT(false, "[to_opengl] Unknown shader_data_type!");
+        PYRO_CORE_ASSERT(false, "[to_opengl] Unknown shader_data_type!");
         return 0;
     }
 }

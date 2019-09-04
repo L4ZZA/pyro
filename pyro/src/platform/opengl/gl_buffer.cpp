@@ -4,7 +4,7 @@
 
 //=================== vertex buffer =======================================
 
-pyro::gl_vertex_buffer::gl_vertex_buffer(float* vertices, uint32_t size)
+pyro::gl_vertex_buffer::gl_vertex_buffer(const float* vertices, uint32_t size)
 {
     glGenBuffers(1, &m_id);
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
@@ -38,7 +38,7 @@ const pyro::buffer_layout& pyro::gl_vertex_buffer::layout() const
 
 //=================== index buffer ========================================
 
-pyro::gl_index_buffer::gl_index_buffer(uint32_t* vertices, uint32_t count)
+pyro::gl_index_buffer::gl_index_buffer(const uint32_t* vertices, uint32_t count)
     : m_count(count)
 {
     glGenBuffers(1, &m_id);

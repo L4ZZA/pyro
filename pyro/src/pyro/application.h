@@ -38,7 +38,7 @@ namespace pyro
         bool on_window_close(window_closed_event &event);
 
     private:
-        std::unique_ptr<window>         m_window;
+        std::unique_ptr<window>   m_window;
         layers_stack                    m_layers_stack;
         float                           m_last_frame_time = 0.f;
 

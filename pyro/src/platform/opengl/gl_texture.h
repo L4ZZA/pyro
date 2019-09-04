@@ -12,6 +12,7 @@ namespace pyro
 
         uint32_t width() const override { return m_width; }
         uint32_t height() const override { return m_height; }
+        std::string path() const override { return m_path; }
 
     private:
         std::string m_path;

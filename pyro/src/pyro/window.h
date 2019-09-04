@@ -13,10 +13,10 @@ namespace pyro
         uint32_t    m_height;
         bool        m_vsync;
 
-        window_props(std::string const &p_title = "pyro",
-                     uint32_t p_width = 1280,
-                     uint32_t p_height = 720)
-                : m_title(p_title), m_width(p_width), m_height(p_height)
+        window_props(std::string const &title = "pyro",
+                     uint32_t width = 1280,
+                     uint32_t height = 720)
+                : m_title(title), m_width(width), m_height(height)
         {
         }
     };
@@ -39,8 +39,8 @@ namespace pyro
 
         //---------------------------------------------------------------------
 
-        virtual void event_callback(event_callback_fn const &p_callback) = 0;
-        virtual void vsync(bool p_enabled) = 0;
+        virtual void event_callback(event_callback_fn const &callback) = 0;
+        virtual void vsync(bool enabled) = 0;
         virtual bool vsync() = 0;
         virtual void show_mouse_cursor() = 0;
         virtual void hide_mouse_cursor() = 0;
