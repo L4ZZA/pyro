@@ -1,7 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
 #include "pyro/renderer/vertex_array.h"
-#include "pyro/renderer/mesh.h"
 
 namespace pyro
 {
@@ -25,7 +24,6 @@ namespace pyro
         virtual void disable_wireframe() = 0;  
         
         virtual void draw_indexed(const ref<vertex_array>& vertex_array) = 0;  
-        virtual void draw_indexed(const ref<mesh>& mesh) = 0;  
         virtual void primitive_type(const e_primitive_type& type) = 0;  
         static e_api api() { return s_renderer_api; } 
 

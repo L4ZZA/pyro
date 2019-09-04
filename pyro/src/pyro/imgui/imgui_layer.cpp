@@ -45,10 +45,10 @@ void pyro::imgui_layer::on_attach()
     }
 
     application& app = application::instance();
-    auto window = static_cast<GLFWwindow*>(app.get_window().native_window());
+    auto win = static_cast<GLFWwindow*>(app.window().native_window());
 
     // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplGlfw_InitForOpenGL(win, true);
     ImGui_ImplOpenGL3_Init("#version 410");
 }
 
@@ -76,7 +76,7 @@ void pyro::imgui_layer::end() const
 {
     ImGuiIO& io = ImGui::GetIO();
     auto& app = application::instance();
-    io.DisplaySize = ImVec2(static_cast<float>(app.get_window().width()), static_cast<float>(app.get_window().height()));
+    io.DisplaySize = ImVec2(static_cast<float>(app.window().width()), static_cast<float>(app.window().height()));
 
     // Rendering
     ImGui::Render();

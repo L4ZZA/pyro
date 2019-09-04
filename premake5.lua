@@ -28,7 +28,7 @@ group "dependencies"
     include "pyro/external/Glad"
     include "pyro/external/imgui"
     include "pyro/external/stb_image"
-    include "pyro/external/assimp"
+    -- include "pyro/external/assimp"
 group ""
 
 -- engine core project
@@ -67,9 +67,8 @@ project "pyro"
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
         "%{IncludeDir.ImGui}",
-        "%{IncludeDir.stb_image}",
         "%{IncludeDir.glm}",
-        "%{IncludeDir.assimp}",
+        "%{IncludeDir.stb_image}",
     }
 
     links
@@ -79,7 +78,6 @@ project "pyro"
         "ImGui",
         "opengl32.lib",
         "stb_image",
-        "assimp",
     }
 
     -- filters are used to apply property to some specific configurations only

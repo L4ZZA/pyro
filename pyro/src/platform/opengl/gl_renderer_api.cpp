@@ -49,10 +49,6 @@ void pyro::gl_renderer_api::draw_indexed(const ref<vertex_array>& vertex_array)
     glDrawElements(GL_TRIANGLES, vertex_array->index_buffer()->count(), GL_UNSIGNED_INT, nullptr);
 }
 
-void pyro::gl_renderer_api::draw_indexed(const ref<mesh>& mesh)
-{
-}
-
 void pyro::gl_renderer_api::primitive_type(const e_primitive_type& type)
 {
     s_primitive_type = type; 
