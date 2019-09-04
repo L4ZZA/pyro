@@ -42,8 +42,8 @@ pyro::gl_index_buffer::gl_index_buffer(uint32_t* vertices, uint32_t count)
     : m_count(count)
 {
     glGenBuffers(1, &m_id);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, m_id);
+    glBufferData(GL_ARRAY_BUFFER, count * sizeof(uint32_t), vertices, GL_STATIC_DRAW);
 }
 
 pyro::gl_index_buffer::~gl_index_buffer()
