@@ -17,9 +17,7 @@ pyro::e_primitive_type pyro::renderer_api::s_primitive_type = pyro::e_primitive_
 
 void pyro::gl_renderer_api::init()
 {
-    glEnable(GL_DEPTH_TEST);
     enable_alpha();
-    enable_culling();
 }
 
 void pyro::gl_renderer_api::enable_wireframe()
@@ -36,7 +34,7 @@ void pyro::gl_renderer_api::disable_wireframe()
 
 void pyro::gl_renderer_api::clear()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void pyro::gl_renderer_api::clear_color(const glm::vec4& color)
