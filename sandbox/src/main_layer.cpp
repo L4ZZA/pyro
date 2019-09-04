@@ -239,9 +239,9 @@ example_layer::example_layer()
     m_cube_va->add_buffer(cube_vb);
     m_cube_va->add_buffer(cube_ib);
 
-    m_color_shader.reset(new pyro::gl_shader(vertex_shader, fragment_shader));
-    m_flat_color_shader.reset(new pyro::gl_shader(flat_color_vertex_shader, flat_color_fragment_shader));
-    m_textured_shader.reset(new pyro::gl_shader(textured_vertex_shader_3d, textured_fragment_shader_3d));
+    m_color_shader.reset(pyro::shader::create(vertex_shader, fragment_shader));
+    m_flat_color_shader.reset(pyro::shader::create(flat_color_vertex_shader, flat_color_fragment_shader));
+    m_textured_shader.reset(pyro::shader::create(textured_vertex_shader_3d, textured_fragment_shader_3d));
 
     std::dynamic_pointer_cast<pyro::gl_shader>(m_textured_shader)->bind();
     std::dynamic_pointer_cast<pyro::gl_shader>(m_textured_shader)->set_uniform("u_sampler", 0);
