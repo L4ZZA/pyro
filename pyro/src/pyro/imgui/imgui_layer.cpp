@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "imgui_layer.h"
 
 #include "imgui.h"
@@ -18,13 +18,9 @@ pyro::imgui_layer::imgui_layer()
 	m_imgui = true;
 }
 
-pyro::imgui_layer::~imgui_layer()
-{
-}
-
 void pyro::imgui_layer::on_attach()
 {
-    // Setup Der ImGui context
+    // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -42,7 +38,7 @@ void pyro::imgui_layer::on_attach()
     // When viewports are enabled we tweak WindowRounding/WindowBg so platform
     // windows can look identical to regular ones.
     ImGuiStyle& style = ImGui::GetStyle();
-    if(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
         style.WindowRounding = 0.0f;
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;

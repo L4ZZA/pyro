@@ -26,7 +26,8 @@ pyro::application::application()
 
 pyro::application::~application()
 {
-
+    for(const auto& layer : m_layers_stack)
+        layer->on_detach();
 }
 
 void pyro::application::run()
@@ -43,7 +44,8 @@ void pyro::application::run()
 
             if (layer->is_imgui())
             {
-                auto imgui_layer = static_cast<pyro::imgui_layer*>(layer);
+                auto imgui_layer = dynamic_cast<pyro::imgui_layer*>(layer);
+                assert(imgui_layer, "imgui_layer couldn't be cast!");
                 imgui_layer->begin();
                 imgui_layer->on_imgui_render();
                 imgui_layer->end();

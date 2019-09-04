@@ -6,8 +6,6 @@ class example_layer : public pyro::imgui_layer
 public:
     example_layer();
 
-    void on_attach() override;
-    void on_detach() override;
     void on_update(const pyro::timestep& timestep) override;
     void on_imgui_render() override;
     void on_event(pyro::event& event) override;

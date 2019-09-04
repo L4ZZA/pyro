@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "pyro/layer.h"
 
 namespace pyro
@@ -7,7 +7,7 @@ namespace pyro
     {
     public:
         imgui_layer();
-        ~imgui_layer();
+        ~imgui_layer() = default;
 
         void on_attach() override;
         void on_detach() override;

@@ -249,16 +249,6 @@ example_layer::example_layer()
     m_face_texture = pyro::texture_2d::create("assets/textures/face.png");
 }
 
-void example_layer::on_attach()
-{
-    imgui_layer::on_attach();
-}
-
-void example_layer::on_detach()
-{
-    imgui_layer::on_detach();
-}
-
 void example_layer::on_update(const pyro::timestep& timestep)
 {
     m_3d_camera.on_update(timestep);
