@@ -1,9 +1,10 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "gl_renderer_api.h"
 #include "glad/glad.h"
 
 void pyro::gl_renderer_api::init()
 {
+    glEnable(GL_DEPTH_TEST);
     enable_alpha();
     enable_culling();
 }
@@ -22,7 +23,7 @@ void pyro::gl_renderer_api::disable_wireframe()
 
 void pyro::gl_renderer_api::clear()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void pyro::gl_renderer_api::clear_color(const glm::vec4& color)

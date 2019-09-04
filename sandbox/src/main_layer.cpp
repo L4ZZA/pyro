@@ -118,7 +118,8 @@ static const std::string textured_fragment_shader_3d = R"(
 
 example_layer::example_layer()
     :m_2d_camera(-1.6f, 1.6f, -0.9f, 0.9f),
-    m_3d_camera(pyro::application::instance().get_window().width(), pyro::application::instance().get_window().height())
+    m_3d_camera(pyro::application::instance().get_window().width(),
+        pyro::application::instance().get_window().height())
 {
     // hide the mouse and lock it inside the window
     //pyro::input::anchor_mouse(true);
@@ -216,7 +217,6 @@ example_layer::example_layer()
 
     const pyro::ref<pyro::vertex_buffer> cube_vb(pyro::vertex_buffer::create(cube_vertices, sizeof(cube_vertices)));
 
-    //uint32_t cube_indices[]{0,1,2, 2,3,0};
     uint32_t cube_indices[]
     {
          0, 1, 2,    2, 3, 0, // FRONT
@@ -225,7 +225,7 @@ example_layer::example_layer()
         15,12,13,   13,14,15, // RIGHT
         16,17,18,   18,19,16, // BOTTOM
         21,20,23,   23,22,21  // TOP
-        
+
     };
     const pyro::ref<pyro::index_buffer> cube_ib(pyro::index_buffer::create(cube_indices, sizeof(cube_indices) / sizeof(uint32_t)));
 
@@ -272,6 +272,7 @@ void example_layer::on_update(const pyro::timestep& timestep)
         m_rect_pos.y -= m_rect_speed * timestep;
     else if(pyro::input::key_pressed(pyro::key_codes::KEY_UP)) // up
         m_rect_pos.y += m_rect_speed * timestep;
+
 }
 
 void example_layer::on_imgui_render()
@@ -284,7 +285,7 @@ void example_layer::on_imgui_render()
     ImGui::End();
 
 
-    pyro::render_command::clear_color({0.1f, 0.1f, 0.1f, 1.f});
+    pyro::render_command::clear_color({0.2f, 0.3f, 0.3f, 1.0f});
     pyro::render_command::clear();
 
     pyro::renderer::begin_scene(m_3d_camera, m_textured_shader);
@@ -321,10 +322,10 @@ void example_layer::on_imgui_render()
 
 void example_layer::on_event(pyro::event& event)
 {
-    if (event.event_type() == pyro::event_type_e::key_pressed)
+    if(event.event_type() == pyro::event_type_e::key_pressed)
     {
-        auto& e = dynamic_cast<pyro::key_pressed_event&>(event); 
-        if (e.key_code() == pyro::key_codes::KEY_TAB)
+        auto& e = dynamic_cast<pyro::key_pressed_event&>(event);
+        if(e.key_code() == pyro::key_codes::KEY_TAB)
         {
             pyro::render_command::toggle_wireframe();
         }
