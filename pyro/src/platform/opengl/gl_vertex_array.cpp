@@ -54,13 +54,14 @@ void pyro::gl_vertex_array::add_buffer(const ref<vertex_buffer>& vertex_buffer)
     const auto& layout = vertex_buffer->layout();
     for (const auto& element : layout)
     {
-        glEnableVertexAttribArray(element.index);
-        glVertexAttribPointer(element.index, 
+        glEnableVertexAttribArray(m_vertex_buffer_index);
+        glVertexAttribPointer(m_vertex_buffer_index, 
             element.components_count(), 
             to_opengl_type(element.type), 
             element.normalised ? GL_TRUE : GL_FALSE, 
             layout.stride(), 
             reinterpret_cast<const void*>((intptr_t)element.offset));
+        m_vertex_buffer_index++;
     }
     m_vertex_buffers.push_back(vertex_buffer);
 }

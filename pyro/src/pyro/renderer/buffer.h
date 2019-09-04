@@ -38,14 +38,12 @@ namespace pyro
     {
         std::string name;
         e_shader_data_type type;
-        uint32_t index;
-        uint32_t size;
-        uint32_t offset;
-        bool normalised;
+        uint32_t size = 0;
+        uint32_t offset = 0;
+        bool normalised = false;
 
-        buffer_element() = default;
         buffer_element(e_shader_data_type type, const std::string& name, bool normalised = false )
-            :name(name), type(type), index(0), size(shader_data_size(type)), offset(0), normalised(normalised)
+            :name(name), type(type), size(shader_data_size(type)), normalised(normalised)
         {
         }
 
