@@ -68,9 +68,6 @@ namespace  pyro
     /// \brief 
     class event_dispatcher
     {
-        template<typename T>
-        using EventFn = std::function<bool(T&)>;
-
         //---------------------------------------------------------------------
     public:
         event_dispatcher(event& event)
@@ -78,9 +75,9 @@ namespace  pyro
         {
         }
 
-        /// \brief 
-        template<typename T>
-        bool dispatch(EventFn<T> func)
+        /// \brief F will be deducted by the compiler
+        template<typename T, typename F>
+        bool dispatch(const F& func)
         {
             // filtering events by type T
             if (m_event.event_type() == T::static_type())
