@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "layers_stack.h"
 
 pyro::layers_stack::layers_stack()
@@ -25,7 +25,7 @@ void pyro::layers_stack::push_overlay(layer* p_overlay)
 void pyro::layers_stack::pop_layer(layer* p_layer)
 {
     auto it = std::find(m_layers.begin(), m_layers.end(), p_layer);
-    if(it != m_layers.end())
+    if(it != m_layers.begin() + m_layers_insert_index)
     {
         m_layers.erase(it);
         --m_layers_insert_index;
