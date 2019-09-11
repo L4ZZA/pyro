@@ -67,40 +67,7 @@ static const std::string flat_color_fragment_shader = R"(
     { 
         o_color = vec4(u_color, 1.f); 
     } 
-)"; 
-
-static const std::string textured_vertex_shader_3d = R"(  
-    #version 430  
-  
-    layout(location = 0) in vec3 a_position;  
-    layout(location = 1) in vec2 a_tex_coord;  
-  
-    uniform mat4 u_view_projection;  
-    uniform mat4 u_transform;  
-  
-    out vec2 v_tex_coord;   
-  
-    void main()  
-    {  
-        v_tex_coord = a_tex_coord;  
-        gl_Position = u_view_projection * u_transform * vec4(a_position, 1.0);  
-    }  
-)"; 
-
-static const std::string textured_fragment_shader_3d = R"(  
-    #version 430  
-  
-    layout(location = 0) out vec4 o_color;  
-  
-    in vec2 v_tex_coord;  
-  
-    uniform sampler2D u_sampler;   
-  
-    void main()  
-    {  
-        o_color = texture(u_sampler, v_tex_coord); 
-    }  
-)"; 
+)";
 
 example_layer::example_layer() 
     :m_2d_camera(-1.6f, 1.6f, -0.9f, 0.9f), 
@@ -110,7 +77,7 @@ example_layer::example_layer()
 
     m_color_shader.reset(pyro::shader::create(vertex_shader, fragment_shader)); 
     m_flat_color_shader.reset(pyro::shader::create(flat_color_vertex_shader, flat_color_fragment_shader)); 
-    m_textured_shader.reset(pyro::shader::create(textured_vertex_shader_3d, textured_fragment_shader_3d)); 
+    m_textured_shader.reset(pyro::shader::create("assets/shaders/texture.glsl"));
 
     //======= triangle ========= 
     float vertices[3 * 7] 

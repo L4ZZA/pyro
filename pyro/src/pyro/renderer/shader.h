@@ -19,6 +19,7 @@ namespace pyro
         virtual void set_uniform(const std::string& name, const glm::vec4& vec) = 0;
         virtual void set_uniform(const std::string& name, const glm::mat4& mat) = 0; 
 
+        static shader* create(const std::string& file_path);
         static shader* create(const std::string& vertex_source, const std::string& fragment_source); 
     };
 }
