@@ -3,6 +3,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "pyro/input.h"
 #include "pyro/key_codes.h"
+#include "pyro/application.h"
 
 
 //================== Orthographic Camera [2D] =================================
@@ -11,6 +12,19 @@ pyro::orthographic_camera::orthographic_camera(float left, float right, float bo
     : m_projection_mat(glm::ortho(left, right, bottom, top, -1.f, 1.f))
 {
     m_view_projection_mat = m_projection_mat * m_view_mat;
+}
+
+void pyro::orthographic_camera::on_update(const timestep& timestep)
+{
+    if(input::key_pressed(pyro::key_codes::KEY_A)) // left
+        move(e_direction::left, timestep);
+    else if(input::key_pressed(pyro::key_codes::KEY_D)) // right
+        move(e_direction::right, timestep);
+
+    if(input::key_pressed(pyro::key_codes::KEY_W)) // up
+        move(e_direction::up, timestep);
+    else if(input::key_pressed(pyro::key_codes::KEY_S)) // down
+        move(e_direction::down, timestep);
 }
 
 void pyro::orthographic_camera::move(e_direction direction, timestep ts)
@@ -59,7 +73,8 @@ void pyro::orthographic_camera::update_view_matrix()
 
 //================== Perspective Camera [3D] ==================================
 
-pyro::perspective_camera::perspective_camera( 
+pyro::perspective_camera::perspective_camera(
+    e_control_type control_type,
     float width, float height, 
     float fov /*= 45.f*/, 
     float near_z /*= 0.1f*/, float far_z /*= 100.f*/) 
@@ -69,6 +84,9 @@ pyro::perspective_camera::perspective_camera(
     m_near_plane(near_z), 
     m_far_plane(far_z) 
 { 
+    s_control_type = control_type;
+    if(s_control_type == e_control_type::first_person)
+        application::window().hide_mouse_cursor();
     m_position = glm::vec3(0.0f, 0.0f, 3.0f);  
     m_front_vector = glm::vec3(0.0f, 0.0f, -1.0f);
     m_up_vector = glm::vec3(0.0f, 1.0f,  0.0f);
@@ -101,7 +119,7 @@ void pyro::perspective_camera::on_update(const timestep& timestep)
         move(e_direction::forward, timestep);
 
     auto [mouse_delta_x, mouse_delta_y] = input::mouse_position();
-    process_mouse(mouse_delta_x, mouse_delta_y);
+    process_mouse(s_control_type, mouse_delta_x, mouse_delta_y);
 
     //float delta = input::mouse_scroll();
     //process_mouse_scroll(delta);
@@ -124,7 +142,15 @@ const glm::mat4& pyro::perspective_camera::view_projection_matrix() const
     return m_view_projection_mat; 
 }
 
-void pyro::perspective_camera::process_mouse(float mouse_delta_x, float mouse_delta_y, bool constrain_pitch /*= true*/)
+void pyro::perspective_camera::process_mouse(e_control_type control_type, float mouse_x, float mouse_y, bool constrain_pitch /*= true*/)
+{
+    if(control_type == e_control_type::first_person)
+        process_mouse_delta(mouse_x, mouse_y, constrain_pitch);
+    else if(control_type == e_control_type::editor)
+        process_mouse_panning(mouse_x, mouse_y);
+}
+
+void pyro::perspective_camera::process_mouse_delta(float mouse_delta_x, float mouse_delta_y, bool constrain_pitch /*= true*/)
 {
     // Smoothen the values
     mouse_delta_x *= s_mouse_sensitivity;
@@ -142,6 +168,10 @@ void pyro::perspective_camera::process_mouse(float mouse_delta_x, float mouse_de
         if(m_pitch < -pitch_limit)
             m_pitch = -pitch_limit;
     }
+}
+
+void pyro::perspective_camera::process_mouse_panning(float mouse_x, float mouse_y)
+{
 }
 
 void pyro::perspective_camera::move(e_direction direction, timestep ts) 

@@ -54,7 +54,7 @@ namespace pyro
     public:
         orthographic_camera(float left, float right, float bottom, float top);
     
-        void on_update(const timestep& timestep) override{};
+        void on_update(const timestep& timestep) override;
 
         glm::vec3 position() const override { return m_position; }
         void position(const glm::vec3& pos) override { m_position = pos; update_view_matrix(); }
@@ -100,6 +100,12 @@ namespace pyro
     class perspective_camera : public camera
     {
     public:
+        enum class e_control_type
+        {
+            first_person,
+            editor
+        };
+
         enum e_direction 
         { 
             forward = 0, 
@@ -109,7 +115,8 @@ namespace pyro
         };
 
     public: 
-        perspective_camera( 
+        perspective_camera(
+            e_control_type control_type,
             float width, float height,  
             float fov = 45.f,  
             float near_z = 0.1f, float far_z = 100.f);
@@ -126,14 +133,16 @@ namespace pyro
         const glm::mat4& view_matrix() const override; 
         const glm::mat4& view_projection_matrix() const override;
 
-    private: 
-        void process_mouse(float mouse_delta_x, float mouse_delta_y, bool constrain_pitch = true);
+    protected: 
+        void process_mouse(e_control_type control_type, float mouse_x, float mouse_y, bool constrain_pitch = true);
+        void process_mouse_delta(float mouse_delta_x, float mouse_delta_y, bool constrain_pitch = true);
+        void process_mouse_panning(float mouse_x, float mouse_y);
         void move(e_direction direction, timestep ts); 
         void rotate(e_rotation rotation, e_axis rotation_axis, timestep ts);
         void update_camera_vectors();
         void update_view_matrix(); 
 
-    private: 
+    protected: 
         glm::mat4   m_projection_mat{1}; 
         glm::mat4   m_view_mat{1}; 
         glm::mat4   m_view_projection_mat{1}; 
@@ -159,7 +168,8 @@ namespace pyro
         float m_near_plane = 0.1f; 
         /// \brief ar clipping plane. 
         float m_far_plane = 100.f; 
-
+        
+        inline static e_control_type s_control_type = e_control_type::first_person;
         /// \brief in units per seconds. 
         inline static const float s_movement_speed = SPEED; 
         /// \brief in degrees per second. 
