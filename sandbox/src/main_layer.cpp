@@ -73,9 +73,9 @@ example_layer::example_layer()
     :m_2d_camera(-1.6f, 1.6f, -0.9f, 0.9f),
     m_3d_camera(pyro::perspective_camera::e_control_type::editor, pyro::application::window().width(), pyro::application::window().height())
 {
-    m_color_shader.reset(pyro::shader::create(vertex_shader, fragment_shader));
-    m_flat_color_shader.reset(pyro::shader::create(flat_color_vertex_shader, flat_color_fragment_shader));
-    m_textured_shader.reset(pyro::shader::create("assets/shaders/texture.glsl"));
+    m_color_shader = pyro::shader::create(vertex_shader, fragment_shader);
+    m_flat_color_shader = pyro::shader::create(flat_color_vertex_shader, flat_color_fragment_shader);
+    m_textured_shader = pyro::shader::create("assets/shaders/texture.glsl");
 
     //======= triangle ========= 
     float vertices[3 * 7]
@@ -97,7 +97,7 @@ example_layer::example_layer()
     uint32_t indices[3]{0,1,2};
     const pyro::ref<pyro::index_buffer> triangle_ib(pyro::index_buffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
 
-    m_triangle_va.reset(pyro::vertex_array::create());
+    m_triangle_va = pyro::vertex_array::create();
     m_triangle_va->add_buffer(triangle_vb);
     m_triangle_va->add_buffer(triangle_ib);
 
@@ -111,17 +111,17 @@ example_layer::example_layer()
         -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
     };
 
-    const pyro::ref<pyro::vertex_buffer> rect_vb(pyro::vertex_buffer::create(rect_vertices, sizeof(rect_vertices)));
+    const pyro::ref<pyro::vertex_buffer> rect_vb = pyro::vertex_buffer::create(rect_vertices, sizeof(rect_vertices));
 
     uint32_t rect_indices[]{0,1,2, 2,3,0};
-    const pyro::ref<pyro::index_buffer> rect_ib(pyro::index_buffer::create(rect_indices, sizeof(rect_indices) / sizeof(uint32_t)));
+    const pyro::ref<pyro::index_buffer> rect_ib = pyro::index_buffer::create(rect_indices, sizeof(rect_indices) / sizeof(uint32_t));
 
     rect_vb->layout({
         {pyro::e_shader_data_type::float3, "a_position"},
         {pyro::e_shader_data_type::float2, "a_tex_coord"},
     });
 
-    m_rect_va.reset(pyro::vertex_array::create());
+    m_rect_va = pyro::vertex_array::create();
     m_rect_va->add_buffer(rect_vb);
     m_rect_va->add_buffer(rect_ib);
 
@@ -166,7 +166,7 @@ example_layer::example_layer()
         -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // C = 23 
     };
 
-    const pyro::ref<pyro::vertex_buffer> cube_vb(pyro::vertex_buffer::create(cube_vertices, sizeof(cube_vertices)));
+    const pyro::ref<pyro::vertex_buffer> cube_vb = pyro::vertex_buffer::create(cube_vertices, sizeof(cube_vertices));
 
     uint32_t cube_indices[]
     {
@@ -178,14 +178,14 @@ example_layer::example_layer()
         21,20,23,   23,22,21  // TOP 
 
     };
-    const pyro::ref<pyro::index_buffer> cube_ib(pyro::index_buffer::create(cube_indices, sizeof(cube_indices) / sizeof(uint32_t)));
+    const pyro::ref<pyro::index_buffer> cube_ib = pyro::index_buffer::create(cube_indices, sizeof(cube_indices) / sizeof(uint32_t));
 
     cube_vb->layout({
         {pyro::e_shader_data_type::float3, "a_position"},
         {pyro::e_shader_data_type::float2, "a_tex_coord"},
     });
 
-    m_cube_va.reset(pyro::vertex_array::create());
+    m_cube_va = pyro::vertex_array::create();
     m_cube_va->add_buffer(cube_vb);
     m_cube_va->add_buffer(cube_ib);
 

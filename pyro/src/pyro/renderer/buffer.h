@@ -114,7 +114,7 @@ namespace pyro
         /// \brief Layout getter.
         virtual const buffer_layout& layout() const = 0;
 
-        static vertex_buffer* create(const float* vertices, uint32_t size);
+        static ref<vertex_buffer> create(const float* vertices, uint32_t size);
     };
 
     //=================== index buffer ========================================
@@ -131,7 +131,7 @@ namespace pyro
         /// \brief Count getter.
         virtual uint32_t count() const = 0;
 
-        static index_buffer* create(const uint32_t* indices, uint32_t count);
+        static ref<index_buffer> create(const uint32_t* indices, uint32_t count);
     };
 
 }
