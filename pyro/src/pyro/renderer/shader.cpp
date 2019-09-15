@@ -15,14 +15,53 @@ pyro::ref<pyro::shader> pyro::shader::create(const std::string& file_path)
     return nullptr;
 }
 
-pyro::ref<pyro::shader> pyro::shader::create(const std::string& vertex_source, const std::string& fragment_source)
+pyro::ref<pyro::shader> pyro::shader::create(const std::string& name, const std::string& vertex_source, const std::string& fragment_source)
 {
     switch (renderer::api())
     {
         case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[shader] e_renderer_api::none currently not supported!"); return nullptr;
-        case renderer_api::e_api::open_gl: return std::make_shared<gl_shader>(vertex_source, fragment_source);
+        case renderer_api::e_api::open_gl: return std::make_shared<gl_shader>(name, vertex_source, fragment_source);
     }
 
     PYRO_CORE_ASSERT(false, "[shader] Unknown renderer api!");
     return nullptr;
+}
+
+//------------------------------------------------------------------------------------------------
+
+void pyro::shader_library::add(const std::string& name, const ref<shader>& shader)
+{
+    PYRO_CORE_ASSERT(!exists(name), "[shader_library] shader already exists!");
+    m_shaders[name] = shader;
+}
+
+void pyro::shader_library::add(const ref<shader>& shader)
+{
+    auto& name = shader->name();
+    add(name, shader);
+}
+
+pyro::ref<pyro::shader> pyro::shader_library::load(const std::string& filepath)
+{
+    auto shader = shader::create(filepath);
+    add(shader);
+    return shader;
+}
+
+pyro::ref<pyro::shader> pyro::shader_library::load(const std::string& name, const std::string& filepath)
+{
+    auto shader = shader::create(filepath);
+    add(name, shader);
+    return shader;
+}
+
+pyro::ref<pyro::shader> pyro::shader_library::get(const std::string& name)
+{
+    PYRO_CORE_ASSERT(exists(name), "[shader_library] shader not found!");
+    return m_shaders[name];
+}
+
+bool pyro::shader_library::exists(const std::string& name) const
+{
+    return m_shaders.find(name) != m_shaders.end();
 }

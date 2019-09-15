@@ -73,9 +73,9 @@ example_layer::example_layer()
     :m_2d_camera(-1.6f, 1.6f, -0.9f, 0.9f),
     m_3d_camera(pyro::perspective_camera::e_control_type::editor, pyro::application::window().width(), pyro::application::window().height())
 {
-    m_color_shader = pyro::shader::create(vertex_shader, fragment_shader);
-    m_flat_color_shader = pyro::shader::create(flat_color_vertex_shader, flat_color_fragment_shader);
-    m_textured_shader = pyro::shader::create("assets/shaders/texture.glsl");
+    m_color_shader = pyro::shader::create("vertex_color", vertex_shader, fragment_shader);
+    m_flat_color_shader = pyro::shader::create("uniform_color", flat_color_vertex_shader, flat_color_fragment_shader);
+    m_textured_shader = m_shader_library.load("assets/shaders/texture.glsl");
 
     //======= triangle ========= 
     float vertices[3 * 7]

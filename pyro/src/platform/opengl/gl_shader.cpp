@@ -5,26 +5,39 @@
 
 #include <fstream>
 
-
-static GLenum shader_type_from_string(const std::string& type)
+static uint32_t shader_type_from_string(const std::string& type)
 {
     if (type == "vertex")
         return GL_VERTEX_SHADER;
     if (type == "fragment" || type == "pixel")
         return GL_FRAGMENT_SHADER;
 
-    PYRO_CORE_ASSERT(false, "Unknown shader type!");
+    PYRO_CORE_ASSERT(false, "[gl_shader] Unknown shader type!");
+    return 0;
+}
+
+static std::string shader_type_to_string(uint32_t type)
+{
+    if (type == GL_VERTEX_SHADER)
+        return "vertex";
+    if (type == GL_FRAGMENT_SHADER)
+        return "fragment/pixel";
+
+    PYRO_CORE_ASSERT(false, "[gl_shader] Unknown shader type!");
     return 0;
 }
 
 pyro::gl_shader::gl_shader(const std::string& file_path)
 {
-    std::string source  = read_file(file_path);
-    auto shader_sources = pre_process(source);
+    const std::string source  = read_file(file_path);
+    const auto shader_sources = pre_process(source);
+    // Extract name from file_path
+    m_name = extract_name(file_path);
     compile(shader_sources);
 }
 
-pyro::gl_shader::gl_shader(const std::string& vertex_source, const std::string& fragment_source)
+pyro::gl_shader::gl_shader(const std::string& name, const std::string& vertex_source, const std::string& fragment_source)
+    : m_name(name)
 {
     std::unordered_map<uint32_t, std::string> sources;
     sources[GL_VERTEX_SHADER] = vertex_source;
@@ -34,6 +47,7 @@ pyro::gl_shader::gl_shader(const std::string& vertex_source, const std::string& 
 
 pyro::gl_shader::~gl_shader()
 {
+    PYRO_CORE_TRACE("[gl_shader] Deleteing shader program {} - id: {}", m_name, m_program_id);
     glDeleteProgram(m_program_id);
 }
 
@@ -52,7 +66,7 @@ std::string pyro::gl_shader::read_file(const std::string& file_path)
     }
     else
     {
-        PYRO_CORE_ERROR("Could not open file: {}", file_path);
+        PYRO_CORE_ERROR("[gl_shader] Could not open file: {}", file_path);
     }
     return result;
 }
@@ -79,9 +93,19 @@ std::unordered_map<uint32_t, std::string> pyro::gl_shader::pre_process(const std
     return sources;
 }
 
+std::string pyro::gl_shader::extract_name(const std::string& file_path)
+{
+    auto last_slash = file_path.find_last_of("/\\");
+    last_slash = last_slash == std::string::npos ? 0 : last_slash + 1;
+    const auto last_dot = file_path.rfind('.');
+    const auto count = last_dot == std::string::npos ? file_path.size() - last_slash : last_dot - last_slash;
+    return file_path.substr(last_slash, count);
+}
+
 void pyro::gl_shader::compile(const std::unordered_map<uint32_t, std::string>& sources)
 {
     uint32_t program = glCreateProgram();
+    PYRO_CORE_TRACE("[gl_shader] Creating shader {} - id: {}", m_name, program);
     std::vector<uint32_t> shader_ids(sources.size());
 
     for (auto&[type, source] : sources)
@@ -155,6 +179,11 @@ void pyro::gl_shader::bind() const
 void pyro::gl_shader::unbind() const
 {
     glUseProgram(0);
+}
+
+const std::string& pyro::gl_shader::name() const
+{
+    return m_name;
 }
 
 void pyro::gl_shader::set_uniform(const std::string& name, int32_t val) 

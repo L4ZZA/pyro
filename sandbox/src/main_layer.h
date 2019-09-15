@@ -10,7 +10,8 @@ public:
     void on_imgui_render() override; 
     void on_event(pyro::event& event) override; 
 
-private: 
+private:
+    pyro::shader_library            m_shader_library;
     pyro::ref<pyro::shader>         m_color_shader{}; 
     pyro::ref<pyro::vertex_array>   m_triangle_va{}; 
 
