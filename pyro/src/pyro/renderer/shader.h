@@ -27,7 +27,6 @@ namespace pyro
     class shader_library final
     {
     public:
-        void add(const std::string& name, const ref<shader>& shader);
         void add(const ref<shader>& shader);
         ref<shader> load(const std::string& filepath);
         ref<shader> load(const std::string& name, const std::string& filepath);

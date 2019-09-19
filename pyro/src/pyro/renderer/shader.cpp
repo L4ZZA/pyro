@@ -29,29 +29,24 @@ pyro::ref<pyro::shader> pyro::shader::create(const std::string& name, const std:
 
 //------------------------------------------------------------------------------------------------
 
-void pyro::shader_library::add(const std::string& name, const ref<shader>& shader)
+void pyro::shader_library::add(const ref<shader>& shader)
 {
+    std::string name = shader->name();
     PYRO_CORE_ASSERT(!exists(name), "[shader_library] shader already exists!");
     m_shaders[name] = shader;
 }
 
-void pyro::shader_library::add(const ref<shader>& shader)
-{
-    auto& name = shader->name();
-    add(name, shader);
-}
-
 pyro::ref<pyro::shader> pyro::shader_library::load(const std::string& filepath)
 {
-    auto shader = shader::create(filepath);
+    ref<shader> shader = shader::create(filepath);
     add(shader);
     return shader;
 }
 
 pyro::ref<pyro::shader> pyro::shader_library::load(const std::string& name, const std::string& filepath)
 {
-    auto shader = shader::create(filepath);
-    add(name, shader);
+    ref<shader> shader = shader::create(filepath);
+    add(shader);
     return shader;
 }
 
