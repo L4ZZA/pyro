@@ -25,6 +25,11 @@ void pyro::orthographic_camera::on_update(const timestep& timestep)
         move(e_direction::up, timestep);
     else if(input::key_pressed(pyro::key_codes::KEY_S)) // down
         move(e_direction::down, timestep);
+
+    if(input::key_pressed(pyro::key_codes::KEY_Q)) // up
+        rotate(e_rotation::anticlock_wise, e_axis::z, timestep);
+    else if(input::key_pressed(pyro::key_codes::KEY_E)) // down
+        rotate(e_rotation::clock_wise, e_axis::z, timestep);
 }
 
 void pyro::orthographic_camera::move(e_direction direction, timestep ts)
@@ -50,11 +55,11 @@ void pyro::orthographic_camera::rotate(e_rotation rotation, e_axis, timestep ts)
 
     if(rotation == clock_wise)
     {
-        m_rotation -= speed * ts;
+        m_rotation.z -= speed * ts;
     }
     else if(rotation == anticlock_wise)
     {
-        m_rotation += speed * ts;
+        m_rotation.z += speed * ts;
     }
 
     update_view_matrix();
@@ -63,7 +68,9 @@ void pyro::orthographic_camera::rotate(e_rotation rotation, e_axis, timestep ts)
 void pyro::orthographic_camera::update_view_matrix()
 {
     glm::mat4 transform(1);
-    glm::rotate(transform, glm::radians(m_rotation), glm::vec3(0,0,1));
+    //transform = glm::rotate(transform, glm::radians(m_rotation.x), glm::vec3(1,0,0));
+    //transform = glm::rotate(transform, glm::radians(m_rotation.y), glm::vec3(0,1,0));
+    transform = glm::rotate(transform, glm::radians(m_rotation.z), glm::vec3(0,0,1));
     transform = glm::translate(transform, m_position);
 
     // inverting the transform matrix 
@@ -103,7 +110,7 @@ pyro::perspective_camera::perspective_camera(
     //m_view_mat = glm::translate(m_view_mat, start_position);
     m_view_projection_mat = m_projection_mat * m_view_mat; 
     PYRO_CORE_TRACE("3d cam position: [{},{},{}]", m_position.x, m_position.y, m_position.z); 
-    PYRO_CORE_TRACE("3d cam rotation: [{},{},{}]", m_rotation_angle.x, m_rotation_angle.y, m_rotation_angle.z); 
+    PYRO_CORE_TRACE("3d cam rotation: [{},{},{}]", m_rotation.x, m_rotation.y, m_rotation.z); 
 }
 
 void pyro::perspective_camera::on_update(const timestep& timestep)
@@ -194,9 +201,9 @@ void pyro::perspective_camera::rotate(e_rotation rotation, e_axis rotation_axis,
     float* angle_ref = nullptr; 
     switch (rotation_axis) 
     { 
-        case x: angle_ref = &m_rotation_angle.x; break; 
-        case y: angle_ref = &m_rotation_angle.y; break; 
-        case z: angle_ref = &m_rotation_angle.z; break; 
+        case x: angle_ref = &m_rotation.x; break; 
+        case y: angle_ref = &m_rotation.y; break; 
+        case z: angle_ref = &m_rotation.z; break; 
     } 
 
     PYRO_ASSERT(angle_ref, "angle ptr is null!") 
@@ -221,15 +228,15 @@ void pyro::perspective_camera::rotate(e_rotation rotation, e_axis rotation_axis,
         } 
     } 
 
-    //PYRO_CORE_TRACE("after - 3d cam rotation: [{},{},{}]", m_rotation_angle.x, m_rotation_angle.y, m_rotation_angle.z); 
+    //PYRO_CORE_TRACE("after - 3d cam rotation: [{},{},{}]", m_rotation.x, m_rotation.y, m_rotation.z); 
 } 
 
 void pyro::perspective_camera::update_view_matrix() 
 { 
     //glm::mat4 transform{1}; 
-    //transform = glm::rotate(transform, glm::radians(m_rotation_angle.x), {1,0,0}); 
-    //transform = glm::rotate(transform, glm::radians(m_rotation_angle.y), {0,1,0}); 
-    //transform = glm::rotate(transform, glm::radians(m_rotation_angle.z), {0,0,1}); 
+    //transform = glm::rotate(transform, glm::radians(m_rotation.x), {1,0,0}); 
+    //transform = glm::rotate(transform, glm::radians(m_rotation.y), {0,1,0}); 
+    //transform = glm::rotate(transform, glm::radians(m_rotation.z), {0,0,1}); 
     //transform = glm::translate(transform, m_position); 
 
     // inverting the transform matrix  
