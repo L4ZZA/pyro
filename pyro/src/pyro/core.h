@@ -28,18 +28,11 @@
 #endif
 
 #ifdef PYRO_ENABLE_ASSERTS
-
-    #define PYRO_ASSERT_NO_MESSAGE(condition) { if(!(condition)) { PYRO_ERROR("Assertion Failed!"); __debugbreak(); } }
-    #define PYRO_ASSERT_MESSAGE(condition, ...) { if(!(condition)) { PYRO_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-
-    #define PYRO_ASSERT_RESOLVE(arg1, arg2, macro, ...) macro
-
-    #define PYRO_ASSERT(...) PYRO_ASSERT_RESOLVE(__VA_ARGS__, PYRO_ASSERT_MESSAGE, PYRO_ASSERT_NO_MESSAGE)(__VA_ARGS__)
-    #define PYRO_CORE_ASSERT(...) PYRO_ASSERT_RESOLVE(__VA_ARGS__, PYRO_ASSERT_MESSAGE, PYRO_ASSERT_NO_MESSAGE)(__VA_ARGS__)
-
+    #define PYRO_ASSERT(expression, ...) { if(!(expression)) {PYRO_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();}}
+    #define PYRO_CORE_ASSERT(expression, ...) { if(!(expression)) {PYRO_CORE_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();}}
 #else
-    #define PYRO_ASSERT(x, ...)
-    #define PYRO_CORE_ASSERT(x, ...)
+    #define PYRO_ASSERT(expression, ...)
+    #define PYRO_CORE_ASSERT(expression, ...)
 #endif
 
 #define BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)

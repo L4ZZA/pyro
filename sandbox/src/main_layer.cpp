@@ -241,15 +241,14 @@ void example_layer::on_imgui_render()
     std::dynamic_pointer_cast<pyro::gl_shader>(m_flat_color_shader)->set_uniform("u_color", m_rect_color);
 
     for(int y = 0; y < 20; y++)
+    {
         for(int x = 0; x < 20; x++)
         {
             glm::vec3 pos(x * 0.11f, y * 0.11f, 0);
             auto transform = glm::translate(glm::mat4(1), m_rect_pos + pos) * scale;
             pyro::renderer::submit(m_flat_color_shader, m_rect_va, transform);
         }
-
-    // triangle 
-    //pyro::renderer::submit(m_triangle_shader, m_vertex_array); 
+    }
 
     pyro::renderer::end_scene();
 }
