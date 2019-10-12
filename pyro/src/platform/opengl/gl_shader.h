@@ -27,7 +27,7 @@ namespace pyro
         static std::string read_file(const std::string& file_path);
         static std::unordered_map<uint32_t, std::string> pre_process(const std::string& source);
         static std::string extract_name(const std::string& file_path);
-        int32_t get_unifrom_location(const std::string& name) const;
+        int32_t get_uniform_location(const std::string& name) const;
 
     private:
         uint32_t m_program_id{0};
