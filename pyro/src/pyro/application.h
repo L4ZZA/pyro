@@ -35,8 +35,12 @@ namespace pyro
         /// \brief Returns a reference to the application.
         static application& instance() { return *s_instance; }
 
+    public: 
+        static void exit(); 
+
     private:
-        bool on_window_close(window_closed_event &event);
+        bool on_window_close(window_closed_event &e); 
+        bool on_window_resized(window_resize_event &e); 
 
     private:
         std::unique_ptr<pyro::window>   m_window;
@@ -44,11 +48,9 @@ namespace pyro
         float                           m_last_frame_time = 0.f;
 
     private:
-        static application*             s_instance;
-        static bool                     s_running; 
-
-    public: 
-        static void exit(); 
+        static application*   s_instance;
+        static bool           s_running; 
+        static bool           s_minimized;  
 
     };
 

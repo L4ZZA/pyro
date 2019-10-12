@@ -21,6 +21,11 @@ namespace pyro
         {
             s_renderer_api->clear();
         }
+ 
+        static void resize_viewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) 
+        { 
+            s_renderer_api->resize_viewport(x,y,width, height); 
+        } 
 
         static void toggle_wireframe()
         {

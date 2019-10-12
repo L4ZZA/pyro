@@ -11,6 +11,7 @@ namespace pyro
     public:
         static void begin_scene(camera& camera, const ref<shader>& shader);
         static void end_scene();
+		static void on_window_resize(uint32_t width, uint32_t height);
 
         static void submit(
             const ref<shader>& shader, 

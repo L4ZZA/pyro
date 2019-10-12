@@ -11,6 +11,11 @@ void pyro::renderer::begin_scene(camera& camera, const ref<shader>& shader)
     shader->set_uniform("u_view_projection", s_scene_data->view_projection_matrix);
 }
 
+void pyro::renderer::on_window_resize(uint32_t width, uint32_t height)
+{
+	render_command::resize_viewport(0, 0, width, height);
+}
+
 void pyro::renderer::end_scene()
 {
     s_scene_data->shader->unbind(); 

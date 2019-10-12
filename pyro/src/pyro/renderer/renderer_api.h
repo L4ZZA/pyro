@@ -19,6 +19,7 @@ namespace pyro
         virtual void init() = 0;  
         virtual void clear() = 0;  
         virtual void clear_color(const glm::vec4& color) = 0;  
+        virtual void resize_viewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
         
         virtual void enable_wireframe() = 0;  
         virtual void disable_wireframe() = 0;  
@@ -32,5 +33,5 @@ namespace pyro
         virtual void enable_culling() = 0;  
         static e_primitive_type s_primitive_type;
         inline static e_api s_renderer_api = e_api::open_gl; 
-    };  
+    };
 }
