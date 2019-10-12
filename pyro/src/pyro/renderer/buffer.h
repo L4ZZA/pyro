@@ -38,7 +38,7 @@ namespace pyro
     {
         std::string name;
         e_shader_data_type type;
-        uint32_t size = 0;
+        size_t size = 0;
         uint32_t offset = 0;
         bool normalised = false;
 
