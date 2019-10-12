@@ -86,7 +86,6 @@ project "pyro"
 
         defines
         {
-            "PYRO_PLATFORM_WIN",
             "GLFW_INCLUDE_NONE",
         }
 
@@ -138,11 +137,6 @@ project "sandbox"
 
     filter "system:windows"
         systemversion "latest"
-
-        defines
-        {
-            "PYRO_PLATFORM_WIN"
-        }
 
     filter "configurations:Debug"
         defines "PYRO_DEBUG"
