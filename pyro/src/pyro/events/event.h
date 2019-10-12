@@ -31,7 +31,7 @@ namespace  pyro
 
     //-------------------------------------------------------------------------
 
-#define EVENT_CLASS_TYPE(type) static event_type_e static_type() { return event_type_e::##type; }\
+#define EVENT_CLASS_TYPE(type) static event_type_e static_type() { return event_type_e::type; }\
                                 virtual event_type_e event_type() const override { return static_type(); }\
                                 virtual const char* name() const override { return #type; }
 

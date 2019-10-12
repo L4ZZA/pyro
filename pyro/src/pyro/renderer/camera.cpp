@@ -30,6 +30,8 @@ void pyro::orthographic_camera::on_update(const timestep& timestep)
         rotate(e_rotation::anticlock_wise, e_axis::z, timestep);
     else if(input::key_pressed(pyro::key_codes::KEY_E)) // down
         rotate(e_rotation::clock_wise, e_axis::z, timestep);
+
+    update_view_matrix();
 }
 
 void pyro::orthographic_camera::move(e_direction direction, timestep ts)
@@ -45,8 +47,6 @@ void pyro::orthographic_camera::move(e_direction direction, timestep ts)
         m_position.x -= speed * ts;
     else if(direction == right)
         m_position.x += speed * ts;
-
-    update_view_matrix();
 }
 
 void pyro::orthographic_camera::rotate(e_rotation rotation, e_axis, timestep ts)
@@ -61,8 +61,6 @@ void pyro::orthographic_camera::rotate(e_rotation rotation, e_axis, timestep ts)
     {
         m_rotation.z += speed * ts;
     }
-
-    update_view_matrix();
 }
 
 void pyro::orthographic_camera::update_view_matrix()

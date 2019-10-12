@@ -139,7 +139,7 @@ namespace pyro
         const glm::mat4& view_matrix() const override; 
         const glm::mat4& view_projection_matrix() const override;
 
-    protected: 
+    private: 
         void process_mouse(e_control_type control_type, float mouse_x, float mouse_y, bool constrain_pitch = true);
         void process_mouse_delta(float mouse_delta_x, float mouse_delta_y, bool constrain_pitch = true);
         void process_mouse_panning(float mouse_x, float mouse_y);
