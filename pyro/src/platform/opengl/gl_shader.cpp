@@ -76,19 +76,23 @@ std::unordered_map<uint32_t, std::string> pyro::gl_shader::pre_process(const std
 {
     std::unordered_map<uint32_t, std::string> sources;
     const char* type_token = "#type";
-    size_t type_token_length = strlen(type_token);
-    size_t pos = source.find(type_token, 0);
+    const size_t type_token_length = strlen(type_token);
+    size_t pos = source.find(type_token, 0); //Start of shader type declaration line
     while(pos != std::string::npos)
     {
-        size_t eol = source.find_first_of("\r\n", pos);
+        size_t eol = source.find_first_of("\r\n", pos); //End of shader type declaration line
         PYRO_CORE_ASSERT(eol != std::string::npos, "[gl_shader] Syntax error");
-        size_t begin = pos + type_token_length + 1;
+        size_t begin = pos + type_token_length + 1; //Start of shader type name (after "#type " keyword)
         std::string type = source.substr(begin, eol - begin);
         PYRO_CORE_ASSERT(shader_type_from_string(type), "[gl_shader] Invalid shader type specified");
 
-        size_t nextLinePos = source.find_first_not_of("\r\n", eol);
-        pos = source.find(type_token, nextLinePos);
-        sources[shader_type_from_string(type)] = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
+        size_t nextLinePos = source.find_first_not_of("\r\n", eol); //Start of shader code after shader type declaration line
+        PYRO_CORE_ASSERT(nextLinePos != std::string::npos, "[gl_shader] Syntax error");
+		pos = source.find(type_token, nextLinePos); //Start of next shader type declaration line
+
+        sources[shader_type_from_string(type)] = (pos == std::string::npos) ? 
+            source.substr(nextLinePos) :
+            source.substr(nextLinePos, pos - nextLinePos);
     }
 
     return sources;
