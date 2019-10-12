@@ -30,7 +30,9 @@ namespace pyro
             : key_event(keycode), m_repeats_count(repeatCount)
         {
         }
-        
+
+        /// \brief Returns the number of times the key repeated event is fired.
+        /// It's usually fired when the key is held down for a long time.
         int32_t repeats_count() const { return m_repeats_count; }
 
         std::string to_string() const override

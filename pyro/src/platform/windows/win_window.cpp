@@ -14,6 +14,7 @@
 
 namespace pyro
 {
+    static std::unordered_map<uint32_t, int32_t> s_key_repeat_count;
     static bool s_glfw_initialized = false;
 
     static void glfw_error_callback(int error_code, const char * description)
@@ -135,19 +136,25 @@ void pyro::win_window::init(window_props const& props)
         {
             case GLFW_PRESS:
             {
-                key_pressed_event event(key, 0);
+                s_key_repeat_count[key] = 0;
+                //PYRO_CORE_TRACE("Key {} pressed: {}", key, 0);
+                key_pressed_event event(key, 0); // don't retrieve the value from s_key_repeat_count[key] as it will be less performant
                 data.event_callback(event);
                 break;
             }
             case GLFW_RELEASE:
             {
+                s_key_repeat_count[key] = 0;
+                //PYRO_CORE_TRACE("Key {} released: {}", key, 0);
                 key_released_event event(key);
                 data.event_callback(event);
                 break;
             }
             case GLFW_REPEAT:
             {
-                key_pressed_event event(key, 1);
+                const int32_t repeats = ++s_key_repeat_count[key];
+                key_pressed_event event(key, repeats);
+                //PYRO_CORE_TRACE("Key {} repeats: {}", key, repeats);
                 data.event_callback(event);
                 break;
             }
@@ -212,5 +219,6 @@ void pyro::win_window::init(window_props const& props)
 
 void pyro::win_window::shut_down()
 {
+	s_key_repeat_count.clear();
     glfwDestroyWindow(m_window);
 }
