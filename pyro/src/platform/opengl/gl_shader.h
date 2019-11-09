@@ -14,15 +14,22 @@ namespace pyro
         void bind() const override;
         void unbind() const override;
         const std::string& name() const override;
-
-        void set_uniform(const std::string& name, int32_t val) override;
-        void set_uniform(const std::string& name, float val) override;
-        void set_uniform(const std::string& name, const glm::vec2& vec) override;
-        void set_uniform(const std::string& name, const glm::vec3& vec) override;
-        void set_uniform(const std::string& name, const glm::vec4& vec) override;
-        void set_uniform(const std::string& name, const glm::mat4& mat) override;
+        
+        void set_int(const std::string& name, int32_t val) override;
+        void set_float(const std::string& name, float val) override;
+        void set_vec2(const std::string& name, const glm::vec2& vec) override;
+        void set_vec3(const std::string& name, const glm::vec3& vec) override;
+        void set_vec4(const std::string& name, const glm::vec4& vec) override;
+        void set_mat4(const std::string& name, const glm::mat4& mat) override; 
 
     private:
+        void upload_uniform(const std::string& name, int32_t val) const;
+        void upload_uniform(const std::string& name, float val) const;
+        void upload_uniform(const std::string& name, const glm::vec2& vec) const;
+        void upload_uniform(const std::string& name, const glm::vec3& vec) const;
+        void upload_uniform(const std::string& name, const glm::vec4& vec) const;
+        void upload_uniform(const std::string& name, const glm::mat4& mat) const;
+
         void compile(const std::unordered_map<uint32_t, std::string>& sources);
         static std::string read_file(const std::string& file_path);
         static std::unordered_map<uint32_t, std::string> pre_process(const std::string& source);

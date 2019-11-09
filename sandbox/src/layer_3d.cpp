@@ -1,8 +1,6 @@
 #include "layer_3d.h"
 #include <imgui/imgui.h>
 
-#include "platform/opengl/gl_shader.h"
-
 layer_3d::layer_3d()
     :
     //m_2d_camera_controller(1.6f / 0.9f),
@@ -122,8 +120,8 @@ layer_3d::layer_3d()
     m_cube_va->add_buffer(cube_vb);
     m_cube_va->add_buffer(cube_ib);
 
-    std::dynamic_pointer_cast<pyro::gl_shader>(m_textured_shader)->bind();
-    std::dynamic_pointer_cast<pyro::gl_shader>(m_textured_shader)->set_uniform("u_sampler", 0);
+    m_textured_shader->bind();
+    m_textured_shader->set_int("u_sampler", 0);
 
     m_texture = pyro::texture_2d::create("assets/textures/checkerboard.png");
     m_face_texture = pyro::texture_2d::create("assets/textures/face.png");

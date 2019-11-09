@@ -1,6 +1,5 @@
 ﻿#include "layer_2d.h"
 #include "imgui/imgui.h"
-#include "platform/opengl/gl_shader.h"
 
 layer_2d::layer_2d() : imgui_layer("Sandbox2D"),
 m_2d_camera_controller(1280.0f / 720.0f, true)
@@ -68,7 +67,7 @@ void layer_2d::on_update(const pyro::timestep &ts)
 
     static auto scale = glm::scale(glm::mat4(1), glm::vec3(0.1f));
 
-    std::dynamic_pointer_cast<pyro::gl_shader>(m_flat_color_shader)->set_uniform("u_color", m_rect_color);
+    m_flat_color_shader->set_vec3("u_color", m_rect_color);
 
     for(int y = 0; y < 20; y++)
     {
