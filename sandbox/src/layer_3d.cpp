@@ -3,46 +3,11 @@
 
 #include "platform/opengl/gl_shader.h"
 
-static const std::string vertex_shader = R"( 
-    #version 430 
- 
-    layout(location = 0) in vec3 a_position; 
-    layout(location = 1) in vec4 a_color; 
- 
-    uniform mat4 u_view_projection; 
-    uniform mat4 u_transform; 
- 
-    out vec3 v_position; 
-    out vec4 v_color; 
- 
-    void main() 
-    { 
-        v_position = a_position; 
-        v_color = a_color; 
-        gl_Position = u_view_projection * u_transform * vec4(a_position, 1.0); 
-    } 
-)";
-
-static const std::string fragment_shader = R"( 
-    #version 430 
- 
-    layout(location = 0) out vec4 o_color; 
- 
-    in vec3 v_position; 
-    in vec4 v_color; 
- 
-    void main() 
-    { 
-        o_color = v_color; 
-    } 
-)";
-
 layer_3d::layer_3d()
     :
     //m_2d_camera_controller(1.6f / 0.9f),
 {
-    m_color_shader = pyro::shader::create("vertex_color", vertex_shader, fragment_shader);
-    //m_flat_color_shader = pyro::shader::create("uniform_color", flat_color_vertex_shader, flat_color_fragment_shader);
+    m_color_shader = pyro::shader_library::load("assets/shaders/color.glsl");
     m_textured_shader = pyro::shader_library::load("assets/shaders/texture.glsl");
 
     //======= triangle ========= 
@@ -164,32 +129,18 @@ layer_3d::layer_3d()
     m_face_texture = pyro::texture_2d::create("assets/textures/face.png");
 }
 
-void layer_3d::on_update(const pyro::timestep& timestep)
+void layer_3d::on_update(const pyro::timestep &timestep)
 {
-    //m_2d_camera_controller.on_update(timestep);
-    m_3d_camera.on_update(timestep);
-
-    if(pyro::input::key_pressed(pyro::key_codes::KEY_LEFT)) // left 
-        m_rect_pos.x -= m_rect_speed * timestep;
-    else if(pyro::input::key_pressed(pyro::key_codes::KEY_RIGHT)) // right 
-        m_rect_pos.x += m_rect_speed * timestep;
-
-    if(pyro::input::key_pressed(pyro::key_codes::KEY_DOWN)) // down 
-        m_rect_pos.y -= m_rect_speed * timestep;
-    else if(pyro::input::key_pressed(pyro::key_codes::KEY_UP)) // up 
-        m_rect_pos.y += m_rect_speed * timestep;
+    m_3d_camera_controller.on_update(timestep);
 }
 
 void layer_3d::on_imgui_render()
 {
-    ImGui::Begin("Settings");
-    ImGui::ColorEdit3("Squares color", glm::value_ptr(m_rect_color));
-    ImGui::End();
 
     pyro::render_command::clear_color({0.2f, 0.3f, 0.3f, 1.0f});
     pyro::render_command::clear();
 
-    pyro::renderer::begin_scene(m_3d_camera, m_textured_shader);
+    pyro::renderer::begin_scene(m_3d_camera_controller.camera(), m_textured_shader);
 
     glm::mat4 transform(1.0f);
     // big square 
@@ -200,20 +151,19 @@ void layer_3d::on_imgui_render()
 
     pyro::renderer::end_scene();
 
-
 }
 
-void layer_3d::on_event(pyro::event& event)
+void layer_3d::on_event(pyro::event &event)
 {
     if(event.event_type() == pyro::event_type_e::key_pressed)
     {
-        auto& e = dynamic_cast<pyro::key_pressed_event&>(event);
+        auto &e = dynamic_cast<pyro::key_pressed_event &>(event);
         if(e.key_code() == pyro::key_codes::KEY_TAB)
         {
             pyro::render_command::toggle_wireframe();
         }
         //PYRO_TRACE("{0}", static_cast<char>(e.key_code())); 
     }
-    //m_2d_camera_controller.on_event(event);
+    m_3d_camera_controller.on_event(event);
 
 }
