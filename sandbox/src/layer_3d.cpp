@@ -2,8 +2,9 @@
 #include <imgui/imgui.h>
 
 layer_3d::layer_3d()
-    :
-    //m_2d_camera_controller(1.6f / 0.9f),
+    :m_3d_camera_controller(pyro::perspective_camera_controller::e_control_type::editor,
+                            static_cast<float>(pyro::application::window().width()),
+                            static_cast<float>(pyro::application::window().height()))
 {
     m_color_shader = pyro::shader_library::load("assets/shaders/color.glsl");
     m_textured_shader = pyro::shader_library::load("assets/shaders/texture.glsl");

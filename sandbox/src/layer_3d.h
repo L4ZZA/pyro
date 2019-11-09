@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <pyro.h>
 
 class layer_3d : public pyro::imgui_layer
@@ -22,6 +22,6 @@ private:
     pyro::ref<pyro::texture_2d>     m_face_texture{}; 
 
     //pyro::orthographic_camera_controller m_2d_camera_controller; 
-    pyro::perspective_camera        m_3d_camera; 
+    pyro::perspective_camera_controller  m_3d_camera_controller; 
 
 };
