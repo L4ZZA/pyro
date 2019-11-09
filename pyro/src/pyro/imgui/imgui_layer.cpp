@@ -12,8 +12,8 @@
 //#include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-pyro::imgui_layer::imgui_layer()
-    : layer("imgui_layer")
+pyro::imgui_layer::imgui_layer(std::string const& name /*= "imgui_layer"*/)
+    : layer(name)
 {
 	m_imgui = true;
 }

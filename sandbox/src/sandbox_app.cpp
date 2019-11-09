@@ -1,5 +1,5 @@
 // --------- Entry Point ---------------
-#include "main_layer.h"
+#include "layer_3d.h"
 #include "pyro/entry_point.h"
 
 
@@ -8,7 +8,7 @@ class sandbox_app : public pyro::application
 public: 
     sandbox_app() 
     { 
-        push_layer(new example_layer()); 
+        push_layer(new layer_3d()); 
     } 
 
     ~sandbox_app() = default; 

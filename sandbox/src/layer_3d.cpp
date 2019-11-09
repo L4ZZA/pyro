@@ -1,4 +1,4 @@
-#include "main_layer.h"
+#include "layer_3d.h"
 #include <imgui/imgui.h>
 
 #include "platform/opengl/gl_shader.h"
@@ -69,7 +69,7 @@ static const std::string flat_color_fragment_shader = R"(
     } 
 )";
 
-example_layer::example_layer()
+layer_3d::layer_3d()
     :m_2d_camera(-1.6f, 1.6f, -0.9f, 0.9f),
     m_3d_camera(pyro::perspective_camera::e_control_type::editor, pyro::application::window().width(), pyro::application::window().height())
 {
@@ -196,7 +196,7 @@ example_layer::example_layer()
     m_face_texture = pyro::texture_2d::create("assets/textures/face.png");
 }
 
-void example_layer::on_update(const pyro::timestep& timestep)
+void layer_3d::on_update(const pyro::timestep& timestep)
 {
     m_2d_camera.on_update(timestep);
     m_3d_camera.on_update(timestep);
@@ -212,7 +212,7 @@ void example_layer::on_update(const pyro::timestep& timestep)
         m_rect_pos.y += m_rect_speed * timestep;
 }
 
-void example_layer::on_imgui_render()
+void layer_3d::on_imgui_render()
 {
     ImGui::Begin("Settings");
     ImGui::ColorEdit3("Squares color", glm::value_ptr(m_rect_color));
@@ -253,7 +253,7 @@ void example_layer::on_imgui_render()
     pyro::renderer::end_scene();
 }
 
-void example_layer::on_event(pyro::event& event)
+void layer_3d::on_event(pyro::event& event)
 {
     if(event.event_type() == pyro::event_type_e::key_pressed)
     {

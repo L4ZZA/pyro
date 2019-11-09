@@ -6,7 +6,7 @@ namespace pyro
     class PYRO_API imgui_layer : public pyro::layer
     {
     public:
-        imgui_layer();
+        imgui_layer(std::string const &name = "imgui_layer");
         ~imgui_layer() = default;
 
         void on_attach() override;
@@ -17,6 +17,6 @@ namespace pyro
         void end() const;
 
     private:
-        float m_time{ 0.f };
+        float m_time{0.f};
     };
 }

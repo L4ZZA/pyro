@@ -1,10 +1,10 @@
 ﻿#pragma once
 #include <pyro.h>
 
-class example_layer : public pyro::imgui_layer
+class layer_3d : public pyro::imgui_layer
 {
 public:
-    example_layer();
+    layer_3d();
 
     void on_update(const pyro::timestep& timestep) override;
     void on_imgui_render() override; 
