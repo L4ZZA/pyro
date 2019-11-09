@@ -22,9 +22,9 @@ void pyro::orthographic_camera::projection_matrix(float left, float right, float
 
 void pyro::orthographic_camera::update_view_matrix()
 {
-    glm::mat4 transform(1);
-    transform = glm::rotate(transform, glm::radians(m_rotation.z), glm::vec3(0,0,1));
+    glm::mat4 transform(1); // REMEMBER STR -> ROTATE, TRANSLATE, SCALE in reverse.
     transform = glm::translate(transform, m_position);
+    transform = glm::rotate(transform, glm::radians(m_rotation.z), glm::vec3(0,0,1));
 
     // inverting the transform matrix 
     m_view_mat = glm::inverse(transform);
