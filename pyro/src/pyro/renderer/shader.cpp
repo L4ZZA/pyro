@@ -56,7 +56,7 @@ pyro::ref<pyro::shader> pyro::shader_library::get(const std::string& name)
     return m_shaders[name];
 }
 
-bool pyro::shader_library::exists(const std::string& name) const
+bool pyro::shader_library::exists(const std::string& name)
 {
     return m_shaders.find(name) != m_shaders.end();
 }
