@@ -2,41 +2,8 @@
 #include "imgui/imgui.h"
 #include "platform/opengl/gl_shader.h"
 
-
-static const std::string flat_color_vertex_shader = R"( 
-    #version 430 
- 
-    layout(location = 0) in vec3 a_position; 
- 
-    uniform mat4 u_view_projection; 
-    uniform mat4 u_transform; 
- 
-    out vec3 v_position; 
- 
-    void main() 
-    { 
-        v_position = a_position; 
-        gl_Position = u_view_projection * u_transform * vec4(a_position, 1.0); 
-    } 
-)";
-
-static const std::string flat_color_fragment_shader = R"( 
-    #version 430 
- 
-    layout(location = 0) out vec4 o_color; 
- 
-    in vec3 v_position; 
-     
-    uniform vec3 u_color; 
- 
-    void main() 
-    { 
-        o_color = vec4(u_color, 1.f); 
-    } 
-)";
-
 layer_2d::layer_2d() : imgui_layer("Sandbox2D"),
-m_2d_camera_controller(1280.0f / 720.0f)
+m_2d_camera_controller(1280.0f / 720.0f, true)
 {
 }
 
