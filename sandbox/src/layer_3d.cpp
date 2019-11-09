@@ -37,45 +37,13 @@ static const std::string fragment_shader = R"(
     } 
 )";
 
-static const std::string flat_color_vertex_shader = R"( 
-    #version 430 
- 
-    layout(location = 0) in vec3 a_position; 
- 
-    uniform mat4 u_view_projection; 
-    uniform mat4 u_transform; 
- 
-    out vec3 v_position; 
- 
-    void main() 
-    { 
-        v_position = a_position; 
-        gl_Position = u_view_projection * u_transform * vec4(a_position, 1.0); 
-    } 
-)";
-
-static const std::string flat_color_fragment_shader = R"( 
-    #version 430 
- 
-    layout(location = 0) out vec4 o_color; 
- 
-    in vec3 v_position; 
-     
-    uniform vec3 u_color; 
- 
-    void main() 
-    { 
-        o_color = vec4(u_color, 1.f); 
-    } 
-)";
-
 layer_3d::layer_3d()
-    :m_2d_camera(-1.6f, 1.6f, -0.9f, 0.9f),
-    m_3d_camera(pyro::perspective_camera::e_control_type::editor, pyro::application::window().width(), pyro::application::window().height())
+    :
+    //m_2d_camera_controller(1.6f / 0.9f),
 {
     m_color_shader = pyro::shader::create("vertex_color", vertex_shader, fragment_shader);
-    m_flat_color_shader = pyro::shader::create("uniform_color", flat_color_vertex_shader, flat_color_fragment_shader);
-    m_textured_shader = m_shader_library.load("assets/shaders/texture.glsl");
+    //m_flat_color_shader = pyro::shader::create("uniform_color", flat_color_vertex_shader, flat_color_fragment_shader);
+    m_textured_shader = pyro::shader_library::load("assets/shaders/texture.glsl");
 
     //======= triangle ========= 
     float vertices[3 * 7]
@@ -198,7 +166,7 @@ layer_3d::layer_3d()
 
 void layer_3d::on_update(const pyro::timestep& timestep)
 {
-    m_2d_camera.on_update(timestep);
+    //m_2d_camera_controller.on_update(timestep);
     m_3d_camera.on_update(timestep);
 
     if(pyro::input::key_pressed(pyro::key_codes::KEY_LEFT)) // left 
@@ -233,24 +201,6 @@ void layer_3d::on_imgui_render()
     pyro::renderer::end_scene();
 
 
-
-    pyro::renderer::begin_scene(m_2d_camera, m_flat_color_shader);
-
-    static auto scale = glm::scale(glm::mat4(1), glm::vec3(0.1f));
-
-    std::dynamic_pointer_cast<pyro::gl_shader>(m_flat_color_shader)->set_uniform("u_color", m_rect_color);
-
-    for(int y = 0; y < 20; y++)
-    {
-        for(int x = 0; x < 20; x++)
-        {
-            glm::vec3 pos(x * 0.11f, y * 0.11f, 0);
-            auto transform = glm::translate(glm::mat4(1), m_rect_pos + pos) * scale;
-            pyro::renderer::submit(m_flat_color_shader, m_rect_va, transform);
-        }
-    }
-
-    pyro::renderer::end_scene();
 }
 
 void layer_3d::on_event(pyro::event& event)
@@ -264,5 +214,6 @@ void layer_3d::on_event(pyro::event& event)
         }
         //PYRO_TRACE("{0}", static_cast<char>(e.key_code())); 
     }
+    //m_2d_camera_controller.on_event(event);
 
 }
