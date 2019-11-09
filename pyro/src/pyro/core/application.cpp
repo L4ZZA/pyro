@@ -2,7 +2,7 @@
 #include "application.h"
 
 #include "platform/opengl/gl_shader.h"
-#include "renderer/renderer.h"
+#include "pyro/renderer/renderer.h"
 #include "GLFW/glfw3.h"
 
 //----------------------------------------------------------------------------- 
@@ -52,7 +52,6 @@ void pyro::application::run()
 
         m_window->on_update();
     }
-
 }
 
 void pyro::application::on_event(event& e) 

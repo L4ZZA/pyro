@@ -1,8 +1,8 @@
 ﻿#pragma once
 
-#include "pyro/core.h"
+#include "pyro/core/core.h"
 #include "pyro/events/event.h"
-#include "core/timestep.h"
+#include "pyro/core/timestep.h"
 
 namespace pyro
 {

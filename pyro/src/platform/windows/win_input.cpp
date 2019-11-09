@@ -1,6 +1,6 @@
 ﻿#include "pyro_pch.h"
 #include "win_input.h"
-#include "pyro/application.h"
+#include "pyro/core/application.h"
 #include "GLFW/glfw3.h"
 
 namespace pyro

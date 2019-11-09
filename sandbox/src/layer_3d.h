@@ -24,7 +24,4 @@ private:
     //pyro::orthographic_camera_controller m_2d_camera_controller; 
     pyro::perspective_camera        m_3d_camera; 
 
-    glm::vec3                       m_rect_color{.2f, .3f, .6f}; 
-    glm::vec3                       m_rect_pos{0}; 
-    const float                     m_rect_speed{1.f}; 
 };

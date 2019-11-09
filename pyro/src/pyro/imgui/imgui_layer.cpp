@@ -6,7 +6,7 @@
 #include "examples/imgui_impl_opengl3.h"
 
 
-#include "pyro/application.h"
+#include "pyro/core/application.h"
 
 // temporary
 //#include "glad/glad.h"

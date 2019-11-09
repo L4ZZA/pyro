@@ -1,5 +1,5 @@
 #pragma once
-#include "pyro/layer.h"
+#include "pyro/core/layer.h"
 
 namespace pyro
 {

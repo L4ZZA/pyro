@@ -2,15 +2,15 @@
 
 // For whoever wants to use Pyro library
 
-#include "pyro/application.h"
-#include "pyro/layer.h"
-#include "pyro/logger.h"
+#include "pyro/core/application.h"
+#include "pyro/core/layer.h"
+#include "pyro/core/logger.h"
 
 #include "pyro/core/timestep.h"
 
-#include "pyro/input.h"
-#include "pyro/key_codes.h"
-#include "pyro/mouse_buttons_codes.h"
+#include "pyro/core/input.h"
+#include "pyro/core/key_codes.h"
+#include "pyro/core/mouse_buttons_codes.h"
 
 #include "pyro/events/key_event.h"
 

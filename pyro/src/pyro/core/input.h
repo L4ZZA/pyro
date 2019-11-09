@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pyro/core.h"
+#include "pyro/core/core.h"
 
 namespace pyro
 {

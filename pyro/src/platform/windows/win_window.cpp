@@ -5,10 +5,10 @@
 #include "pyro/events/key_event.h"
 #include "pyro/events/mouse_event.h"
 
-#include "pyro/core.h"
+#include "pyro/core/core.h"
 #include "platform/opengl/gl_context.h"
 #include "GLFW/glfw3.h"
-#include "pyro/input.h"
+#include "pyro/core/input.h"
 
 //=============================================================================
 

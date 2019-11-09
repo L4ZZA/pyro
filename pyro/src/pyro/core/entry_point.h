@@ -11,7 +11,6 @@ void move_console();
 
 int main(int argc, char** argv)
 {
-
     move_console();
 
     pyro::logger::init();
@@ -20,7 +19,8 @@ int main(int argc, char** argv)
 
     auto app = pyro::create_application();
     app->run();
-    delete app;
+    //delete app;
+    return 0;
 }
 
 void move_console()

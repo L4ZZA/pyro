@@ -1,8 +1,8 @@
 ﻿#include "pyro_pch.h"
 #include "camera_controller.h"
-#include "pyro/input.h"
-#include "pyro/key_codes.h"
-#include "pyro/application.h"
+#include "pyro/core/input.h"
+#include "pyro/core/key_codes.h"
+#include "pyro/core/application.h"
 
 //====================== 2D CAMERA CONTROLLER ========================
 

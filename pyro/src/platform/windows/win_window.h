@@ -1,5 +1,5 @@
 #pragma once
-#include "pyro/window.h"
+#include "pyro/core/window.h"
 #include "pyro/renderer/graphics_context.h"
 #include "GLFW/glfw3.h"
 

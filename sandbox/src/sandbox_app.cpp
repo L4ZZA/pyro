@@ -1,5 +1,5 @@
 // --------- Entry Point ---------------
-#include "pyro/entry_point.h"
+#include "pyro/core/entry_point.h"
 #include "layer_2d.h"
 #include "layer_3d.h"
 

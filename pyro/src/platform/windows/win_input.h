@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "pyro/input.h"
+#include "pyro/core/input.h"
 
 namespace pyro
 {

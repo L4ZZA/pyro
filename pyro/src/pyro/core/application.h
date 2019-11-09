@@ -4,9 +4,9 @@
 
 #include "window.h"
 #include "layers_stack.h"
-#include "events/event.h"
-#include "events/application_event.h"
-#include "imgui/imgui_layer.h"
+#include "pyro/events/event.h"
+#include "pyro/events/application_event.h"
+#include "pyro/imgui/imgui_layer.h"
 #include "pyro/core/timestep.h"
 
 
