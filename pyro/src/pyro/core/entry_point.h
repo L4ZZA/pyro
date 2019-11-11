@@ -19,6 +19,7 @@ int main(int argc, char** argv)
 
     auto app = pyro::create_application();
     app->run();
+    // TODO: uncomment following line and figure out why it crashes the program.
     //delete app;
     return 0;
 }
