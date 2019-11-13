@@ -1,6 +1,9 @@
 #include "pyro_pch.h"
 #include "camera.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include "pyro/core/key_codes.h"
+#include "pyro/core/input.h"
+#include "pyro/core/application.h"
 
 
 //================== Orthographic Camera [2D] =================================
@@ -30,16 +33,28 @@ void pyro::orthographic_camera::update_view_matrix()
 
 //================== Perspective Camera [3D] ==================================
 
+// Default camera values 
+const float YAW = -90.0f;
+const float PITCH = 0.0f;
+
 pyro::perspective_camera::perspective_camera(
     float width, float height,
     float fov /*= 45.f*/,
     float near_z /*= 0.1f*/, float far_z /*= 100.f*/)
     : m_projection_mat(glm::perspective(glm::radians(fov), width / height, near_z, far_z)),
+    m_view_mat(1),
+    m_view_projection_mat(1),
     m_aspect_ratio(width / height),
     m_fov(fov),
     m_near_plane(near_z),
     m_far_plane(far_z)
+
 {
+    m_up_vector = glm::vec3{0.f,1.f,0.f};
+    m_right_vector = glm::vec3{0.f};
+    m_world_up_vector = glm::vec3{0.f,1.f,0.f};
+
+    m_rotation = glm::vec3{PITCH, YAW, 0.f};
     m_position = glm::vec3(0.0f, 0.0f, 3.0f);
     m_front_vector = glm::vec3(0.0f, 0.0f, -1.0f);
     m_up_vector = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -75,8 +90,10 @@ void pyro::perspective_camera::update_camera_vectors()
 {
     // Calculate the new Front vector
     glm::vec3 front(0.f);
-    float yaw_radians = glm::radians(m_yaw);
-    float pitch_radians = glm::radians(m_pitch);
+    const float &yaw = m_rotation.y;
+    const float &pitch = m_rotation.x;
+    float yaw_radians = glm::radians(yaw);
+    float pitch_radians = glm::radians(pitch);
     front.x = cos(yaw_radians) * cos(pitch_radians);
     front.y = sin(pitch_radians);
     front.z = sin(yaw_radians) * cos(pitch_radians);
@@ -84,7 +101,7 @@ void pyro::perspective_camera::update_camera_vectors()
     m_front_vector = glm::normalize(front);
     // Also re-calculate the Right and Up vector
     // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-    m_righ_vector = glm::normalize(glm::cross(m_front_vector, m_world_up_vector));
-    m_up_vector = glm::normalize(glm::cross(m_righ_vector, m_front_vector));
+    m_right_vector = glm::normalize(glm::cross(m_front_vector, m_world_up_vector));
+    m_up_vector = glm::normalize(glm::cross(m_right_vector, m_front_vector));
     update_view_matrix();
 }

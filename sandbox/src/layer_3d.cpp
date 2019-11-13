@@ -2,9 +2,9 @@
 #include <imgui/imgui.h>
 
 layer_3d::layer_3d()
-    :m_3d_camera_controller(pyro::perspective_camera_controller::e_control_type::editor,
-                            static_cast<float>(pyro::application::window().width()),
-                            static_cast<float>(pyro::application::window().height()))
+    :m_3d_camera_controller(pyro::perspective_camera_controller::e_control_type::first_person,
+                        static_cast<float>(pyro::application::window().width()),
+                        static_cast<float>(pyro::application::window().height()))
 {
     m_color_shader = pyro::shader_library::load("assets/shaders/color.glsl");
     m_textured_shader = pyro::shader_library::load("assets/shaders/texture.glsl");
@@ -131,6 +131,7 @@ layer_3d::layer_3d()
 void layer_3d::on_update(const pyro::timestep &timestep)
 {
     m_3d_camera_controller.on_update(timestep);
+    //m_3d_camera.on_update(timestep);
 }
 
 void layer_3d::on_imgui_render()

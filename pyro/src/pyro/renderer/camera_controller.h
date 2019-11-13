@@ -89,14 +89,6 @@ namespace pyro
             editor
         };
 
-        enum e_direction 
-        { 
-            forward = 0, 
-            backward, 
-            left, 
-            right 
-        };
-
     public:
         perspective_camera_controller(
             e_control_type control_type,
@@ -115,39 +107,19 @@ namespace pyro
         void process_mouse(e_control_type control_type, float mouse_x, float mouse_y, bool constrain_pitch = true);
         void process_mouse_delta(float mouse_delta_x, float mouse_delta_y, bool constrain_pitch = true);
         void process_mouse_panning(float mouse_x, float mouse_y);
-        void move(e_direction direction, timestep ts); 
-        void rotate(e_rotation rotation, e_axis rotation_axis, timestep ts);
+        void move(perspective_camera::e_direction direction, timestep ts); 
+        void rotate(perspective_camera::e_rotation rotation, perspective_camera::e_axis rotation_axis, timestep ts);
 
     private:    
-        // Default camera values
-        const float YAW         = -90.0f;
-        const float PITCH       =  0.0f;
-        const float ZOOM        =  45.0f;
-
-        float m_aspect_ratio;
-        float m_zoom_level;
-
-        /// \brief 
-        float m_yaw = YAW; 
-        /// \brief 
-        float m_pitch = PITCH; 
-        /// \brief Field of view in degrees. 
-        float m_fov = ZOOM; 
-        /// \brief Near clipping plane. 
-        float m_near_plane = 0.1f; 
-        /// \brief ar clipping plane. 
-        float m_far_plane = 100.f;
-
-        glm::vec3   m_front_vector{0.f}; 
-        glm::vec3   m_up_vector{0.f,1.f,0.f}; 
-        glm::vec3   m_righ_vector{0.f}; 
-        glm::vec3   m_world_up_vector{0.f,1.f,0.f};
 
         perspective_camera m_camera;
 
-        bool m_rotation;
+        bool m_should_rotate;
         glm::vec3 m_camera_position;
         /// \brief Rotation in degrees in anti-clockwise direction.
+        /// pitch -> rotation over x axis
+        /// yaw -> rotation over y axis
+        /// roll -> rotation over z axis
         glm::vec3 m_camera_rotation;
         const float m_camera_translation_speed;
         const float m_camera_rotation_speed;

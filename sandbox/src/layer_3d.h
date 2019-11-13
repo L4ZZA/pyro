@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <pyro.h>
 
 class layer_3d : public pyro::imgui_layer
