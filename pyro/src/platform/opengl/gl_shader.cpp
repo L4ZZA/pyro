@@ -60,14 +60,22 @@ std::string pyro::gl_shader::read_file(const std::string& file_path)
     if(in)
     {
         in.seekg(0, std::ios::end);
-        result.resize(in.tellg());
-        in.seekg(0, std::ios::beg);
-        in.read(&result[0], result.size());
-        in.close();
+		size_t size = in.tellg();
+		if (size != -1)
+		{
+            result.resize(in.tellg());
+            in.seekg(0, std::ios::beg);
+            in.read(&result[0], result.size());
+            in.close();
+		}
+        else
+        {
+            PYRO_CORE_ERROR("[read_file] Could not read from file '{}'", file_path);
+        }
     }
     else
     {
-        PYRO_CORE_ERROR("[read_file] Could not open file: {}", file_path);
+        PYRO_CORE_ERROR("[read_file] Could not open file '{}'", file_path);
     }
     return result;
 }
@@ -175,6 +183,7 @@ void pyro::gl_shader::compile(const std::unordered_map<uint32_t, std::string>& s
     for(auto id : shader_ids)
     {
         glDetachShader(program, id);
+        PYRO_CORE_INFO("[gl_shader] Deleted shader id:{} - '{}'", id, m_file_path);
         glDeleteShader(id);
     }
 }
