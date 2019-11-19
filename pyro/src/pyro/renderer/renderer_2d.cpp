@@ -10,8 +10,8 @@ namespace pyro
     struct render_2d_storage
     {
         ref<vertex_array> quad_va;
-        ref<shader> flat_color_shader;
         ref<shader> texture_shader;
+        ref<texture_2d> wite_texture;
     };
 
     static render_2d_storage *s_data;
@@ -43,9 +43,12 @@ void pyro::renderer_2d::init()
     s_data->quad_va = pyro::vertex_array::create();
     s_data->quad_va->add_buffer(rect_vb);
     s_data->quad_va->add_buffer(rect_ib);
+
+    s_data->wite_texture = texture_2d::create(1, 1);
+    uint32_t white_tex_data = 0xffffffff; // 2 fs per channel
+    s_data->wite_texture->data(&white_tex_data, sizeof(uint32_t));
     
-    s_data->flat_color_shader = shader_library::load("assets/shaders/dynamic_flat_color.glsl");
-    s_data->texture_shader = shader_library::load("assets/shaders/texture.glsl");
+    s_data->texture_shader = shader_library::load("assets/shaders/texture_2d.glsl");
     s_data->texture_shader->set_int("u_sampler", 0);
 }
 
@@ -56,9 +59,6 @@ void pyro::renderer_2d::shutdonw()
 
 void pyro::renderer_2d::begin_scene(camera &camera)
 {
-    s_data->flat_color_shader->bind();
-    s_data->flat_color_shader->set_mat4("u_view_projection", camera.view_projection_matrix());
-
     s_data->texture_shader->bind();
     s_data->texture_shader->set_mat4("u_view_projection", camera.view_projection_matrix());
 }
@@ -84,13 +84,13 @@ void pyro::renderer_2d::draw_quad(const glm::vec2 &position, const glm::vec2 &si
 
 void pyro::renderer_2d::draw_quad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color)
 {
-    s_data->flat_color_shader->bind();
-    s_data->flat_color_shader->set_float4("u_color", color);
+    s_data->texture_shader->set_float4("u_color", color);
+    s_data->wite_texture->bind();
     
     glm::mat4 transform(1); // REMEMBER STR -> ROTATE, TRANSLATE, SCALE in reverse.
     transform = glm::translate(transform, position);
     transform = glm::scale(transform, {size.x, size.y, 1});
-    s_data->flat_color_shader->set_mat4("u_transform", transform);
+    s_data->texture_shader->set_mat4("u_transform", transform);
 
     s_data->quad_va->bind();
     render_command::draw_indexed(s_data->quad_va);
@@ -103,14 +103,13 @@ void pyro::renderer_2d::draw_quad(const glm::vec2 &position, const glm::vec2 &si
 
 void pyro::renderer_2d::draw_quad(const glm::vec3 &position, const glm::vec2 &size, const ref<texture_2d> &texture)
 {
-    s_data->texture_shader->bind();
+    s_data->texture_shader->set_float4("u_color", glm::vec4(1.f));
+    texture->bind();
     
     glm::mat4 transform(1); // REMEMBER STR -> ROTATE, TRANSLATE, SCALE in reverse.
     transform = glm::translate(transform, position);
     transform = glm::scale(transform, {size.x, size.y, 1});
     s_data->texture_shader->set_mat4("u_transform", transform);
-
-    texture->bind();
 
     s_data->quad_va->bind();
     render_command::draw_indexed(s_data->quad_va);
