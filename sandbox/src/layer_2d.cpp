@@ -38,9 +38,9 @@ void layer_2d::on_imgui_render()
     pyro::render_command::clear();
 
     pyro::renderer_2d::begin_scene(m_2d_camera_controller.camera());
-    pyro::renderer_2d::draw_quad({-1.0f, 0.0f}, {0.8f, 0.8f}, m_rect_color);
-    pyro::renderer_2d::draw_quad({0.5f, -0.5f}, {0.5f, 0.75f}, {0.2f, 0.3f, 0.8f, 1.0f});
-    pyro::renderer_2d::draw_quad({0.2f, 0.5f}, {0.5f,0.5f}, m_checkerboard_texture);
+    pyro::renderer_2d::draw_quad({-1.0f, 0.0f}, {0.8f, 0.8f}, {0.8f, 0.3f, 0.2f, 1.0f});
+    pyro::renderer_2d::draw_quad({0.5f, -0.5f}, {0.5f, 0.75f}, m_rect_color);
+    pyro::renderer_2d::draw_quad({-1.0f, 0.3f,-0.1f}, {0.9f,0.9f}, m_checkerboard_texture);
     pyro::renderer_2d::end_scene();
 }
 

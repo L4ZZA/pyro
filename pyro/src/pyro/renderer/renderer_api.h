@@ -30,6 +30,7 @@ namespace pyro
 
     protected:  
         virtual void enable_alpha() = 0;  
+        virtual void enable_depth_test() = 0;  
         virtual void enable_culling() = 0;  
         static e_primitive_type s_primitive_type;
         inline static e_api s_renderer_api = e_api::open_gl; 

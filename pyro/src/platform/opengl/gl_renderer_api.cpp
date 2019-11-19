@@ -18,6 +18,7 @@ pyro::e_primitive_type pyro::renderer_api::s_primitive_type = pyro::e_primitive_
 void pyro::gl_renderer_api::init()
 {
     enable_alpha();
+    enable_depth_test();
 }
 
 void pyro::gl_renderer_api::enable_wireframe()
@@ -34,7 +35,7 @@ void pyro::gl_renderer_api::disable_wireframe()
 
 void pyro::gl_renderer_api::clear()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void pyro::gl_renderer_api::clear_color(const glm::vec4& color)
@@ -63,6 +64,11 @@ void pyro::gl_renderer_api::enable_alpha()
 {
     glEnable(GL_BLEND); 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+}
+
+void pyro::gl_renderer_api::enable_depth_test()
+{
+    glEnable(GL_DEPTH_TEST); 
 }
 
 void pyro::gl_renderer_api::enable_culling()

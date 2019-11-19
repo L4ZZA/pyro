@@ -22,6 +22,7 @@ namespace pyro
 
     protected:
         void enable_alpha() override;
+        void enable_depth_test() override;
         void enable_culling() override;
     };
 }
