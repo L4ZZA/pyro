@@ -232,17 +232,17 @@ void pyro::gl_shader::set_float(const std::string& name, float val)
     upload_uniform(name, val);
 }
 
-void pyro::gl_shader::set_vec2(const std::string& name, const glm::vec2& vec)
+void pyro::gl_shader::set_float2(const std::string& name, const glm::vec2& vec)
 {
     upload_uniform(name, vec);
 }
 
-void pyro::gl_shader::set_vec3(const std::string& name, const glm::vec3& vec)
+void pyro::gl_shader::set_float3(const std::string& name, const glm::vec3& vec)
 {
     upload_uniform(name, vec);
 }
 
-void pyro::gl_shader::set_vec4(const std::string& name, const glm::vec4& vec)
+void pyro::gl_shader::set_float4(const std::string& name, const glm::vec4& vec)
 {
     upload_uniform(name, vec);
 }

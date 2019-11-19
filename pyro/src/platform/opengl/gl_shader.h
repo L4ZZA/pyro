@@ -17,9 +17,9 @@ namespace pyro
         
         void set_int(const std::string& name, int32_t val) override;
         void set_float(const std::string& name, float val) override;
-        void set_vec2(const std::string& name, const glm::vec2& vec) override;
-        void set_vec3(const std::string& name, const glm::vec3& vec) override;
-        void set_vec4(const std::string& name, const glm::vec4& vec) override;
+        void set_float2(const std::string& name, const glm::vec2& vec) override;
+        void set_float3(const std::string& name, const glm::vec3& vec) override;
+        void set_float4(const std::string& name, const glm::vec4& vec) override;
         void set_mat4(const std::string& name, const glm::mat4& mat) override; 
 
     private:

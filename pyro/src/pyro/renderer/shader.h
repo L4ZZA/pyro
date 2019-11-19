@@ -15,10 +15,10 @@ namespace pyro
 
         virtual void set_int(const std::string& name, int32_t val) = 0;
         virtual void set_float(const std::string& name, float val) = 0;
-        virtual void set_vec2(const std::string& name, const glm::vec2& vec) = 0;
-        virtual void set_vec3(const std::string& name, const glm::vec3& vec) = 0;
-        virtual void set_vec4(const std::string& name, const glm::vec4& vec) = 0;
-        virtual void set_mat4(const std::string& name, const glm::mat4& mat) = 0; 
+        virtual void set_float2(const std::string& name, const glm::vec2& vec) = 0;
+        virtual void set_float3(const std::string& name, const glm::vec3& vec) = 0;
+        virtual void set_float4(const std::string& name, const glm::vec4& vec) = 0;
+        virtual void set_mat4(const std::string& name, const glm::mat4& mat) = 0;
 
         static ref<shader> create(const std::string& file_path);
         static ref<shader> create(const std::string& name, const std::string& vertex_source, const std::string& fragment_source);
