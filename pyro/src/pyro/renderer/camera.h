@@ -12,7 +12,9 @@ namespace pyro
     public:
         virtual ~camera() = default;
 
+        virtual void             projection_matrix(glm::mat4 const &mat)  = 0;
         virtual const glm::mat4 &projection_matrix() const = 0;
+        virtual void             view_matrix(glm::mat4 const &mat)  = 0;
         virtual const glm::mat4 &view_matrix() const = 0;
         virtual const glm::mat4 &view_projection_matrix() const = 0;
 
@@ -37,6 +39,8 @@ namespace pyro
         void rotation(const glm::vec3 &rot) override { m_rotation = rot; update_view_matrix(); }
 
         void projection_matrix(float left, float right, float bottom, float top);
+        void projection_matrix(glm::mat4 const &mat) override;
+        void view_matrix(glm::mat4 const &mat) override;
         const glm::mat4 &projection_matrix() const override { return m_projection_mat; }
         const glm::mat4 &view_matrix() const override { return m_view_mat; }
         const glm::mat4 &view_projection_matrix() const override { return m_view_projection_mat; }
@@ -98,6 +102,8 @@ namespace pyro
         glm::vec3 right_v() const { return m_right_vector; }
         glm::vec3 up() const { return m_up_vector; }
 
+        void projection_matrix(glm::mat4 const &mat) override;
+        void view_matrix(glm::mat4 const &mat) override;
         const glm::mat4 &projection_matrix() const override;
         const glm::mat4 &view_matrix() const override;
         const glm::mat4 &view_projection_matrix() const override;

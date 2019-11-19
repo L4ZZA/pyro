@@ -9,8 +9,8 @@ class sandbox_app : public pyro::application
 public: 
     sandbox_app() 
     { 
-        push_layer(new layer_3d()); 
-        //push_layer(new layer_2d()); 
+        //push_layer(new layer_3d()); 
+        push_layer(new layer_2d()); 
     } 
 
     ~sandbox_app() = default; 

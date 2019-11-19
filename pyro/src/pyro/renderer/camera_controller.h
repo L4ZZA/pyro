@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "pyro/renderer/camera.h"
 #include "pyro/core/timestep.h"
 

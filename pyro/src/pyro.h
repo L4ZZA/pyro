@@ -15,6 +15,7 @@
 #include "pyro/events/key_event.h"
 
 #include "pyro/renderer/renderer.h"
+#include "pyro/renderer/renderer_2d.h"
 #include "pyro/renderer/buffer.h"
 #include "pyro/renderer/vertex_array.h"
 #include "pyro/renderer/shader.h"

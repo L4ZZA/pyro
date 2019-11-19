@@ -20,6 +20,16 @@ void pyro::orthographic_camera::projection_matrix(float left, float right, float
     m_view_projection_mat = m_projection_mat * m_view_mat;
 }
 
+void pyro::orthographic_camera::projection_matrix(glm::mat4 const& mat)
+{
+    m_projection_mat = mat;
+}
+
+void pyro::orthographic_camera::view_matrix(glm::mat4 const& mat)
+{
+    m_view_mat = mat;
+}
+
 void pyro::orthographic_camera::update_view_matrix()
 {
     glm::mat4 transform(1); // REMEMBER STR -> ROTATE, TRANSLATE, SCALE in reverse.
@@ -63,6 +73,16 @@ pyro::perspective_camera::perspective_camera(
     m_view_projection_mat = m_projection_mat * m_view_mat;
     PYRO_CORE_TRACE("3d cam position: [{},{},{}]", m_position.x, m_position.y, m_position.z);
     PYRO_CORE_TRACE("3d cam rotation: [{},{},{}]", m_rotation.x, m_rotation.y, m_rotation.z);
+}
+
+void pyro::perspective_camera::projection_matrix(glm::mat4 const& mat)
+{
+    m_projection_mat = mat;
+}
+
+void pyro::perspective_camera::view_matrix(glm::mat4 const& mat)
+{
+    m_view_mat = mat;
 }
 
 const glm::mat4 &pyro::perspective_camera::projection_matrix() const

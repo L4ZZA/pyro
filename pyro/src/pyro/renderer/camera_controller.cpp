@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "camera_controller.h"
 #include "pyro/core/input.h"
 #include "pyro/core/key_codes.h"

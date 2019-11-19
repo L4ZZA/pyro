@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "renderer_api.h"
+#include "renderer_2d.h"
 
 namespace pyro
 {
@@ -11,7 +12,7 @@ namespace pyro
         {
             s_renderer_api->init();
         }
-
+         
         static void clear_color(const glm::vec4 &color)
         {
             s_renderer_api->clear_color(color);
@@ -43,7 +44,7 @@ namespace pyro
             s_renderer_api->primitive_type(type);
         }
 
-        static void submit(const ref<vertex_array>& vertex_array)
+        static void draw_indexed(const ref<vertex_array>& vertex_array)
         {
             s_renderer_api->draw_indexed(vertex_array);
         }
