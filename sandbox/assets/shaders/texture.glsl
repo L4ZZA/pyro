@@ -1,4 +1,6 @@
-// Basic Texture Shader
+/*
+* Simple texture shader.
+*/
 
 #type vertex
 #version 430

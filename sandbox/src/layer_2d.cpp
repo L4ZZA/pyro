@@ -13,6 +13,8 @@ layer_2d::~layer_2d()
 void layer_2d::on_attach()
 {
     imgui_layer::on_attach();
+
+    m_checkerboard_texture = pyro::texture_2d::create("assets/textures/checkerboard.png");
 }
 
 void layer_2d::on_detach()
@@ -38,7 +40,7 @@ void layer_2d::on_imgui_render()
     pyro::renderer_2d::begin_scene(m_2d_camera_controller.camera());
     pyro::renderer_2d::draw_quad({-1.0f, 0.0f}, {0.8f, 0.8f}, m_rect_color);
     pyro::renderer_2d::draw_quad({0.5f, -0.5f}, {0.5f, 0.75f}, {0.2f, 0.3f, 0.8f, 1.0f});
-    //pyro::renderer_2d::draw_quad({0.0f, 0.0f, -0.1f}, {10.0f, 10.0f}, m_CheckerboardTexture);
+    pyro::renderer_2d::draw_quad({0.2f, 0.5f}, {0.5f,0.5f}, m_checkerboard_texture);
     pyro::renderer_2d::end_scene();
 }
 
