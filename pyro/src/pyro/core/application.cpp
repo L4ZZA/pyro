@@ -7,7 +7,7 @@
 
 //----------------------------------------------------------------------------- 
 
-pyro::application* pyro::application::s_instance = nullptr ; 
+pyro::application *pyro::application::s_instance = nullptr;
 bool pyro::application::s_running = true; 
 bool pyro::application::s_minimized = false; 
 
@@ -58,7 +58,7 @@ void pyro::application::run()
     }
 }
 
-void pyro::application::on_event(event& e) 
+void pyro::application::on_event(event &e)
 { 
     event_dispatcher dispatcher(e); 
     // dispatch event on window X pressed 
@@ -69,35 +69,35 @@ void pyro::application::on_event(event& e)
     //PYRO_CORE_TRACE("{0}", event); 
 
     // events are executed from top of the stack to bottom (aka end to start of the list) 
-    for (auto it = m_layers_stack.end(); it != m_layers_stack.begin(); ) 
+    for(auto it = m_layers_stack.end(); it != m_layers_stack.begin(); )
     { 
         (*--it)->on_event(e); 
         // stop event propagation to next layer if flagged as handled 
-        if (e.handled) 
+        if(e.handled)
             break; 
     } 
 } 
 
-void pyro::application::push_layer(layer* layer) 
+void pyro::application::push_layer(layer *layer)
 { 
     m_layers_stack.push_layer(layer);
     layer->on_attach();
 } 
 
-void pyro::application::push_overlay(layer* overlay) 
+void pyro::application::push_overlay(layer *overlay)
 { 
     m_layers_stack.push_overlay(overlay); 
     overlay->on_attach();
 } 
 
-bool pyro::application::on_window_close(window_closed_event&) 
+bool pyro::application::on_window_close(window_closed_event &)
 { 
     exit();
     const bool event_handled = false; 
     return event_handled;  
 }
 
-bool pyro::application::on_window_resized(window_resize_event& e)
+bool pyro::application::on_window_resized(window_resize_event &e)
 {
     if(e.height() == 0 || e.width() == 0)
     { 

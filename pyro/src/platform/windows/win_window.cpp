@@ -23,9 +23,9 @@ namespace pyro
     }
 }
 
-pyro::window* pyro::window::create(window_props const& props)
+pyro::scope<pyro::window> pyro::window::create(window_props const& props)
 {
-    return new win_window(props);
+    return make_scope<win_window>(props);
 }
 
 pyro::win_window::win_window(window_props const& props)

@@ -26,14 +26,14 @@ namespace pyro
 		virtual void on_event(event& event) {}
 
 		/// \brief Gives you the name of the layer [for debug]
-		const std::string& name() const { return m_debug_name; }
+		std::string const& name() const { return m_debug_name; }
 		bool is_imgui() const { return m_imgui; }
 
 	protected:
-		std::string m_debug_name{};
+		std::string m_debug_name = "";
 
 		/// \brief Flag to distinguish between imgui and pyro rendering calls.
-		bool		m_imgui{ false };
+		bool		m_imgui = false ;
 
 		//TODO: enabling/disabling layer
 	};
