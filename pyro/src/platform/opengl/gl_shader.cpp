@@ -37,6 +37,14 @@ pyro::gl_shader::gl_shader(std::string const &file_path)
     compile(shader_sources);
 }
 
+pyro::gl_shader::gl_shader(std::string const &name, std::string const &file_path)
+    :m_name(name), m_file_path(file_path)
+{
+    const std::string source = read_file(file_path);
+    const auto shader_sources = pre_process(source);
+    compile(shader_sources);
+}
+
 pyro::gl_shader::gl_shader(std::string const &name, std::string const &vertex_source, std::string const &fragment_source)
     : m_name(name)
 {

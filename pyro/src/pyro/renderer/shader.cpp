@@ -15,6 +15,18 @@ pyro::ref<pyro::shader> pyro::shader::create(std::string const &file_path)
     return nullptr;
 }
 
+std::shared_ptr<pyro::shader> pyro::shader::create(std::string const &name, std::string const &file_path)
+{
+    switch(renderer::api())
+    {
+        case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[shader] e_renderer_api::none currently not supported!"); return nullptr;
+        case renderer_api::e_api::open_gl: return make_ref<gl_shader>(name, file_path);
+    }
+
+    PYRO_CORE_ASSERT(false, "[shader] Unknown renderer api!");
+    return nullptr;
+}
+
 pyro::ref<pyro::shader> pyro::shader::create(std::string const &name, std::string const &vertex_source, std::string const &fragment_source)
 {
     switch(renderer::api())

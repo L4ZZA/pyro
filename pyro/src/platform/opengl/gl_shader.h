@@ -8,6 +8,7 @@ namespace pyro
     {
     public:
         gl_shader(std::string const &file_path);
+        gl_shader(std::string const &name, std::string const &file_path);
         gl_shader(std::string const &name, std::string const &vertex_source, std::string const &fragment_source);
         ~gl_shader();
 
