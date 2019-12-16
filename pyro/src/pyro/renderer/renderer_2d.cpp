@@ -77,6 +77,7 @@ void pyro::renderer_2d::draw_quad(quad_properties const& props)
     PYRO_PROFILE_FUNCTION();
     
     s_data->texture_shader->set_float4("u_color", props.color); 
+    s_data->texture_shader->set_float("u_tiling_factor", props.tiling_factor); 
     if(props.texture)
         props.texture->bind(); 
     else
@@ -84,8 +85,29 @@ void pyro::renderer_2d::draw_quad(quad_properties const& props)
     // REMEMBER TRS -> in reverse for opengl SCALE, ROTATE, TRANSLATE. 
     // https://gamedev.stackexchange.com/a/16721/129225
     glm::mat4 transform(1); 
-    transform = glm::scale(transform,  {props.size.x, props.size.y, 1.0f}); 
+    transform = glm::scale(transform, {props.size.x, props.size.y, 1.0f}); 
     transform = glm::rotate(transform, props.rotation, {0.0f, 0.0f, 1.0f}); 
+    transform = glm::translate(transform, props.position); 
+    s_data->texture_shader->set_mat4("u_transform", transform); 
+ 
+    s_data->quad_va->bind(); 
+    render_command::draw_indexed(s_data->quad_va); 
+}
+
+void pyro::renderer_2d::draw_rotated_quad(quad_properties const& props)
+{
+    PYRO_PROFILE_FUNCTION();
+    
+    s_data->texture_shader->set_float4("u_color", props.color); 
+    s_data->texture_shader->set_float("u_tiling_factor", props.tiling_factor); 
+    if(props.texture)
+        props.texture->bind(); 
+    else
+        s_data->wite_texture->bind();
+    // REMEMBER TRS -> in reverse for opengl SCALE, ROTATE, TRANSLATE. 
+    // https://gamedev.stackexchange.com/a/16721/129225
+    glm::mat4 transform(1); 
+    transform = glm::scale(transform, {props.size.x, props.size.y, 1.0f}); 
     transform = glm::translate(transform, props.position); 
     s_data->texture_shader->set_mat4("u_transform", transform); 
  

@@ -27,10 +27,10 @@ layout(location = 0) out vec4 o_color;
 in vec2 v_tex_coord;
 
 uniform vec4 u_color;  
-uniform float u_texture_scale = 10.f;  
+uniform float u_tiling_factor;  
 uniform sampler2D u_sampler; 
 
 void main() 
 { 
-    o_color = texture(u_sampler, v_tex_coord * u_texture_scale) * u_color; 
+    o_color = texture(u_sampler, v_tex_coord * u_tiling_factor) * u_color; 
 }

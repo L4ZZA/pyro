@@ -90,9 +90,10 @@ void layer_2d::on_imgui_render()
         props.color = {m_rect_color, 1.f};
         pyro::renderer_2d::draw_quad(props);
 
-        props.position = {-1.0f, 0.3f,-0.1f};
-        props.size = {0.9f,0.9f};
-        props.color = {1.f, 1.f, 1.f, 1.f};
+        props.position = {-0.0f, 0.0f,-0.1f};
+        props.size = {10.f, 10.f};
+        props.color = {.8f, 1.f, .8f, 1.f};
+        props.tiling_factor = 10.f;
         props.texture = m_checkerboard_texture;
         pyro::renderer_2d::draw_quad(props);
         pyro::renderer_2d::end_scene();

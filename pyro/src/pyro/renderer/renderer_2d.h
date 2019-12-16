@@ -9,8 +9,9 @@ namespace pyro
         glm::vec4 color         = {1.0f, 1.0f, 1.0f, 1.0f};
         glm::vec3 position      = {0.f,0.f,0.f};
         glm::vec2 size          = {1.f,1.f};
-        float rotation          = 0.f;
         ref<texture_2d> texture = nullptr;
+        float rotation          = 0.f;
+        float tiling_factor     = 1.f;
     };
 
     class renderer_2d
@@ -24,6 +25,7 @@ namespace pyro
 
         // primitives
         static void draw_quad(quad_properties const& props);
+        static void draw_rotated_quad(quad_properties const& props);
 
     };
 }
