@@ -87,6 +87,7 @@ project "pyro"
         defines
         {
             "GLFW_INCLUDE_NONE",
+            "PYRO_PLATFORM_WIN",
         }
 
     filter "configurations:Debug"
