@@ -16,7 +16,7 @@ namespace pyro
         void unbind() const override;
 
         void layout(const buffer_layout& layout) override;
-        const buffer_layout& layout() const override;
+        buffer_layout const& layout() const override;
 
     private:
         uint32_t m_id{ 0 };

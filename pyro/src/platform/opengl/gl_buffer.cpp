@@ -31,7 +31,7 @@ void pyro::gl_vertex_buffer::layout(const buffer_layout& layout)
     m_layout = layout;
 }
 
-const pyro::buffer_layout& pyro::gl_vertex_buffer::layout() const
+pyro::buffer_layout const& pyro::gl_vertex_buffer::layout() const
 {
     return m_layout;
 }

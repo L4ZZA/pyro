@@ -7,7 +7,7 @@ namespace pyro
     {
     public:
         gl_texture_2d(uint32_t width, uint32_t height);
-        gl_texture_2d(const std::string& path);
+        gl_texture_2d(std::string const &path);
         ~gl_texture_2d();
         void bind(uint32_t slot = 0) const override;
         void data(void *data, uint32_t size) override;

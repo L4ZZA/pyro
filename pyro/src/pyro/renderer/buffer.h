@@ -14,19 +14,19 @@ namespace pyro
 
     static uint32_t shader_data_size(e_shader_data_type type)
     {
-        switch (type)
+        switch(type)
         {
-        case e_shader_data_type::float1:    return 4;
-        case e_shader_data_type::float2:    return 4 * 2;
-        case e_shader_data_type::float3:    return 4 * 3;
-        case e_shader_data_type::float4:    return 4 * 4;
-        case e_shader_data_type::int1:      return 4;
-        case e_shader_data_type::int2:      return 4 * 2;
-        case e_shader_data_type::int3:      return 4 * 3;
-        case e_shader_data_type::int4:      return 4 * 4;
-        case e_shader_data_type::mat3:      return 4 * 3 * 3;
-        case e_shader_data_type::mat4:      return 4 * 4 * 4;
-        case e_shader_data_type::boolean:   return 1;
+            case e_shader_data_type::float1:    return 4;
+            case e_shader_data_type::float2:    return 4 * 2;
+            case e_shader_data_type::float3:    return 4 * 3;
+            case e_shader_data_type::float4:    return 4 * 4;
+            case e_shader_data_type::int1:      return 4;
+            case e_shader_data_type::int2:      return 4 * 2;
+            case e_shader_data_type::int3:      return 4 * 3;
+            case e_shader_data_type::int4:      return 4 * 4;
+            case e_shader_data_type::mat3:      return 4 * 3 * 3;
+            case e_shader_data_type::mat4:      return 4 * 4 * 4;
+            case e_shader_data_type::boolean:   return 1;
         }
 
         PYRO_CORE_ASSERT(false, "[shader_data_size] Unknown shader_data_type!");
@@ -42,14 +42,14 @@ namespace pyro
         uint32_t offset = 0;
         bool normalised = false;
 
-        buffer_element(e_shader_data_type type, const std::string& name, bool normalised = false )
+        buffer_element(e_shader_data_type type, std::string const &name, bool normalised = false)
             :name(name), type(type), size(shader_data_size(type)), normalised(normalised)
         {
         }
 
         uint32_t components_count() const
         {
-            switch (type)
+            switch(type)
             {
                 case e_shader_data_type::float2:    return 2;
                 case e_shader_data_type::float3:    return 3;
@@ -59,7 +59,7 @@ namespace pyro
             }
 
             PYRO_CORE_ASSERT(false, "[buffer_element] Uknown type!")
-            return 0;
+                return 0;
         };
     };
 
@@ -74,7 +74,7 @@ namespace pyro
         /// \brief Initializer list constructor.
         buffer_layout(std::initializer_list<buffer_element>);
         /// \brief Elements getter
-        const std::vector<buffer_element>& elements() const;
+        const std::vector<buffer_element> &elements() const;
         /// \brief Stride getter
         uint32_t stride() const;
 
@@ -95,7 +95,7 @@ namespace pyro
 
     private:
         std::vector<buffer_element> m_elements{};
-        uint32_t m_stride{ 0 };
+        uint32_t m_stride{0};
     };
 
     //=================== vertex buffer =======================================
@@ -110,11 +110,11 @@ namespace pyro
         virtual void unbind() const = 0;
 
         /// \brief Layout setter.
-        virtual void layout(const buffer_layout& layout) = 0;
+        virtual void layout(const buffer_layout &layout) = 0;
         /// \brief Layout getter.
-        virtual const buffer_layout& layout() const = 0;
+        virtual const buffer_layout &layout() const = 0;
 
-        static ref<vertex_buffer> create(const float* vertices, uint32_t size);
+        static ref<vertex_buffer> create(const float *vertices, uint32_t size);
     };
 
     //=================== index buffer ========================================
@@ -131,7 +131,7 @@ namespace pyro
         /// \brief Count getter.
         virtual uint32_t count() const = 0;
 
-        static ref<index_buffer> create(const uint32_t* indices, uint32_t count);
+        static ref<index_buffer> create(const uint32_t *indices, uint32_t count);
     };
 
 }

@@ -1,4 +1,4 @@
-﻿    #pragma once
+﻿#pragma once
 
 namespace pyro
 {
@@ -24,6 +24,6 @@ namespace pyro
     {
     public:
         static ref<texture_2d> create(uint32_t width, uint32_t height);
-        static ref<texture_2d> create(const std::string& path);
+        static ref<texture_2d> create(std::string const &path);
     };
 }

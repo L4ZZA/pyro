@@ -1,7 +1,7 @@
 ﻿#include "pyro_pch.h"
 #include "layer.h"
 
-pyro::layer::layer(const std::string& name)
+pyro::layer::layer(std::string const & name)
     : m_debug_name(name)
 {
 }

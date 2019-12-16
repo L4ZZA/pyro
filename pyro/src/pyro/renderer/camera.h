@@ -12,17 +12,17 @@ namespace pyro
     public:
         virtual ~camera() = default;
 
-        virtual void             projection_matrix(glm::mat4 const &mat)  = 0;
-        virtual const glm::mat4 &projection_matrix() const = 0;
-        virtual void             view_matrix(glm::mat4 const &mat)  = 0;
-        virtual const glm::mat4 &view_matrix() const = 0;
-        virtual const glm::mat4 &view_projection_matrix() const = 0;
+        virtual void             projection_matrix(glm::mat4 const &mat) = 0;
+        virtual glm::mat4 const &projection_matrix() const = 0;
+        virtual void             view_matrix(glm::mat4 const &mat) = 0;
+        virtual glm::mat4 const &view_matrix() const = 0;
+        virtual glm::mat4 const &view_projection_matrix() const = 0;
 
         virtual void position(const glm::vec3 &pos) = 0;
-        virtual glm::vec3 position() const = 0;
+        virtual glm::vec3 const &position() const = 0;
 
         virtual void rotation(const glm::vec3 &rot) = 0;
-        virtual glm::vec3 rotation() const = 0;
+        virtual glm::vec3 const &rotation() const = 0;
     };
 
     //================= 2D CAMERA =================
@@ -32,18 +32,18 @@ namespace pyro
     public:
         orthographic_camera(float left, float right, float bottom, float top);
 
-        glm::vec3 position() const override { return m_position; }
+        glm::vec3 const &position() const override { return m_position; }
         void position(const glm::vec3 &pos) override { m_position = pos; update_view_matrix(); }
 
-        glm::vec3 rotation() const override { return m_rotation; }
+        glm::vec3 const &rotation() const override { return m_rotation; }
         void rotation(const glm::vec3 &rot) override { m_rotation = rot; update_view_matrix(); }
 
         void projection_matrix(float left, float right, float bottom, float top);
         void projection_matrix(glm::mat4 const &mat) override;
         void view_matrix(glm::mat4 const &mat) override;
-        const glm::mat4 &projection_matrix() const override { return m_projection_mat; }
-        const glm::mat4 &view_matrix() const override { return m_view_mat; }
-        const glm::mat4 &view_projection_matrix() const override { return m_view_projection_mat; }
+        glm::mat4 const &projection_matrix() const override { return m_projection_mat; }
+        glm::mat4 const &view_matrix() const override { return m_view_mat; }
+        glm::mat4 const &view_projection_matrix() const override { return m_view_projection_mat; }
 
     private:
         void update_view_matrix();
@@ -89,24 +89,24 @@ namespace pyro
             float fov = 45.f,
             float near_z = 0.1f, float far_z = 100.f);
 
-        glm::vec3 position() const override { return m_position; }
+        glm::vec3 const &position() const override { return m_position; }
         void position(const glm::vec3 &pos) override { m_position = pos; }
 
-        glm::vec3 rotation() const override { return m_rotation; }
+        glm::vec3 const &rotation() const override { return m_rotation; }
         void rotation(const glm::vec3 &rot) override { m_rotation = rot; }
 
         void fov(float fov) { m_fov = fov; }
         float fov() const { return m_fov; }
 
-        glm::vec3 front() const { return m_front_vector; }
-        glm::vec3 right_v() const { return m_right_vector; }
-        glm::vec3 up() const { return m_up_vector; }
+        glm::vec3 const &front() const { return m_front_vector; }
+        glm::vec3 const &right_v() const { return m_right_vector; }
+        glm::vec3 const &up() const { return m_up_vector; }
 
         void projection_matrix(glm::mat4 const &mat) override;
         void view_matrix(glm::mat4 const &mat) override;
-        const glm::mat4 &projection_matrix() const override;
-        const glm::mat4 &view_matrix() const override;
-        const glm::mat4 &view_projection_matrix() const override;
+        glm::mat4 const &projection_matrix() const override;
+        glm::mat4 const &view_matrix() const override;
+        glm::mat4 const &view_projection_matrix() const override;
 
         void update_camera_vectors();
     private:

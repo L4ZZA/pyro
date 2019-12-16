@@ -11,29 +11,30 @@ namespace pyro
 
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
-        virtual const std::string& name() const = 0;
+        virtual std::string const &name() const = 0;
 
-        virtual void set_int(const std::string& name, int32_t val) = 0;
-        virtual void set_float(const std::string& name, float val) = 0;
-        virtual void set_float2(const std::string& name, const glm::vec2& vec) = 0;
-        virtual void set_float3(const std::string& name, const glm::vec3& vec) = 0;
-        virtual void set_float4(const std::string& name, const glm::vec4& vec) = 0;
-        virtual void set_mat4(const std::string& name, const glm::mat4& mat) = 0;
+        virtual void set_int(std::string const &name, int32_t val) = 0;
+        virtual void set_float(std::string const &name, float val) = 0;
+        virtual void set_float2(std::string const &name, const glm::vec2 &vec) = 0;
+        virtual void set_float3(std::string const &name, const glm::vec3 &vec) = 0;
+        virtual void set_float4(std::string const &name, const glm::vec4 &vec) = 0;
+        virtual void set_mat4(std::string const &name, const glm::mat4 &mat) = 0;
 
-        static ref<shader> create(const std::string& file_path);
-        static ref<shader> create(const std::string& name, const std::string& vertex_source, const std::string& fragment_source);
+        static ref<shader> create(std::string const &file_path);
+        static ref<shader> create(std::string const &name, std::string const &file_path);
+        static ref<shader> create(std::string const &name, std::string const &vertex_source, std::string const &fragment_source);
     };
 
     class shader_library final
     {
     public:
-        static void add(const ref<shader>& shader);
-        static ref<shader> load(const std::string& filepath);
-        static ref<shader> load(const std::string& name, const std::string& filepath);
+        static void add(const ref<shader> &shader);
+        static ref<shader> load(std::string const &filepath);
+        static ref<shader> load(std::string const &name, std::string const &filepath);
 
-        static ref<shader> get(const std::string& name);
+        static ref<shader> get(std::string const &name);
 
-        static bool exists(const std::string& name);
+        static bool exists(std::string const &name);
     private:
         inline static std::unordered_map<std::string, ref<shader>> m_shaders;
     };

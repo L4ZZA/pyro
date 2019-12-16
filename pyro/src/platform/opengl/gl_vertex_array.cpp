@@ -4,7 +4,7 @@
 
 namespace pyro
 {
-    static uint32_t to_opengl_type(pyro::e_shader_data_type type)
+    static uint32_t to_opengl_type(e_shader_data_type type)
     {
         switch (type)
         {
@@ -47,7 +47,7 @@ void pyro::gl_vertex_array::unbind() const
     glBindVertexArray(0);
 }
 
-void pyro::gl_vertex_array::add_buffer(const ref<vertex_buffer>& vertex_buffer)
+void pyro::gl_vertex_array::add_buffer(ref<vertex_buffer> const &vertex_buffer)
 {
     glBindVertexArray(m_id);
     vertex_buffer->bind();
@@ -67,7 +67,7 @@ void pyro::gl_vertex_array::add_buffer(const ref<vertex_buffer>& vertex_buffer)
     m_vertex_buffers.push_back(vertex_buffer);
 }
 
-void pyro::gl_vertex_array::add_buffer(const ref<pyro::index_buffer>& index_buffer)
+void pyro::gl_vertex_array::add_buffer(ref<pyro::index_buffer> const &index_buffer)
 {
     glBindVertexArray(m_id);
     index_buffer->bind();

@@ -40,9 +40,9 @@ void pyro::renderer_2d::init()
     rect_vb->layout({
         {e_shader_data_type::float3, "a_position"},
         {e_shader_data_type::float2, "a_tex_coord"},
-                    });
+    });
 
-    s_data->quad_va = pyro::vertex_array::create();
+    s_data->quad_va = vertex_array::create();
     s_data->quad_va->add_buffer(rect_vb);
     s_data->quad_va->add_buffer(rect_ib);
 
