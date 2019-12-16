@@ -20,6 +20,7 @@ pyro::imgui_layer::imgui_layer(std::string const& name /*= "imgui_layer"*/)
 
 void pyro::imgui_layer::on_attach()
 {
+	PYRO_PROFILE_FUNCTION();
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -54,6 +55,7 @@ void pyro::imgui_layer::on_attach()
 
 void pyro::imgui_layer::on_detach()
 {
+	PYRO_PROFILE_FUNCTION();
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
@@ -67,6 +69,7 @@ void pyro::imgui_layer::on_imgui_render()
 
 void pyro::imgui_layer::begin() const
 {
+	PYRO_PROFILE_FUNCTION();
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -74,6 +77,7 @@ void pyro::imgui_layer::begin() const
 
 void pyro::imgui_layer::end() const
 {
+	PYRO_PROFILE_FUNCTION();
     ImGuiIO& io = ImGui::GetIO();
     auto& app = application::instance();
     io.DisplaySize = ImVec2(static_cast<float>(app.window().width()), static_cast<float>(app.window().height()));

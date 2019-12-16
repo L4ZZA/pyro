@@ -5,6 +5,7 @@ pyro::renderer::scene_data *pyro::renderer::s_scene_data = new scene_data;
 
 void pyro::renderer::init()
 {
+	PYRO_PROFILE_FUNCTION();
     render_command::init();
     renderer_2d::init();
 }

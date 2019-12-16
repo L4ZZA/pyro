@@ -30,54 +30,19 @@ pyro::scope<pyro::window> pyro::window::create(window_props const& props)
 
 pyro::win_window::win_window(window_props const& props)
 {
+	PYRO_PROFILE_FUNCTION();
     init(props);
 }
 
 pyro::win_window::~win_window()
 {
+	PYRO_PROFILE_FUNCTION();
     shut_down();
-}
-
-void pyro::win_window::on_update()
-{
-	glfwPollEvents();
-	m_graphics_context->swap_buffers();
-}
-
-void pyro::win_window::vsync(bool enabled)
-{
-    if (enabled)
-        glfwSwapInterval(1);
-    else
-        glfwSwapInterval(0);
-
-    m_data.vsync = enabled;
-}
-
-bool pyro::win_window::vsync()
-{
-    return m_data.vsync;
-}
-
-void pyro::win_window::show_mouse_cursor()
-{
-    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    m_data.is_mouse_cursor_visible = true;
-}
-
-void pyro::win_window::hide_mouse_cursor()
-{
-    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    m_data.is_mouse_cursor_visible = false;
-}
-
-bool pyro::win_window::is_cursor_visible() const
-{
-    return m_data.is_mouse_cursor_visible;
 }
 
 void pyro::win_window::init(window_props const& props)
 {
+	PYRO_PROFILE_FUNCTION();
     m_data.title = props.m_title;
     m_data.width = props.m_width;
     m_data.height = props.m_height;
@@ -217,8 +182,49 @@ void pyro::win_window::init(window_props const& props)
     });
 }
 
+void pyro::win_window::on_update()
+{
+	PYRO_PROFILE_FUNCTION();
+	glfwPollEvents();
+	m_graphics_context->swap_buffers();
+}
+
 void pyro::win_window::shut_down()
 {
+	PYRO_PROFILE_FUNCTION();
 	s_key_repeat_count.clear();
     glfwDestroyWindow(m_window);
+}
+
+void pyro::win_window::vsync(bool enabled)
+{
+	PYRO_PROFILE_FUNCTION();
+    if (enabled)
+        glfwSwapInterval(1);
+    else
+        glfwSwapInterval(0);
+
+    m_data.vsync = enabled;
+}
+
+bool pyro::win_window::vsync()
+{
+    return m_data.vsync;
+}
+
+void pyro::win_window::show_mouse_cursor()
+{
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    m_data.is_mouse_cursor_visible = true;
+}
+
+void pyro::win_window::hide_mouse_cursor()
+{
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    m_data.is_mouse_cursor_visible = false;
+}
+
+bool pyro::win_window::is_cursor_visible() const
+{
+    return m_data.is_mouse_cursor_visible;
 }

@@ -6,6 +6,7 @@
 
 pyro::gl_vertex_buffer::gl_vertex_buffer(const float* vertices, uint32_t size)
 {
+	PYRO_PROFILE_FUNCTION();
     glGenBuffers(1, &m_id);
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
     glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
@@ -13,16 +14,19 @@ pyro::gl_vertex_buffer::gl_vertex_buffer(const float* vertices, uint32_t size)
 
 pyro::gl_vertex_buffer::~gl_vertex_buffer()
 {
+	PYRO_PROFILE_FUNCTION();
     glDeleteBuffers(1, &m_id);
 }
 
 void pyro::gl_vertex_buffer::bind() const
 {
+	PYRO_PROFILE_FUNCTION();
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
 }
 
 void pyro::gl_vertex_buffer::unbind() const
 {
+	PYRO_PROFILE_FUNCTION();
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -41,6 +45,7 @@ pyro::buffer_layout const& pyro::gl_vertex_buffer::layout() const
 pyro::gl_index_buffer::gl_index_buffer(const uint32_t* vertices, uint32_t count)
     : m_count(count)
 {
+	PYRO_PROFILE_FUNCTION();
     glGenBuffers(1, &m_id);
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
     glBufferData(GL_ARRAY_BUFFER, count * sizeof(uint32_t), vertices, GL_STATIC_DRAW);
@@ -48,16 +53,19 @@ pyro::gl_index_buffer::gl_index_buffer(const uint32_t* vertices, uint32_t count)
 
 pyro::gl_index_buffer::~gl_index_buffer()
 {
+	PYRO_PROFILE_FUNCTION();
     glDeleteBuffers(1, &m_id);
 }
 
 void pyro::gl_index_buffer::bind() const
 {
+	PYRO_PROFILE_FUNCTION();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
 }
 
 void pyro::gl_index_buffer::unbind() const
 {
+	PYRO_PROFILE_FUNCTION();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 

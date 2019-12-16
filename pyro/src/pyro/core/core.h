@@ -82,7 +82,7 @@
 #include <memory>
 namespace pyro
 {
-    /// \brief safe and scoped pointer to an object. [Like unique_ptr]
+    /// Safe and scoped pointer to an object. [Like unique_ptr]
     template<typename T>
     using scope = std::unique_ptr<T>;
     template<typename T, typename ... Args>
@@ -91,7 +91,7 @@ namespace pyro
         return std::make_unique<T>(std::forward<Args>(args)...);
     }
 
-    /// \brief ref counted pointer to an object. [Usually used for resources]
+    /// Ref counted pointer to an object. [Usually used for resources]
     template<typename T>
     using ref = std::shared_ptr<T>;
     template<typename T, typename ... Args>

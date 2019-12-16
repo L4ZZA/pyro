@@ -7,6 +7,7 @@
 pyro::gl_texture_2d::gl_texture_2d(uint32_t width, uint32_t height)
     :m_width(width), m_height(height)
 {
+	PYRO_PROFILE_FUNCTION();
     m_internal_format = GL_RGBA8;
     m_data_format = GL_RGBA;
 
@@ -26,9 +27,14 @@ pyro::gl_texture_2d::gl_texture_2d(uint32_t width, uint32_t height)
 pyro::gl_texture_2d::gl_texture_2d(std::string const &path)
     : m_path(path)
 {
+	PYRO_PROFILE_FUNCTION();
     int width, height, channels;
     stbi_set_flip_vertically_on_load(true);
-    stbi_uc *data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+    stbi_uc *data = nullptr;
+    {
+	    PYRO_PROFILE_SCOPE("stbi_load - gl_texture_2d::gl_texture_2d(std::string const &");
+        data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+    }
     PYRO_CORE_ASSERT(data, "[gl_texture_2d] Texture not loaded correctly");
     m_width = width;
     m_height = height;
@@ -69,16 +75,19 @@ pyro::gl_texture_2d::gl_texture_2d(std::string const &path)
 
 pyro::gl_texture_2d::~gl_texture_2d()
 {
+	PYRO_PROFILE_FUNCTION();
     glDeleteTextures(1, &m_id);
 }
 
 void pyro::gl_texture_2d::bind(uint32_t slot /*= 0*/) const
 {
+	PYRO_PROFILE_FUNCTION();
     glBindTextureUnit(slot, m_id);
 }
 
 void pyro::gl_texture_2d::data(void *data, uint32_t size)
 {
+	PYRO_PROFILE_FUNCTION();
     uint32_t bpp = m_data_format == GL_RGBA ? 4 : 3;
     PYRO_CORE_ASSERT(size == m_width * m_height * bpp, "Data must be the entire texture!");
     glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, m_data_format, GL_UNSIGNED_BYTE, data);

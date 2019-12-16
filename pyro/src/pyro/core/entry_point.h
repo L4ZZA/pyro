@@ -14,13 +14,18 @@ int main(int argc, char** argv)
     move_console();
 
     pyro::logger::init();
-    PYRO_CORE_WARN("Initialized logger");
-    PYRO_INFO("Hello!");
 
+    PYRO_PROFILE_BEGIN_SESSION("startup", "pyro_profile_startup.json");
     auto app = pyro::create_application();
+    PYRO_PROFILE_END_SESSION();
+
+    PYRO_PROFILE_BEGIN_SESSION("runtime", "pyro_profile_runtime.json");
     app->run();
-    // TODO: uncomment following line and figure out why it crashes the program.
-    //delete app;
+    PYRO_PROFILE_END_SESSION();
+
+    PYRO_PROFILE_BEGIN_SESSION("shutdown", "pyro_profile_shutdown.json");
+    delete app;
+    PYRO_PROFILE_END_SESSION();
     return 0;
 }
 

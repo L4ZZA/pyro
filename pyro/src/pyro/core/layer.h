@@ -10,7 +10,7 @@ namespace pyro
 	class PYRO_API layer
 	{
 	public:
-		layer(const std::string& name = "Layer");
+		layer(std::string const & name = "Layer");
 		virtual ~layer();
 
 		/// \brief Runs when a layer is pushed onto the layer stack

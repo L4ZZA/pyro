@@ -30,6 +30,8 @@ static std::string shader_type_to_string(uint32_t type)
 pyro::gl_shader::gl_shader(std::string const &file_path)
     :m_file_path(file_path)
 {
+    PYRO_PROFILE_FUNCTION();
+
     const std::string source = read_file(file_path);
     const auto shader_sources = pre_process(source);
     // Extract name from file_path
@@ -40,6 +42,8 @@ pyro::gl_shader::gl_shader(std::string const &file_path)
 pyro::gl_shader::gl_shader(std::string const &name, std::string const &file_path)
     :m_name(name), m_file_path(file_path)
 {
+    PYRO_PROFILE_FUNCTION();
+
     const std::string source = read_file(file_path);
     const auto shader_sources = pre_process(source);
     compile(shader_sources);
@@ -48,6 +52,8 @@ pyro::gl_shader::gl_shader(std::string const &name, std::string const &file_path
 pyro::gl_shader::gl_shader(std::string const &name, std::string const &vertex_source, std::string const &fragment_source)
     : m_name(name)
 {
+    PYRO_PROFILE_FUNCTION();
+
     std::unordered_map<uint32_t, std::string> sources;
     sources[GL_VERTEX_SHADER] = vertex_source;
     sources[GL_FRAGMENT_SHADER] = fragment_source;
@@ -56,13 +62,16 @@ pyro::gl_shader::gl_shader(std::string const &name, std::string const &vertex_so
 
 pyro::gl_shader::~gl_shader()
 {
-    PYRO_CORE_TRACE("[gl_shader] Deleteing shader program {} - id: {}", m_name, m_program_id);
+    PYRO_PROFILE_FUNCTION();
+    PYRO_CORE_TRACE("[gl_shader] Deleting shader program {} - id: {}");
     glDeleteProgram(m_program_id);
 }
 
 
 std::string pyro::gl_shader::read_file(std::string const &file_path)
 {
+    PYRO_PROFILE_FUNCTION();
+
     std::string result;
     std::ifstream in(file_path, std::ios::in, std::ios::binary);
     if(in)
@@ -90,6 +99,8 @@ std::string pyro::gl_shader::read_file(std::string const &file_path)
 
 std::unordered_map<uint32_t, std::string> pyro::gl_shader::pre_process(std::string const &source)
 {
+    PYRO_PROFILE_FUNCTION();
+
     std::unordered_map<uint32_t, std::string> sources;
     const char *type_token = "#type";
     const size_t type_token_length = strlen(type_token);
@@ -116,6 +127,8 @@ std::unordered_map<uint32_t, std::string> pyro::gl_shader::pre_process(std::stri
 
 std::string pyro::gl_shader::extract_name(std::string const &file_path)
 {
+    PYRO_PROFILE_FUNCTION();
+
     auto last_slash = file_path.find_last_of("/\\");
     last_slash = last_slash == std::string::npos ? 0 : last_slash + 1;
     const auto last_dot = file_path.rfind('.');
@@ -123,20 +136,23 @@ std::string pyro::gl_shader::extract_name(std::string const &file_path)
     return file_path.substr(last_slash, count);
 }
 
-void pyro::gl_shader::compile(const std::unordered_map<uint32_t, std::string> &sources)
+void pyro::gl_shader::compile(std::unordered_map<uint32_t, std::string> const &sources)
 {
+    PYRO_PROFILE_FUNCTION();
+
     uint32_t program = glCreateProgram();
     PYRO_CORE_TRACE("[gl_shader] Creating shader {} - id: {}", m_name, program);
-    std::vector<uint32_t> shader_ids(sources.size());
+    std::vector<uint32_t> shader_ids;
+    shader_ids.resize(sources.size());
 
-    for(auto &[type, source] : sources)
+    for(auto const&[type, source] : sources)
     {
         uint32_t shader = glCreateShader(type);
+        PYRO_CORE_INFO("[gl_shader] Compiling shader id: {} - {}", shader, m_name);
 
         const char *source_cstr = source.c_str();
         glShaderSource(shader, 1, &source_cstr, 0);
 
-        PYRO_CORE_INFO("[gl_shader] Compiling shader: {}", m_file_path);
         glCompileShader(shader);
 
         int32_t is_compiled = 0;
@@ -191,13 +207,15 @@ void pyro::gl_shader::compile(const std::unordered_map<uint32_t, std::string> &s
     for(auto id : shader_ids)
     {
         glDetachShader(program, id);
-        PYRO_CORE_INFO("[gl_shader] Deleted shader id:{} - '{}'", id, m_file_path);
+        PYRO_CORE_INFO("[gl_shader] Deleted shader id:{} - '{}'", id, m_name);
         glDeleteShader(id);
     }
 }
 
 int32_t pyro::gl_shader::get_uniform_location(std::string const &name) const
 {
+    PYRO_PROFILE_FUNCTION();
+
     if(m_uniform_cache.find(name) != m_uniform_cache.end())
     {
         return m_uniform_cache[name];
@@ -217,11 +235,13 @@ int32_t pyro::gl_shader::get_uniform_location(std::string const &name) const
 
 void pyro::gl_shader::bind() const
 {
+    PYRO_PROFILE_FUNCTION();
     glUseProgram(m_program_id);
 }
 
 void pyro::gl_shader::unbind() const
 {
+    PYRO_PROFILE_FUNCTION();
     glUseProgram(0);
 }
 
@@ -232,31 +252,37 @@ std::string const &pyro::gl_shader::name() const
 
 void pyro::gl_shader::set_int(std::string const &name, int32_t val)
 {
+    PYRO_PROFILE_FUNCTION();
     upload_uniform(name, val);
 }
 
 void pyro::gl_shader::set_float(std::string const &name, float val)
 {
+    PYRO_PROFILE_FUNCTION();
     upload_uniform(name, val);
 }
 
 void pyro::gl_shader::set_float2(std::string const &name, const glm::vec2 &vec)
 {
+    PYRO_PROFILE_FUNCTION();
     upload_uniform(name, vec);
 }
 
 void pyro::gl_shader::set_float3(std::string const &name, const glm::vec3 &vec)
 {
+    PYRO_PROFILE_FUNCTION();
     upload_uniform(name, vec);
 }
 
 void pyro::gl_shader::set_float4(std::string const &name, const glm::vec4 &vec)
 {
+    PYRO_PROFILE_FUNCTION();
     upload_uniform(name, vec);
 }
 
 void pyro::gl_shader::set_mat4(std::string const &name, const glm::mat4 &mat)
 {
+    PYRO_PROFILE_FUNCTION();
     upload_uniform(name, mat);
 }
 

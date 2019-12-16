@@ -29,26 +29,31 @@ namespace pyro
 
 pyro::gl_vertex_array::gl_vertex_array()
 {
+	PYRO_PROFILE_FUNCTION();
     glCreateVertexArrays(1, &m_id);
 }
 
 pyro::gl_vertex_array::~gl_vertex_array()
 {
+	PYRO_PROFILE_FUNCTION();
     glDeleteVertexArrays(1, &m_id);
 }
 
 void pyro::gl_vertex_array::bind() const
 {
+	PYRO_PROFILE_FUNCTION();
     glBindVertexArray(m_id);
 }
 
 void pyro::gl_vertex_array::unbind() const
 {
+	PYRO_PROFILE_FUNCTION();
     glBindVertexArray(0);
 }
 
 void pyro::gl_vertex_array::add_buffer(ref<vertex_buffer> const &vertex_buffer)
 {
+	PYRO_PROFILE_FUNCTION();
     glBindVertexArray(m_id);
     vertex_buffer->bind();
     const auto& layout = vertex_buffer->layout();
@@ -69,6 +74,7 @@ void pyro::gl_vertex_array::add_buffer(ref<vertex_buffer> const &vertex_buffer)
 
 void pyro::gl_vertex_array::add_buffer(ref<pyro::index_buffer> const &index_buffer)
 {
+	PYRO_PROFILE_FUNCTION();
     glBindVertexArray(m_id);
     index_buffer->bind();
     m_index_buffer = index_buffer;

@@ -11,6 +11,7 @@ pyro::gl_context::gl_context(GLFWwindow* window_handle)
 
 void pyro::gl_context::init()
 {
+	PYRO_PROFILE_FUNCTION();
 	glfwMakeContextCurrent(m_window_handle);
 	const int status = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
 	PYRO_CORE_ASSERT(status, "Could not load Glad!");
@@ -32,5 +33,6 @@ void pyro::gl_context::init()
 
 void pyro::gl_context::swap_buffers()
 {
+	PYRO_PROFILE_FUNCTION();
 	glfwSwapBuffers(m_window_handle);
 }

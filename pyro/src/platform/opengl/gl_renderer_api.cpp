@@ -17,6 +17,7 @@ pyro::e_primitive_type pyro::renderer_api::s_primitive_type = pyro::e_primitive_
 
 void pyro::gl_renderer_api::init()
 {
+	PYRO_PROFILE_FUNCTION();
     enable_alpha();
     enable_depth_test();
 }

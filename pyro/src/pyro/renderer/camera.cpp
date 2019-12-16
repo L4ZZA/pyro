@@ -11,11 +11,13 @@
 pyro::orthographic_camera::orthographic_camera(float left, float right, float bottom, float top)
     : m_projection_mat(glm::ortho(left, right, bottom, top, -1.f, 1.f))
 {
+	PYRO_PROFILE_FUNCTION();
     m_view_projection_mat = m_projection_mat * m_view_mat;
 }
 
 void pyro::orthographic_camera::projection_matrix(float left, float right, float bottom, float top)
 {
+	PYRO_PROFILE_FUNCTION();
     m_projection_mat = glm::ortho(left, right, bottom, top, -1.f, 1.f);
     m_view_projection_mat = m_projection_mat * m_view_mat;
 }
@@ -32,6 +34,7 @@ void pyro::orthographic_camera::view_matrix(glm::mat4 const& mat)
 
 void pyro::orthographic_camera::update_view_matrix()
 {
+	PYRO_PROFILE_FUNCTION();
     glm::mat4 transform(1); // REMEMBER STR -> ROTATE, TRANSLATE, SCALE in reverse.
     transform = glm::translate(transform, m_position);
     transform = glm::rotate(transform, glm::radians(m_rotation.z), glm::vec3(0, 0, 1));
@@ -60,6 +63,7 @@ pyro::perspective_camera::perspective_camera(
     m_far_plane(far_z)
 
 {
+	PYRO_PROFILE_FUNCTION();
     m_up_vector = glm::vec3{0.f,1.f,0.f};
     m_right_vector = glm::vec3{0.f};
     m_world_up_vector = glm::vec3{0.f,1.f,0.f};
@@ -102,12 +106,14 @@ const glm::mat4 &pyro::perspective_camera::view_projection_matrix() const
 
 void pyro::perspective_camera::update_view_matrix()
 {
+	PYRO_PROFILE_FUNCTION();
     m_view_mat = glm::lookAt(m_position, m_position + m_front_vector, m_up_vector);
     m_view_projection_mat = m_projection_mat * m_view_mat;
 }
 
 void pyro::perspective_camera::update_camera_vectors()
 {
+	PYRO_PROFILE_FUNCTION();
     // Calculate the new Front vector
     glm::vec3 front(0.f);
     const float &yaw = m_rotation.y;

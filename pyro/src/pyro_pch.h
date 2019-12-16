@@ -12,6 +12,7 @@
 #include <unordered_set>
 
 #include "pyro/core/logger.h"
+#include "pyro/debug/profiler.h"
 
 #ifdef PYRO_PLATFORM_WIN
     #include <Windows.h>
