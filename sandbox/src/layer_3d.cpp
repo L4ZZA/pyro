@@ -6,8 +6,8 @@ layer_3d::layer_3d()
                         static_cast<float>(pyro::application::window().width()),
                         static_cast<float>(pyro::application::window().height()))
 {
-    m_color_shader = pyro::shader_library::load("assets/shaders/color.glsl");
-    m_textured_shader = pyro::shader_library::load("assets/shaders/texture.glsl");
+    m_color_shader = m_shader_library.load("assets/shaders/color.glsl");
+    m_textured_shader = m_shader_library.load("assets/shaders/texture.glsl");
 
     //======= triangle ========= 
     float vertices[3 * 7]
@@ -65,7 +65,7 @@ layer_3d::layer_3d()
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // A 
          0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // B 
          0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // C 
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // D 
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // D  
 
         // BACK 
         -0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // E 

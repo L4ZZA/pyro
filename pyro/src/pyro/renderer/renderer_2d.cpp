@@ -50,7 +50,7 @@ void pyro::renderer_2d::init()
     uint32_t white_tex_data = 0xffffffff; // 2 fs per channel
     s_data->wite_texture->data(&white_tex_data, sizeof(uint32_t));
 
-    s_data->texture_shader = shader_library::load("assets/shaders/texture_2d.glsl");
+    s_data->texture_shader = shader::create("assets/shaders/texture_2d.glsl");
     s_data->texture_shader->set_int("u_sampler", 0);
 }
 

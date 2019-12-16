@@ -28,14 +28,14 @@ namespace pyro
     class shader_library final
     {
     public:
-        static void add(const ref<shader> &shader);
-        static ref<shader> load(std::string const &filepath);
-        static ref<shader> load(std::string const &name, std::string const &filepath);
+        void add(ref<shader> const &shader);
+        ref<shader> load(std::string const &filepath);
+        ref<shader> load(std::string const &name, std::string const &filepath);
 
-        static ref<shader> get(std::string const &name);
+        ref<shader> get(std::string const &name);
 
-        static bool exists(std::string const &name);
+        bool exists(std::string const &name);
     private:
-        inline static std::unordered_map<std::string, ref<shader>> m_shaders;
+        std::unordered_map<std::string, ref<shader>> m_shaders;
     };
 }

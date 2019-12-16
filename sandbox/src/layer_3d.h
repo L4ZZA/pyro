@@ -20,7 +20,7 @@ private:
     pyro::ref<pyro::vertex_array>   m_cube_va{}; 
     pyro::ref<pyro::texture_2d>     m_texture{}; 
     pyro::ref<pyro::texture_2d>     m_face_texture{}; 
-
+    pyro::shader_library            m_shader_library;
     //pyro::orthographic_camera_controller m_2d_camera_controller; 
     pyro::perspective_camera_controller  m_3d_camera_controller; 
 
