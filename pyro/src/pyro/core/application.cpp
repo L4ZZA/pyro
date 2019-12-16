@@ -76,12 +76,14 @@ void pyro::application::on_event(event& e)
 
 void pyro::application::push_layer(layer* layer) 
 { 
-    m_layers_stack.push_layer(layer); 
+    m_layers_stack.push_layer(layer);
+    layer->on_attach();
 } 
 
 void pyro::application::push_overlay(layer* overlay) 
 { 
     m_layers_stack.push_overlay(overlay); 
+    overlay->on_attach();
 } 
 
 bool pyro::application::on_window_close(window_closed_event&) 

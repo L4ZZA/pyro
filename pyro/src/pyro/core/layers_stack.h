@@ -19,9 +19,11 @@ namespace pyro
         /// Every new overlay will be added to the very end of the 
         void push_overlay(layer* overlay);
         /// \brief Removes the layer from the layers_stack. Layer won't be deleted.
-        void pop_layer(layer* layer);
+        /// Returns true if the layer has been removed, false otherwise.
+        bool pop_layer(layer* layer);
         /// \brief Removes the overlay from the layers_stack. Overlay won't be deleted.
-        void pop_overlay(layer* overlay);
+        /// Returns true if the layer has been removed, false otherwise.
+        bool pop_overlay(layer* overlay);
 
         // To iterate through a range-based for-loop [i.e. for( auto elem : elements)]
         /// \brief Implicit implementation of .begin()
