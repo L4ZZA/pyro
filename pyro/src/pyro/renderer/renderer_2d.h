@@ -4,6 +4,15 @@
 
 namespace pyro
 {
+    struct quad_properties
+    {
+        glm::vec4 color         = {1.0f, 1.0f, 1.0f, 1.0f};
+        glm::vec3 position      = {0.f,0.f,0.f};
+        glm::vec2 size          = {1.f,1.f};
+        float rotation          = 0.f;
+        ref<texture_2d> texture = nullptr;
+    };
+
     class renderer_2d
     {
     public:
@@ -14,12 +23,7 @@ namespace pyro
         static void end_scene();
 
         // primitives
-		static void draw_quad(const glm::vec2& position, const glm::vec2& size, const glm::vec3& color);
-		static void draw_quad(const glm::vec3& position, const glm::vec2& size, const glm::vec3& color);
-		static void draw_quad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
-		static void draw_quad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
-		static void draw_quad(const glm::vec2& position, const glm::vec2& size, const ref<texture_2d>& texture);
-		static void draw_quad(const glm::vec3& position, const glm::vec2& size, const ref<texture_2d>& texture);
-        
+        static void draw_quad(quad_properties const& props);
+
     };
 }

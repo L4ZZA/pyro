@@ -79,9 +79,22 @@ void layer_2d::on_imgui_render()
         // Render
         PROFILE_SCOPE("layer_2d::render");
         pyro::renderer_2d::begin_scene(m_2d_camera_controller.camera());
-        pyro::renderer_2d::draw_quad({-1.0f, 0.0f}, {0.8f, 0.8f}, {0.8f, 0.3f, 0.2f, 1.0f});
-        pyro::renderer_2d::draw_quad({0.5f, -0.5f}, {0.5f, 0.75f}, m_rect_color);
-        pyro::renderer_2d::draw_quad({-1.0f, 0.3f,-0.1f}, {0.9f,0.9f}, m_checkerboard_texture);
+        pyro::quad_properties props;
+        props.position = {-1.0f, 0.0f, 0.f};
+        props.size = {0.8f, 0.8f};
+        props.color = {0.8f, 0.3f, 0.2f, 1.0f};
+        pyro::renderer_2d::draw_quad(props);
+        
+        props.position = {0.5f, -0.5f, 0.f};
+        props.size = {0.5f, 0.75f};
+        props.color = {m_rect_color, 1.f};
+        pyro::renderer_2d::draw_quad(props);
+
+        props.position = {-1.0f, 0.3f,-0.1f};
+        props.size = {0.9f,0.9f};
+        props.color = {1.f, 1.f, 1.f, 1.f};
+        props.texture = m_checkerboard_texture;
+        pyro::renderer_2d::draw_quad(props);
         pyro::renderer_2d::end_scene();
     }
 
