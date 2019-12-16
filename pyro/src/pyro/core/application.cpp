@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "application.h"
 
 #include "platform/opengl/gl_shader.h"
@@ -36,17 +36,20 @@ void pyro::application::run()
         timestep timestep = time - m_last_frame_time;
         m_last_frame_time = time;
 
-        for (auto* layer : m_layers_stack)
+        if(!s_minimized)
         {
-            layer->on_update(timestep);
-
-            if (layer->is_imgui())
+            for(auto *layer : m_layers_stack)
             {
-                auto *const imgui_layer = dynamic_cast<pyro::imgui_layer*>(layer);
-                PYRO_CORE_ASSERT(imgui_layer, "imgui_layer couldn't be cast!");
-                imgui_layer->begin();
-                imgui_layer->on_imgui_render();
-                imgui_layer->end();
+                    layer->on_update(timestep);
+
+                if(layer->is_imgui())
+                {
+                    auto *const imgui_layer = dynamic_cast<pyro::imgui_layer *>(layer);
+                    PYRO_CORE_ASSERT(imgui_layer, "imgui_layer couldn't be cast!");
+                    imgui_layer->begin();
+                        imgui_layer->on_imgui_render();
+                    imgui_layer->end();
+                }
             }
         }
 
