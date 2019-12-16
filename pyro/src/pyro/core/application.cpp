@@ -26,6 +26,7 @@ pyro::application::application()
 
 pyro::application::~application()
 {
+    renderer::shutdown();
 }
 
 void pyro::application::run()
