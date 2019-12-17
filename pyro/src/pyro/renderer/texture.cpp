@@ -9,7 +9,7 @@ std::shared_ptr<pyro::texture_2d> pyro::texture_2d::create(uint32_t width, uint3
     switch(renderer::api())
     {
         case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[texture_2d] e_renderer_api::none currently not supported!"); return nullptr;
-        case renderer_api::e_api::open_gl: return make_ref<gl_texture_2d>(width, height);
+        case renderer_api::e_api::opengl: return make_ref<gl_texture_2d>(width, height);
     }
 
     PYRO_CORE_ASSERT(false, "[texture_2d] Unknown renderer api!");
@@ -21,7 +21,7 @@ std::shared_ptr<pyro::texture_2d> pyro::texture_2d::create(std::string const &pa
     switch(renderer::api())
     {
         case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[texture_2d] e_renderer_api::none currently not supported!"); return nullptr;
-        case renderer_api::e_api::open_gl: return make_ref<gl_texture_2d>(path);
+        case renderer_api::e_api::opengl: return make_ref<gl_texture_2d>(path);
     }
 
     PYRO_CORE_ASSERT(false, "[texture_2d] Unknown renderer api!");

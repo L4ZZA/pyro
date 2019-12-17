@@ -11,7 +11,7 @@ namespace pyro
     public:
         enum class e_api
         {
-            none = 0, open_gl = 1
+            none = 0, opengl = 1
         };
 
     public:
@@ -33,6 +33,6 @@ namespace pyro
         virtual void enable_depth_test() = 0;
         virtual void enable_culling() = 0;
         static e_primitive_type s_primitive_type;
-        inline static e_api s_renderer_api = e_api::open_gl;
+        inline static e_api s_renderer_api = e_api::opengl;
     };
 }
