@@ -10,10 +10,16 @@ pyro::gl_texture_2d::gl_texture_2d(uint32_t width, uint32_t height)
 	PYRO_PROFILE_FUNCTION();
     m_internal_format = GL_RGBA8;
     m_data_format = GL_RGBA;
+    
+    glCreateTextures(GL_TEXTURE_2D, 1, &m_id); 
 
-    glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
     // allocating memory to gpu to store the texture data
     const int mipmap_levels = 1;
+
+    //glBindTexture(GL_TEXTURE_2D, m_id);
+    //glTexStorage2D(GL_TEXTURE_2D, mipmap_levels, m_internal_format, m_width, m_height);
+    //----------------
+    // From OpenGL 4.5, The following line replaces the two above
     glTextureStorage2D(m_id, mipmap_levels, m_internal_format, m_width, m_height);
 
     // set texture params
