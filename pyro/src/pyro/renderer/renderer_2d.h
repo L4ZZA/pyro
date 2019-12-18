@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "pyro/renderer/camera.h"
-#include "pyro/renderer/texture.h"
+#include "pyro/renderer/texture_2d.h"
 
 namespace pyro
 {

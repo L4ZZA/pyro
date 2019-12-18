@@ -1,8 +1,8 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "pyro/renderer/texture_2d.h"
 
 #include "pyro/renderer/renderer.h"
-#include "platform/opengl/gl_texture.h"
+#include "platform/opengl/gl_texture_2d.h"
 
 
 std::shared_ptr<pyro::texture_2d> pyro::texture_2d::create(uint32_t width, uint32_t height)

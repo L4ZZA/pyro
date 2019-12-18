@@ -1,5 +1,5 @@
 #include "pyro_pch.h"
-#include "gl_texture.h"
+#include "platform/opengl/gl_texture_2d.h"
 
 #include "stb_image.h"
 #include "glad/glad.h"
