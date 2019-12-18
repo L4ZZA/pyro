@@ -17,7 +17,7 @@ std::shared_ptr<pyro::texture_2d> pyro::texture_2d::create(uint32_t width, uint3
     return nullptr;
 }
 
-std::shared_ptr<pyro::texture_2d> pyro::texture_2d::create(std::string const &path)
+std::shared_ptr<pyro::texture_2d> pyro::texture_2d::create_from_file(std::string const &path)
 {
     switch(renderer::api())
     {

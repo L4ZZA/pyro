@@ -16,7 +16,7 @@ void layer_2d::on_attach()
     PYRO_PROFILE_FUNCTION();
     imgui_layer::on_attach();
 
-    m_checkerboard_texture = pyro::texture_2d::create("assets/textures/checkerboard.png");
+    m_checkerboard_texture = pyro::texture_2d::create_from_file("assets/textures/checkerboard.png");
 }
 
 void layer_2d::on_detach()

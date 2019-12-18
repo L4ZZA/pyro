@@ -124,8 +124,8 @@ layer_3d::layer_3d()
     m_textured_shader->bind();
     m_textured_shader->set_int("u_sampler", 0);
 
-    m_texture = pyro::texture_2d::create("assets/textures/checkerboard.png");
-    m_face_texture = pyro::texture_2d::create("assets/textures/face.png");
+    m_texture = pyro::texture_2d::create_from_file("assets/textures/checkerboard.png");
+    m_face_texture = pyro::texture_2d::create_from_file("assets/textures/face.png");
 }
 
 void layer_3d::on_update(const pyro::timestep &timestep)
