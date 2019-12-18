@@ -30,5 +30,6 @@ namespace pyro
         /// returns the opengl equivalent fot the internal format 
         static uint32_t texture_format_internal_to_gl(e_texture_format mode);
         static uint32_t texture_wrap_to_gl(e_texture_wrap mode);
+        static uint32_t texture_filter_to_gl(e_texture_filter mode);
     };
 }

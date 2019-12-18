@@ -25,8 +25,8 @@ pyro::gl_texture_2d::gl_texture_2d(
     glTextureStorage2D(m_id, 1, texture_format_internal_to_gl(m_parameters.format), m_width, m_height);
 
     // set texture params
-    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, texture_filter_to_gl(s_filter_mode));
+    glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, texture_filter_to_gl(s_filter_mode));
 
     glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, texture_wrap_to_gl(s_wrap_mode));
     glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, texture_wrap_to_gl(s_wrap_mode));
@@ -65,8 +65,8 @@ pyro::gl_texture_2d::gl_texture_2d(
     glTextureStorage2D(m_id, 1, texture_format_internal_to_gl(m_parameters.format), m_width, m_height);
 
     // set texture params 
-    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, texture_filter_to_gl(s_filter_mode));
+    glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, texture_filter_to_gl(e_texture_filter::nearest));
 
     glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, texture_wrap_to_gl(s_wrap_mode));
     glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, texture_wrap_to_gl(s_wrap_mode));
@@ -132,6 +132,16 @@ uint32_t pyro::gl_texture_2d::texture_wrap_to_gl(e_texture_wrap mode)
         case e_texture_wrap::clamp_to_edge:     return GL_CLAMP_TO_EDGE;
         case e_texture_wrap::repeat:            return GL_REPEAT;
         case e_texture_wrap::mirrored_repeat:   return GL_MIRRORED_REPEAT;
+    }                                                  
+    return 0;
+}
+
+uint32_t pyro::gl_texture_2d::texture_filter_to_gl(e_texture_filter mode)
+{
+    switch(mode)
+    {
+        case e_texture_filter::linear:  return GL_LINEAR;
+        case e_texture_filter::nearest: return GL_NEAREST;
     }                                                  
     return 0;
 }
