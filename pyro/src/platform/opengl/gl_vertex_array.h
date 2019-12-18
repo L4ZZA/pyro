@@ -3,7 +3,7 @@
 
 namespace pyro
 {
-    class gl_vertex_array : public vertex_array
+    class PYRO_API gl_vertex_array : public vertex_array
     {
     public:
         gl_vertex_array();

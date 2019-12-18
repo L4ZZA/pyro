@@ -7,7 +7,7 @@
 namespace pyro
 {
     //================= CAMERA INTERFACE =================
-    class camera
+    class PYRO_API camera
     {
     public:
         virtual ~camera() = default;
@@ -27,7 +27,7 @@ namespace pyro
 
     //================= 2D CAMERA =================
 
-    class orthographic_camera final : public camera
+    class PYRO_API orthographic_camera final : public camera
     {
     public:
         orthographic_camera(float left, float right, float bottom, float top);
@@ -59,7 +59,7 @@ namespace pyro
 
     //================= 3D CAMERA =================
 
-    class perspective_camera : public camera
+    class PYRO_API perspective_camera : public camera
     {
     public:
         enum e_rotation

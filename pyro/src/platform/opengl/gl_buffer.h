@@ -6,7 +6,7 @@ namespace pyro
     //=================== vertex buffer =======================================
 
     /// \brief OpenGL specific implementation of the vertex_buffer interface
-    class gl_vertex_buffer final : public vertex_buffer
+    class PYRO_API gl_vertex_buffer final : public vertex_buffer
     {
     public:
         gl_vertex_buffer(const float* vertices, uint32_t size);
@@ -26,7 +26,7 @@ namespace pyro
     //=================== index buffer ========================================
 
     /// \brief OpenGL specific implementation of the index_buffer interface
-    class gl_index_buffer final : public index_buffer
+    class PYRO_API gl_index_buffer final : public index_buffer
     {
     public:
         gl_index_buffer(const uint32_t* vertices, uint32_t count);

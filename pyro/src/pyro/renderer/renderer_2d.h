@@ -4,7 +4,7 @@
 
 namespace pyro
 {
-    struct quad_properties
+    struct PYRO_API quad_properties
     {
         glm::vec4 color         = {1.0f, 1.0f, 1.0f, 1.0f};
         glm::vec3 position      = {0.f,0.f,0.f};
@@ -14,7 +14,7 @@ namespace pyro
         float tiling_factor     = 1.f;
     };
 
-    class renderer_2d
+    class PYRO_API renderer_2d
     {
     public:
         static void init();

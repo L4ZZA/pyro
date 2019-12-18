@@ -4,7 +4,7 @@
 namespace pyro
 {
     /// \brief Shader (platform agnostic) interface. Implemented in platform/api_name folder (i.e. opengl)
-    class shader
+    class PYRO_API shader
     {
     public:
         virtual ~shader() = default;
@@ -25,7 +25,7 @@ namespace pyro
         static ref<shader> create(std::string const &name, std::string const &vertex_source, std::string const &fragment_source);
     };
 
-    class shader_library final
+    class PYRO_API shader_library final
     {
     public:
         void add(ref<shader> const &shader);

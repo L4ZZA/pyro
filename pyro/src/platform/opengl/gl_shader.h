@@ -4,7 +4,7 @@
 namespace pyro
 {
     /// \brief OpenGL shader implementation.
-    class gl_shader final : public shader
+    class PYRO_API gl_shader final : public shader
     {
     public:
         gl_shader(std::string const &file_path);

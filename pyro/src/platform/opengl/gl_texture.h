@@ -3,7 +3,7 @@
 
 namespace pyro
 {
-    class gl_texture_2d : public texture_2d
+    class PYRO_API gl_texture_2d : public texture_2d
     {
     public:
         gl_texture_2d(uint32_t width, uint32_t height);

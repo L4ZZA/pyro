@@ -6,7 +6,7 @@
 
 namespace pyro
 {
-    class renderer
+    class PYRO_API renderer
     {
     public:
         static void init();

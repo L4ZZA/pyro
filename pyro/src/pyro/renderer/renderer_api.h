@@ -6,7 +6,7 @@ namespace pyro
 {
     enum class e_primitive_type;
     /// \brief   
-    class renderer_api
+    class PYRO_API renderer_api
     {
     public:
         enum class e_api

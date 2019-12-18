@@ -3,7 +3,7 @@
 
 namespace pyro
 {
-    class vertex_array
+    class PYRO_API vertex_array
     {
     public:
         virtual ~vertex_array() = default;

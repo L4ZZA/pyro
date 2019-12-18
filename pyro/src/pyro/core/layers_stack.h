@@ -7,7 +7,7 @@ namespace pyro
 {
     /// \brief Wrapper around a vector of layers.
     /// It's not an actual stack as we need to push layers in the middle of the stack.
-    class layers_stack
+    class PYRO_API layers_stack
     {
     public:
         layers_stack() = default;

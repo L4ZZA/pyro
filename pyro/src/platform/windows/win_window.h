@@ -5,7 +5,7 @@
 
 namespace pyro
 {
-    class win_window : public window
+    class PYRO_API win_window : public window
     {
         //---------------------------------------------------------------------
 

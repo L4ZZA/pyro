@@ -8,7 +8,7 @@
 namespace pyro
 {
     //======== CAMERA CONTROLLER INTERFACE ========
-    class camera_controller
+    class PYRO_API camera_controller
     {
     public:
         enum e_rotation
@@ -39,7 +39,7 @@ namespace pyro
     
     //=========== 2D CAMERA CONTROLLER ============
 
-    class orthographic_camera_controller final : public camera_controller
+    class PYRO_API orthographic_camera_controller final : public camera_controller
     {
     public: 
         enum e_direction 
@@ -80,7 +80,7 @@ namespace pyro
     
     //=========== 3D CAMERA CONTROLLER ============
 
-    class perspective_camera_controller : public camera_controller
+    class PYRO_API perspective_camera_controller : public camera_controller
     {
     public:
         enum class e_control_type

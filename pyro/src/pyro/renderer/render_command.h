@@ -5,7 +5,7 @@
 namespace pyro
 {
     /// \brief
-    class render_command
+    class PYRO_API render_command
     {
     public:
         static void init()

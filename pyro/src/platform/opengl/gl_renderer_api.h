@@ -4,7 +4,7 @@
 namespace pyro
 {
     /// \brief 
-    class gl_renderer_api final : public renderer_api
+    class PYRO_API gl_renderer_api final : public renderer_api
     {
     public:
         ~gl_renderer_api() = default;

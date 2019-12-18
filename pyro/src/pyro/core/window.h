@@ -6,7 +6,7 @@
 
 namespace pyro
 {
-    struct window_props
+    struct PYRO_API window_props
     {
         std::string m_title  = "none";
         uint32_t    m_width  = 0;

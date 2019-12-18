@@ -6,7 +6,7 @@ namespace pyro
     enum class e_texture_filters;
     enum class e_wrap;
 
-    class texture
+    class PYRO_API texture
     {
     public:
         virtual ~texture() = default;
@@ -20,7 +20,7 @@ namespace pyro
         virtual void bind(uint32_t slot = 0) const = 0;
     };
 
-    class texture_2d : public texture
+    class PYRO_API texture_2d : public texture
     {
     public:
         static ref<texture_2d> create(uint32_t width, uint32_t height);

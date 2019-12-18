@@ -34,7 +34,7 @@ namespace pyro
     }
 
     /// \brief
-    struct buffer_element
+    struct PYRO_API buffer_element
     {
         std::string name;
         e_shader_data_type type;
@@ -66,7 +66,7 @@ namespace pyro
     //=================== buffer layout =======================================
 
     /// \brief Calculates the layout the the graphics api needs based on the given elements.
-    class buffer_layout
+    class PYRO_API buffer_layout
     {
     public:
         /// \brief Default ctor.
@@ -101,7 +101,7 @@ namespace pyro
     //=================== vertex buffer =======================================
 
     /// \brief Vertex buffer (platform agnostic) interface
-    class vertex_buffer
+    class PYRO_API vertex_buffer
     {
     public:
         virtual ~vertex_buffer() = default;
@@ -120,7 +120,7 @@ namespace pyro
     //=================== index buffer ========================================
 
     /// \brief Index buffer (platform agnostic) interface
-    class index_buffer
+    class PYRO_API index_buffer
     {
     public:
         virtual ~index_buffer() = default;
