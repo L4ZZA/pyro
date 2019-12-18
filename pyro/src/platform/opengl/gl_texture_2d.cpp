@@ -4,7 +4,7 @@
 #include "stb_image.h"
 #include "glad/glad.h"
 
-pyro::gl_texture_2d::gl_texture_2d(uint32_t width, uint32_t height)
+pyro::gl_texture_2d::gl_texture_2d(uint32_t width, uint32_t height, texture_parameters params)
     :m_width(width), m_height(height)
 {
 	PYRO_PROFILE_FUNCTION();
@@ -30,7 +30,7 @@ pyro::gl_texture_2d::gl_texture_2d(uint32_t width, uint32_t height)
     glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-pyro::gl_texture_2d::gl_texture_2d(std::string const &path)
+pyro::gl_texture_2d::gl_texture_2d(std::string const &path, texture_parameters params)
     : m_path(path)
 {
 	PYRO_PROFILE_FUNCTION();
