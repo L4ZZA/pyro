@@ -34,7 +34,6 @@ void layer_2d::on_update(const pyro::timestep &ts)
 
 void layer_2d::on_imgui_render()
 {
-
     {
         // Pre Render
         PYRO_PROFILE_SCOPE("layer_2d::pre_render");

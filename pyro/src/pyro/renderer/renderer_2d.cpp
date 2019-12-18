@@ -46,6 +46,7 @@ void pyro::renderer_2d::init()
     s_data->quad_va->add_buffer(rect_vb);
     s_data->quad_va->add_buffer(rect_ib);
 
+    texture::wrap(e_texture_wrap::repeat);
     s_data->wite_texture = texture_2d::create(1, 1);
     uint32_t white_tex_data = 0xffffffff; // 2 fs per channel
     s_data->wite_texture->data(&white_tex_data, sizeof(uint32_t));

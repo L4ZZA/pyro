@@ -1,4 +1,4 @@
-#include "pyro_pch.h"
+﻿#include "pyro_pch.h"
 #include "texture.h"
 #include "pyro_pch.h" 
 #include "texture.h" 
@@ -39,4 +39,9 @@ pyro::e_texture_filter pyro::texture::s_filter_mode = pyro::e_texture_filter::li
 void pyro::texture::wrap(e_texture_wrap mode)
 {
     s_wrap_mode = mode; 
-}
+}
+
+void pyro::texture::filter(e_texture_filter mode)
+{
+    s_filter_mode = mode; 
+}

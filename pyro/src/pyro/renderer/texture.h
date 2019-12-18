@@ -47,6 +47,7 @@ namespace pyro
 
     public:
         static void wrap(e_texture_wrap mode);
+        static void filter(e_texture_filter mode);
 
     protected:
 		static e_texture_wrap   s_wrap_mode;

@@ -6,8 +6,8 @@ namespace pyro
     class PYRO_API gl_texture_2d : public texture_2d 
     { 
     public: 
-        gl_texture_2d(uint32_t width, uint32_t height, texture_parameters params); 
-        gl_texture_2d(std::string const &path, texture_parameters params); 
+        gl_texture_2d(uint32_t width, uint32_t height, texture_parameters const &params);
+        gl_texture_2d(std::string const &path, texture_parameters const &params);
         ~gl_texture_2d(); 
         void bind(uint32_t slot = 0) const override; 
         void data(void *data, uint32_t size) override; 
