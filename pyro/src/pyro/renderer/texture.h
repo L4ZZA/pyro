@@ -45,6 +45,9 @@ namespace pyro
 
         virtual void bind(uint32_t slot = 0) const = 0;
 
+    public:
+        static void wrap(e_texture_wrap mode);
+
     protected:
 		static e_texture_wrap   s_wrap_mode;
 		static e_texture_filter s_filter_mode;

@@ -15,7 +15,8 @@ void layer_2d::on_attach()
 {
     PYRO_PROFILE_FUNCTION();
     imgui_layer::on_attach();
-
+    
+    pyro::texture::wrap(pyro::e_texture_wrap::repeat);
     m_checkerboard_texture = pyro::texture_2d::create_from_file("assets/textures/checkerboard.png");
 }
 

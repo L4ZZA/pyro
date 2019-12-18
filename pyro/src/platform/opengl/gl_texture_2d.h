@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "pyro/renderer/texture_2d.h" 
 
 namespace pyro
@@ -25,5 +25,8 @@ namespace pyro
         texture_parameters m_parameters;
         uint32_t m_data_format; 
         uint32_t m_internal_format; 
+
+    private:
+        static uint32_t texture_wrap_to_gl(e_texture_wrap mode);
     };
 }
