@@ -69,8 +69,8 @@ void layer_2d::on_imgui_render()
     for(auto& result : m_profile_results)
     {
         char label[50];
-        strcpy(label, "%.3fms ");
-        strcat(label, result.name);
+        strcpy_s(label, "%.3fms ");
+        strcat_s(label, result.name);
         ImGui::Text(label, result.time);
     }
     m_profile_results.clear();
