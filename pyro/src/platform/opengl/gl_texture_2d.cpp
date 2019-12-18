@@ -14,19 +14,15 @@ pyro::gl_texture_2d::gl_texture_2d(
     , m_parameters(params)
 {
 	PYRO_PROFILE_FUNCTION();
-    m_internal_format = GL_RGBA8;
-    m_data_format = GL_RGBA;
     
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id); 
-
-    // allocating memory to gpu to store the texture data
-    const int mipmap_levels = 1;
 
     //glBindTexture(GL_TEXTURE_2D, m_id);
     //glTexStorage2D(GL_TEXTURE_2D, mipmap_levels, m_internal_format, m_width, m_height);
     //----------------
     // From OpenGL 4.5, The following line replaces the two above
-    glTextureStorage2D(m_id, mipmap_levels, m_internal_format, m_width, m_height);
+    // allocating memory to gpu to store the texture
+    glTextureStorage2D(m_id, 1, texture_format_internal_to_gl(m_parameters.format), m_width, m_height);
 
     // set texture params
     glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -55,27 +51,18 @@ pyro::gl_texture_2d::gl_texture_2d(
     m_width = width;
     m_height = height;
 
-    GLenum internal_format = 0, data_format = 0;
     if(channels == 3)
     {
         m_parameters.format = e_texture_format::rgb;
-        internal_format = GL_RGB8;
-        data_format = GL_RGB;
     }
     else if(channels == 4)
     {
         m_parameters.format = e_texture_format::rgba;
-        internal_format = GL_RGBA8;
-        data_format = GL_RGBA;
     }
-
-    m_internal_format = internal_format;
-    m_data_format = data_format;
 
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
     // allocating memory to gpu to store the texture data
-    const int mipmap_levels = 1;
-    glTextureStorage2D(m_id, mipmap_levels, internal_format, m_width, m_height);
+    glTextureStorage2D(m_id, 1, texture_format_internal_to_gl(m_parameters.format), m_width, m_height);
 
     // set texture params 
     glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -85,7 +72,7 @@ pyro::gl_texture_2d::gl_texture_2d(
     glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, texture_wrap_to_gl(s_wrap_mode));
 
     // upload texture to gpu 
-    glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, data_format, GL_UNSIGNED_BYTE, data);
+    glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, texture_format_to_gl(m_parameters.format), GL_UNSIGNED_BYTE, data);
 
     // freeing allocated image buffer
     stbi_image_free(data);
@@ -106,11 +93,36 @@ void pyro::gl_texture_2d::bind(uint32_t slot /*= 0*/) const
 void pyro::gl_texture_2d::data(void *data, uint32_t size)
 {
 	PYRO_PROFILE_FUNCTION();
-    uint32_t bpp = m_data_format == GL_RGBA ? 4 : 3;
+    uint32_t bpp = m_parameters.format == e_texture_format::rgba ? 4 : 3;
     PYRO_CORE_ASSERT(size == m_width * m_height * bpp, "Data must be the entire texture!");
-    glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, m_data_format, GL_UNSIGNED_BYTE, data);
+    glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, texture_format_to_gl(m_parameters.format), GL_UNSIGNED_BYTE, data);
 }
 
+uint32_t pyro::gl_texture_2d::texture_format_to_gl(e_texture_format mode)
+{
+    // see explanation of luminance [opengl4.5+]
+    // https://www.gamedev.net/forums/topic/634850-do-luminance-texture39s-still-exist-to-opengl/5003839/
+    switch(mode)
+    {
+        case e_texture_format::rgba:			return GL_RGBA;// 4 channels
+        case e_texture_format::rgb:				return GL_RGB; // 3 channels
+        case e_texture_format::luminance_alpha:	return GL_RG;  // 2 channels 
+        case e_texture_format::luminance:		return GL_RED; // single channel
+    }
+    return 0;
+}
+
+uint32_t pyro::gl_texture_2d::texture_format_internal_to_gl(e_texture_format mode)
+{
+    switch(mode)
+    {
+        case e_texture_format::rgba:			return GL_RGBA8;// 4 channels
+        case e_texture_format::rgb:				return GL_RGB8; // 3 channels
+        case e_texture_format::luminance_alpha:	return GL_RG8;  // 2 channels 
+        case e_texture_format::luminance:		return GL_R8; // single channel
+    }
+    return 0;
+}
 
 uint32_t pyro::gl_texture_2d::texture_wrap_to_gl(e_texture_wrap mode)
 {
