@@ -20,6 +20,7 @@
 #include "pyro/renderer/vertex_array.h"
 #include "pyro/renderer/shader.h"
 #include "pyro/renderer/texture.h"
+#include "pyro/renderer/texture_2d.h"
 #include "pyro/renderer/camera.h"
 #include "pyro/renderer/camera_controller.h"
 
