@@ -44,7 +44,7 @@ void pyro::application::run()
 
         if(!s_minimized)
         {
-            for(auto *layer : m_layers_stack)
+            for(auto &layer : m_layers_stack)
             {
                 {
                     PYRO_PROFILE_SCOPE("layer_stack - on_update");
@@ -53,7 +53,7 @@ void pyro::application::run()
 
                 if(layer->is_imgui())
                 {
-                    auto *const imgui_layer = dynamic_cast<pyro::imgui_layer *>(layer);
+                    auto const &imgui_layer = std::dynamic_pointer_cast<pyro::imgui_layer>(layer);
                     PYRO_CORE_ASSERT(imgui_layer, "imgui_layer couldn't be cast!");
                     imgui_layer->begin();
                     {
@@ -91,7 +91,7 @@ void pyro::application::on_event(event &e)
     }
 }
 
-void pyro::application::push_layer(layer *layer)
+void pyro::application::push_layer(ref<layer> const &layer)
 {
     PYRO_PROFILE_FUNCTION();
 
@@ -99,7 +99,7 @@ void pyro::application::push_layer(layer *layer)
     layer->on_attach();
 }
 
-void pyro::application::push_overlay(layer *overlay)
+void pyro::application::push_overlay(ref<layer> const &overlay)
 {
     PYRO_PROFILE_FUNCTION();
 
