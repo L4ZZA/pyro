@@ -49,9 +49,10 @@ void pyro::gl_renderer_api::resize_viewport(uint32_t x, uint32_t y, uint32_t wid
     glViewport(x, y, width, height); 
 }
 
-void pyro::gl_renderer_api::draw_indexed(const ref<vertex_array>& vertex_array)
+void pyro::gl_renderer_api::draw_indexed(const ref<vertex_array>& vertex_array, const uint32_t index_count /*= 0*/)
 {
-    glDrawElements(GL_TRIANGLES, vertex_array->index_buffer()->count(), GL_UNSIGNED_INT, nullptr);
+    uint32_t count = index_count ? vertex_array->index_buffer()->count() : index_count;
+    glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 }
 
 void pyro::gl_renderer_api::primitive_type(const e_primitive_type& type)

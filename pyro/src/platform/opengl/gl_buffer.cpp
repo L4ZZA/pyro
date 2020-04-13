@@ -4,6 +4,14 @@
 
 //=================== vertex buffer =======================================
 
+pyro::gl_vertex_buffer::gl_vertex_buffer(uint32_t size)
+{
+    PYRO_PROFILE_FUNCTION();
+    glGenBuffers(1, &m_id);
+    glBindBuffer(GL_ARRAY_BUFFER, m_id);
+    glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+}
+
 pyro::gl_vertex_buffer::gl_vertex_buffer(const float* vertices, uint32_t size)
 {
 	PYRO_PROFILE_FUNCTION();
@@ -28,6 +36,12 @@ void pyro::gl_vertex_buffer::unbind() const
 {
 	PYRO_PROFILE_FUNCTION();
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void pyro::gl_vertex_buffer::data(void const* data, uint32_t size)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, m_id);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }
 
 void pyro::gl_vertex_buffer::layout(const buffer_layout& layout)

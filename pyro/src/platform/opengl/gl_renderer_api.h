@@ -14,7 +14,7 @@ namespace pyro
         void clear_color(const glm::vec4& color) override;
         void resize_viewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override;
 
-        void draw_indexed(const ref<vertex_array>& vertex_array) override;
+        void draw_indexed(const ref<vertex_array>& vertex_array, const uint32_t index_count = 0) override;
 
         void enable_wireframe() override;
         void disable_wireframe() override;

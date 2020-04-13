@@ -22,6 +22,7 @@ namespace pyro
 
         static void begin_scene(camera &camera);
         static void end_scene();
+        static void flush();
 
         // primitives
         static void draw_quad(quad_properties const& props);

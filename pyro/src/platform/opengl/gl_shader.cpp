@@ -63,7 +63,7 @@ pyro::gl_shader::gl_shader(std::string const &name, std::string const &vertex_so
 pyro::gl_shader::~gl_shader()
 {
     PYRO_PROFILE_FUNCTION();
-    PYRO_CORE_TRACE("[gl_shader] Deleting shader program {} - id: {}");
+    //PYRO_CORE_TRACE("[gl_shader] Deleting shader program {} - id: {}", m_name, m_id);
     glDeleteProgram(m_program_id);
 }
 

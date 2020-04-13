@@ -24,7 +24,7 @@ namespace pyro
         virtual void enable_wireframe() = 0;
         virtual void disable_wireframe() = 0;
 
-        virtual void draw_indexed(ref<vertex_array> const &vertex_array) = 0;
+        virtual void draw_indexed(ref<vertex_array> const &vertex_array, const uint32_t index_count = 0) = 0;
         virtual void primitive_type(e_primitive_type const &type) = 0;
         static e_api api() { return s_renderer_api; }
 

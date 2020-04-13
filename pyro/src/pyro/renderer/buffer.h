@@ -109,17 +109,19 @@ namespace pyro
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
 
+        virtual void data(void const* data, uint32_t size) = 0;
         /// \brief Layout setter.
         virtual void layout(const buffer_layout &layout) = 0;
         /// \brief Layout getter.
         virtual const buffer_layout &layout() const = 0;
 
+        static ref<vertex_buffer> create(uint32_t size);
         static ref<vertex_buffer> create(const float *vertices, uint32_t size);
     };
 
     //=================== index buffer ========================================
 
-    /// \brief Index buffer (platform agnostic) interface
+    /// \brief Index buffer (platform agnostic) interface [32-bit index]
     class PYRO_API index_buffer
     {
     public:
@@ -131,7 +133,7 @@ namespace pyro
         /// \brief Count getter.
         virtual uint32_t count() const = 0;
 
-        static ref<index_buffer> create(const uint32_t *indices, uint32_t count);
+        static ref<index_buffer> create(uint32_t const *indices, uint32_t count);
     };
 
 }

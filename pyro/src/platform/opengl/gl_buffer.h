@@ -9,12 +9,14 @@ namespace pyro
     class PYRO_API gl_vertex_buffer final : public vertex_buffer
     {
     public:
+        gl_vertex_buffer(uint32_t size);
         gl_vertex_buffer(const float* vertices, uint32_t size);
         ~gl_vertex_buffer();
 
         void bind() const override;
         void unbind() const override;
 
+        void data(void const* data, uint32_t size) override;
         void layout(const buffer_layout& layout) override;
         buffer_layout const& layout() const override;
 
@@ -25,7 +27,7 @@ namespace pyro
 
     //=================== index buffer ========================================
 
-    /// \brief OpenGL specific implementation of the index_buffer interface
+    /// \brief OpenGL specific implementation of a 32-bit index_buffer interface
     class PYRO_API gl_index_buffer final : public index_buffer
     {
     public:
