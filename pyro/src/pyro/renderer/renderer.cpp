@@ -12,7 +12,7 @@ void pyro::renderer::init()
 
 void pyro::renderer::shutdown()
 {
-    renderer_2d::shutdonw();
+    renderer_2d::shutdown();
 }
 
 void pyro::renderer::begin_scene(camera const &camera, const ref<shader> &shader)

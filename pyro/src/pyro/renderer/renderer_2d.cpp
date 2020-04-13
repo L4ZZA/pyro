@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "renderer_2d.h"
 #include "vertex_array.h"
 #include "shader.h"
@@ -55,7 +55,7 @@ void pyro::renderer_2d::init()
     s_data->texture_shader->set_int("u_sampler", 0);
 }
 
-void pyro::renderer_2d::shutdonw()
+void pyro::renderer_2d::shutdown()
 {
     PYRO_PROFILE_FUNCTION();
     delete s_data;

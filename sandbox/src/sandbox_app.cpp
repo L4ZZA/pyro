@@ -31,7 +31,7 @@ public:
         {
             if(event.key_code() == pyro::key_codes::KEY_ESCAPE)
             {
-                application::exit();
+                exit();
             }
             //PYRO_TRACE("{0}", static_cast<char>(e.key_code())); 
         }

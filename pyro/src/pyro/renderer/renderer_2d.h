@@ -18,7 +18,7 @@ namespace pyro
     {
     public:
         static void init();
-        static void shutdonw();
+        static void shutdown();
 
         static void begin_scene(camera &camera);
         static void end_scene();
