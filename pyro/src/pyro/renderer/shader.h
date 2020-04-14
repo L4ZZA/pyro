@@ -19,6 +19,7 @@ namespace pyro
         virtual void set_float3(std::string const &name, const glm::vec3 &vec) = 0;
         virtual void set_float4(std::string const &name, const glm::vec4 &vec) = 0;
         virtual void set_mat4(std::string const &name, const glm::mat4 &mat) = 0;
+        virtual void set_int_array(std::string const &name, int32_t const *values, uint32_t count) = 0;
 
         static ref<shader> create(std::string const &file_path);
         static ref<shader> create(std::string const &name, std::string const &file_path);

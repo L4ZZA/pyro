@@ -286,6 +286,12 @@ void pyro::gl_shader::set_mat4(std::string const &name, const glm::mat4 &mat)
     upload_uniform(name, mat);
 }
 
+void pyro::gl_shader::set_int_array(std::string const& name, int32_t const* values, uint32_t count)
+{
+    PYRO_PROFILE_FUNCTION();
+    upload_uniform(name, values, count);
+}
+
 void pyro::gl_shader::upload_uniform(std::string const &name, int32_t val) const
 {
     const int32_t uniformLocation = get_uniform_location(name);
@@ -332,6 +338,13 @@ void pyro::gl_shader::upload_uniform(std::string const &name, const glm::mat4 &m
     glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(mat));
 
     //PYRO_CORE_TRACE("[shader] upload_uniform (glm::mat4) (prog {0}): uniform: '{1}' = {2}(mat4)", m_program_id, name, mat); 
+}
+
+void pyro::gl_shader::upload_uniform(std::string const& name, int32_t const* values, uint32_t count) const
+{
+    const int32_t uniformLocation = get_uniform_location(name);
+    glUniform1iv(uniformLocation, count, values);
+    //PYRO_CORE_TRACE("[shader] upload_uniform (int32_t[]) (prog {0}): uniform: '{1}' = {2}(int32_t const*)", m_program_id, name, mat); 
 }
 
 

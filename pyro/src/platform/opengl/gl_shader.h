@@ -22,6 +22,7 @@ namespace pyro
         void set_float3(std::string const &name, const glm::vec3 &vec) override;
         void set_float4(std::string const &name, const glm::vec4 &vec) override;
         void set_mat4(std::string const &name, const glm::mat4 &mat) override;
+        void set_int_array(std::string const& name, int32_t const *values, uint32_t count) override;
 
     private:
         void upload_uniform(std::string const &name, int32_t val) const;
@@ -30,6 +31,7 @@ namespace pyro
         void upload_uniform(std::string const &name, const glm::vec3 &vec) const;
         void upload_uniform(std::string const &name, const glm::vec4 &vec) const;
         void upload_uniform(std::string const &name, const glm::mat4 &mat) const;
+        void upload_uniform(std::string const& name, int32_t const* values, uint32_t count) const;
 
         void compile(std::unordered_map<uint32_t, std::string> const &sources);
         static std::string read_file(std::string const &file_path);

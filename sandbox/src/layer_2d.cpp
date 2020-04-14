@@ -55,12 +55,18 @@ void layer_2d::on_imgui_render()
         props.color = {m_rect_color, 1.f};
         pyro::renderer_2d::draw_quad(props);
 
-        //props.position = {-0.0f, 0.0f,-0.1f};
-        //props.size = {10.f, 10.f};
-        //props.color = {.8f, 1.f, .8f, 1.f};
-        //props.tiling_factor = 10.f;
-        //props.texture = m_checkerboard_texture;
-        //pyro::renderer_2d::draw_quad(props);
+        props.position = { -5.0f, -5.0f, -0.1f };
+        props.size = {10.f, 10.f};
+        props.color = {.8f, 1.f, .8f, 1.f};
+        props.tiling_factor = 10.f;
+        props.texture = m_checkerboard_texture;
+        pyro::renderer_2d::draw_quad(props);
+
+        props.color = glm::vec4(1);
+        props.position = { -0.5f, -0.5f, 0.0f };
+        props.size = {1.f, 1.f};
+        props.tiling_factor = 20.f;
+        pyro::renderer_2d::draw_quad(props);
         pyro::renderer_2d::end_scene();
     }
 

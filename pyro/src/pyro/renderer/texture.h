@@ -45,6 +45,9 @@ namespace pyro
 
         virtual void bind(uint32_t slot = 0) const = 0;
 
+        virtual bool operator==(texture const &other) const = 0;
+        virtual bool operator!=(texture const &other) const = 0;
+
     public:
         static void wrap(e_texture_wrap mode);
         static void filter(e_texture_filter mode);

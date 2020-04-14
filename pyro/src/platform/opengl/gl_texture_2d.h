@@ -17,6 +17,10 @@ namespace pyro
         uint32_t height() const override { return m_height; }
         std::string path() const override { return m_path; }
 
+        // Inherited via texture_2d
+        virtual bool operator==(texture const& other) const override;
+        virtual bool operator!=(texture const& other) const override;
+
     private:
         std::string m_path;
         uint32_t m_id;
@@ -25,9 +29,9 @@ namespace pyro
         texture_parameters m_parameters;
 
     private:
-        /// returns the opengl equivalent fot the data format 
+        // returns the opengl equivalent fot the data format 
         static uint32_t texture_format_to_gl(e_texture_format mode);
-        /// returns the opengl equivalent fot the internal format 
+        // returns the opengl equivalent fot the internal format 
         static uint32_t texture_format_internal_to_gl(e_texture_format mode);
         static uint32_t texture_wrap_to_gl(e_texture_wrap mode);
         static uint32_t texture_filter_to_gl(e_texture_filter mode);

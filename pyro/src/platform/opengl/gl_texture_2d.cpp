@@ -98,6 +98,20 @@ void pyro::gl_texture_2d::data(void *data, uint32_t size)
     glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, texture_format_to_gl(m_parameters.format), GL_UNSIGNED_BYTE, data);
 }
 
+bool pyro::gl_texture_2d::operator==(texture const& other) const
+{
+    //return m_id == static_cast<gl_texture_2d const&>(other).m_id;
+    auto o = ((gl_texture_2d const&)other);
+    return m_id == o.m_id;
+}
+
+bool pyro::gl_texture_2d::operator!=(texture const& other) const
+{
+    //return m_id == static_cast<gl_texture_2d const&>(other).m_id;
+    auto o = ((gl_texture_2d const&)other);
+    return m_id != o.m_id;
+}
+
 uint32_t pyro::gl_texture_2d::texture_format_to_gl(e_texture_format mode)
 {
     // see explanation of luminance [opengl4.5+]

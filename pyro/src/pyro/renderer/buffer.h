@@ -51,6 +51,7 @@ namespace pyro
         {
             switch(type)
             {
+                case e_shader_data_type::float1:    return 1;
                 case e_shader_data_type::float2:    return 2;
                 case e_shader_data_type::float3:    return 3;
                 case e_shader_data_type::float4:    return 4;
