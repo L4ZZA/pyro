@@ -27,5 +27,26 @@ namespace pyro
         // primitives
         static void draw_quad(quad_properties const& props);
 
+        static const uint32_t s_quad_vertices = 4;
+        static const uint32_t s_quad_indices = 6;
+        static const uint32_t max_quads = 20000;
+        static const uint32_t max_vertices = max_quads * s_quad_vertices;
+        static const uint32_t max_indices = max_quads * s_quad_indices;
+        static const uint32_t max_texture_slots = 32;
+            
+        struct statistics {
+
+            uint32_t draw_calls = 0;
+            uint32_t quad_count = 0;
+
+            uint32_t total_vertex_count() const { return quad_count * s_quad_vertices; }
+            uint32_t total_index_count() const { return quad_count * s_quad_indices; }
+        };
+
+        static void reset_stats();
+        static statistics stats();
+
+    private:
+        static void reset_render_data();
     };
 }

@@ -36,6 +36,7 @@ void layer_2d::on_update(const pyro::timestep &ts)
 
 void layer_2d::on_imgui_render()
 {
+    pyro::renderer_2d::reset_stats();
     {
         // Pre Render
         PYRO_PROFILE_SCOPE("layer_2d::pre_render");
@@ -66,8 +67,8 @@ void layer_2d::on_imgui_render()
         pyro::renderer_2d::draw_quad(props);
 
         props.position = { 0.f, 0.f, -0.1f };
-        props.size = {10.f, 10.f};
-        props.color = {.8f, 1.f, .8f, 1.f};
+        props.size = {20.f, 20.f};
+        props.color = glm::vec4(1.f);
         props.tiling_factor = 10.f;
         props.texture = m_checkerboard_texture;
         pyro::renderer_2d::draw_quad(props);
@@ -77,13 +78,27 @@ void layer_2d::on_imgui_render()
         props.size = {1.f, 1.f};
         props.rotation = rotation;
         props.tiling_factor = 20.f;
+        props.color = { .8f, 1.f, .8f, 1.f };
         pyro::renderer_2d::draw_quad(props);
+
+        for (float y = -5.0f; y < 5.0f; y += 0.5f)
+        {
+            for (float x = -5.0f; x < 5.0f; x += 0.5f)
+            {
+                pyro::quad_properties props;
+                props.color = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f };
+                props.size = { 0.45f, 0.45f };
+                props.position = { x, y, 0.f };
+                pyro::renderer_2d::draw_quad(props);
+            }
+        }
         pyro::renderer_2d::end_scene();
     }
 
     ImGui::Begin("Settings");
+
     ImGui::ColorEdit3("Squares color", glm::value_ptr(m_rect_color));
-    for(auto& result : m_profile_results)
+    for (auto& result : m_profile_results)
     {
         char label[50];
         strcpy_s(label, "%.3fms ");
@@ -91,6 +106,15 @@ void layer_2d::on_imgui_render()
         ImGui::Text(label, result.time);
     }
     m_profile_results.clear();
+
+    auto stats = pyro::renderer_2d::stats();
+    ImGui::Text("-- 2D Renderer stats:");
+    ImGui::Text("- Draw calls: %d", stats.draw_calls);
+    ImGui::Text("- Quads: %d", stats.quad_count);
+    ImGui::Text("- Vertices: %d", stats.total_vertex_count());
+    ImGui::Text("- Indices: %d", stats.total_index_count());
+    ImGui::Text("---------------------");
+    
     ImGui::End();
 }
 
