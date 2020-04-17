@@ -142,16 +142,6 @@ void pyro::renderer_2d::draw_quad(quad_properties const& props)
         reset_render_data();
     }
 
-    //constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f }; 
-
-    // if texture is passed as parameter 
-
-    // go through all current textures 
-       // if texture is found  
-            // store index 
-            // quit loop 
-       // 
-
     // TODO - textures are added even if already present in s_data.texture_slots!
     float tex_index = 0.0f;
     auto tex_param = props.texture.get();
