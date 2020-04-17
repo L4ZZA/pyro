@@ -36,6 +36,8 @@ namespace pyro
 
         std::array<ref<texture_2d>, max_texture_slots> texture_slots;
         uint32_t texture_slot_index = 1; // 0 white texture index
+
+        glm::vec4 quad_vertex_positions[4];
     };
 
     static render_2d_data s_data;
@@ -94,6 +96,11 @@ void pyro::renderer_2d::init()
 
     // always set texture slot 0 to full white
     s_data.texture_slots[0] = s_data.wite_texture;
+
+    s_data.quad_vertex_positions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
+    s_data.quad_vertex_positions[1] = {  0.5f, -0.5f, 0.0f, 1.0f };
+    s_data.quad_vertex_positions[2] = {  0.5f,  0.5f, 0.0f, 1.0f };
+    s_data.quad_vertex_positions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
 }
 
 void pyro::renderer_2d::shutdown()
@@ -169,29 +176,32 @@ void pyro::renderer_2d::draw_quad(quad_properties const& props)
             }
         }
 
+    glm::mat4 transform = glm::translate(glm::mat4(1.f), props.position)
+        * glm::rotate(glm::mat4(1.f), props.rotation, pyro::math::axis_z)
+        * glm::scale(glm::mat4(1.f), { props.size.x, props.size.y, 1.f });
     
-    s_data.quad_vertex_buffer_ptr->position = props.position;
+    s_data.quad_vertex_buffer_ptr->position = transform * s_data.quad_vertex_positions[0];
     s_data.quad_vertex_buffer_ptr->color = props.color;
     s_data.quad_vertex_buffer_ptr->tex_coord = { 0.f, 0.f };
     s_data.quad_vertex_buffer_ptr->tex_index = tex_index;
     s_data.quad_vertex_buffer_ptr->tiling_factor = props.tiling_factor;
     s_data.quad_vertex_buffer_ptr++;
     
-    s_data.quad_vertex_buffer_ptr->position = { props.position.x + props.size.x, props.position.y, 0.f };
+    s_data.quad_vertex_buffer_ptr->position = transform * s_data.quad_vertex_positions[1];
     s_data.quad_vertex_buffer_ptr->color = props.color;
     s_data.quad_vertex_buffer_ptr->tex_coord = { 1.f, 0.f };
     s_data.quad_vertex_buffer_ptr->tex_index = tex_index;
     s_data.quad_vertex_buffer_ptr->tiling_factor = props.tiling_factor;
     s_data.quad_vertex_buffer_ptr++;
     
-    s_data.quad_vertex_buffer_ptr->position = { props.position.x + props.size.x, props.position.y + props.size.y, 0.f };
+    s_data.quad_vertex_buffer_ptr->position = transform * s_data.quad_vertex_positions[2];
     s_data.quad_vertex_buffer_ptr->color = props.color;
     s_data.quad_vertex_buffer_ptr->tex_coord = { 1.f, 1.f };
     s_data.quad_vertex_buffer_ptr->tex_index = tex_index;
     s_data.quad_vertex_buffer_ptr->tiling_factor = props.tiling_factor;
     s_data.quad_vertex_buffer_ptr++;
     
-    s_data.quad_vertex_buffer_ptr->position = { props.position.x, props.position.y + props.size.y, 0.f };
+    s_data.quad_vertex_buffer_ptr->position = transform * s_data.quad_vertex_positions[3];
     s_data.quad_vertex_buffer_ptr->color = props.color;
     s_data.quad_vertex_buffer_ptr->tex_coord = { 0.f, 1.f };
     s_data.quad_vertex_buffer_ptr->tex_index = tex_index;
@@ -200,44 +210,4 @@ void pyro::renderer_2d::draw_quad(quad_properties const& props)
 
     s_data.quad_index_count += s_quad_indices; // 6 indices per quad
 
-
-#if OLD_PATH
-    s_data.texture_shader->set_float4("u_color", props.color); 
-    s_data.texture_shader->set_float("u_tiling_factor", props.tiling_factor); 
-    if(props.texture)
-        props.texture->bind(); 
-    else
-        s_data.wite_texture->bind();
-    // REMEMBER TRS -> in reverse for opengl SCALE, ROTATE, TRANSLATE. 
-    // https://gamedev.stackexchange.com/a/16721/129225
-    glm::mat4 transform(1); 
-    transform = glm::scale(transform, {props.size.x, props.size.y, 1.0f}); 
-    transform = glm::rotate(transform, props.rotation, {0.0f, 0.0f, 1.0f}); 
-    transform = glm::translate(transform, props.position); 
-    s_data.texture_shader->set_mat4("u_transform", transform); 
- 
-    s_data.quad_vertex_array->bind(); 
-    render_command::draw_indexed(s_data.quad_vertex_array);
-#endif
-}
-
-void pyro::renderer_2d::draw_rotated_quad(quad_properties const& props)
-{
-    PYRO_PROFILE_FUNCTION();
-    
-    s_data.texture_shader->set_float4("u_color", props.color); 
-    s_data.texture_shader->set_float("u_tiling_factor", props.tiling_factor); 
-    if(props.texture)
-        props.texture->bind(); 
-    else
-        s_data.wite_texture->bind();
-    // REMEMBER TRS -> in reverse for opengl SCALE, ROTATE, TRANSLATE. 
-    // https://gamedev.stackexchange.com/a/16721/129225
-    glm::mat4 transform(1); 
-    transform = glm::scale(transform, {props.size.x, props.size.y, 1.0f}); 
-    transform = glm::translate(transform, props.position); 
-    s_data.texture_shader->set_mat4("u_transform", transform); 
- 
-    s_data.quad_vertex_array->bind(); 
-    render_command::draw_indexed(s_data.quad_vertex_array); 
 }

@@ -26,7 +26,6 @@ namespace pyro
 
         // primitives
         static void draw_quad(quad_properties const& props);
-        static void draw_rotated_quad(quad_properties const& props);
 
     };
 }
