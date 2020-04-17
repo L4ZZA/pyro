@@ -21,4 +21,4 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-//#include "pyro/utils/glm_extension.h"
+#include "pyro/utils/glm_extensions.h"
