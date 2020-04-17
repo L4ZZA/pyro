@@ -12,3 +12,5 @@ Sandbox/imgui\.ini
 *.vcxproj
 *.sln
 enc_temp_folder/
+
+pyro_profile*.json

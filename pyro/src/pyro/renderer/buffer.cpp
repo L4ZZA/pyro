@@ -5,29 +5,41 @@
 
 //=================== vertex buffer =======================================
 
-pyro::vertex_buffer* pyro::vertex_buffer::create(float* vertices, uint32_t size)
+pyro::ref<pyro::vertex_buffer> pyro::vertex_buffer::create(uint32_t size)
 {
     switch (renderer::api())
     {
-    case renderer_api::e_api::none: PYRO_ASSERT(false, "[vertex_buffer] e_renderer_api::none currently not supported!"); return nullptr;
-    case renderer_api::e_api::open_gl: return new gl_vertex_buffer(vertices, size);
+    case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[vertex_buffer::create_uint32_t_size] e_renderer_api::none currently not supported!"); return nullptr;
+    case renderer_api::e_api::opengl: return make_ref<gl_vertex_buffer>(size);
     }
 
-    PYRO_ASSERT(false, "[vertex_buffer] Unknown renderer api!");
+    PYRO_CORE_ASSERT(false, "[vertex_buffer::create_uint32_t_size] Unknown renderer api!");
+    return nullptr;
+}
+
+pyro::ref<pyro::vertex_buffer> pyro::vertex_buffer::create(const float * vertices, uint32_t size)
+{
+    switch (renderer::api())
+    {
+    case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[vertex_buffer::create_const_float_vertices] e_renderer_api::none currently not supported!"); return nullptr;
+    case renderer_api::e_api::opengl: return make_ref<gl_vertex_buffer>(vertices, size);
+    }
+
+    PYRO_CORE_ASSERT(false, "[vertex_buffer::create_const_float_vertices] Unknown renderer api!");
     return nullptr;
 }
 
 //=================== index buffer ========================================
 
-pyro::index_buffer* pyro::index_buffer::create(uint32_t* indices, uint32_t count)
+pyro::ref<pyro::index_buffer> pyro::index_buffer::create(uint32_t const *indices, uint32_t count)
 {
     switch (renderer::api())
     {
-    case renderer_api::e_api::none: PYRO_ASSERT(false, "[vertex_buffer] e_renderer_api::none currently not supported!"); return nullptr;
-    case renderer_api::e_api::open_gl: return new gl_index_buffer(indices, count);
+    case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[vertex_buffer] e_renderer_api::none currently not supported!"); return nullptr;
+    case renderer_api::e_api::opengl: return make_ref<gl_index_buffer>(indices, count);
     }
 
-    PYRO_ASSERT(false, "[vertex_buffer] Unknown renderer api!");
+    PYRO_CORE_ASSERT(false, "[vertex_buffer] Unknown renderer api!");
     return nullptr;
 }
 
@@ -51,15 +63,12 @@ uint32_t pyro::buffer_layout::stride() const
 
 void pyro::buffer_layout::calculate_offset_and_stride()
 {
-    uint32_t offset = 0;
-    uint32_t index = 0;
+    size_t offset = 0;
     m_stride = 0;
     for(auto& element : m_elements)
     {
-        element.index = index;
         element.offset = offset;
         offset += element.size;
         m_stride += element.size;
-        ++index;
     }
 }

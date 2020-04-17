@@ -1,6 +1,6 @@
 #pragma once
 #include "pyro_pch.h"
-#include "pyro/core.h"
+#include "pyro/core/core.h"
 
 
 namespace  pyro
@@ -31,7 +31,7 @@ namespace  pyro
 
     //-------------------------------------------------------------------------
 
-#define EVENT_CLASS_TYPE(type) static event_type_e static_type() { return event_type_e::##type; }\
+#define EVENT_CLASS_TYPE(type) static event_type_e static_type() { return event_type_e::type; }\
                                 virtual event_type_e event_type() const override { return static_type(); }\
                                 virtual const char* name() const override { return #type; }
 
@@ -68,9 +68,6 @@ namespace  pyro
     /// \brief 
     class event_dispatcher
     {
-        template<typename T>
-        using EventFn = std::function<bool(T&)>;
-
         //---------------------------------------------------------------------
     public:
         event_dispatcher(event& event)
@@ -78,9 +75,9 @@ namespace  pyro
         {
         }
 
-        /// \brief 
-        template<typename T>
-        bool dispatch(EventFn<T> func)
+        /// \brief F will be deducted by the compiler
+        template<typename T, typename F>
+        bool dispatch(const F& func)
         {
             // filtering events by type T
             if (m_event.event_type() == T::static_type())

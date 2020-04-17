@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "imgui_layer.h"
 
 #include "imgui.h"
@@ -6,25 +6,22 @@
 #include "examples/imgui_impl_opengl3.h"
 
 
-#include "pyro/application.h"
+#include "pyro/core/application.h"
 
 // temporary
 //#include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-pyro::imgui_layer::imgui_layer()
-    : layer("imgui_layer")
+pyro::imgui_layer::imgui_layer(std::string const& name /*= "imgui_layer"*/)
+    : layer(name)
 {
 	m_imgui = true;
 }
 
-pyro::imgui_layer::~imgui_layer()
-{
-}
-
 void pyro::imgui_layer::on_attach()
 {
-    // Setup Der ImGui context
+	PYRO_PROFILE_FUNCTION();
+    // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -42,22 +39,23 @@ void pyro::imgui_layer::on_attach()
     // When viewports are enabled we tweak WindowRounding/WindowBg so platform
     // windows can look identical to regular ones.
     ImGuiStyle& style = ImGui::GetStyle();
-    if(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
         style.WindowRounding = 0.0f;
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
 
     application& app = application::instance();
-    auto window = static_cast<GLFWwindow*>(app.get_window().native_window());
+    auto win = static_cast<GLFWwindow*>(app.window().native_window());
 
     // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplGlfw_InitForOpenGL(win, true);
     ImGui_ImplOpenGL3_Init("#version 410");
 }
 
 void pyro::imgui_layer::on_detach()
 {
+	PYRO_PROFILE_FUNCTION();
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
@@ -71,6 +69,7 @@ void pyro::imgui_layer::on_imgui_render()
 
 void pyro::imgui_layer::begin() const
 {
+	PYRO_PROFILE_FUNCTION();
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -78,9 +77,10 @@ void pyro::imgui_layer::begin() const
 
 void pyro::imgui_layer::end() const
 {
+	PYRO_PROFILE_FUNCTION();
     ImGuiIO& io = ImGui::GetIO();
     auto& app = application::instance();
-    io.DisplaySize = ImVec2(static_cast<float>(app.get_window().width()), static_cast<float>(app.get_window().height()));
+    io.DisplaySize = ImVec2(static_cast<float>(app.window().width()), static_cast<float>(app.window().height()));
 
     // Rendering
     ImGui::Render();

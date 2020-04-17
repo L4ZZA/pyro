@@ -4,7 +4,7 @@
 
 namespace pyro
 {
-    static uint32_t to_opengl_type(pyro::e_shader_data_type type)
+    static uint32_t to_opengl_type(e_shader_data_type type)
     {
         switch (type)
         {
@@ -21,7 +21,7 @@ namespace pyro
             case pyro::e_shader_data_type::boolean:   return GL_BOOL;
         }
 
-        PYRO_ASSERT(false, "[to_opengl] Unknown shader_data_type!");
+        PYRO_CORE_ASSERT(false, "[to_opengl] Unknown shader_data_type!");
         return 0;
     }
 }
@@ -29,44 +29,52 @@ namespace pyro
 
 pyro::gl_vertex_array::gl_vertex_array()
 {
+	PYRO_PROFILE_FUNCTION();
     glCreateVertexArrays(1, &m_id);
 }
 
 pyro::gl_vertex_array::~gl_vertex_array()
 {
+	PYRO_PROFILE_FUNCTION();
     glDeleteVertexArrays(1, &m_id);
 }
 
 void pyro::gl_vertex_array::bind() const
 {
+	PYRO_PROFILE_FUNCTION();
     glBindVertexArray(m_id);
 }
 
 void pyro::gl_vertex_array::unbind() const
 {
+	PYRO_PROFILE_FUNCTION();
     glBindVertexArray(0);
 }
 
-void pyro::gl_vertex_array::add_buffer(const ref<vertex_buffer>& vertex_buffer)
+void pyro::gl_vertex_array::add_buffer(ref<vertex_buffer> const &vertex_buffer)
 {
+	PYRO_PROFILE_FUNCTION();
     glBindVertexArray(m_id);
     vertex_buffer->bind();
     const auto& layout = vertex_buffer->layout();
     for (const auto& element : layout)
     {
-        glEnableVertexAttribArray(element.index);
-        glVertexAttribPointer(element.index, 
+        glEnableVertexAttribArray(m_vertex_buffer_index);
+        glVertexAttribPointer(m_vertex_buffer_index, 
             element.components_count(), 
             to_opengl_type(element.type), 
             element.normalised ? GL_TRUE : GL_FALSE, 
             layout.stride(), 
-            reinterpret_cast<const void*>(element.offset));
+            reinterpret_cast<const void*>(element.offset)
+        );
+        m_vertex_buffer_index++;
     }
     m_vertex_buffers.push_back(vertex_buffer);
 }
 
-void pyro::gl_vertex_array::add_buffer(const ref<pyro::index_buffer>& index_buffer)
+void pyro::gl_vertex_array::add_buffer(ref<pyro::index_buffer> const &index_buffer)
 {
+	PYRO_PROFILE_FUNCTION();
     glBindVertexArray(m_id);
     index_buffer->bind();
     m_index_buffer = index_buffer;

@@ -3,7 +3,7 @@
 namespace pyro
 {
     /// \brief Delta time between one frame (or update) and the next one.
-    class timestep
+    class PYRO_API timestep final
     {
     public:
         timestep(float time = 0.f) 

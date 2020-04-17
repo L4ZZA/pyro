@@ -3,7 +3,7 @@
 namespace pyro
 {
 	/// \brief Graphics context (platform agnostic) interface
-	class graphics_context
+	class PYRO_API graphics_context
 	{
 	public:
 		virtual void init() = 0;
