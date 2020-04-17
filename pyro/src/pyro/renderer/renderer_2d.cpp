@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "renderer_2d.h"
 #include "vertex_array.h"
 #include "shader.h"
@@ -114,9 +114,7 @@ void pyro::renderer_2d::begin_scene(camera &camera)
     s_data.texture_shader->bind();
     s_data.texture_shader->set_mat4("u_view_projection", camera.view_projection_matrix());
 
-    s_data.texture_slot_index = 1;
-    s_data.quad_index_count = 0;
-    s_data.quad_vertex_buffer_ptr = s_data.quad_vertex_buffer_base;
+    reset_render_data();
 }
 
 void pyro::renderer_2d::end_scene()
@@ -142,7 +140,13 @@ void pyro::renderer_2d::draw_quad(quad_properties const& props)
 {
     PYRO_PROFILE_FUNCTION();
 
-    //constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    if (s_data.quad_index_count >= max_indices)
+    {
+        end_scene();
+        reset_render_data();
+    }
+
+    //constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f }; 
 
     // if texture is passed as parameter
 
@@ -209,5 +213,11 @@ void pyro::renderer_2d::draw_quad(quad_properties const& props)
     s_data.quad_vertex_buffer_ptr++;
 
     s_data.quad_index_count += s_quad_indices; // 6 indices per quad
+}
 
+void pyro::renderer_2d::reset_render_data()
+{
+    s_data.texture_slot_index = 1;
+    s_data.quad_index_count = 0;
+    s_data.quad_vertex_buffer_ptr = s_data.quad_vertex_buffer_base;
 }
