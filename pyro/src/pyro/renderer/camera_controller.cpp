@@ -6,9 +6,13 @@
 
 //====================== 2D CAMERA CONTROLLER ========================
 
-pyro::orthographic_camera_controller::orthographic_camera_controller(float aspect_ratio, bool rotation /*= false*/)
+pyro::orthographic_camera_controller::orthographic_camera_controller(
+    float aspect_ratio, 
+    float zoom_level /*= 1.f*/, 
+    bool rotation /*= false*/
+    )
     : m_aspect_ratio(aspect_ratio),
-    m_zoom_level(1.0f),
+    m_zoom_level(zoom_level),
     m_camera(-m_aspect_ratio * m_zoom_level, m_aspect_ratio *m_zoom_level, -m_zoom_level, m_zoom_level),
     m_rotation(rotation),
     m_camera_position(0, 0, 0),
