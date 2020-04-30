@@ -102,7 +102,7 @@ void pyro::win_window::init(window_props const &props)
             case GLFW_PRESS:
             {
                 s_key_repeat_count[key] = 0;
-                //PYRO_CORE_TRACE("Key {} pressed: {}", key, 0);
+                //PYRO_CORE_DEBUG("Key {} pressed: {}", key, 0);
                 key_pressed_event event(key, 0); // don't retrieve the value from s_key_repeat_count[key] as it will be less performant
                 data.event_callback(event);
                 break;
@@ -110,7 +110,7 @@ void pyro::win_window::init(window_props const &props)
             case GLFW_RELEASE:
             {
                 s_key_repeat_count[key] = 0;
-                //PYRO_CORE_TRACE("Key {} released: {}", key, 0);
+                //PYRO_CORE_DEBUG("Key {} released: {}", key, 0);
                 key_released_event event(key);
                 data.event_callback(event);
                 break;
@@ -119,7 +119,7 @@ void pyro::win_window::init(window_props const &props)
             {
                 const int32_t repeats = ++s_key_repeat_count[key];
                 key_pressed_event event(key, repeats);
-                //PYRO_CORE_TRACE("Key {} repeats: {}", key, repeats);
+                //PYRO_CORE_DEBUG("Key {} repeats: {}", key, repeats);
                 data.event_callback(event);
                 break;
             }
@@ -172,7 +172,7 @@ void pyro::win_window::init(window_props const &props)
             const float delta_x = static_cast<float>(x_pos) - data.last_mouse_x;
             const float delta_y = data.last_mouse_y - static_cast<float>(y_pos);
 
-            //PYRO_CORE_TRACE("Delta -> x: {0} | y: {1}", delta_x, delta_y);
+            //PYRO_CORE_DEBUG("Delta -> x: {0} | y: {1}", delta_x, delta_y);
             event = {delta_x, delta_y};
         }
 

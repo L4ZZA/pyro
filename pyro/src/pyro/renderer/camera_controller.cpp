@@ -249,7 +249,7 @@ void pyro::perspective_camera_controller::move(perspective_camera::e_direction d
     else if(direction == perspective_camera::right)
         m_camera_position += m_camera_translation_speed * ts * glm::normalize(cross(m_camera.front(), m_camera.up()));
 
-    PYRO_CORE_TRACE("3d cam position: [{},{},{}]", m_camera_position.x, m_camera_position.y, m_camera_position.z);
+    PYRO_CORE_DEBUG("3d cam position: [{},{},{}]", m_camera_position.x, m_camera_position.y, m_camera_position.z);
 
     m_camera.position(m_camera_position);
 }
@@ -275,7 +275,7 @@ void pyro::perspective_camera_controller::rotate(perspective_camera::e_rotation 
         if(angle > 360.f)
         {
             angle = 0.f;
-            PYRO_CORE_TRACE("A");
+            PYRO_CORE_DEBUG("A");
         }
     }
     else if(rotation == clock_wise)
@@ -284,11 +284,11 @@ void pyro::perspective_camera_controller::rotate(perspective_camera::e_rotation 
         if(angle < 0.f)
         {
             angle = 360.f;
-            PYRO_CORE_TRACE("B");
+            PYRO_CORE_DEBUG("B");
         }
     }
 
-    PYRO_CORE_TRACE("after - 3d cam rotation: [{},{},{}]", m_camera_rotation.x, m_camera_rotation.y, m_camera_rotation.z);
+    PYRO_CORE_DEBUG("after - 3d cam rotation: [{},{},{}]", m_camera_rotation.x, m_camera_rotation.y, m_camera_rotation.z);
 
     m_camera.rotation(m_camera_rotation);
 }

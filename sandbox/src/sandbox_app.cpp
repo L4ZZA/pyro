@@ -33,7 +33,7 @@ public:
             {
                 exit();
             }
-            //PYRO_TRACE("{0}", static_cast<char>(e.key_code())); 
+            //PYRO_DEBUG("{0}", static_cast<char>(e.key_code())); 
         }
         return false;
     }

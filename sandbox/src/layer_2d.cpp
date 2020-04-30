@@ -123,7 +123,7 @@ bool layer_2d::on_key_pressed(pyro::key_pressed_event& event)
         else if (event.key_code() == pyro::key_codes::KEY_RIGHT)
             octaves++;
         
-        //PYRO_TRACE("{0}", static_cast<char>(e.key_code())); 
+        //PYRO_DEBUG("{0}", static_cast<char>(e.key_code())); 
     }
     return false;
 }
