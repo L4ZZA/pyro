@@ -12,7 +12,7 @@ namespace helpers
         return (1.0f - weight) * a + weight * b;
     }
 
-    inline void perlin_noise_1d(int output_size, float octaves, float* seed, float* output_noise)
+    inline void perlin_noise_1d(int output_size, float octaves, float bias, float* seed, float* output_noise)
     {
         for (int x = 0; x < output_size; x++)
         {
@@ -33,7 +33,7 @@ namespace helpers
 
                 noise += sample * scale;
                 scale_accumulator += scale;
-                scale = scale * 0.5f;
+                scale = scale / bias;
             }
 
             output_noise[x] = noise / scale_accumulator;
