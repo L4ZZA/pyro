@@ -92,7 +92,7 @@ void pyro::orthographic_camera_controller::move(e_direction direction, timestep 
     else if(direction == right)
         m_camera_position.x += m_camera_translation_speed * ts;
 
-    PYRO_CORE_DEBUG("Camera position: {},{}", m_camera_position.x, m_camera_position.y);
+    PYRO_CORE_DEBUG("2d cam position: {}", glm::to_string(m_camera_position));
 }
 
 void pyro::orthographic_camera_controller::rotate(e_rotation rotation, e_axis rotation_axis, timestep ts)
@@ -253,7 +253,7 @@ void pyro::perspective_camera_controller::move(perspective_camera::e_direction d
     else if(direction == perspective_camera::right)
         m_camera_position += m_camera_translation_speed * ts * glm::normalize(cross(m_camera.front(), m_camera.up()));
 
-    PYRO_CORE_DEBUG("3d cam position: [{},{},{}]", m_camera_position.x, m_camera_position.y, m_camera_position.z);
+    PYRO_CORE_DEBUG("3d cam position: {}", glm::to_string(m_camera_position));
 
     m_camera.position(m_camera_position);
 }
