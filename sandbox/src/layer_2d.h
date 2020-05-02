@@ -12,6 +12,7 @@ public:
     void on_imgui_render() override;
     void on_event(pyro::event& event) override;
 private:
+    void reset_noise_seed();
     bool on_key_pressed(pyro::key_pressed_event& event);
 private:
     pyro::orthographic_camera_controller m_2d_camera_controller; 
@@ -31,10 +32,12 @@ private:
     float                           m_x_count = 10;
     float                           m_y_count = 20;
 
-    int octaves = 1;
-    static const int texture_size = 256;
-    std::array<float, texture_size> noise_seed{ 0 };
-    std::array<float, texture_size> noise_1d{ 0 };
+    bool m_noise_changed = false;
+    int m_octaves = 1;
+    float m_bias = 2.f;
+    static const int s_texture_size = 512;
+    std::array<float, s_texture_size> m_noise_seed{ 0 };
+    std::array<float, s_texture_size> m_noise_1d{ 0 };
 
 
     const float                     m_rect_speed{1.f};
