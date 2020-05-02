@@ -26,9 +26,9 @@ namespace helpers
                 int pitch = output_size >> oct; 
                 // intger division
                 int sample1 = (x / pitch) * pitch;
-                int sample2 = (sample1 + pitch) % pitch; // modulos to wrap around
+                int sample2 = (sample1 + pitch) % output_size; // modulos to wrap around
 
-                float blend = static_cast<float>(x - sample1) / pitch;
+                float blend = static_cast<float>(x - sample1) / static_cast<float>(pitch);
                 float sample = lerp(seed[sample1], seed[sample2], blend);
 
                 noise += sample * scale;
