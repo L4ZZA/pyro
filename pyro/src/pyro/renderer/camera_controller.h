@@ -50,7 +50,7 @@ namespace pyro
             right 
         }; 
     public:
-        orthographic_camera_controller(float aspect_ratio, float zoom_level = 1.f, bool rotation = false);
+        orthographic_camera_controller(glm::vec3 const &position, float aspect_ratio, float zoom_level = 1.f, bool rotation = false);
         void on_update(timestep ts) override;
         void on_event(event& e) override;
         pyro::camera& camera() override;
