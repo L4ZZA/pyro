@@ -56,9 +56,9 @@ void layer_2d::on_update(const pyro::timestep &ts)
     {
         m_noise_changed = false;
         if (m_octaves > 8)
-            m_octaves = 1;
-        if (m_octaves < 1)
             m_octaves = 8;
+        if (m_octaves < 1)
+            m_octaves = 1;
         if (m_bias < 0.2f)
             m_bias = 0.2f;
 
