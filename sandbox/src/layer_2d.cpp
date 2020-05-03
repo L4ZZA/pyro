@@ -42,6 +42,7 @@ void layer_2d::reset_noise_seed()
         float normalized_val = random::get_float();
         m_noise_seed[i] = normalized_val;
     }
+    m_noise_1d[0] = 0.5f; // this will make generation always average around 0.5, since the first octave will be sampling from this value
     m_noise_changed = true;
 }
 
