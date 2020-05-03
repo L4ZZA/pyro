@@ -6,7 +6,7 @@
 
 layer_2d::layer_2d() 
     : imgui_layer("Sandbox2D")
-    , m_2d_camera_controller({ 31.f, 8.f, 0.f }, 1280.0f / 720.0f, 23.5f)
+    , m_2d_camera_controller({ 25.f, 5.7f, 0.f }, 1280.0f / 720.0f, 15.f)
 {
 }
 
@@ -63,6 +63,9 @@ void layer_2d::on_update(const pyro::timestep &ts)
             m_bias = 0.2f;
 
         helpers::perlin_noise_1d(s_texture_size, m_octaves, m_bias, m_noise_seed.data(), m_noise_1d.data());
+        
+        PYRO_DEBUG("rect height[0]: {}", m_noise_1d[0]);
+        PYRO_DEBUG("rect height[1]: {}", m_noise_1d[1]);
     }
 }
 
@@ -75,31 +78,36 @@ void layer_2d::on_imgui_render()
         pyro::render_command::clear_color({0.1f, 0.1f, 0.1f, 1});
         pyro::render_command::clear();
     }
+    int width = s_texture_size;
+    int height = s_texture_size / 4;
+    int step = 1;
+    float rect_width = 0.1f;
+    float rect_heigth_max = 1.f;
+    float gap_width = step - rect_width;
     {
         // Render
         PYRO_PROFILE_SCOPE("layer_2d::render");
         pyro::renderer_2d::begin_scene(m_2d_camera_controller.camera());
-        
 
-        int width  = s_texture_size;
-        int height = s_texture_size / 4;
-        float step = 1.f;
-        float rect_width = 0.1f;
-        float rect_heigth_max = 50.f;
-        float gap_width = step - rect_width;
-        //for (float y = 0; y < height ; y += 1)
         for (int x = 0; x < width; x += step)
         {
             float rect_heigth = (m_noise_1d[x] * (float)rect_heigth_max / 2.0f) + (float)rect_heigth_max / 2.0f;
+            //float rect_heigth = m_noise_1d.at(x);
             pyro::quad_properties props;
             props.color = { 1.f, 0.0f, 0.0, 0.7f };
+            float x_pos = x - (x * gap_width);
+            float y_pos = (rect_heigth / 2) - rect_heigth_max + 0.5;
+            props.position = { x_pos, y_pos, 0.f };
             props.size = { rect_width, rect_heigth };
-            props.position = { x - (x* gap_width), rect_heigth / 2.0, 0.f };
             pyro::renderer_2d::draw_quad(props);
         }
 
         pyro::quad_properties props;
+        props.position = { -1.f, 0.f, 0.f};
         props.color = { 0.f, 1.0f, 0.0, 0.7f };
+        pyro::renderer_2d::draw_quad(props);
+        props.position = { -1.f, 1.f, 0.f};
+        props.color = { 0.f, 0.0f, 1.0, 0.7f };
         pyro::renderer_2d::draw_quad(props);
         pyro::renderer_2d::end_scene();
     }
@@ -127,13 +135,13 @@ void layer_2d::on_imgui_render()
     ImGui::Text("-- Noise:");
     ImGui::Text("- Octaves: %d", m_octaves);
     ImGui::Text("- Bias: %f", m_bias);
-    ImGui::Text("- Line width: %f", m_bias);
+    ImGui::Text("- Line width: %f", rect_width);
     ImGui::Text("---------------------");
 
+    auto const& camera = m_2d_camera_controller.camera();
     ImGui::Text("-- Camera:");
-    ImGui::Text("- Octaves: %d", m_octaves);
-    ImGui::Text("- Bias: %f", m_bias);
-    ImGui::Text("- Line width: %f", m_bias);
+    ImGui::Text("- Position: [%f,%f,%f]", camera.position().x, camera.position().y, camera.position().z);
+    ImGui::Text("- Zoom: %f", m_2d_camera_controller.zoom_level());
     ImGui::Text("---------------------");
     
     ImGui::End();
@@ -169,8 +177,11 @@ bool layer_2d::on_key_pressed(pyro::key_pressed_event& event)
         }
         if (event.key_code() == pyro::key_codes::KEY_LEFT)
         {
-            m_bias -= 0.2f;
-            m_noise_changed = true;
+            if (m_bias > 0.2f)
+            {
+                m_bias -= 0.2f;
+                m_noise_changed = true;
+            }
         }
         else if (event.key_code() == pyro::key_codes::KEY_RIGHT)
         {

@@ -33,8 +33,8 @@ private:
     float                           m_y_count = 20;
 
     bool m_noise_changed = false;
-    int m_octaves = 1;
-    float m_bias = 2.f;
+    int m_octaves = 8;
+    float m_bias = 0.2f;
     static const int s_texture_size = 512;
     std::array<float, s_texture_size> m_noise_seed{ 0 };
     std::array<float, s_texture_size> m_noise_1d{ 0 };
