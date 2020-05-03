@@ -91,8 +91,6 @@ void pyro::orthographic_camera_controller::move(e_direction direction, timestep 
         m_camera_position.x -= m_camera_translation_speed * ts;
     else if(direction == right)
         m_camera_position.x += m_camera_translation_speed * ts;
-
-    PYRO_CORE_DEBUG("2d cam position: {}", glm::to_string(m_camera_position));
 }
 
 void pyro::orthographic_camera_controller::rotate(e_rotation rotation, e_axis rotation_axis, timestep ts)
@@ -113,7 +111,6 @@ bool pyro::orthographic_camera_controller::on_mouse_scrolled(mouse_scrolled_even
     m_zoom_level -= e.y_offset() * 0.25f;
     m_zoom_level = std::max(m_zoom_level, 0.25f);
     m_camera.projection_matrix(-m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level);
-    PYRO_CORE_DEBUG("Camera zoom_level: {}", m_zoom_level);
     // returns if event is handled.
     return false;
 }
@@ -253,8 +250,6 @@ void pyro::perspective_camera_controller::move(perspective_camera::e_direction d
     else if(direction == perspective_camera::right)
         m_camera_position += m_camera_translation_speed * ts * glm::normalize(cross(m_camera.front(), m_camera.up()));
 
-    PYRO_CORE_DEBUG("3d cam position: {}", glm::to_string(m_camera_position));
-
     m_camera.position(m_camera_position);
 }
 
@@ -291,8 +286,6 @@ void pyro::perspective_camera_controller::rotate(perspective_camera::e_rotation 
             PYRO_CORE_DEBUG("B");
         }
     }
-
-    PYRO_CORE_DEBUG("after - 3d cam rotation: [{},{},{}]", m_camera_rotation.x, m_camera_rotation.y, m_camera_rotation.z);
 
     m_camera.rotation(m_camera_rotation);
 }
