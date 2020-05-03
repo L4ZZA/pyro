@@ -90,7 +90,7 @@ void layer_2d::on_imgui_render()
         //for (float y = 0; y < height ; y += 1)
         for (int x = 0; x < width; x += step)
         {
-            int rect_heigth = (m_noise_1d[x] * (float)rect_heigth_max / 2.0f) + (float)rect_heigth_max / 2.0f;
+            float rect_heigth = (m_noise_1d[x] * (float)rect_heigth_max / 2.0f) + (float)rect_heigth_max / 2.0f;
             pyro::quad_properties props;
             props.color = { 1.f, 0.0f, 0.0, 0.7f };
             props.size = { rect_width, rect_heigth };
