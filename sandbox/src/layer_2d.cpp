@@ -172,8 +172,12 @@ void layer_2d::on_imgui_render()
     ImGui::Text("---------------------");
 
     ImGui::Text("-- Noise:");
-    ImGui::Text("- Octaves: %d", m_octaves);
-    ImGui::Text("- Bias: %f", m_bias);
+    ImGui::Text("- Octaves: ");
+    ImGui::SameLine(); 
+    m_noise_changed |= ImGui::SliderInt("##octaves", &m_octaves, 1, 8);
+    ImGui::Text("- Bias: ");
+    ImGui::SameLine(); 
+    m_noise_changed |= ImGui::SliderFloat("##bias", &m_bias, 0.1, 2.f);
     ImGui::Text("- Line width: %f", rect_width);
     ImGui::Text("---------------------");
 
