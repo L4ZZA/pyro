@@ -6,7 +6,7 @@
 
 layer_2d::layer_2d() 
     : imgui_layer("Sandbox2D")
-    , m_2d_camera_controller({ 25.f, 5.7f, 0.f }, 1280.0f / 720.0f, 15.f)
+    , m_2d_camera_controller({ 93.5f, 116.f, 0.f }, 1280.0f / 720.0f, 150.f)
 {
 }
 
@@ -23,10 +23,11 @@ void layer_2d::on_attach()
     random::init();
 
     pyro::texture::wrap(pyro::e_texture_wrap::repeat);
-    m_checkerboard_texture = pyro::texture_2d::create_from_file("assets/textures/checkerboard.png");
+    m_checkerboard_texture = pyro::texture_2d::create(s_texture_size, s_texture_size);
     
     // populating seed array
-    reset_noise_seed();
+    reset_noise_seed(e_noise_type::one_d);
+    reset_noise_seed(e_noise_type::two_d);
 }
 
 void layer_2d::on_detach()
@@ -34,15 +35,24 @@ void layer_2d::on_detach()
     PYRO_PROFILE_FUNCTION();
 }
 
-void layer_2d::reset_noise_seed()
+void layer_2d::reset_noise_seed(e_noise_type const& noise_type)
 {
-    for (int i = 0; i < s_texture_size; i++)
+    switch (noise_type)
     {
-        float rand_val = static_cast<float>(rand());
-        float normalized_val = random::get_float();
-        m_noise_seed[i] = normalized_val;
+    case e_noise_type::one_d:
+        for (int i = 0; i < s_texture_size; i++)
+        {
+            m_noise1d_seed[i] = random::get_float();
+        }
+        m_noise1d_seed[0] = 0.5f; // this will make generation always average around 0.5, since the first octave will be sampling from this value
+        break;
+    case e_noise_type::two_d:
+        for (int i = 0; i < s_texture_size * s_texture_size; i++)
+        {
+            m_noise2d_seed[i] = random::get_float();
+        }
+        break;
     }
-    m_noise_seed[0] = 0.5f; // this will make generation always average around 0.5, since the first octave will be sampling from this value
     m_noise_changed = true;
 }
 
@@ -62,10 +72,8 @@ void layer_2d::on_update(const pyro::timestep &ts)
         if (m_bias < 0.2f)
             m_bias = 0.2f;
 
-        helpers::perlin_noise_1d(s_texture_size, m_octaves, m_bias, m_noise_seed.data(), m_noise_1d.data());
-        
-        PYRO_DEBUG("rect height[0]: {}", m_noise_1d[0]);
-        PYRO_DEBUG("rect height[1]: {}", m_noise_1d[1]);
+        helpers::perlin_noise_1d(s_texture_size, m_octaves, m_bias, m_noise1d_seed.data(), m_noise_1d.data());
+        helpers::perlin_noise_2d(s_texture_size, m_octaves, m_bias, m_noise2d_seed.data(), m_noise_2d.data());
     }
 }
 
@@ -81,8 +89,8 @@ void layer_2d::on_imgui_render()
     int width = s_texture_size;
     int height = s_texture_size / 4;
     int step = 1;
-    float rect_width = 0.1f;
-    float rect_heigth_max = 1.f;
+    float rect_width = 1.0f;
+    float rect_heigth_max = 2.f;
     float gap_width = step - rect_width;
     {
         // Render
@@ -96,17 +104,48 @@ void layer_2d::on_imgui_render()
             pyro::quad_properties props;
             props.color = { 1.f, 0.0f, 0.0, 0.7f };
             float x_pos = x - (x * gap_width);
-            float y_pos = (rect_heigth / 2) - rect_heigth_max + 0.5;
-            props.position = { x_pos, y_pos, 0.f };
+            float y_offset = (rect_heigth / 2) + 0.5;
+            props.position = { x_pos, y_offset - rect_heigth_max, 0.f };
             props.size = { rect_width, rect_heigth };
             pyro::renderer_2d::draw_quad(props);
         }
 
+        for (int x = 0; x < s_texture_size; x += step)
+        for (int y = 0; y < s_texture_size; y += step)
+            {
+                //float rect_heigth = m_noise_1d.at(x);
+                pyro::quad_properties props;
+                uint32_t i = y * s_texture_size + x;
+                float noise = m_noise_2d[i];
+
+                // blue
+                props.color = { 0.1f, 0.1f, 0.8, 1.0f };
+                // light blue
+                if(noise > 0.2f)
+                    props.color = { 0.3f, 0.3, 0.9f, 1.0f };
+                // green
+                if(noise > 0.4f)
+                    props.color = { 0.2f, 0.8, 0.2f, 1.0f };
+                // light brown
+                if(noise > 0.55f)
+                    props.color = { .46f, 0.35f, 0.3f, 1.0f };
+                // brown
+                if(noise > 0.65f)
+                    props.color = { .36f, 0.25f, 0.2f, 1.0f };
+                // white
+                if (noise > 0.85f)
+                    props.color = { 1.f, 1.f, 1.f, 1.0f };
+
+                props.position = { x, y, 0.f };
+                props.size = { 1.f, 1.f };
+                pyro::renderer_2d::draw_quad(props);
+            }
+
         pyro::quad_properties props;
-        props.position = { -1.f, 0.f, 0.f};
+        props.position = { -1.f, -1.f, 0.f};
         props.color = { 0.f, 1.0f, 0.0, 0.7f };
         pyro::renderer_2d::draw_quad(props);
-        props.position = { -1.f, 1.f, 0.f};
+        props.position = { -1.f, -2.f, 0.f};
         props.color = { 0.f, 0.0f, 1.0, 0.7f };
         pyro::renderer_2d::draw_quad(props);
         pyro::renderer_2d::end_scene();
@@ -163,8 +202,10 @@ bool layer_2d::on_key_pressed(pyro::key_pressed_event& event)
     if (event.event_type() == pyro::event_type_e::key_pressed)
     {
         if (event.key_code() == pyro::key_codes::KEY_R)
-            reset_noise_seed();
-
+        {
+            reset_noise_seed(e_noise_type::one_d);
+            reset_noise_seed(e_noise_type::two_d);
+        }
         if (event.key_code() == pyro::key_codes::KEY_DOWN)
         {
             m_octaves--;

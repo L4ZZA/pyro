@@ -1,8 +1,15 @@
 ﻿#pragma once
 #include "pyro.h"
 
+enum class e_noise_type
+{
+    one_d,
+    two_d
+};
+
 class layer_2d final : public pyro::imgui_layer
 {
+
 public:
     layer_2d();
     ~layer_2d() override;
@@ -12,7 +19,7 @@ public:
     void on_imgui_render() override;
     void on_event(pyro::event& event) override;
 private:
-    void reset_noise_seed();
+    void reset_noise_seed(e_noise_type const &noise_type);
     bool on_key_pressed(pyro::key_pressed_event& event);
 private:
     pyro::orthographic_camera_controller m_2d_camera_controller; 
@@ -35,9 +42,13 @@ private:
     bool m_noise_changed = false;
     int m_octaves = 8;
     float m_bias = 0.2f;
-    static const int s_texture_size = 512;
-    std::array<float, s_texture_size> m_noise_seed{ 0 };
+    static const int s_texture_size = 256;
+    
+    std::array<float, s_texture_size> m_noise1d_seed{ 0 };
     std::array<float, s_texture_size> m_noise_1d{ 0 };
+
+    std::array<float, s_texture_size * s_texture_size> m_noise2d_seed{ 0 };
+    std::array<float, s_texture_size * s_texture_size> m_noise_2d{ 0 };
 
 
     const float                     m_rect_speed{1.f};
