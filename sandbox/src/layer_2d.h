@@ -40,7 +40,7 @@ private:
     float                           m_y_count = 20;
 
     bool m_noise_changed = false;
-    int m_octaves = 8;
+    int m_octaves = 5;
     float m_bias = 0.2f;
     static const int s_texture_size = 256;
     
