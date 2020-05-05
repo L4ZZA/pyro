@@ -12,14 +12,15 @@ pyro::orthographic_camera_controller::orthographic_camera_controller(
     float zoom_level /*= 1.f*/, 
     bool rotation /*= false*/
     )
-    : m_aspect_ratio(aspect_ratio),
-    m_zoom_level(zoom_level),
-    m_camera(-m_aspect_ratio * m_zoom_level, m_aspect_ratio *m_zoom_level, -m_zoom_level, m_zoom_level),
-    m_rotation(rotation),
-    m_camera_position(position),
+    : m_zoom_speed(5.0f),
     m_camera_rotation(0.f),
     m_camera_translation_speed(1.0f),
-    m_camera_rotation_speed(180.0f)
+    m_camera_rotation_speed(180.0f),
+    m_aspect_ratio(aspect_ratio),
+    m_zoom_level(zoom_level),
+    m_rotation(rotation),
+    m_camera_position(position),
+    m_camera(-m_aspect_ratio * m_zoom_level, m_aspect_ratio *m_zoom_level, -m_zoom_level, m_zoom_level)
 {
 	PYRO_PROFILE_FUNCTION();
 }
@@ -108,8 +109,8 @@ void pyro::orthographic_camera_controller::rotate(e_rotation rotation, e_axis ro
 bool pyro::orthographic_camera_controller::on_mouse_scrolled(mouse_scrolled_event &e)
 {
 	PYRO_PROFILE_FUNCTION();
-    m_zoom_level -= e.y_offset() * 0.25f;
-    m_zoom_level = std::max(m_zoom_level, 0.25f);
+    m_zoom_level -= e.y_offset() * m_zoom_speed;
+    m_zoom_level = std::max(m_zoom_level, m_zoom_speed);
     m_camera.projection_matrix(-m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level);
     // returns if event is handled.
     return false;

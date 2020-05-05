@@ -67,15 +67,16 @@ namespace pyro
 
     private:
         float m_aspect_ratio;
+        float m_zoom_speed;
         float m_zoom_level;
-        orthographic_camera m_camera;
-
         bool m_rotation;
         glm::vec3 m_camera_position;
         /// \brief Rotation in degrees in anti-clockwise direction.
         float m_camera_rotation;
         float m_camera_translation_speed;
         const float m_camera_rotation_speed;
+
+        orthographic_camera m_camera;
     };
     
     //=========== 3D CAMERA CONTROLLER ============
