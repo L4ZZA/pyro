@@ -16,7 +16,7 @@ namespace pyro
         uint32_t width() const override { return m_width; }
         uint32_t height() const override { return m_height; }
         std::string path() const override { return m_path; }
-
+        uint32_t bytes_per_pixel() const override;
         // Inherited via texture_2d
         virtual bool operator==(texture const& other) const override;
         virtual bool operator!=(texture const& other) const override;
@@ -26,7 +26,10 @@ namespace pyro
         uint32_t m_id;
         uint32_t m_width;
         uint32_t m_height;
-        texture_parameters m_parameters;
+        e_texture_format m_format;
+        e_texture_filter m_filter;
+        e_texture_wrap m_wrap;
+
 
     private:
         // returns the opengl equivalent fot the data format 

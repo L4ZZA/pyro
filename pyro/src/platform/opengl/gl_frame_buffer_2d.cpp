@@ -22,7 +22,11 @@ void pyro::gl_frame_buffer_2d::init()
 {
     glGenFramebuffers(1, &m_frame_buffer_id);
     glGenRenderbuffers(1, &m_depth_buffer_id);
-    texture_parameters params(e_texture_format::rgba, e_texture_filter::linear, e_texture_wrap::clamp_to_edge);
+    texture_parameters params;
+    params.format = e_texture_format::rgba;
+    params.filter = e_texture_filter::linear;
+    params.wrap = e_texture_wrap::clamp_to_edge;
+
     m_texture = make_ref<gl_texture_2d>(m_width, m_height, params);
 
     glBindRenderbuffer(GL_RENDERBUFFER, m_depth_buffer_id);

@@ -11,7 +11,9 @@ pyro::gl_texture_2d::gl_texture_2d(
     : m_path("no_path")
     , m_width(width)
     , m_height(height)
-    , m_parameters(params)
+    , m_format(params.format)
+    , m_filter(params.filter)
+    , m_wrap(params.wrap)
 {
 	PYRO_PROFILE_FUNCTION();
     
@@ -22,21 +24,23 @@ pyro::gl_texture_2d::gl_texture_2d(
     //----------------
     // From OpenGL 4.5, The following line replaces the two above
     // allocating memory to gpu to store the texture
-    glTextureStorage2D(m_id, 1, texture_format_internal_to_gl(m_parameters.format), m_width, m_height);
+    glTextureStorage2D(m_id, 1, texture_format_internal_to_gl(m_format), m_width, m_height);
 
     // set texture params
-    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, texture_filter_to_gl(s_filter_mode));
-    glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, texture_filter_to_gl(s_filter_mode));
+    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, texture_filter_to_gl(m_filter));
+    glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, texture_filter_to_gl(m_filter));
 
-    glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, texture_wrap_to_gl(s_wrap_mode));
-    glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, texture_wrap_to_gl(s_wrap_mode));
+    glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, texture_wrap_to_gl(m_wrap));
+    glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, texture_wrap_to_gl(m_wrap));
 }
 
 pyro::gl_texture_2d::gl_texture_2d(
     std::string const &path,
     texture_parameters const &params)
     : m_path(path)
-    , m_parameters(params)
+    , m_format(params.format)
+    , m_filter(params.filter)
+    , m_wrap(params.wrap)
 {
 	PYRO_PROFILE_FUNCTION();
 
@@ -53,26 +57,26 @@ pyro::gl_texture_2d::gl_texture_2d(
 
     if(channels == 3)
     {
-        m_parameters.format = e_texture_format::rgb;
+        m_format = e_texture_format::rgb;
     }
     else if(channels == 4)
     {
-        m_parameters.format = e_texture_format::rgba;
+        m_format = e_texture_format::rgba;
     }
 
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
     // allocating memory to gpu to store the texture data
-    glTextureStorage2D(m_id, 1, texture_format_internal_to_gl(m_parameters.format), m_width, m_height);
+    glTextureStorage2D(m_id, 1, texture_format_internal_to_gl(m_format), m_width, m_height);
 
     // set texture params 
-    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, texture_filter_to_gl(s_filter_mode));
+    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, texture_filter_to_gl(m_filter));
     glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, texture_filter_to_gl(e_texture_filter::nearest));
 
-    glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, texture_wrap_to_gl(s_wrap_mode));
-    glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, texture_wrap_to_gl(s_wrap_mode));
+    glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, texture_wrap_to_gl(m_wrap));
+    glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, texture_wrap_to_gl(m_wrap));
 
     // upload texture to gpu 
-    glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, texture_format_to_gl(m_parameters.format), GL_UNSIGNED_BYTE, data);
+    glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, texture_format_to_gl(m_format), GL_UNSIGNED_BYTE, data);
 
     // freeing allocated image buffer
     stbi_image_free(data);
@@ -93,9 +97,30 @@ void pyro::gl_texture_2d::bind(uint32_t slot /*= 0*/) const
 void pyro::gl_texture_2d::data(void *data, uint32_t size)
 {
 	PYRO_PROFILE_FUNCTION();
-    uint32_t bpp = m_parameters.format == e_texture_format::rgba ? 4 : 3;
+    uint32_t bpp = bytes_per_pixel();
     PYRO_CORE_ASSERT(size == m_width * m_height * bpp, "Data must be the entire texture!");
-    glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, texture_format_to_gl(m_parameters.format), GL_UNSIGNED_BYTE, data);
+    glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, texture_format_to_gl(m_format), GL_UNSIGNED_BYTE, data);
+}
+
+uint32_t pyro::gl_texture_2d::bytes_per_pixel() const
+{
+    uint32_t bpp;    
+    switch (m_format)
+    {
+    case pyro::e_texture_format::luminance:
+        bpp = 1;
+        break;
+    case pyro::e_texture_format::luminance_alpha:
+        bpp = 2;
+        break;
+    case pyro::e_texture_format::rgb:
+        bpp = 3;
+        break;
+    case pyro::e_texture_format::rgba:
+        bpp = 4;
+        break;
+    }
+    return bpp;
 }
 
 bool pyro::gl_texture_2d::operator==(texture const& other) const
