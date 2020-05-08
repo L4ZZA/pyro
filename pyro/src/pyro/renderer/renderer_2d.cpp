@@ -133,6 +133,11 @@ void pyro::renderer_2d::flush()
     s_data.stats.draw_calls++;
 }
 
+pyro::ref<pyro::shader> pyro::renderer_2d::current_shader()
+{
+    return s_data.texture_shader;
+}
+
 void pyro::renderer_2d::draw_quad(quad_properties const& props)
 {
     PYRO_PROFILE_FUNCTION();

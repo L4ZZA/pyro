@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "pyro/renderer/shader.h"
 #include "pyro/renderer/camera.h"
 #include "pyro/renderer/texture_2d.h"
 
@@ -23,6 +24,8 @@ namespace pyro
         static void begin_scene(camera &camera);
         static void end_scene();
         static void flush();
+
+        static ref<shader> current_shader();
 
         // primitives
         static void draw_quad(quad_properties const& props);
