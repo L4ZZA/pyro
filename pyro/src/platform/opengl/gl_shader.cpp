@@ -250,6 +250,12 @@ std::string const &pyro::gl_shader::name() const
     return m_name;
 }
 
+void pyro::gl_shader::set_bool(std::string const& name, bool val)
+{
+    PYRO_PROFILE_FUNCTION();
+    upload_uniform(name, val);
+}
+
 void pyro::gl_shader::set_int(std::string const &name, int32_t val)
 {
     PYRO_PROFILE_FUNCTION();
@@ -290,6 +296,13 @@ void pyro::gl_shader::set_int_array(std::string const& name, int32_t const* valu
 {
     PYRO_PROFILE_FUNCTION();
     upload_uniform(name, values, count);
+}
+
+void pyro::gl_shader::upload_uniform(std::string const& name, bool val) const
+{
+    const int32_t uniformLocation = get_uniform_location(name);
+    glUniform1i(uniformLocation, static_cast<int32_t>(val));
+
 }
 
 void pyro::gl_shader::upload_uniform(std::string const &name, int32_t val) const
