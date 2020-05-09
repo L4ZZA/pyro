@@ -30,6 +30,8 @@ private:
 	pyro::ref<pyro::shader> m_flat_color_shader;
 
 	pyro::ref<pyro::texture_2d> m_checkerboard_texture;
+	pyro::ref<pyro::texture_2d> m_noise_texture;
+	pyro::ref<pyro::texture_2d> m_my_texture;
 
 	glm::vec4 m_square_color = { 0.2f, 0.3f, 0.8f, 1.0f };
 

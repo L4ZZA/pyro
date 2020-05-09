@@ -22,8 +22,18 @@ void layer_2d::on_attach()
     
     random::init();
 
-    pyro::texture::wrap(pyro::e_texture_wrap::repeat);
-    m_checkerboard_texture = pyro::texture_2d::create(s_texture_size, s_texture_size);
+    {
+        pyro::texture_parameters params;
+        params.wrap = pyro::e_texture_wrap::repeat;
+        m_checkerboard_texture = pyro::texture_2d::create_from_file("assets/textures/checkerboard.png", params);
+    }
+    {
+        int width = 32, height = 32;
+        pyro::texture_parameters params;
+        m_my_texture = pyro::texture_2d::create(width, height, params);
+        for(int i = 0; i < width * height; i++)
+        { }
+    }
     
     // populating seed array
     reset_noise_seed(e_noise_type::one_d);
@@ -51,6 +61,7 @@ void layer_2d::reset_noise_seed(e_noise_type const& noise_type)
         {
             m_noise2d_seed[i] = random::get_float();
         }
+        m_noise1d_seed[0] = 0.5f;
         break;
     }
     m_noise_changed = true;
@@ -74,6 +85,13 @@ void layer_2d::on_update(const pyro::timestep &ts)
 
         helpers::perlin_noise_1d(s_texture_size, m_octaves, m_bias, m_noise1d_seed.data(), m_noise_1d.data());
         helpers::perlin_noise_2d(s_texture_size, m_octaves, m_bias, m_noise2d_seed.data(), m_noise_2d.data());
+        
+        pyro::texture_parameters params;
+        params.format = pyro::e_texture_format::luminance;
+        params.filter = pyro::e_texture_filter::nearest;
+        params.wrap = pyro::e_texture_wrap::clamp_to_edge;
+        m_noise_texture = pyro::texture_2d::create(s_texture_size, s_texture_size, params);
+        m_noise_texture->data(m_noise_2d.data(), m_noise_2d.size(), pyro::e_texture_data_format::Float);
     }
 }
 
@@ -97,16 +115,25 @@ void layer_2d::on_imgui_render()
         PYRO_PROFILE_SCOPE("layer_2d::render");
         pyro::renderer_2d::begin_scene(m_2d_camera_controller.camera());
 
-        for (int x = 0; x < width; x += step)
+        //for (int x = 0; x < width; x += step)
+        //{
+        //    float rect_heigth = (m_noise_1d[x] * (float)rect_heigth_max / 2.0f) + (float)rect_heigth_max / 2.0f;
+        //    //float rect_heigth = m_noise_1d.at(x);
+        //    pyro::quad_properties props;
+        //    props.color = { 1.f, 0.0f, 0.0, 0.7f };
+        //    float x_pos = x - (x * gap_width);
+        //    float y_offset = (rect_heigth / 2) + 0.5;
+        //    props.position = { x_pos, y_offset - rect_heigth_max, 0.f };
+        //    props.size = { rect_width, rect_heigth };
+        //    pyro::renderer_2d::draw_quad(props);
+        //}
+
+        pyro::renderer_2d::current_shader()->set_int("u_grayscale", false);
         {
-            float rect_heigth = (m_noise_1d[x] * (float)rect_heigth_max / 2.0f) + (float)rect_heigth_max / 2.0f;
-            //float rect_heigth = m_noise_1d.at(x);
             pyro::quad_properties props;
-            props.color = { 1.f, 0.0f, 0.0, 0.7f };
-            float x_pos = x - (x * gap_width);
-            float y_offset = (rect_heigth / 2) + 0.5;
-            props.position = { x_pos, y_offset - rect_heigth_max, 0.f };
-            props.size = { rect_width, rect_heigth };
+            props.color = { 1.f, 0.2f, 0.3f,1.f };
+            props.size = { 500.f, 500.f };
+            props.texture = m_checkerboard_texture;
             pyro::renderer_2d::draw_quad(props);
         }
 
@@ -136,20 +163,22 @@ void layer_2d::on_imgui_render()
                 if (noise > 0.85f)
                     props.color = { 1.f, 1.f, 1.f, 1.0f };
 
-                props.position = { x, y, 0.f };
+                props.position = { x, y, 0.1f };
                 props.size = { 1.f, 1.f };
                 pyro::renderer_2d::draw_quad(props);
             }
-
-        pyro::quad_properties props;
-        props.position = { -1.f, -1.f, 0.f};
-        props.color = { 0.f, 1.0f, 0.0, 0.7f };
-        pyro::renderer_2d::draw_quad(props);
-        props.position = { -1.f, -2.f, 0.f};
-        props.color = { 0.f, 0.0f, 1.0, 0.7f };
-        pyro::renderer_2d::draw_quad(props);
-        pyro::renderer_2d::end_scene();
+        
     }
+    pyro::renderer_2d::current_shader()->set_int("u_grayscale", true);
+    {
+        pyro::quad_properties props;
+        props.position = { -128.f, 128.f, 0.1f };
+        props.color = { 1.f, 1.0f, 1.f, 1.f };
+        props.size = { 256.f, 256.f };
+        props.texture = m_noise_texture;
+        pyro::renderer_2d::draw_quad(props);
+    }
+    pyro::renderer_2d::end_scene();
 
     ImGui::Begin("Settings");
 

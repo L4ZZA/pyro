@@ -39,6 +39,7 @@ in vec2 v_tex_coord;
 in float v_tex_index;
 in float v_tiling_factor;
 
+uniform bool u_grayscale = false;
 uniform sampler2D u_textures[32]; 
 
 float vignette(vec2 screen_pos, float radius)
@@ -51,6 +52,17 @@ float vignette(vec2 screen_pos, float radius)
 
 void main() 
 { 
-    o_color = texture(u_textures[int(v_tex_index)], v_tex_coord * v_tiling_factor) * v_color; 
+	vec4 texture_color;
+	if(u_grayscale)
+	{
+		texture_color.rgb = vec3(texture(u_textures[int(v_tex_index)], v_tex_coord * v_tiling_factor).r);
+		texture_color.a = 1.f; // setting alpha back to non transparent
+	}
+	else
+	{
+		texture_color = texture(u_textures[int(v_tex_index)], v_tex_coord * v_tiling_factor); 
+	}
+	o_color = texture_color * v_color; 
+
     //o_color = vec4(v_tex_index / 10.f,0.f,0.f,1.f);
 }
