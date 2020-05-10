@@ -48,7 +48,7 @@ utils::perlin_noise::perlin_noise(uint32_t seed)
 	std::iota(m_permutation.begin(), m_permutation.end(), 0);
 
 	// Initialize a random engine with seed
-	std::default_random_engine engine(seed);
+	std::default_random_engine engine(seed); // TODO: test with std::mt19937 instead
 
 	// Suffle  using the above random engine
 	std::shuffle(m_permutation.begin(), m_permutation.end(), engine);
@@ -64,7 +64,7 @@ double utils::perlin_noise::noise(double x, double y, double z)
 	int32_t Y = (int32_t)floor(y) & 255;
 	int32_t Z = (int32_t)floor(z) & 255;
 
-	// Find relative x, y,z of point in cube
+	// Find relative x, y, z of point in cube
 	x -= floor(x);
 	y -= floor(y);
 	z -= floor(z);
@@ -83,7 +83,23 @@ double utils::perlin_noise::noise(double x, double y, double z)
 	int32_t BB = m_permutation[B + 1] + Z;
 
 	// Add blended results from 8 corners of cube
-	double res = lerp(w, lerp(v, lerp(u, grad(m_permutation[AA], x, y, z), grad(m_permutation[BA], x - 1, y, z)), lerp(u, grad(m_permutation[AB], x, y - 1, z), grad(m_permutation[BB], x - 1, y - 1, z))), lerp(v, lerp(u, grad(m_permutation[AA + 1], x, y, z - 1), grad(m_permutation[BA + 1], x - 1, y, z - 1)), lerp(u, grad(m_permutation[AB + 1], x, y - 1, z - 1), grad(m_permutation[BB + 1], x - 1, y - 1, z - 1))));
+	double res = lerp(w, 
+					lerp(v, 
+						lerp(u, 
+							grad(m_permutation[AA], x, y, z), 
+							grad(m_permutation[BA], x - 1, y, z)), 
+						lerp(u, 
+							grad(m_permutation[AB], x, y - 1, z), 
+							grad(m_permutation[BB], x - 1, y - 1, z))
+						), 
+					lerp(v, 
+						lerp(u, 
+							grad(m_permutation[AA + 1], x, y, z - 1), 
+							grad(m_permutation[BA + 1], x - 1, y, z - 1)),
+						lerp(u, 
+							grad(m_permutation[AB + 1], x, y - 1, z - 1), 
+							grad(m_permutation[BB + 1], x - 1, y - 1, z - 1)))
+				 );
 	return (res + 1.0) / 2.0;
 }
 
