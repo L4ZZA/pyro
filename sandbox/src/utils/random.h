@@ -12,6 +12,16 @@ public:
 		s_random_engine.seed(std::random_device()());
 	}
 
+	static void init(uint32_t seed)
+	{
+		random::seed(seed);
+	}
+
+	static void seed(uint32_t seed)
+	{
+		s_random_engine.seed(seed);
+	}
+
 	// Returns a random floating point value between zero and uint32::max
 	static float get_float()
 	{
