@@ -6,9 +6,10 @@
 
 using namespace utils;
 
-layer_2d::layer_2d() 
+layer_2d::layer_2d()
     : imgui_layer("Sandbox2D")
-    , m_2d_camera_controller({ 93.5f, 116.f, 0.f }, 1280.0f / 720.0f, 150.f)
+    , m_2d_camera_controller({ 364.f, 714.f, 0.f }, 1280.0f / 720.0f, 785.f)
+    , m_other_noise(10)
 {
 }
 
@@ -22,7 +23,7 @@ void layer_2d::on_attach()
     PYRO_PROFILE_FUNCTION();
     imgui_layer::on_attach();
     
-    random::init();
+    random::init(10);
 
     {
         pyro::texture_parameters params;
@@ -30,11 +31,31 @@ void layer_2d::on_attach()
         m_checkerboard_texture = pyro::texture_2d::create_from_file("assets/textures/checkerboard.png", params);
     }
     {
-        int width = 32, height = 32;
+        int width = 256, height = 256;
         pyro::texture_parameters params;
+        params.format = pyro::e_texture_format::red;
         m_my_texture = pyro::texture_2d::create(width, height, params);
-        for(int i = 0; i < width * height; i++)
-        { }
+        // Visit every pixel of the image and assign a color generated with Perlin noise
+        int pos = 0;
+        for (unsigned int i = 0; i < height; ++i)
+        {     // y
+            for (unsigned int j = 0; j < width; ++j)
+            {  // x
+                double x = (double)j / ((double)width);
+                double y = (double)i / ((double)height);
+
+                // Typical Perlin noise
+                double n = m_other_noise.noise(m_scale * x, m_scale * y, m_something);
+
+                // Wood like structure
+                n = 20 * m_other_noise.noise(x, y, m_something);
+                n = n - floor(n);
+
+                m_vendor_noise_2d[pos] = n;
+                pos++;
+            }
+        }
+        m_my_texture->data(m_vendor_noise_2d.data(), m_vendor_noise_2d.size(), pyro::e_texture_data_type::Float);
     }
     
     // populating seed array
@@ -89,11 +110,11 @@ void layer_2d::on_update(const pyro::timestep &ts)
         perlin_noise_2d(s_texture_size, m_octaves, m_bias, m_noise2d_seed.data(), m_noise_2d.data());
         
         pyro::texture_parameters params;
-        params.format = pyro::e_texture_format::luminance;
+        params.format = pyro::e_texture_format::red;
         params.filter = pyro::e_texture_filter::nearest;
         params.wrap = pyro::e_texture_wrap::clamp_to_edge;
         m_noise_texture = pyro::texture_2d::create(s_texture_size, s_texture_size, params);
-        m_noise_texture->data(m_noise_2d.data(), m_noise_2d.size(), pyro::e_texture_data_format::Float);
+        m_noise_texture->data(m_noise_2d.data(), m_noise_2d.size(), pyro::e_texture_data_type::Float);
     }
 }
 
@@ -103,13 +124,13 @@ void layer_2d::on_imgui_render()
     {
         // Pre Render
         PYRO_PROFILE_SCOPE("layer_2d::pre_render");
-        pyro::render_command::clear_color({0.1f, 0.1f, 0.1f, 1});
+        pyro::render_command::clear_color({0.1f, 0.1f, 0.1f, 1.f});
         pyro::render_command::clear();
     }
     int width = s_texture_size;
     int height = s_texture_size / 4;
     int step = 1;
-    float rect_width = 1.0f;
+    float rect_width = 5.0f;
     float rect_heigth_max = 2.f;
     float gap_width = step - rect_width;
     {
@@ -130,14 +151,14 @@ void layer_2d::on_imgui_render()
         //    pyro::renderer_2d::draw_quad(props);
         //}
 
-        pyro::renderer_2d::current_shader()->set_int("u_grayscale", false);
-        {
-            pyro::quad_properties props;
-            props.color = { 1.f, 0.2f, 0.3f,1.f };
-            props.size = { 500.f, 500.f };
-            props.texture = m_checkerboard_texture;
-            pyro::renderer_2d::draw_quad(props);
-        }
+        //pyro::renderer_2d::current_shader()->set_int("u_grayscale", false);
+        //{
+        //    pyro::quad_properties props;
+        //    props.color = { 1.f, 0.2f, 0.3f,1.f };
+        //    props.size = { 500.f, 500.f };
+        //    props.texture = m_checkerboard_texture;
+        //    pyro::renderer_2d::draw_quad(props);
+        //}
 
         for (int x = 0; x < s_texture_size; x += step)
         for (int y = 0; y < s_texture_size; y += step)
@@ -150,13 +171,13 @@ void layer_2d::on_imgui_render()
                 // blue
                 props.color = { 0.1f, 0.1f, 0.8, 1.0f };
                 // light blue
-                if(noise > 0.2f)
+                if(noise > 0.1f)
                     props.color = { 0.3f, 0.3, 0.9f, 1.0f };
                 // green
-                if(noise > 0.4f)
+                if(noise > 0.25f)
                     props.color = { 0.2f, 0.8, 0.2f, 1.0f };
                 // light brown
-                if(noise > 0.55f)
+                if(noise > 0.45f)
                     props.color = { .46f, 0.35f, 0.3f, 1.0f };
                 // brown
                 if(noise > 0.65f)
@@ -164,9 +185,9 @@ void layer_2d::on_imgui_render()
                 // white
                 if (noise > 0.85f)
                     props.color = { 1.f, 1.f, 1.f, 1.0f };
-
-                props.position = { x, y, 0.1f };
-                props.size = { 1.f, 1.f };
+                float gap = 0.75f;
+                props.position = { x * (rect_width + gap), y * (rect_width + gap), 0.1f };
+                props.size = { rect_width, rect_width };
                 pyro::renderer_2d::draw_quad(props);
             }
         
@@ -178,6 +199,14 @@ void layer_2d::on_imgui_render()
         props.color = { 1.f, 1.0f, 1.f, 1.f };
         props.size = { 256.f, 256.f };
         props.texture = m_noise_texture;
+        pyro::renderer_2d::draw_quad(props);
+    }
+    {
+        pyro::quad_properties props;
+        props.position = { -128.f, 256.f * 2.f, 0.1f };
+        props.color = { 1.f, 1.0f, 1.f, 1.f };
+        props.size = { 256.f, 256.f };
+        props.texture = m_my_texture;
         pyro::renderer_2d::draw_quad(props);
     }
     pyro::renderer_2d::end_scene();
@@ -208,7 +237,7 @@ void layer_2d::on_imgui_render()
     m_noise_changed |= ImGui::SliderInt("##octaves", &m_octaves, 1, 8);
     ImGui::Text("- Bias: ");
     ImGui::SameLine(); 
-    m_noise_changed |= ImGui::SliderFloat("##bias", &m_bias, 0.1, 2.f);
+    m_noise_changed |= ImGui::SliderFloat("##bias", &m_bias, 0.1f, 2.f);
     ImGui::Text("- Line width: %f", rect_width);
     ImGui::Text("---------------------");
 

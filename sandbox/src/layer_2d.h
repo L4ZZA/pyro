@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "pyro.h"
+#include "utils/perlin_noise.h"
 
 enum class e_noise_type
 {
@@ -42,6 +43,8 @@ private:
     float                           m_y_count = 20;
 
     bool m_noise_changed = false;
+    int m_scale = 10;
+    double m_something = 0.8;
     int m_octaves = 5;
     float m_bias = 0.2f;
     static const int s_texture_size = 256;
@@ -51,8 +54,9 @@ private:
 
     std::array<float, s_texture_size * s_texture_size> m_noise2d_seed{ 0 };
     std::array<float, s_texture_size * s_texture_size> m_noise_2d{ 0 };
+    std::array<float, s_texture_size * s_texture_size> m_vendor_noise_2d{ 0 };
 
-
+    utils::perlin_noise             m_other_noise;
     const float                     m_rect_speed{1.f};
 
     struct profile_result
