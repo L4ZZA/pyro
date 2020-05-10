@@ -2,6 +2,8 @@
 
 #include <random>
 
+namespace utils{
+
 class random
 {
 public:
@@ -20,3 +22,4 @@ private:
 	inline static std::mt19937 s_random_engine;
 	inline static std::uniform_int_distribution<std::mt19937::result_type> s_distribution;
 };
+}
