@@ -12,9 +12,9 @@ namespace pyro
     };
     enum class PYRO_API e_texture_format
     {
-        none = 0, luminance, luminance_alpha, rgb, rgba, 
+        none = 0, red, rg, rgb, rgba, 
     };
-    enum class PYRO_API e_texture_data_format
+    enum class PYRO_API e_texture_data_type
     {
         unsigned_byte = 0, Float,
     };
@@ -46,7 +46,7 @@ namespace pyro
         // Returns the number of bytes needed to store a pixel based on the texture format.
         virtual uint32_t bytes_per_pixel() const = 0;
 
-        virtual void data(void *data, uint32_t size, e_texture_data_format type = e_texture_data_format::unsigned_byte) = 0;
+        virtual void data(void *data, uint32_t size, e_texture_data_type type = e_texture_data_type::unsigned_byte) = 0;
 
         virtual void bind(uint32_t slot = 0) const = 0;
 

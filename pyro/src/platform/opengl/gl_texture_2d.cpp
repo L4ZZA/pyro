@@ -24,7 +24,7 @@ pyro::gl_texture_2d::gl_texture_2d(
     //----------------
     // From OpenGL 4.5, The following line replaces the two above
     // allocating memory to gpu to store the texture
-    glTextureStorage2D(m_id, 1, texture_format_internal_to_gl(m_format), m_width, m_height);
+    glTextureStorage2D(m_id, 1, texture_internal_format_to_gl(m_format), m_width, m_height);
 
     // set texture params
     glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, texture_filter_to_gl(m_filter));
@@ -66,7 +66,7 @@ pyro::gl_texture_2d::gl_texture_2d(
 
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
     // allocating memory to gpu to store the texture data
-    glTextureStorage2D(m_id, 1, texture_format_internal_to_gl(m_format), m_width, m_height);
+    glTextureStorage2D(m_id, 1, texture_internal_format_to_gl(m_format), m_width, m_height);
 
     // set texture params 
     glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, texture_filter_to_gl(m_filter));
@@ -94,13 +94,13 @@ void pyro::gl_texture_2d::bind(uint32_t slot /*= 0*/) const
     glBindTextureUnit(slot, m_id);
 }
 
-void pyro::gl_texture_2d::data(void *data, uint32_t size, e_texture_data_format type /*= e_texture_data_format::unsigned_byte*/)
+void pyro::gl_texture_2d::data(void *data, uint32_t size, e_texture_data_type type /*= e_texture_data_type::unsigned_byte*/)
 {
 	PYRO_PROFILE_FUNCTION();
     uint32_t bpp = bytes_per_pixel();
     int32_t expected_size = m_width * m_height * bpp;
     PYRO_CORE_ASSERT(size == expected_size, "Data must be the entire texture!");
-    glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, texture_format_to_gl(m_format), texture_data_format_to_gl(type), data);
+    glTextureSubImage2D(m_id, 0, 0, 0, m_width, m_height, texture_format_to_gl(m_format), texture_data_type_to_gl(type), data);
 }
 
 uint32_t pyro::gl_texture_2d::bytes_per_pixel() const
@@ -108,10 +108,10 @@ uint32_t pyro::gl_texture_2d::bytes_per_pixel() const
     uint32_t bpp;    
     switch (m_format)
     {
-    case pyro::e_texture_format::luminance:
+    case pyro::e_texture_format::red:
         bpp = 1;
         break;
-    case pyro::e_texture_format::luminance_alpha:
+    case pyro::e_texture_format::rg:
         bpp = 2;
         break;
     case pyro::e_texture_format::rgb:
@@ -144,32 +144,32 @@ uint32_t pyro::gl_texture_2d::texture_format_to_gl(e_texture_format format)
     // https://www.gamedev.net/forums/topic/634850-do-luminance-texture39s-still-exist-to-opengl/5003839/
     switch(format)
     {
-        case e_texture_format::rgba:			return GL_RGBA;// 4 channels
-        case e_texture_format::rgb:				return GL_RGB; // 3 channels
-        case e_texture_format::luminance_alpha:	return GL_RG;  // 2 channels 
-        case e_texture_format::luminance:		return GL_RED; // single channel
+        case e_texture_format::rgba: return GL_RGBA;// 4 channels
+        case e_texture_format::rgb:	 return GL_RGB; // 3 channels
+        case e_texture_format::rg:	 return GL_RG;  // 2 channels 
+        case e_texture_format::red:	 return GL_RED; // single channel
     }
     return 0;
 }
 
-uint32_t pyro::gl_texture_2d::texture_data_format_to_gl(e_texture_data_format format)
+uint32_t pyro::gl_texture_2d::texture_data_type_to_gl(e_texture_data_type type)
 {
-    switch (format)
+    switch (type)
     {
-    case e_texture_data_format::unsigned_byte:	return GL_UNSIGNED_BYTE;// 4 channels
-    case e_texture_data_format::Float:	        return GL_FLOAT; // 3 channels
+    case e_texture_data_type::unsigned_byte:	return GL_UNSIGNED_BYTE; 
+    case e_texture_data_type::Float:	        return GL_FLOAT;
     }
     return GL_UNSIGNED_BYTE;
 }
 
-uint32_t pyro::gl_texture_2d::texture_format_internal_to_gl(e_texture_format format)
+uint32_t pyro::gl_texture_2d::texture_internal_format_to_gl(e_texture_format format)
 {
     switch(format)
     {
-        case e_texture_format::rgba:			return GL_RGBA8;// 4 channels
-        case e_texture_format::rgb:				return GL_RGB8; // 3 channels
-        case e_texture_format::luminance_alpha:	return GL_RG8;  // 2 channels 
-        case e_texture_format::luminance:		return GL_R8; // single channel
+        case e_texture_format::rgba:    return GL_RGBA8;// 4 channels
+        case e_texture_format::rgb:	    return GL_RGB8; // 3 channels
+        case e_texture_format::rg:	    return GL_RG8;  // 2 channels 
+        case e_texture_format::red:	    return GL_R8; // single channel
     }
     return 0;
 }

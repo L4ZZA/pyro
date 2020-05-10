@@ -10,7 +10,7 @@ namespace pyro
         gl_texture_2d(std::string const &path, texture_parameters const &params);
         ~gl_texture_2d();
         void bind(uint32_t slot = 0) const override;
-        void data(void *data, uint32_t size, e_texture_data_format type = e_texture_data_format::unsigned_byte) override;
+        void data(void *data, uint32_t size, e_texture_data_type type = e_texture_data_type::unsigned_byte) override;
 
         uint32_t id() const override { return m_id; }
         uint32_t width() const override { return m_width; }
@@ -32,11 +32,12 @@ namespace pyro
 
 
     private:
-        // returns the opengl equivalent fot the data format 
+        // returns the opengl equivalent of the internal format 
+        static uint32_t texture_internal_format_to_gl(e_texture_format format);
+        // returns the opengl equivalent of the data format 
         static uint32_t texture_format_to_gl(e_texture_format format);
-        static uint32_t texture_data_format_to_gl(e_texture_data_format format);
-        // returns the opengl equivalent fot the internal format 
-        static uint32_t texture_format_internal_to_gl(e_texture_format format);
+        // returns the opengl equivalent of the type of data uploaded to the gpu to fill the texture.
+        static uint32_t texture_data_type_to_gl(e_texture_data_type type);
         static uint32_t texture_wrap_to_gl(e_texture_wrap mode);
         static uint32_t texture_filter_to_gl(e_texture_filter mode);
     };
