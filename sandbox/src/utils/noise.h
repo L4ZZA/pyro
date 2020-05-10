@@ -1,7 +1,7 @@
 #pragma once
 #include <array>
 
-namespace helpers
+namespace utils
 {
 
     /* Function to linearly interpolate between a and b

@@ -1,8 +1,10 @@
 #include "layer_2d.h"
 #include "imgui/imgui.h"
 
-#include "helpers/perlin_noise.h"
-#include "helpers/random.h"
+#include "utils/noise.h"
+#include "utils/random.h"
+
+using namespace utils;
 
 layer_2d::layer_2d() 
     : imgui_layer("Sandbox2D")
@@ -83,8 +85,8 @@ void layer_2d::on_update(const pyro::timestep &ts)
         if (m_bias < 0.2f)
             m_bias = 0.2f;
 
-        helpers::perlin_noise_1d(s_texture_size, m_octaves, m_bias, m_noise1d_seed.data(), m_noise_1d.data());
-        helpers::perlin_noise_2d(s_texture_size, m_octaves, m_bias, m_noise2d_seed.data(), m_noise_2d.data());
+        perlin_noise_1d(s_texture_size, m_octaves, m_bias, m_noise1d_seed.data(), m_noise_1d.data());
+        perlin_noise_2d(s_texture_size, m_octaves, m_bias, m_noise2d_seed.data(), m_noise_2d.data());
         
         pyro::texture_parameters params;
         params.format = pyro::e_texture_format::luminance;
