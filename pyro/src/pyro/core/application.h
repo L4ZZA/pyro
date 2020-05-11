@@ -9,6 +9,7 @@
 #include "pyro/imgui/imgui_layer.h"
 #include "pyro/core/timestep.h"
 
+int main(int argc, char** argv);
 
 namespace pyro
 {
@@ -17,9 +18,6 @@ namespace pyro
     public:
         application();
         virtual ~application();
-
-        /// \brief
-        void run();
 
         /// \brief
         virtual void on_event(event &event);
@@ -39,6 +37,8 @@ namespace pyro
         static void exit();
 
     private:
+        /// \brief
+        void run();
         bool on_window_close(window_closed_event &e);
         bool on_window_resized(window_resize_event &e);
 
@@ -52,6 +52,7 @@ namespace pyro
         static bool           s_running;
         static bool           s_minimized;
 
+        friend int ::main(int argc, char** argv);
     };
 
 
