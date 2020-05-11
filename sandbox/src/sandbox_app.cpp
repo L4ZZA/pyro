@@ -9,12 +9,21 @@ class sandbox_app : public pyro::application
 public:
     sandbox_app()
     {
+    }
+
+    ~sandbox_app() = default;
+
+    // Inherited via application
+    virtual void init() override
+    {
         m_layer_2d = std::make_shared<layer_2d>();
         //push_layer(new layer_3d()); 
         push_layer(m_layer_2d);
     }
 
-    ~sandbox_app() = default;
+    virtual void deinit() override
+    {
+    }
 
     void on_event(pyro::event &event) override
     {

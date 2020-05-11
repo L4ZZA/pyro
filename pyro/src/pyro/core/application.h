@@ -39,6 +39,8 @@ namespace pyro
     private:
         /// \brief
         void run();
+        virtual void init() = 0;
+        virtual void deinit() = 0;
         bool on_window_close(window_closed_event &e);
         bool on_window_resized(window_resize_event &e);
 
