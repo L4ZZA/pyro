@@ -51,7 +51,7 @@ void pyro::gl_renderer_api::resize_viewport(uint32_t x, uint32_t y, uint32_t wid
 
 void pyro::gl_renderer_api::draw_indexed(const ref<vertex_array>& vertex_array, const uint32_t index_count /*= 0*/)
 {
-    uint32_t count = index_count ? vertex_array->index_buffer()->count() : index_count;
+    uint32_t count = index_count ? index_count : vertex_array->index_buffer()->count();
     glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 }
 
