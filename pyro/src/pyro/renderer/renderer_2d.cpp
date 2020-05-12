@@ -117,7 +117,11 @@ void pyro::renderer_2d::end_scene()
 {
     PYRO_PROFILE_FUNCTION();
     
-    uint32_t data_size = (uint8_t*)s_data.quad_vertex_buffer_ptr - (uint8_t*)s_data.quad_vertex_buffer_base;
+    // reinterpret_cast converts one pointer to another without changing the address, 
+    // or converts between pointers and their numerical (integer) values
+    auto next_available_slot = reinterpret_cast<uint8_t*>(s_data.quad_vertex_buffer_ptr);
+    auto full_array_size = reinterpret_cast<uint8_t*>(s_data.quad_vertex_buffer_base);
+    uint32_t data_size = static_cast<uint32_t>(next_available_slot - full_array_size);
     s_data.quad_vertex_buffer->data(s_data.quad_vertex_buffer_base, data_size);
 
     flush();
