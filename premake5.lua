@@ -57,7 +57,8 @@ project "pyro"
 
     defines
     {
-        "_CRT_SECURE_NO_WARNINGS"
+        "_CRT_SECURE_NO_WARNINGS",
+		"GLFW_INCLUDE_NONE"
     }
 
     includedirs
@@ -86,7 +87,6 @@ project "pyro"
 
         defines
         {
-            "GLFW_INCLUDE_NONE",
             "PYRO_PLATFORM_WIN",
         }
 
