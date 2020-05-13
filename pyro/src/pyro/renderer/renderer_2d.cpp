@@ -155,61 +155,46 @@ void pyro::renderer_2d::draw_quad(quad_properties const& props)
     // TODO - textures are added even if already present in s_data.texture_slots!
     float tex_index = 0.0f;
     auto tex_param = props.texture.get();
-        for (uint32_t i = 1; i < s_data.texture_slot_index; i++)
+    for (uint32_t i = 1; i < s_data.texture_slot_index; i++)
+    {
+        auto inbuffer_tex = s_data.texture_slots[i].get();
+        if (inbuffer_tex && tex_param)
         {
-            auto inbuffer_tex = s_data.texture_slots[i].get();
-            if (inbuffer_tex && tex_param)
+            if (inbuffer_tex == tex_param)
             {
-                if (inbuffer_tex == tex_param)
-                {
-                    tex_index = (float)i;
-                    break;
-                }
+                tex_index = (float)i;
+                break;
             }
         }
+    }
 
-        if(tex_index == 0.f)
+    if(tex_index == 0.f)
+    {
+        if (tex_param)
         {
-            if (tex_param)
-            {
-                tex_index = (float)s_data.texture_slot_index;
-                s_data.texture_slots[s_data.texture_slot_index] = props.texture;
-                s_data.texture_slot_index++;
-            }
+            tex_index = (float)s_data.texture_slot_index;
+            s_data.texture_slots[s_data.texture_slot_index] = props.texture;
+            s_data.texture_slot_index++;
         }
+    }
 
-    glm::mat4 transform = glm::translate(glm::mat4(1.f), props.position)
-        * glm::rotate(glm::mat4(1.f), props.rotation, pyro::math::axis_z)
-        * glm::scale(glm::mat4(1.f), { props.size.x, props.size.y, 1.f });
-    
-    s_data.quad_vertex_buffer_ptr->position = transform * s_data.quad_vertex_positions[0];
-    s_data.quad_vertex_buffer_ptr->color = props.color;
-    s_data.quad_vertex_buffer_ptr->tex_coord = { 0.f, 0.f };
-    s_data.quad_vertex_buffer_ptr->tex_index = tex_index;
-    s_data.quad_vertex_buffer_ptr->tiling_factor = props.tiling_factor;
-    s_data.quad_vertex_buffer_ptr++;
-    
-    s_data.quad_vertex_buffer_ptr->position = transform * s_data.quad_vertex_positions[1];
-    s_data.quad_vertex_buffer_ptr->color = props.color;
-    s_data.quad_vertex_buffer_ptr->tex_coord = { 1.f, 0.f };
-    s_data.quad_vertex_buffer_ptr->tex_index = tex_index;
-    s_data.quad_vertex_buffer_ptr->tiling_factor = props.tiling_factor;
-    s_data.quad_vertex_buffer_ptr++;
-    
-    s_data.quad_vertex_buffer_ptr->position = transform * s_data.quad_vertex_positions[2];
-    s_data.quad_vertex_buffer_ptr->color = props.color;
-    s_data.quad_vertex_buffer_ptr->tex_coord = { 1.f, 1.f };
-    s_data.quad_vertex_buffer_ptr->tex_index = tex_index;
-    s_data.quad_vertex_buffer_ptr->tiling_factor = props.tiling_factor;
-    s_data.quad_vertex_buffer_ptr++;
-    
-    s_data.quad_vertex_buffer_ptr->position = transform * s_data.quad_vertex_positions[3];
-    s_data.quad_vertex_buffer_ptr->color = props.color;
-    s_data.quad_vertex_buffer_ptr->tex_coord = { 0.f, 1.f };
-    s_data.quad_vertex_buffer_ptr->tex_index = tex_index;
-    s_data.quad_vertex_buffer_ptr->tiling_factor = props.tiling_factor;
-    s_data.quad_vertex_buffer_ptr++;
+    constexpr glm::vec2 tex_coords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
+    glm::mat4 transform = glm::translate(glm::mat4(1.f), props.position);
+    if(props.rotation != 0.f) // if no rotation avoid matrix calculation
+        transform = glm::rotate(transform, props.rotation, pyro::math::axis_z);
+    transform = glm::scale(transform, { props.size.x, props.size.y, 1.f });
+    
+    for (size_t i = 0; i < s_quad_vertices; i++)
+    {
+        s_data.quad_vertex_buffer_ptr->position = transform * s_data.quad_vertex_positions[i];
+        s_data.quad_vertex_buffer_ptr->color = props.color;
+        s_data.quad_vertex_buffer_ptr->tex_coord = tex_coords[i];
+        s_data.quad_vertex_buffer_ptr->tex_index = tex_index;
+        s_data.quad_vertex_buffer_ptr->tiling_factor = props.tiling_factor;
+        s_data.quad_vertex_buffer_ptr++;
+    }
+    
     s_data.quad_index_count += s_quad_indices; // 6 indices per quad
     s_data.stats.quad_count++;
 }
