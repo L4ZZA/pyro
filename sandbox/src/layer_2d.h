@@ -22,6 +22,7 @@ public:
 private:
     void reset_noise_seed(e_noise_type const &noise_type);
     bool on_key_pressed(pyro::key_pressed_event& event);
+    glm::vec4 color_map(float noise);
 private:
     pyro::orthographic_camera_controller m_2d_camera_controller; 
 	
@@ -42,9 +43,12 @@ private:
     float                           m_x_count = 10;
     float                           m_y_count = 20;
 
-    bool m_noise_changed = false;
+    int m_seed;
     int m_scale = 10;
-    double m_something = 0.8;
+    float m_something = 0.8f;
+
+    bool m_noise_changed = false;
+    bool m_seed_changed = false;
     int m_octaves = 5;
     float m_bias = 0.2f;
     static const int s_texture_size = 256;

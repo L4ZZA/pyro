@@ -8,8 +8,9 @@ using namespace utils;
 
 layer_2d::layer_2d()
     : imgui_layer("Sandbox2D")
-    , m_2d_camera_controller({ 364.f, 714.f, 0.f }, 1280.0f / 720.0f, 785.f)
-    , m_other_noise(10)
+    , m_2d_camera_controller({ 157.f, 259.f, 0.f }, 1280.0f / 720.0f, 270.f)
+    , m_seed(1)
+    , m_other_noise(m_seed)
 {
 }
 
@@ -22,8 +23,8 @@ void layer_2d::on_attach()
 {
     PYRO_PROFILE_FUNCTION();
     imgui_layer::on_attach();
-    
-    random::init(10);
+
+    random::init(m_seed);
 
     {
         pyro::texture_parameters params;
@@ -31,31 +32,16 @@ void layer_2d::on_attach()
         m_checkerboard_texture = pyro::texture_2d::create_from_file("assets/textures/checkerboard.png", params);
     }
     {
-        int width = 256, height = 256;
         pyro::texture_parameters params;
         params.format = pyro::e_texture_format::red;
-        m_my_texture = pyro::texture_2d::create(width, height, params);
-        // Visit every pixel of the image and assign a color generated with Perlin noise
-        int pos = 0;
-        for (unsigned int i = 0; i < height; ++i)
-        {     // y
-            for (unsigned int j = 0; j < width; ++j)
-            {  // x
-                double x = (double)j / ((double)width);
-                double y = (double)i / ((double)height);
-
-                // Typical Perlin noise
-                double n = m_other_noise.noise(m_scale * x, m_scale * y, m_something);
-
-                // Wood like structure
-                n = 20 * m_other_noise.noise(x, y, m_something);
-                n = n - floor(n);
-
-                m_vendor_noise_2d[pos] = n;
-                pos++;
-            }
-        }
-        m_my_texture->data(m_vendor_noise_2d.data(), m_vendor_noise_2d.size(), pyro::e_texture_data_type::Float);
+        params.filter = pyro::e_texture_filter::nearest;
+        params.wrap = pyro::e_texture_wrap::clamp_to_edge;
+        m_noise_texture = pyro::texture_2d::create(s_texture_size, s_texture_size, params);
+    }
+    {
+        pyro::texture_parameters params;
+        params.format = pyro::e_texture_format::red;
+        m_my_texture = pyro::texture_2d::create(s_texture_size, s_texture_size, params);
     }
     
     // populating seed array
@@ -87,6 +73,7 @@ void layer_2d::reset_noise_seed(e_noise_type const& noise_type)
         m_noise1d_seed[0] = 0.5f;
         break;
     }
+    
     m_noise_changed = true;
 }
 
@@ -95,7 +82,14 @@ void layer_2d::on_update(const pyro::timestep &ts)
     // Update
     PYRO_PROFILE_FUNCTION();
     m_2d_camera_controller.on_update(ts);
-
+    if (m_seed_changed)
+    {
+        reset_noise_seed(e_noise_type::one_d);
+        reset_noise_seed(e_noise_type::two_d);
+        m_other_noise.change_seed(m_seed);
+        m_noise_changed = true;
+        m_seed_changed = false;
+    }
     if (m_noise_changed)
     {
         m_noise_changed = false;
@@ -108,13 +102,31 @@ void layer_2d::on_update(const pyro::timestep &ts)
 
         perlin_noise_1d(s_texture_size, m_octaves, m_bias, m_noise1d_seed.data(), m_noise_1d.data());
         perlin_noise_2d(s_texture_size, m_octaves, m_bias, m_noise2d_seed.data(), m_noise_2d.data());
-        
-        pyro::texture_parameters params;
-        params.format = pyro::e_texture_format::red;
-        params.filter = pyro::e_texture_filter::nearest;
-        params.wrap = pyro::e_texture_wrap::clamp_to_edge;
-        m_noise_texture = pyro::texture_2d::create(s_texture_size, s_texture_size, params);
+
         m_noise_texture->data(m_noise_2d.data(), m_noise_2d.size(), pyro::e_texture_data_type::Float);
+
+        // other noise 
+        // Visit every pixel of the image and assign a color generated with Perlin noise 
+        int pos = 0;
+        for (unsigned int j = 0; j < s_texture_size; ++j)
+        {     // x 
+            for (unsigned int i = 0; i < s_texture_size; ++i)
+            {  // y 
+                float x = static_cast<float>(j) / (static_cast<float>(s_texture_size));
+                float y = static_cast<float>(i) / (static_cast<float>(s_texture_size));
+
+                // Typical Perlin noise 
+                float n = m_other_noise.noise(m_scale * x, m_scale * y, m_something);
+
+                //// Wood like structure 
+                //n = 20 * m_other_noise.noise(x, y, m_something);
+                //n = n - floor(n);
+
+                m_vendor_noise_2d[pos] = n;
+                pos++;
+            }
+        }
+        m_my_texture->data(m_vendor_noise_2d.data(), m_vendor_noise_2d.size(), pyro::e_texture_data_type::Float);
     }
 }
 
@@ -130,9 +142,10 @@ void layer_2d::on_imgui_render()
     int width = s_texture_size;
     int height = s_texture_size / 4;
     int step = 1;
-    float rect_width = 5.0f;
+    float rect_width = 2.f;
     float rect_heigth_max = 2.f;
     float gap_width = step - rect_width;
+    float gap = 0.5f;
     {
         // Render
         PYRO_PROFILE_SCOPE("layer_2d::render");
@@ -165,29 +178,18 @@ void layer_2d::on_imgui_render()
             {
                 //float rect_heigth = m_noise_1d.at(x);
                 pyro::quad_properties props;
-                uint32_t i = y * s_texture_size + x;
-                float noise = m_noise_2d[i];
+                uint32_t index = y * s_texture_size + x;
+                float noise1 = m_noise_2d[index];
+                float noise2 = m_vendor_noise_2d[index];
 
-                // blue
-                props.color = { 0.1f, 0.1f, 0.8, 1.0f };
-                // light blue
-                if(noise > 0.1f)
-                    props.color = { 0.3f, 0.3, 0.9f, 1.0f };
-                // green
-                if(noise > 0.25f)
-                    props.color = { 0.2f, 0.8, 0.2f, 1.0f };
-                // light brown
-                if(noise > 0.45f)
-                    props.color = { .46f, 0.35f, 0.3f, 1.0f };
-                // brown
-                if(noise > 0.65f)
-                    props.color = { .36f, 0.25f, 0.2f, 1.0f };
-                // white
-                if (noise > 0.85f)
-                    props.color = { 1.f, 1.f, 1.f, 1.0f };
-                float gap = 0.75f;
-                props.position = { x * (rect_width + gap), y * (rect_width + gap), 0.1f };
+                props.color = color_map(noise1);
+                //props.color = { noise ,noise ,noise, 1.f };
+                props.position = { x * (rect_width), y * (rect_width), 0.1f };
                 props.size = { rect_width, rect_width };
+                pyro::renderer_2d::draw_quad(props);
+
+                props.position = { - 256.f - x * (rect_width), y * (rect_width), 0.1f };
+                props.color = color_map(noise2);
                 pyro::renderer_2d::draw_quad(props);
             }
         
@@ -195,7 +197,7 @@ void layer_2d::on_imgui_render()
     pyro::renderer_2d::current_shader()->set_int("u_grayscale", true);
     {
         pyro::quad_properties props;
-        props.position = { -128.f, 128.f, 0.1f };
+        props.position = { -128.f - gap, 128.f, 0.1f };
         props.color = { 1.f, 1.0f, 1.f, 1.f };
         props.size = { 256.f, 256.f };
         props.texture = m_noise_texture;
@@ -203,7 +205,7 @@ void layer_2d::on_imgui_render()
     }
     {
         pyro::quad_properties props;
-        props.position = { -128.f, 256.f * 2.f, 0.1f };
+        props.position = { -128.f - gap, 256.f * 1.5f + gap, 0.1f };
         props.color = { 1.f, 1.0f, 1.f, 1.f };
         props.size = { 256.f, 256.f };
         props.texture = m_my_texture;
@@ -232,6 +234,15 @@ void layer_2d::on_imgui_render()
     ImGui::Text("---------------------");
 
     ImGui::Text("-- Noise:");
+    ImGui::Text("- Seed: ");
+    ImGui::SameLine(); 
+    m_seed_changed |= ImGui::InputInt("##seed", &m_seed);
+    ImGui::Text("- Scale: ");
+    ImGui::SameLine();
+    m_noise_changed |= ImGui::SliderInt("##scale", &m_scale, 1, 100);
+    ImGui::Text("- something: ");
+    ImGui::SameLine();
+    m_noise_changed |= ImGui::SliderFloat("##something", &m_something, 0.1f, 50.f);
     ImGui::Text("- Octaves: ");
     ImGui::SameLine(); 
     m_noise_changed |= ImGui::SliderInt("##octaves", &m_octaves, 1, 8);
@@ -298,4 +309,29 @@ bool layer_2d::on_key_pressed(pyro::key_pressed_event& event)
         //PYRO_DEBUG("{0}", static_cast<char>(e.key_code())); 
     }
     return false;
+}
+
+glm::vec4 layer_2d::color_map(float noise)
+{
+    glm::vec4 color;
+
+    // blue
+    color = { 0.1f, 0.1f, 0.8, 1.0f };
+    // light blue
+    if (noise > 0.1f)
+        color = { 0.3f, 0.3, 0.9f, 1.0f };
+    // green
+    if (noise > 0.25f)
+        color = { 0.2f, 0.8, 0.2f, 1.0f };
+    // light brown
+    if (noise > 0.45f)
+        color = { .46f, 0.35f, 0.3f, 1.0f };
+    // brown
+    if (noise > 0.65f)
+        color = { .36f, 0.25f, 0.2f, 1.0f };
+    // white
+    if (noise > 0.85f)
+        color = { 1.f, 1.f, 1.f, 1.0f };
+
+    return color;
 }
