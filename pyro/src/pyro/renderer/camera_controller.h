@@ -39,6 +39,15 @@ namespace pyro
     
     //=========== 2D CAMERA CONTROLLER ============
 
+    struct orthographic_camera_bounds
+    {
+        float left, right;
+        float bottom, top;
+
+        float width() const { return right - left; }
+        float height() const { return top - bottom; }
+    };
+
     class PYRO_API orthographic_camera_controller final : public camera_controller
     {
     public: 
@@ -64,6 +73,7 @@ namespace pyro
         float zoom_level() const override;
 
     private:
+        void calculate_view();
         void move(e_direction direction, timestep ts);
         void rotate(e_rotation rotation, e_axis rotation_axis, timestep ts);
         bool on_mouse_scrolled(mouse_scrolled_event& e);
@@ -80,6 +90,7 @@ namespace pyro
         float m_camera_translation_speed;
         const float m_camera_rotation_speed;
 
+        orthographic_camera_bounds m_bounds;
         orthographic_camera m_camera;
     };
     

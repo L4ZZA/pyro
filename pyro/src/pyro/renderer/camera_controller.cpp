@@ -20,7 +20,8 @@ pyro::orthographic_camera_controller::orthographic_camera_controller(
     m_zoom_level(zoom_level),
     m_rotation(rotation),
     m_camera_position(position),
-    m_camera(-m_aspect_ratio * m_zoom_level, m_aspect_ratio *m_zoom_level, -m_zoom_level, m_zoom_level)
+    m_bounds{ -m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level },
+    m_camera(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top)
 {
 	PYRO_PROFILE_FUNCTION();
 }
@@ -74,11 +75,21 @@ pyro::camera const &pyro::orthographic_camera_controller::camera() const
 void pyro::orthographic_camera_controller::zoom_level(float level)
 {
     m_zoom_level = level;
+    calculate_view();
 }
 
 float pyro::orthographic_camera_controller::zoom_level() const
 {
     return m_zoom_level;
+}
+
+void pyro::orthographic_camera_controller::calculate_view()
+{
+    m_bounds.left = -m_aspect_ratio * m_zoom_level;
+    m_bounds.right = m_aspect_ratio * m_zoom_level;
+    m_bounds.bottom = -m_zoom_level;
+    m_bounds.top = m_zoom_level;
+    m_camera.projection_matrix(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top);
 }
 
 void pyro::orthographic_camera_controller::move(e_direction direction, timestep ts)
@@ -111,7 +122,7 @@ bool pyro::orthographic_camera_controller::on_mouse_scrolled(mouse_scrolled_even
 	PYRO_PROFILE_FUNCTION();
     m_zoom_level -= e.y_offset() * m_zoom_speed;
     m_zoom_level = std::max(m_zoom_level, m_zoom_speed);
-    m_camera.projection_matrix(-m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level);
+    calculate_view();
     // returns if event is handled.
     return false;
 }
@@ -120,7 +131,7 @@ bool pyro::orthographic_camera_controller::on_window_resized(window_resize_event
 {
 	PYRO_PROFILE_FUNCTION();
     m_aspect_ratio = static_cast<float>(e.width()) / static_cast<float>(e.height());
-    m_camera.projection_matrix(-m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level);
+    calculate_view();
     // returns if event is handled.
     return false;
 }
