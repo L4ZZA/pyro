@@ -16,7 +16,7 @@ namespace pyro
     class PYRO_API application
     {
     public:
-        application();
+        application(uint32_t width, uint32_t height);
         virtual ~application();
 
         /// \brief

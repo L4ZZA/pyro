@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "pyro.h"
 #include "utils/perlin_noise.h"
 
@@ -12,7 +12,7 @@ class layer_2d final : public pyro::imgui_layer
 {
 
 public:
-    layer_2d();
+    layer_2d(float width, float height);
     ~layer_2d() override;
     void on_attach() override;
     void on_detach() override;

@@ -7,7 +7,8 @@
 class sandbox_app : public pyro::application
 {
 public:
-    sandbox_app()
+    sandbox_app(uint32_t width, uint32_t height)
+        :application(width,height)
     {
     }
 
@@ -16,7 +17,9 @@ public:
     // Inherited via application
     virtual void init() override
     {
-        m_layer_2d = std::make_shared<layer_2d>();
+        const float width  = static_cast<float>(window().width());
+        const float height = static_cast<float>(window().height());
+        m_layer_2d = pyro::make_ref<layer_2d>(width, height);
         //push_layer(new layer_3d()); 
         push_layer(m_layer_2d);
     }
@@ -48,11 +51,11 @@ public:
     }
 
 private:
-    std::shared_ptr<layer_2d> m_layer_2d;
+    pyro::ref<layer_2d> m_layer_2d;
 };
 
 
 pyro::application *pyro::create_application()
 {
-    return new sandbox_app();
+    return new sandbox_app(1280, 720);
 }

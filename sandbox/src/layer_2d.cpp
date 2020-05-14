@@ -6,9 +6,9 @@
 
 using namespace utils;
 
-layer_2d::layer_2d()
+layer_2d::layer_2d(float width, float height)
     : imgui_layer("Sandbox2D")
-    , m_2d_camera_controller({ 157.f, 259.f, 0.f }, 1280.0f / 720.0f, 270.f)
+    , m_2d_camera_controller({ 157.f, 259.f, 0.f }, width / height, 270.f)
     , m_seed(1)
     , m_other_noise(m_seed)
 {
