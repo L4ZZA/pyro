@@ -1,23 +1,24 @@
 #include "perlin_noise.h"
 
-//	You could use this program under the terms of GPL v3, for more details see :
-//  http://www.gnu.org/copyleft/gpl.html
-//  Copyright 2012 Sol from https://solarianprogrammer.com/
+// You could use this program under the terms of GPL v3, for more details see :
+// http://www.gnu.org/copyleft/gpl.html
+// Copyright 2012 Sol from https://solarianprogrammer.com/
+// https://solarianprogrammer.com/2012/07/18/perlin-noise-cpp-11/
+// https://github.com/sol-prog/Perlin_Noise
+// CHANGES:
+// - changed all parameter and return types from double to float, I don't need that precision.
+// - random engine is now a member variable
+// - added ability to change random engine seed
 
 #include <cmath>
-#include <random>
 #include <algorithm>
 #include <numeric>
 
-// THIS IS A DIRECT TRANSLATION TO C++11 FROM THE REFERENCE
-// JAVA IMPLEMENTATION OF THE IMPROVED PERLIN FUNCTION (see http://mrl.nyu.edu/~perlin/noise/)
-// THE ORIGINAL JAVA IMPLEMENTATION IS COPYRIGHT 2002 KEN PERLIN
-
-// I ADDED AN EXTRA METHOD THAT GENERATES A NEW PERMUTATION VECTOR (THIS IS NOT PRESENT IN THE ORIGINAL IMPLEMENTATION)
-
 // Initialize with the reference values for the permutation vector
 utils::perlin_noise::perlin_noise()
+	: m_engine()
 {
+	m_engine.seed(std::random_device()());
 
 	// Initialize the permutation vector with the reference values
 	m_permutation = 
@@ -42,22 +43,10 @@ utils::perlin_noise::perlin_noise()
 // Generate a new permutation vector based on the value of seed
 utils::perlin_noise::perlin_noise(uint32_t seed)
 {
-	m_permutation.resize(256);
-
-	// Fill permutation_vec with values from 0 to 255
-	std::iota(m_permutation.begin(), m_permutation.end(), 0);
-
-	// Initialize a random engine with seed
-	std::default_random_engine engine(seed); // TODO: test with std::mt19937 instead
-
-	// Suffle  using the above random engine
-	std::shuffle(m_permutation.begin(), m_permutation.end(), engine);
-
-	// Duplicate the permutation vector
-	m_permutation.insert(m_permutation.end(), m_permutation.begin(), m_permutation.end());
+	change_seed(seed);
 }
 
-double utils::perlin_noise::noise(double x, double y, double z)
+float utils::perlin_noise::noise(float x, float y, float z)
 {
 	// Find the unit cube that contains the point
 	int32_t X = (int32_t)floor(x) & 255;
@@ -70,9 +59,9 @@ double utils::perlin_noise::noise(double x, double y, double z)
 	z -= floor(z);
 
 	// Compute fade curves for each of x, y, z
-	double u = fade(x);
-	double v = fade(y);
-	double w = fade(z);
+	float u = fade(x);
+	float v = fade(y);
+	float w = fade(z);
 
 	// Hash coordinates of the 8 cube corners
 	int32_t A = m_permutation[X] + Y;
@@ -83,7 +72,7 @@ double utils::perlin_noise::noise(double x, double y, double z)
 	int32_t BB = m_permutation[B + 1] + Z;
 
 	// Add blended results from 8 corners of cube
-	double res = lerp(w, 
+	float res = lerp(w, 
 					lerp(v, 
 						lerp(u, 
 							grad(m_permutation[AA], x, y, z), 
@@ -103,21 +92,38 @@ double utils::perlin_noise::noise(double x, double y, double z)
 	return (res + 1.0) / 2.0;
 }
 
-double utils::perlin_noise::fade(double t)
+void utils::perlin_noise::change_seed(uint32_t seed)
+{
+	// Initialize a random engine with seed
+	m_engine.seed(seed);
+	
+	m_permutation.resize(256);
+
+	// Fill permutation_vec with values from 0 to 255
+	std::iota(m_permutation.begin(), m_permutation.end(), 0);
+
+	// Suffle  using the above random engine
+	std::shuffle(m_permutation.begin(), m_permutation.end(), m_engine);
+
+	// Duplicate the permutation vector
+	m_permutation.insert(m_permutation.end(), m_permutation.begin(), m_permutation.end());
+}
+
+float utils::perlin_noise::fade(float t)
 {
 	return t * t * t * (t * (t * 6 - 15) + 10);
 }
 
-double utils::perlin_noise::lerp(double t, double a, double b)
+float utils::perlin_noise::lerp(float t, float a, float b)
 {
 	return a + t * (b - a);
 }
 
-double utils::perlin_noise::grad(int32_t hash, double x, double y, double z)
+float utils::perlin_noise::grad(int32_t hash, float x, float y, float z)
 {
 	int32_t h = hash & 15;
 	// Convert lower 4 bits of hash into 12 gradient directions
-	double u = h < 8 ? x : y,
+	float u = h < 8 ? x : y,
 		v = h < 4 ? y : h == 12 || h == 14 ? x : z;
 	return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
 }
