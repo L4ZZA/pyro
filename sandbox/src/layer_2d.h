@@ -45,7 +45,9 @@ private:
 
     int m_seed;
     int m_scale = 10;
-    float m_something = 0.8f;
+    float m_morph = 0.8f;
+    float m_move_x = 0.8f;
+    float m_move_y = 0.8f;
 
     bool m_noise_changed = false;
     bool m_seed_changed = false;

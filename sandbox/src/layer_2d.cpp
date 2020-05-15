@@ -8,7 +8,7 @@ using namespace utils;
 
 layer_2d::layer_2d(float width, float height)
     : imgui_layer("Sandbox2D")
-    , m_2d_camera_controller({ 157.f, 259.f, 0.f }, width / height, 270.f)
+    , m_2d_camera_controller({ 123.5f, 259.f, 0.f }, width / height, 388.f)
     , m_seed(1)
     , m_other_noise(m_seed)
 {
@@ -43,10 +43,8 @@ void layer_2d::on_attach()
         params.format = pyro::e_texture_format::red;
         m_my_texture = pyro::texture_2d::create(s_texture_size, s_texture_size, params);
     }
-    
-    // populating seed array
-    reset_noise_seed(e_noise_type::one_d);
-    reset_noise_seed(e_noise_type::two_d);
+
+    m_seed_changed = true;
 }
 
 void layer_2d::on_detach()
@@ -63,18 +61,16 @@ void layer_2d::reset_noise_seed(e_noise_type const& noise_type)
         {
             m_noise1d_seed[i] = random::get_float();
         }
-        m_noise1d_seed[0] = 0.5f; // this will make generation always average around 0.5, since the first octave will be sampling from this value
+        //m_noise1d_seed[0] = 0.5f; // this will make generation always average around 0.5, since the first octave will be sampling from this value
         break;
     case e_noise_type::two_d:
         for (int i = 0; i < s_texture_size * s_texture_size; i++)
         {
             m_noise2d_seed[i] = random::get_float();
         }
-        m_noise1d_seed[0] = 0.5f;
+        //m_noise1d_seed[0] = 0.5f;
         break;
     }
-    
-    m_noise_changed = true;
 }
 
 void layer_2d::on_update(const pyro::timestep &ts)
@@ -108,15 +104,15 @@ void layer_2d::on_update(const pyro::timestep &ts)
         // other noise 
         // Visit every pixel of the image and assign a color generated with Perlin noise 
         int pos = 0;
-        for (unsigned int j = 0; j < s_texture_size; ++j)
+        for (unsigned int y = 0; y < s_texture_size; ++y)
         {     // x 
-            for (unsigned int i = 0; i < s_texture_size; ++i)
+            for (unsigned int x = 0; x < s_texture_size; ++x)
             {  // y 
-                float x = static_cast<float>(j) / (static_cast<float>(s_texture_size));
-                float y = static_cast<float>(i) / (static_cast<float>(s_texture_size));
+                float dx = static_cast<float>(x) / (static_cast<float>(s_texture_size));
+                float dy = static_cast<float>(y) / (static_cast<float>(s_texture_size));
 
                 // Typical Perlin noise 
-                float n = m_other_noise.noise(m_scale * x, m_scale * y, m_something);
+                float n = m_other_noise.noise(m_scale * dx - m_move_x, m_scale * dy + m_move_y, m_morph);
 
                 //// Wood like structure 
                 //n = 20 * m_other_noise.noise(x, y, m_something);
@@ -145,7 +141,7 @@ void layer_2d::on_imgui_render()
     float rect_width = 2.f;
     float rect_heigth_max = 2.f;
     float gap_width = step - rect_width;
-    float gap = 0.5f;
+    float gap = 0.0f;
     {
         // Render
         PYRO_PROFILE_SCOPE("layer_2d::render");
@@ -173,8 +169,8 @@ void layer_2d::on_imgui_render()
         //    pyro::renderer_2d::draw_quad(props);
         //}
 
-        for (int x = 0; x < s_texture_size; x += step)
         for (int y = 0; y < s_texture_size; y += step)
+        for (int x = 0; x < s_texture_size; x += step)
             {
                 //float rect_heigth = m_noise_1d.at(x);
                 pyro::quad_properties props;
@@ -240,9 +236,15 @@ void layer_2d::on_imgui_render()
     ImGui::Text("- Scale: ");
     ImGui::SameLine();
     m_noise_changed |= ImGui::SliderInt("##scale", &m_scale, 1, 100);
-    ImGui::Text("- something: ");
+    ImGui::Text("- Morph: ");
     ImGui::SameLine();
-    m_noise_changed |= ImGui::SliderFloat("##something", &m_something, 0.1f, 50.f);
+    m_noise_changed |= ImGui::SliderFloat("##morph", &m_morph, 0.1f, 50.f);
+    ImGui::Text("- Move x: ");
+    ImGui::SameLine();
+    m_noise_changed |= ImGui::SliderFloat("##move_x", &m_move_x, -50.f, 50.f);
+    ImGui::Text("- Move y: ");
+    ImGui::SameLine();
+    m_noise_changed |= ImGui::SliderFloat("##move_y", &m_move_y, -50.f, 50.f);
     ImGui::Text("- Octaves: ");
     ImGui::SameLine(); 
     m_noise_changed |= ImGui::SliderInt("##octaves", &m_octaves, 1, 8);
@@ -278,8 +280,7 @@ bool layer_2d::on_key_pressed(pyro::key_pressed_event& event)
     {
         if (event.key_code() == pyro::key_codes::KEY_R)
         {
-            reset_noise_seed(e_noise_type::one_d);
-            reset_noise_seed(e_noise_type::two_d);
+            m_noise_changed = true;
         }
         if (event.key_code() == pyro::key_codes::KEY_DOWN)
         {
