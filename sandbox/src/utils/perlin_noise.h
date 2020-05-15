@@ -34,7 +34,8 @@ namespace utils
 	private:
 		// rendom engine
 		std::default_random_engine m_engine; // TODO: test with std::mt19937 instead
-		// The permutation vector
+		// The permutation vector, consists of a vector of unique numbers from 0 to 255
+		// with random order. This values are then duplicated to expand the table to 512 values.
 		std::vector<int32_t> m_permutation;
     };
 
