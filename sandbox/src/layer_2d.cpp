@@ -307,7 +307,7 @@ bool layer_2d::on_key_pressed(pyro::key_pressed_event& event)
         }
 
         
-        //PYRO_DEBUG("{0}", static_cast<char>(e.key_code())); 
+        //PYRO_TRACE("{0}", static_cast<char>(e.key_code())); 
     }
     return false;
 }

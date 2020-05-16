@@ -77,8 +77,8 @@ pyro::perspective_camera::perspective_camera(
     m_view_mat = glm::lookAt(m_position, m_position + m_front_vector, m_up_vector);
 
     m_view_projection_mat = m_projection_mat * m_view_mat;
-    PYRO_CORE_DEBUG("3d cam position: [{},{},{}]", m_position.x, m_position.y, m_position.z);
-    PYRO_CORE_DEBUG("3d cam rotation: [{},{},{}]", m_rotation.x, m_rotation.y, m_rotation.z);
+    PYRO_CORE_TRACE("3d cam position: [{},{},{}]", m_position.x, m_position.y, m_position.z);
+    PYRO_CORE_TRACE("3d cam rotation: [{},{},{}]", m_rotation.x, m_rotation.y, m_rotation.z);
 }
 
 void pyro::perspective_camera::projection_matrix(glm::mat4 const& mat)

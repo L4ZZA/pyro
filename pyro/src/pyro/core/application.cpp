@@ -82,7 +82,7 @@ void pyro::application::on_event(event &e)
     // dispatch event on window resized
     dispatcher.dispatch<window_resize_event>(BIND_EVENT_FN(application::on_window_resized));
 
-    //PYRO_CORE_DEBUG("{0}", event); 
+    //PYRO_CORE_TRACE("{0}", event); 
 
     // events are executed from top of the stack to bottom (aka end to start of the list) 
     for(auto it = m_layers_stack.end(); it != m_layers_stack.begin(); )

@@ -286,7 +286,7 @@ void pyro::perspective_camera_controller::rotate(perspective_camera::e_rotation 
         if(angle > 360.f)
         {
             angle = 0.f;
-            PYRO_CORE_DEBUG("A");
+            PYRO_CORE_TRACE("A");
         }
     }
     else if(rotation == clock_wise)
@@ -295,7 +295,7 @@ void pyro::perspective_camera_controller::rotate(perspective_camera::e_rotation 
         if(angle < 0.f)
         {
             angle = 360.f;
-            PYRO_CORE_DEBUG("B");
+            PYRO_CORE_TRACE("B");
         }
     }
 

@@ -63,7 +63,7 @@ pyro::gl_shader::gl_shader(std::string const &name, std::string const &vertex_so
 pyro::gl_shader::~gl_shader()
 {
     PYRO_PROFILE_FUNCTION();
-    //PYRO_CORE_DEBUG("[gl_shader] Deleting shader program {} - id: {}", m_name, m_id);
+    //PYRO_CORE_TRACE("[gl_shader] Deleting shader program {} - id: {}", m_name, m_id);
     glDeleteProgram(m_program_id);
 }
 
@@ -141,7 +141,7 @@ void pyro::gl_shader::compile(std::unordered_map<uint32_t, std::string> const &s
     PYRO_PROFILE_FUNCTION();
 
     uint32_t program = glCreateProgram();
-    PYRO_CORE_DEBUG("[gl_shader] Creating shader {} - id: {}", m_name, program);
+    PYRO_CORE_TRACE("[gl_shader] Creating shader {} - id: {}", m_name, program);
     std::vector<uint32_t> shader_ids;
     shader_ids.resize(sources.size());
 
@@ -310,7 +310,7 @@ void pyro::gl_shader::upload_uniform(std::string const &name, int32_t val) const
     const int32_t uniformLocation = get_uniform_location(name);
     glUniform1i(uniformLocation, val);
 
-    //PYRO_CORE_DEBUG("[shader] upload_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, val); 
+    //PYRO_CORE_TRACE("[shader] upload_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, val); 
 }
 
 void pyro::gl_shader::upload_uniform(std::string const &name, float val) const
@@ -318,7 +318,7 @@ void pyro::gl_shader::upload_uniform(std::string const &name, float val) const
     const int32_t uniformLocation = get_uniform_location(name);
     glUniform1f(uniformLocation, val);
 
-    //PYRO_CORE_DEBUG("[shader] upload_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, val); 
+    //PYRO_CORE_TRACE("[shader] upload_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, val); 
 }
 
 void pyro::gl_shader::upload_uniform(std::string const &name, const glm::vec2 &vec) const
@@ -326,7 +326,7 @@ void pyro::gl_shader::upload_uniform(std::string const &name, const glm::vec2 &v
     const int32_t uniformLocation = get_uniform_location(name);
     glUniform2f(uniformLocation, vec.x, vec.y);
 
-    //PYRO_CORE_DEBUG("[shader] upload_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, vec); 
+    //PYRO_CORE_TRACE("[shader] upload_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, vec); 
 }
 
 void pyro::gl_shader::upload_uniform(std::string const &name, const glm::vec3 &vec) const
@@ -334,7 +334,7 @@ void pyro::gl_shader::upload_uniform(std::string const &name, const glm::vec3 &v
     const int32_t uniformLocation = get_uniform_location(name);
     glUniform3f(uniformLocation, vec.x, vec.y, vec.z);
 
-    //PYRO_CORE_DEBUG("[shader] upload_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, vec); 
+    //PYRO_CORE_TRACE("[shader] upload_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, vec); 
 }
 
 void pyro::gl_shader::upload_uniform(std::string const &name, const glm::vec4 &vec) const
@@ -342,7 +342,7 @@ void pyro::gl_shader::upload_uniform(std::string const &name, const glm::vec4 &v
     const int32_t uniformLocation = get_uniform_location(name);
     glUniform4f(uniformLocation, vec.x, vec.y, vec.z, vec.w);
 
-    //PYRO_CORE_DEBUG("[shader] upload_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, vec); 
+    //PYRO_CORE_TRACE("[shader] upload_uniform (float) (prog {0}): uniform: '{1}' = {2}(float)", m_program_id, name, vec); 
 }
 
 void pyro::gl_shader::upload_uniform(std::string const &name, const glm::mat4 &mat) const
@@ -350,14 +350,14 @@ void pyro::gl_shader::upload_uniform(std::string const &name, const glm::mat4 &m
     const int32_t uniformLocation = get_uniform_location(name);
     glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(mat));
 
-    //PYRO_CORE_DEBUG("[shader] upload_uniform (glm::mat4) (prog {0}): uniform: '{1}' = {2}(mat4)", m_program_id, name, mat); 
+    //PYRO_CORE_TRACE("[shader] upload_uniform (glm::mat4) (prog {0}): uniform: '{1}' = {2}(mat4)", m_program_id, name, mat); 
 }
 
 void pyro::gl_shader::upload_uniform(std::string const& name, int32_t const* values, uint32_t count) const
 {
     const int32_t uniformLocation = get_uniform_location(name);
     glUniform1iv(uniformLocation, count, values);
-    //PYRO_CORE_DEBUG("[shader] upload_uniform (int32_t[]) (prog {0}): uniform: '{1}' = {2}(int32_t const*)", m_program_id, name, mat); 
+    //PYRO_CORE_TRACE("[shader] upload_uniform (int32_t[]) (prog {0}): uniform: '{1}' = {2}(int32_t const*)", m_program_id, name, mat); 
 }
 
 

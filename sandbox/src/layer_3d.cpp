@@ -162,7 +162,7 @@ void layer_3d::on_event(pyro::event &event)
         {
             pyro::render_command::toggle_wireframe();
         }
-        //PYRO_DEBUG("{0}", static_cast<char>(e.key_code())); 
+        //PYRO_TRACE("{0}", static_cast<char>(e.key_code())); 
     }
     m_3d_camera_controller.on_event(event);
 
