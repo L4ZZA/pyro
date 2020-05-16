@@ -41,7 +41,6 @@ void pyro::orthographic_camera_controller::on_update(timestep ts)
 
     if(m_rotation)
     {
-
         if(input::key_pressed(pyro::key_codes::KEY_Q)) // up
             rotate(e_rotation::anticlock_wise, e_axis::z, ts);
         else if(input::key_pressed(pyro::key_codes::KEY_E)) // down

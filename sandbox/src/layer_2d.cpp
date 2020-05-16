@@ -138,8 +138,9 @@ void layer_2d::on_imgui_render()
     int width = s_texture_size;
     int height = s_texture_size / 4;
     int step = 1;
-    float rect_width = 2.f;
-    float rect_heigth_max = 2.f;
+    float line_rect_width = 0.2f;
+    float rect_width = 1.f;
+    float rect_heigth_max = 10.f;
     float gap_width = step - rect_width;
     float gap = 0.0f;
     {
@@ -156,16 +157,7 @@ void layer_2d::on_imgui_render()
         //    float x_pos = x - (x * gap_width);
         //    float y_offset = (rect_heigth / 2) + 0.5;
         //    props.position = { x_pos, y_offset - rect_heigth_max, 0.f };
-        //    props.size = { rect_width, rect_heigth };
-        //    pyro::renderer_2d::draw_quad(props);
-        //}
-
-        //pyro::renderer_2d::current_shader()->set_int("u_grayscale", false);
-        //{
-        //    pyro::quad_properties props;
-        //    props.color = { 1.f, 0.2f, 0.3f,1.f };
-        //    props.size = { 500.f, 500.f };
-        //    props.texture = m_checkerboard_texture;
+        //    props.size = { line_rect_width, rect_heigth };
         //    pyro::renderer_2d::draw_quad(props);
         //}
 
@@ -180,11 +172,11 @@ void layer_2d::on_imgui_render()
 
                 props.color = color_map(noise1);
                 //props.color = { noise ,noise ,noise, 1.f };
-                props.position = { x * (rect_width), y * (rect_width), 0.1f };
+                props.position = { x * (rect_width), y * (rect_width), 0.0f };
                 props.size = { rect_width, rect_width };
                 pyro::renderer_2d::draw_quad(props);
 
-                props.position = { - 256.f - x * (rect_width), y * (rect_width), 0.1f };
+                props.position = { - x * (rect_width),  y * (rect_width), 0.0f };
                 props.color = color_map(noise2);
                 pyro::renderer_2d::draw_quad(props);
             }
@@ -193,17 +185,17 @@ void layer_2d::on_imgui_render()
     pyro::renderer_2d::current_shader()->set_int("u_grayscale", true);
     {
         pyro::quad_properties props;
-        props.position = { -128.f - gap, 128.f, 0.1f };
+        props.position = { rect_width * s_texture_size * 1.5f, rect_width * s_texture_size * .5f, 0.1f };
         props.color = { 1.f, 1.0f, 1.f, 1.f };
-        props.size = { 256.f, 256.f };
+        props.size = { rect_width * s_texture_size, rect_width * s_texture_size };
         props.texture = m_noise_texture;
         pyro::renderer_2d::draw_quad(props);
     }
     {
         pyro::quad_properties props;
-        props.position = { -128.f - gap, 256.f * 1.5f + gap, 0.1f };
+        props.position = { -rect_width * s_texture_size * 1.5f, rect_width * s_texture_size * .5f, 0.1f };
         props.color = { 1.f, 1.0f, 1.f, 1.f };
-        props.size = { 256.f, 256.f };
+        props.size = { rect_width * s_texture_size, rect_width * s_texture_size };
         props.texture = m_my_texture;
         pyro::renderer_2d::draw_quad(props);
     }
@@ -278,9 +270,15 @@ bool layer_2d::on_key_pressed(pyro::key_pressed_event& event)
 {
     if (event.event_type() == pyro::event_type_e::key_pressed)
     {
-        if (event.key_code() == pyro::key_codes::KEY_R)
+        if (event.key_code() == pyro::key_codes::KEY_Q)
         {
-            m_noise_changed = true;
+            m_seed--;
+            m_seed_changed = true;
+        }
+        else if (event.key_code() == pyro::key_codes::KEY_E)
+        {
+            m_seed++;
+            m_seed_changed = true;
         }
         if (event.key_code() == pyro::key_codes::KEY_DOWN)
         {
