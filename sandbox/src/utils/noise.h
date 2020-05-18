@@ -43,8 +43,8 @@ namespace utils
 
     inline void perlin_noise_2d(int size, float octaves, float bias, float* seed, float* output_noise)
     {
-        for (int x = 0; x < size; x++)
-            for (int y = 0; y < size; y++)
+        for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
             {
                 float noise = 0.f;
                 float scale = 1.f;
