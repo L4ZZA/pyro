@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "renderer_2d.h"
 #include "vertex_array.h"
 #include "shader.h"
@@ -130,6 +130,9 @@ void pyro::renderer_2d::end_scene()
 
 void pyro::renderer_2d::flush()
 {
+    if (s_data.quad_index_count == 0)
+        return; // Nothing to draw
+
     // bind all textures slots
     for (uint32_t i = 0; i < s_data.texture_slot_index; i++)
         s_data.texture_slots[i]->bind(i);
