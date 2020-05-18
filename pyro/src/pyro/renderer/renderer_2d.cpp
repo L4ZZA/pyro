@@ -102,6 +102,7 @@ void pyro::renderer_2d::init()
 void pyro::renderer_2d::shutdown()
 {
     PYRO_PROFILE_FUNCTION();
+    delete[] s_data.quad_vertex_buffer_base;
 }
 
 void pyro::renderer_2d::begin_scene(camera &camera)
