@@ -57,6 +57,5 @@ namespace pyro
         friend int ::main(int argc, char** argv);
     };
 
-
     application *create_application();
 }

@@ -87,10 +87,10 @@ void pyro::application::on_event(event &e)
     // events are executed from top of the stack to bottom (aka end to start of the list) 
     for(auto it = m_layers_stack.end(); it != m_layers_stack.begin(); )
     {
-        (*--it)->on_event(e);
         // stop event propagation to next layer if flagged as handled 
         if(e.handled)
             break;
+        (*--it)->on_event(e);
     }
 }
 
