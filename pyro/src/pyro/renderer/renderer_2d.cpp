@@ -1,4 +1,4 @@
-#include "pyro_pch.h"
+﻿#include "pyro_pch.h"
 #include "renderer_2d.h"
 #include "vertex_array.h"
 #include "shader.h"
@@ -28,7 +28,9 @@ namespace pyro
         quad_vertex *quad_vertex_buffer_ptr  = nullptr;
 
         std::array<ref<texture_2d>, renderer_2d::max_texture_slots> texture_slots;
-        uint32_t texture_slot_index = 1; // 0 white texture index
+        // Index of the next empty texture slot
+        // 0 white texture index [default]
+        uint32_t texture_slot_index = 1; 
 
         glm::vec4 quad_vertex_positions[4];
 
@@ -44,7 +46,8 @@ void pyro::renderer_2d::init()
 
     s_data.quad_vertex_array = vertex_array::create();
 
-    s_data.quad_vertex_buffer = vertex_buffer::create(renderer_2d::max_vertices * sizeof(quad_vertex));
+    s_data.quad_vertex_buffer = 
+        vertex_buffer::create(renderer_2d::max_vertices * sizeof(quad_vertex));
     s_data.quad_vertex_buffer->layout({
         {e_shader_data_type::float3, "a_position"},
         {e_shader_data_type::float4, "a_color"},
@@ -72,7 +75,8 @@ void pyro::renderer_2d::init()
     }
 
 
-    const ref<index_buffer> quad_ib = index_buffer::create(quad_indices, renderer_2d::max_indices);
+    const ref<index_buffer> quad_ib = 
+        index_buffer::create(quad_indices, renderer_2d::max_indices);
     s_data.quad_vertex_array->add_buffer(quad_ib);
     delete[] quad_indices;
 
@@ -88,7 +92,8 @@ void pyro::renderer_2d::init()
 
     s_data.texture_shader = shader::create("assets/shaders/texture_2d.glsl");
     s_data.texture_shader->bind();
-    s_data.texture_shader->set_int_array("u_textures", samplers, renderer_2d::max_texture_slots);
+    s_data.texture_shader->set_int_array("u_textures", 
+        samplers, renderer_2d::max_texture_slots);
 
     // always set texture slot 0 to full white
     s_data.texture_slots[0] = s_data.wite_texture;
@@ -109,7 +114,8 @@ void pyro::renderer_2d::begin_scene(camera &camera)
 {
     PYRO_PROFILE_FUNCTION();
     s_data.texture_shader->bind();
-    s_data.texture_shader->set_mat4("u_view_projection", camera.view_projection_matrix());
+    s_data.texture_shader->set_mat4("u_view_projection", 
+        camera.view_projection_matrix());
 
     reset_render_data();
 }
@@ -118,12 +124,16 @@ void pyro::renderer_2d::end_scene()
 {
     PYRO_PROFILE_FUNCTION();
     
-    // reinterpret_cast converts one pointer to another without changing the address, 
-    // or converts between pointers and their numerical (integer) values
-    auto next_available_slot = reinterpret_cast<uint8_t*>(s_data.quad_vertex_buffer_ptr);
-    auto full_array_size = reinterpret_cast<uint8_t*>(s_data.quad_vertex_buffer_base);
-    uint32_t data_size = static_cast<uint32_t>(next_available_slot - full_array_size);
-    s_data.quad_vertex_buffer->data(s_data.quad_vertex_buffer_base, data_size);
+    // reinterpret_cast converts one pointer to another without changing 
+    // the address, or converts between pointers and their numerical 
+    // (integer) values
+    auto next_available_slot = 
+        reinterpret_cast<uint8_t*>(s_data.quad_vertex_buffer_ptr);
+    auto full_array_size = 
+        reinterpret_cast<uint8_t*>(s_data.quad_vertex_buffer_base);
+    uint32_t data_size = 
+        static_cast<uint32_t>(next_available_slot - full_array_size);
+    s_data.quad_vertex_buffer->data(s_data.quad_vertex_buffer_base, data_size); 
 
     flush();
 }
@@ -137,7 +147,8 @@ void pyro::renderer_2d::flush()
     for (uint32_t i = 0; i < s_data.texture_slot_index; i++)
         s_data.texture_slots[i]->bind(i);
 
-    render_command::draw_indexed(s_data.quad_vertex_array, s_data.quad_index_count);
+    render_command::draw_indexed(
+        s_data.quad_vertex_array, s_data.quad_index_count);
     s_data.stats.draw_calls++;
 }
 
@@ -156,15 +167,17 @@ void pyro::renderer_2d::draw_quad(quad_properties const& props)
         reset_render_data();
     }
 
-    // TODO - textures are added even if already present in s_data.texture_slots!
-    float tex_index = 0.0f;
-    auto tex_param = props.texture.get();
+    //TODO - textures are added even if already present in s_data.texture_slots!
+    float tex_index = 0.0f; // if no new textures use default texture index
+    texture_2d* tex_param = props.texture.get();
     for (uint32_t i = 1; i < s_data.texture_slot_index; i++)
     {
-        auto inbuffer_tex = s_data.texture_slots[i].get();
+        // get the new texture
+        texture_2d* inbuffer_tex = s_data.texture_slots[i].get();
+        // if both texture existst
         if (inbuffer_tex && tex_param)
         {
-            if (inbuffer_tex == tex_param)
+            if (*inbuffer_tex == *tex_param)
             {
                 tex_index = (float)i;
                 break;
@@ -176,7 +189,7 @@ void pyro::renderer_2d::draw_quad(quad_properties const& props)
     {
         if (tex_param)
         {
-            tex_index = (float)s_data.texture_slot_index;
+            tex_index = static_cast<float>(s_data.texture_slot_index);
             s_data.texture_slots[s_data.texture_slot_index] = props.texture;
             s_data.texture_slot_index++;
         }
