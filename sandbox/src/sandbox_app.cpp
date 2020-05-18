@@ -1,7 +1,7 @@
 // --------- Entry Point ---------------
+#define 
 #include "pyro/core/entry_point.h"
 #include "layer_2d.h"
-#include "layer_3d.h"
 
 
 class sandbox_app : public pyro::application
