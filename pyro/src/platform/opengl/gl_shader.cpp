@@ -148,7 +148,7 @@ void pyro::gl_shader::compile(std::unordered_map<uint32_t, std::string> const &s
     for(auto const&[type, source] : sources)
     {
         uint32_t shader = glCreateShader(type);
-        PYRO_CORE_INFO("[gl_shader] Compiling shader id: {} - {}", shader, m_name);
+        PYRO_CORE_TRACE("[gl_shader] Compiling shader id: {} - {}", shader, m_name);
 
         const char *source_cstr = source.c_str();
         glShaderSource(shader, 1, &source_cstr, 0);
@@ -207,7 +207,7 @@ void pyro::gl_shader::compile(std::unordered_map<uint32_t, std::string> const &s
     for(auto id : shader_ids)
     {
         glDetachShader(program, id);
-        PYRO_CORE_INFO("[gl_shader] Deleted shader id:{} - '{}'", id, m_name);
+        PYRO_CORE_TRACE("[gl_shader] Deleted shader id:{} - '{}'", id, m_name);
         glDeleteShader(id);
     }
 }

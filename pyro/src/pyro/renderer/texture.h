@@ -31,9 +31,6 @@ namespace pyro
     //-------------------------------------------------------------------------
 
 
-// from glad.h GL_UNSIGNED_BYTE 0x1401
-#define UNSIGNED_BYTE 0x1401
-
     class PYRO_API texture
     {
     public:
@@ -50,8 +47,17 @@ namespace pyro
 
         virtual void bind(uint32_t slot = 0) const = 0;
 
-        virtual bool operator==(texture const &other) const = 0;
-        virtual bool operator!=(texture const &other) const = 0;
+    };
 
+    class PYRO_API texture_2d : public texture
+    {
+    public:
+        static ref<texture_2d> create(
+            uint32_t width,
+            uint32_t height,
+            texture_parameters const &params = texture_parameters());
+        static ref<texture_2d> create_from_file(
+            std::string const &path,
+            texture_parameters const &params = texture_parameters());
     };
 }

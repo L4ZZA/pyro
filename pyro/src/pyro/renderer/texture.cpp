@@ -1,14 +1,14 @@
 #include "pyro_pch.h"
-#include "pyro/renderer/texture_2d.h"
+#include "pyro/renderer/texture.h"
 
 #include "pyro/renderer/renderer.h"
-#include "platform/opengl/gl_texture_2d.h"
+#include "platform/opengl/gl_texture.h"
 
 
 pyro::ref<pyro::texture_2d>
 pyro::texture_2d::create(
-    uint32_t width, 
-    uint32_t height, 
+    uint32_t width,
+    uint32_t height,
     texture_parameters const &params /*= texture_parameters()*/)
 {
     switch(renderer::api())

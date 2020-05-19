@@ -1,5 +1,4 @@
 // --------- Entry Point ---------------
-#define 
 #include "pyro/core/entry_point.h"
 #include "layer_2d.h"
 
@@ -45,7 +44,6 @@ public:
             {
                 exit();
             }
-            //PYRO_TRACE("{0}", static_cast<char>(e.key_code())); 
         }
         return false;
     }

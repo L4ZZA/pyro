@@ -1,7 +1,7 @@
 ﻿#include "pyro_pch.h"
 #include "gl_frame_buffer_2d.h"
 #include "glad/glad.h"
-#include "gl_texture_2d.h"
+#include "gl_texture.h"
 
 pyro::gl_frame_buffer_2d::gl_frame_buffer_2d(uint32_t width, uint32_t height)
     : m_frame_buffer_id(0)

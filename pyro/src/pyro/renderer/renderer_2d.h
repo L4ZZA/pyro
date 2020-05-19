@@ -1,7 +1,7 @@
-﻿#pragma once
+#pragma once
 #include "pyro/renderer/shader.h"
 #include "pyro/renderer/camera.h"
-#include "pyro/renderer/texture_2d.h"
+#include "pyro/renderer/texture.h"
 
 namespace pyro
 {
@@ -30,19 +30,19 @@ namespace pyro
         // primitives
         static void draw_quad(quad_properties const& props);
 
-        static const uint32_t s_quad_vertices = 4;
+        static const uint32_t s_quad_vertex_count = 4;
         static const uint32_t s_quad_indices = 6;
-        static const uint32_t max_quads = 20000;
-        static const uint32_t max_vertices = max_quads * s_quad_vertices;
-        static const uint32_t max_indices = max_quads * s_quad_indices;
-        static const uint32_t max_texture_slots = 32;
+        static const uint32_t s_max_quads = 20000;
+        static const uint32_t s_max_vertices = s_max_quads * s_quad_vertex_count;
+        static const uint32_t s_max_indices = s_max_quads * s_quad_indices;
+        static const uint32_t s_max_texture_slots = 32;
             
         struct statistics {
 
             uint32_t draw_calls = 0;
             uint32_t quad_count = 0;
 
-            uint32_t total_vertex_count() const { return quad_count * s_quad_vertices; }
+            uint32_t total_vertex_count() const { return quad_count * s_quad_vertex_count; }
             uint32_t total_index_count() const { return quad_count * s_quad_indices; }
         };
 
@@ -51,5 +51,6 @@ namespace pyro
 
     private:
         static void reset_render_data();
-    };
+		static void flush_and_reset();
+	};
 }

@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "pyro/renderer/frame_buffer_2d.h"
-#include "pyro/renderer/texture_2d.h"
+#include "pyro/renderer/texture.h"
 
 namespace pyro
 {

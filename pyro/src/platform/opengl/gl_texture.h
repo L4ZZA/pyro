@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "pyro/renderer/texture_2d.h"
+#include "pyro/renderer/texture.h"
 
 namespace pyro
 {
@@ -17,9 +17,6 @@ namespace pyro
         uint32_t height() const override { return m_height; }
         std::string path() const override { return m_path; }
         uint32_t bytes_per_pixel() const override;
-        // Inherited via texture_2d
-        virtual bool operator==(texture const& other) const override;
-        virtual bool operator!=(texture const& other) const override;
 
     private:
         std::string m_path;
