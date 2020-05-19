@@ -264,7 +264,7 @@ pyro::debug::profiler_timer::stop()
 
 //---------------------------------------------
 
-#define PYRO_PROFILE 1
+#define PYRO_PROFILE 0
 #if PYRO_PROFILE
     // Resolve which function signature macro will be used. Note that this only
     // is resolved when the (pre)compiler starts, so the syntax highlighting
