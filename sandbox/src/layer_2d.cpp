@@ -248,7 +248,7 @@ void layer_2d::on_imgui_render()
 
     auto const& camera = m_2d_camera_controller.camera();
     ImGui::Text("-- Camera:");
-    ImGui::Text("- Position: [%f,%f,%f]", camera.position().x, camera.position().y, camera.position().z);
+    ImGui::Text("- Position: [%f,%f,%f]", camera->position().x, camera->position().y, camera->position().z);
     ImGui::Text("- Zoom: %f", m_2d_camera_controller.zoom_level());
     ImGui::Text("---------------------");
     

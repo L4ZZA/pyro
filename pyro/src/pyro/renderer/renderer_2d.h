@@ -21,7 +21,7 @@ namespace pyro
         static void init();
         static void shutdown();
 
-        static void begin_scene(camera &camera);
+        static void begin_scene(ref<camera> camera);
         static void end_scene();
         static void flush();
 

@@ -12,18 +12,18 @@ pyro::orthographic_camera_controller::orthographic_camera_controller(
     float zoom_level /*= 1.f*/, 
     bool rotation /*= false*/
     )
-    : m_zoom_speed(5.0f),
-    m_camera_rotation(0.f),
-    m_camera_translation_speed(1.0f),
-    m_camera_rotation_speed(180.0f),
-    m_aspect_ratio(aspect_ratio),
-    m_zoom_level(zoom_level),
-    m_rotation(rotation),
-    m_camera_position(position),
-    m_bounds{ -m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level },
-    m_camera(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top)
+    : m_zoom_speed(5.0f)
+    , m_camera_rotation(0.f)
+    , m_camera_translation_speed(1.0f)
+    , m_camera_rotation_speed(180.0f)
+    , m_aspect_ratio(aspect_ratio)
+    , m_zoom_level(zoom_level)
+    , m_rotation(rotation)
+    , m_camera_position(position)
+    , m_bounds{ -m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level }
 {
 	PYRO_PROFILE_FUNCTION();
+    m_camera = make_ref<orthographic_camera>(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top);
 }
 
 void pyro::orthographic_camera_controller::on_update(timestep ts)
@@ -46,10 +46,10 @@ void pyro::orthographic_camera_controller::on_update(timestep ts)
         else if(input::key_pressed(pyro::key_codes::KEY_E)) // down
             rotate(e_rotation::clock_wise, e_axis::z, ts);
 
-        m_camera.rotation({0.f,0.f,m_camera_rotation});
+        m_camera->rotation({0.f,0.f,m_camera_rotation});
     }
 
-    m_camera.position(m_camera_position);
+    m_camera->position(m_camera_position);
     m_camera_translation_speed = m_zoom_level;
 }
 
@@ -61,12 +61,8 @@ void pyro::orthographic_camera_controller::on_event(event &e)
     dispatcher.dispatch<window_resize_event>(BIND_EVENT_FN(orthographic_camera_controller::on_window_resized));
 }
 
-pyro::camera &pyro::orthographic_camera_controller::camera()
-{
-    return m_camera;
-}
-
-pyro::camera const &pyro::orthographic_camera_controller::camera() const
+pyro::ref<pyro::camera>
+pyro::orthographic_camera_controller::camera() const
 {
     return m_camera;
 }
@@ -88,7 +84,7 @@ void pyro::orthographic_camera_controller::calculate_view()
     m_bounds.right = m_aspect_ratio * m_zoom_level;
     m_bounds.bottom = -m_zoom_level;
     m_bounds.top = m_zoom_level;
-    m_camera.projection_matrix(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top);
+    m_camera->projection_matrix(m_bounds.left, m_bounds.right, m_bounds.bottom, m_bounds.top);
 }
 
 void pyro::orthographic_camera_controller::move(e_direction direction, timestep ts)
@@ -142,13 +138,13 @@ pyro::perspective_camera_controller::perspective_camera_controller(
     float width, float height,
     float fov,
     float near_z, float far_z)
-    : m_camera(width, height, fov, near_z, far_z),
-    m_camera_translation_speed(2.5f),
-    m_camera_rotation_speed(90.0f)
+    : m_camera_translation_speed(2.5f)
+    , m_camera_rotation_speed(90.0f)
 {
 	PYRO_PROFILE_FUNCTION();
-    m_camera_position = m_camera.position();
-    m_camera_rotation = m_camera.rotation();
+    m_camera = make_ref<perspective_camera>(width, height, fov, near_z, far_z);
+    m_camera_position = m_camera->position();
+    m_camera_rotation = m_camera->rotation();
     s_control_type = control_type;
     if(s_control_type == e_control_type::first_person)
         application::window().hide_mouse_cursor();
@@ -170,7 +166,7 @@ void pyro::perspective_camera_controller::on_update(timestep ts)
     auto [mouse_delta_x, mouse_delta_y] = input::mouse_position();
     process_mouse(s_control_type, mouse_delta_x, mouse_delta_y);
 
-    m_camera.update_camera_vectors();
+    m_camera->update_camera_vectors();
 
 }
 
@@ -179,12 +175,8 @@ void pyro::perspective_camera_controller::on_event(event &e)
 	PYRO_PROFILE_FUNCTION();
 }
 
-pyro::camera &pyro::perspective_camera_controller::camera()
-{
-    return m_camera;
-}
-
-pyro::camera const &pyro::perspective_camera_controller::camera() const
+pyro::ref<pyro::camera>
+pyro::perspective_camera_controller::camera() const
 {
     return m_camera;
 }
@@ -192,12 +184,12 @@ pyro::camera const &pyro::perspective_camera_controller::camera() const
 void pyro::perspective_camera_controller::zoom_level(float level)
 {
     // TODO: some how translate to degrees.
-    m_camera.fov(level);
+    m_camera->fov(level);
 }
 
 float pyro::perspective_camera_controller::zoom_level() const
 {
-    return m_camera.fov();
+    return m_camera->fov();
 }
 
 void pyro::perspective_camera_controller::process_mouse(
@@ -239,7 +231,7 @@ void pyro::perspective_camera_controller::process_mouse_delta(
             pitch = -pitch_limit;
     }
 
-    m_camera.rotation(m_camera_rotation);
+    m_camera->rotation(m_camera_rotation);
 }
 
 void pyro::perspective_camera_controller::process_mouse_panning(float mouse_x, float mouse_y)
@@ -250,24 +242,24 @@ void pyro::perspective_camera_controller::process_mouse_panning(float mouse_x, f
 void pyro::perspective_camera_controller::move(perspective_camera::e_direction direction, timestep ts)
 {
 	PYRO_PROFILE_FUNCTION();
-    //m_camera.move(direction, ts);
+    //m_camera->move(direction, ts);
     if(direction == perspective_camera::forward)
-        m_camera_position += m_camera_translation_speed * ts * m_camera.front();
+        m_camera_position += m_camera_translation_speed * ts * m_camera->front();
     else if(direction == perspective_camera::backward)
-        m_camera_position -= m_camera_translation_speed * ts * m_camera.front();
+        m_camera_position -= m_camera_translation_speed * ts * m_camera->front();
 
     if(direction == perspective_camera::left)
-        m_camera_position -= m_camera_translation_speed * ts * glm::normalize(cross(m_camera.front(), m_camera.up()));
+        m_camera_position -= m_camera_translation_speed * ts * glm::normalize(cross(m_camera->front(), m_camera->up()));
     else if(direction == perspective_camera::right)
-        m_camera_position += m_camera_translation_speed * ts * glm::normalize(cross(m_camera.front(), m_camera.up()));
+        m_camera_position += m_camera_translation_speed * ts * glm::normalize(cross(m_camera->front(), m_camera->up()));
 
-    m_camera.position(m_camera_position);
+    m_camera->position(m_camera_position);
 }
 
 void pyro::perspective_camera_controller::rotate(perspective_camera::e_rotation rotation, perspective_camera::e_axis rotation_axis, timestep ts)
 {
 	PYRO_PROFILE_FUNCTION();
-    //m_camera.rotate(rotation, rotation_axis, ts);
+    //m_camera->rotate(rotation, rotation_axis, ts);
     float *angle_ref = nullptr;
     switch(rotation_axis)
     {
@@ -298,5 +290,5 @@ void pyro::perspective_camera_controller::rotate(perspective_camera::e_rotation 
         }
     }
 
-    m_camera.rotation(m_camera_rotation);
+    m_camera->rotation(m_camera_rotation);
 }

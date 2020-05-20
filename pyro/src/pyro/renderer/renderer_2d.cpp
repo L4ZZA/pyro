@@ -107,12 +107,12 @@ void pyro::renderer_2d::shutdown()
     delete[] s_data.quad_vertex_buffer_base;
 }
 
-void pyro::renderer_2d::begin_scene(camera &camera)
+void pyro::renderer_2d::begin_scene(ref<camera> camera)
 {
     PYRO_PROFILE_FUNCTION();
     s_data.texture_shader->bind();
     s_data.texture_shader->set_mat4("u_view_projection", 
-        camera.view_projection_matrix());
+        camera->view_projection_matrix());
 
     reset_render_data();
 }
