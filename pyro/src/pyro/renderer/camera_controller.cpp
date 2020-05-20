@@ -8,8 +8,8 @@
 
 pyro::orthographic_camera_controller::orthographic_camera_controller(
     glm::vec3 const &position,
-    float aspect_ratio, 
-    float zoom_level /*= 1.f*/, 
+    float aspect_ratio,
+    float zoom_level /*= 1.f*/,
     bool rotation /*= false*/
     )
     : m_zoom_speed(5.0f)
