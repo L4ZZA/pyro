@@ -125,6 +125,7 @@ project "sandbox"
 
     includedirs
     {
+        "%{prj.name}/src/",
         "pyro/external/spdlog/include",
         "pyro/src",
         "pyro/external",
