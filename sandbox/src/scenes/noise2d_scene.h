@@ -8,24 +8,20 @@ enum class e_noise_type
     two_d
 };
 
-class noise1d_scene final : public pyro::scene
+class noise2d_scene final : public pyro::scene
 {
 public:
-    noise1d_scene(pyro::ref<pyro::camera> const &camera);
-    virtual ~noise1d_scene();
+    noise2d_scene(pyro::ref<pyro::camera> const &camera);
+    virtual ~noise2d_scene();
 
     void init();
     void on_update(pyro::timestep const &ts);
-    void on_render_internal() const;
+    void on_render_internal() const override;
     bool on_key_pressed(pyro::key_pressed_event &event);
 
 private:
     glm::vec4 color_map(float noise) const;
     void reset_noise_seed(e_noise_type const &noise_type);
-
-private:
-    pyro::ref<pyro::camera> m_camera;
-
 
     int width = s_texture_size;
     int height = s_texture_size / 4;

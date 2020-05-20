@@ -1,18 +1,18 @@
-#include "scenes/noise1d_scene.h"
+#include "scenes/noise2d_scene.h"
 
 #include "utils/noise.h"
 #include "utils/random.h"
 
-noise1d_scene::noise1d_scene(pyro::ref<pyro::camera> const &camera)
+noise2d_scene::noise2d_scene(pyro::ref<pyro::camera> const &camera)
     : scene(camera)
 {
 }
 
-noise1d_scene::~noise1d_scene()
+noise2d_scene::~noise2d_scene()
 {
 }
 
-void noise1d_scene::init()
+void noise2d_scene::init()
 {
     utils::random::init(m_seed);
 
@@ -32,7 +32,7 @@ void noise1d_scene::init()
     m_seed_changed = true;
 }
 
-void noise1d_scene::on_update(pyro::timestep const &ts)
+void noise2d_scene::on_update(pyro::timestep const &ts)
 {
     if(m_seed_changed)
     {
@@ -86,62 +86,62 @@ void noise1d_scene::on_update(pyro::timestep const &ts)
     }
 }
 
-void noise1d_scene::on_render_internal() const
+void noise2d_scene::on_render_internal() const
 {
-    for (int x = 0; x < width; x += step)
+    //for (int x = 0; x < width; x += step)
+    //{
+    //    float rect_heigth = (m_noise_1d[x] * (float)rect_heigth_max / 2.0f) + (float)rect_heigth_max / 2.0f;
+    //    //float rect_heigth = m_noise_1d.at(x);
+    //    pyro::quad_properties props;
+    //    props.color = { 1.f, 0.0f, 0.0, 0.7f };
+    //    float x_pos = x - (x * gap_width);
+    //    float y_offset = (rect_heigth / 2) + 0.5;
+    //    props.position = { x_pos, y_offset - rect_heigth_max, 0.f };
+    //    props.size = { line_rect_width, rect_heigth };
+    //    pyro::renderer_2d::draw_quad(props);
+    //}
+
+    for(int y = 0; y < s_texture_size; y += step)
+        for(int x = 0; x < s_texture_size; x += step)
+        {
+            //float rect_heigth = m_noise_1d.at(x);
+            pyro::quad_properties props;
+            uint32_t index = y * s_texture_size + x;
+            float noise1 = m_noise_2d[index];
+            float noise2 = m_vendor_noise_2d[index];
+
+            props.color = color_map(noise1);
+            //props.color = { noise ,noise ,noise, 1.f };
+            props.position = { x * (rect_width), y * (rect_width), 0.0f };
+            props.size = { rect_width, rect_width };
+            pyro::renderer_2d::draw_quad(props);
+
+            props.position = { -x * (rect_width),  y * (rect_width), 0.0f };
+            props.color = color_map(noise2);
+            pyro::renderer_2d::draw_quad(props);
+        }
+
+    pyro::renderer_2d::current_shader()->set_int("u_grayscale", true);
     {
-        float rect_heigth = (m_noise_1d[x] * (float)rect_heigth_max / 2.0f) + (float)rect_heigth_max / 2.0f;
-        //float rect_heigth = m_noise_1d.at(x);
         pyro::quad_properties props;
-        props.color = { 1.f, 0.0f, 0.0, 0.7f };
-        float x_pos = x - (x * gap_width);
-        float y_offset = (rect_heigth / 2) + 0.5;
-        props.position = { x_pos, y_offset - rect_heigth_max, 0.f };
-        props.size = { line_rect_width, rect_heigth };
+        props.position = { rect_width * s_texture_size * 1.5f, rect_width * s_texture_size * .5f, 0.1f };
+        props.color = { 1.f, 1.0f, 1.f, 1.f };
+        props.size = { rect_width * s_texture_size, rect_width * s_texture_size };
+        props.texture = m_noise_texture;
         pyro::renderer_2d::draw_quad(props);
     }
-
-    //for(int y = 0; y < s_texture_size; y += step)
-    //    for(int x = 0; x < s_texture_size; x += step)
-    //    {
-    //        //float rect_heigth = m_noise_1d.at(x);
-    //        pyro::quad_properties props;
-    //        uint32_t index = y * s_texture_size + x;
-    //        float noise1 = m_noise_2d[index];
-    //        float noise2 = m_vendor_noise_2d[index];
-
-    //        props.color = color_map(noise1);
-    //        //props.color = { noise ,noise ,noise, 1.f };
-    //        props.position = { x * (rect_width), y * (rect_width), 0.0f };
-    //        props.size = { rect_width, rect_width };
-    //        pyro::renderer_2d::draw_quad(props);
-
-    //        props.position = { -x * (rect_width),  y * (rect_width), 0.0f };
-    //        props.color = color_map(noise2);
-    //        pyro::renderer_2d::draw_quad(props);
-    //    }
-
-    //pyro::renderer_2d::current_shader()->set_int("u_grayscale", true);
-    //{
-    //    pyro::quad_properties props;
-    //    props.position = { rect_width * s_texture_size * 1.5f, rect_width * s_texture_size * .5f, 0.1f };
-    //    props.color = { 1.f, 1.0f, 1.f, 1.f };
-    //    props.size = { rect_width * s_texture_size, rect_width * s_texture_size };
-    //    props.texture = m_noise_texture;
-    //    pyro::renderer_2d::draw_quad(props);
-    //}
-    //{
-    //    pyro::quad_properties props;
-    //    props.position = { -rect_width * s_texture_size * 1.5f, rect_width * s_texture_size * .5f, 0.1f };
-    //    props.color = { 1.f, 1.0f, 1.f, 1.f };
-    //    props.size = { rect_width * s_texture_size, rect_width * s_texture_size };
-    //    props.texture = m_my_texture;
-    //    pyro::renderer_2d::draw_quad(props);
-    //}
+    {
+        pyro::quad_properties props;
+        props.position = { -rect_width * s_texture_size * 1.5f, rect_width * s_texture_size * .5f, 0.1f };
+        props.color = { 1.f, 1.0f, 1.f, 1.f };
+        props.size = { rect_width * s_texture_size, rect_width * s_texture_size };
+        props.texture = m_my_texture;
+        pyro::renderer_2d::draw_quad(props);
+    }
 }
 
 
-bool noise1d_scene::on_key_pressed(pyro::key_pressed_event &event)
+bool noise2d_scene::on_key_pressed(pyro::key_pressed_event &event)
 {
     if(event.event_type() == pyro::event_type_e::key_pressed)
     {
@@ -185,7 +185,7 @@ bool noise1d_scene::on_key_pressed(pyro::key_pressed_event &event)
     return false;
 }
 
-glm::vec4 noise1d_scene::color_map(float noise) const
+glm::vec4 noise2d_scene::color_map(float noise) const
 {
     glm::vec4 color;
 
@@ -210,7 +210,7 @@ glm::vec4 noise1d_scene::color_map(float noise) const
     return color;
 }
 
-void noise1d_scene::reset_noise_seed(e_noise_type const &noise_type)
+void noise2d_scene::reset_noise_seed(e_noise_type const &noise_type)
 {
     switch(noise_type)
     {
