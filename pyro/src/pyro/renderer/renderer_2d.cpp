@@ -120,7 +120,7 @@ void pyro::renderer_2d::begin_scene(ref<camera> camera)
 void pyro::renderer_2d::end_scene()
 {
     PYRO_PROFILE_FUNCTION();
-    
+
     // reinterpret_cast converts one pointer to another without changing 
     // the address, or converts between pointers and their numerical 
     // (integer) values
@@ -130,7 +130,7 @@ void pyro::renderer_2d::end_scene()
         reinterpret_cast<uint8_t*>(s_data.quad_vertex_buffer_base);
     uint32_t data_size = 
         static_cast<uint32_t>(next_available_slot - full_array_size);
-    s_data.quad_vertex_buffer->data(s_data.quad_vertex_buffer_base, data_size); 
+    s_data.quad_vertex_buffer->data(s_data.quad_vertex_buffer_base, data_size);
 
     flush();
 }
@@ -149,7 +149,7 @@ void pyro::renderer_2d::flush()
     s_data.stats.draw_calls++;
 }
 
-pyro::ref<pyro::shader> pyro::renderer_2d::current_shader()
+pyro::ref<pyro::shader> const &pyro::renderer_2d::current_shader()
 {
     return s_data.texture_shader;
 }

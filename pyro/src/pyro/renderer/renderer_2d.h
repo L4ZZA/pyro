@@ -16,16 +16,16 @@ namespace pyro
     };
 
     class PYRO_API renderer_2d
-    {
-    public:
-        static void init();
-        static void shutdown();
+	{
+	public:
+		static void init();
+		static void shutdown();
 
         static void begin_scene(ref<camera> camera);
         static void end_scene();
         static void flush();
 
-        static ref<shader> current_shader();
+        static ref<shader> const& current_shader();
 
         // primitives
         static void draw_quad(quad_properties const& props);
