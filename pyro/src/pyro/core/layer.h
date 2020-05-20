@@ -21,7 +21,7 @@ namespace pyro
 		/// Should happen every frame.
 		virtual void on_update(const timestep& timestep) {}
 		/// \brief Render method specific to imgui.
-		virtual void on_imgui_render() {}
+		virtual void on_render() const {}
 		/// \brief Runs whenever an event gets sent to the layer.
 		virtual void on_event(event& event) {}
 

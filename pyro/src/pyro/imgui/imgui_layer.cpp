@@ -61,6 +61,11 @@ void pyro::imgui_layer::on_detach()
     ImGui::DestroyContext();
 }
 
+void pyro::imgui_layer::on_render() const
+{
+
+}
+
 void pyro::imgui_layer::on_imgui_render()
 {
     static bool show = true;

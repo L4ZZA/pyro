@@ -184,23 +184,26 @@ void layer_2d::on_imgui_render()
     }
     pyro::renderer_2d::current_shader()->set_int("u_grayscale", true);
     {
-        pyro::quad_properties props;
-        props.position = { rect_width * s_texture_size * 1.5f, rect_width * s_texture_size * .5f, 0.1f };
-        props.color = { 1.f, 1.0f, 1.f, 1.f };
-        props.size = { rect_width * s_texture_size, rect_width * s_texture_size };
-        props.texture = m_noise_texture;
-        pyro::renderer_2d::draw_quad(props);
-    }
-    {
-        pyro::quad_properties props;
-        props.position = { -rect_width * s_texture_size * 1.5f, rect_width * s_texture_size * .5f, 0.1f };
-        props.color = { 1.f, 1.0f, 1.f, 1.f };
-        props.size = { rect_width * s_texture_size, rect_width * s_texture_size };
-        props.texture = m_my_texture;
-        pyro::renderer_2d::draw_quad(props);
-    }
-    pyro::renderer_2d::end_scene();
+            pyro::quad_properties props;
+            props.position = { rect_width * s_texture_size * 1.5f, rect_width * s_texture_size * .5f, 0.1f };
+            props.color = { 1.f, 1.0f, 1.f, 1.f };
+            props.size = { rect_width * s_texture_size, rect_width * s_texture_size };
+            props.texture = m_noise_texture;
+            pyro::renderer_2d::draw_quad(props);
+        }
+        {
+            pyro::quad_properties props;
+            props.position = { -rect_width * s_texture_size * 1.5f, rect_width * s_texture_size * .5f, 0.1f };
+            props.color = { 1.f, 1.0f, 1.f, 1.f };
+            props.size = { rect_width * s_texture_size, rect_width * s_texture_size };
+            props.texture = m_my_texture;
+            pyro::renderer_2d::draw_quad(props);
+        }
+        pyro::renderer_2d::end_scene();
+}
 
+void layer_2d::on_imgui_render()
+{
     ImGui::Begin("Settings");
 
     //ImGui::ColorEdit3("Squares color", glm::value_ptr(m_rect_color));

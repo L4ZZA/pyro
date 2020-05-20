@@ -54,6 +54,10 @@ void pyro::application::run()
                     layer->on_update(timestep);
                 }
 
+                {
+                    layer->on_render();
+                    PYRO_PROFILE_SCOPE("layer_stack - on_render");
+                }
                 if(layer->is_imgui())
                 {
                     auto const &imgui_layer = std::dynamic_pointer_cast<pyro::imgui_layer>(layer);
