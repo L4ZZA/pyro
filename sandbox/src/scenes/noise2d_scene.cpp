@@ -92,19 +92,6 @@ void noise2d_scene::on_update(pyro::timestep const &ts)
 
 void noise2d_scene::on_render_internal() const
 {
-    //for (int x = 0; x < width; x += step)
-    //{
-    //    float rect_heigth = (m_noise_1d[x] * (float)rect_heigth_max / 2.0f) + (float)rect_heigth_max / 2.0f;
-    //    //float rect_heigth = m_noise_1d.at(x);
-    //    pyro::quad_properties props;
-    //    props.color = { 1.f, 0.0f, 0.0, 0.7f };
-    //    float x_pos = x - (x * gap_width);
-    //    float y_offset = (rect_heigth / 2) + 0.5;
-    //    props.position = { x_pos, y_offset - rect_heigth_max, 0.f };
-    //    props.size = { line_rect_width, rect_heigth };
-    //    pyro::renderer_2d::draw_quad(props);
-    //}
-
     for(int y = 0; y < s_texture_size; y += step)
         for(int x = 0; x < s_texture_size; x += step)
         {
