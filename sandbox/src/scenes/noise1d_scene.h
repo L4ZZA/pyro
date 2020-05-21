@@ -1,12 +1,7 @@
 #pragma once
 #include "pyro.h"
+#include "utils/noise.h"
 #include "utils/perlin_noise.h"
-
-enum class e_noise_type
-{
-    one_d,
-    two_d
-};
 
 class noise1d_scene final : public pyro::scene
 {
@@ -14,12 +9,14 @@ public:
     noise1d_scene(pyro::ref<pyro::camera> const &camera);
     virtual ~noise1d_scene();
 
-    void init();
-    void on_update(pyro::timestep const &ts);
-    void on_render_internal() const;
-    bool on_key_pressed(pyro::key_pressed_event &event);
+    void init() override;
+    void deinit() override;
+    void on_update(pyro::timestep const &ts) override;
+    void on_render_internal() const override;
+    void on_event(pyro::event &e) override;
 
 private:
+    bool on_key_pressed(pyro::key_pressed_event &e);
     glm::vec4 color_map(float noise) const;
     void reset_noise_seed(e_noise_type const &noise_type);
 

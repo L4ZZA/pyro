@@ -1,5 +1,6 @@
 #pragma once
-#include <pyro\renderer\camera.h>
+#include <pyro/events/event.h>
+#include <pyro/renderer/camera.h>
 
 namespace pyro
 {
@@ -12,8 +13,10 @@ namespace pyro
         virtual ~scene() = default;
 
         virtual void init() = 0;
+        virtual void deinit() = 0;
         virtual void on_update(pyro::timestep const &ts) = 0;
         virtual void on_render() const;
+        virtual void on_event(pyro::event &e) = 0;
 
     protected:
         // this method will be called after between the scene setup calls.

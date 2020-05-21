@@ -32,6 +32,10 @@ void noise2d_scene::init()
     m_seed_changed = true;
 }
 
+void noise2d_scene::deinit()
+{
+}
+
 void noise2d_scene::on_update(pyro::timestep const &ts)
 {
     if(m_seed_changed)
@@ -140,32 +144,38 @@ void noise2d_scene::on_render_internal() const
     }
 }
 
-
-bool noise2d_scene::on_key_pressed(pyro::key_pressed_event &event)
+void noise2d_scene::on_event(pyro::event &e)
 {
-    if(event.event_type() == pyro::event_type_e::key_pressed)
+    pyro::event_dispatcher dispatcher(e);
+    dispatcher.dispatch<pyro::key_pressed_event>(BIND_EVENT_FN(noise2d_scene::on_key_pressed));
+}
+
+
+bool noise2d_scene::on_key_pressed(pyro::key_pressed_event &e)
+{
+    if(e.event_type() == pyro::event_type_e::key_pressed)
     {
-        if(event.key_code() == pyro::key_codes::KEY_Q)
+        if(e.key_code() == pyro::key_codes::KEY_Q)
         {
             m_seed--;
             m_seed_changed = true;
         }
-        else if(event.key_code() == pyro::key_codes::KEY_E)
+        else if(e.key_code() == pyro::key_codes::KEY_E)
         {
             m_seed++;
             m_seed_changed = true;
         }
-        if(event.key_code() == pyro::key_codes::KEY_DOWN)
+        if(e.key_code() == pyro::key_codes::KEY_DOWN)
         {
             m_octaves--;
             m_noise_changed = true;
         }
-        else if(event.key_code() == pyro::key_codes::KEY_UP)
+        else if(e.key_code() == pyro::key_codes::KEY_UP)
         {
             m_octaves++;
             m_noise_changed = true;
         }
-        if(event.key_code() == pyro::key_codes::KEY_LEFT)
+        if(e.key_code() == pyro::key_codes::KEY_LEFT)
         {
             if(m_bias > 0.2f)
             {
@@ -173,7 +183,7 @@ bool noise2d_scene::on_key_pressed(pyro::key_pressed_event &event)
                 m_noise_changed = true;
             }
         }
-        else if(event.key_code() == pyro::key_codes::KEY_RIGHT)
+        else if(e.key_code() == pyro::key_codes::KEY_RIGHT)
         {
             m_bias += 0.2f;
             m_noise_changed = true;

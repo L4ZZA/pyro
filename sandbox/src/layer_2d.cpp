@@ -1,5 +1,7 @@
 #include "layer_2d.h"
 #include "imgui/imgui.h"
+#include "scenes/noise1d_scene.h" 
+#include "scenes/noise2d_scene.h" 
 
 
 layer_2d::layer_2d(float width, float height)
@@ -7,7 +9,8 @@ layer_2d::layer_2d(float width, float height)
     , m_2d_camera_controller({ 0.f,0.f,0.f }, width / height, 10.f)
 {
     auto cam = m_2d_camera_controller.camera();
-    m_scene1 = pyro::make_ref<noise1d_scene>(cam);
+    m_scenes.push_back(pyro::make_ref<noise1d_scene>(cam));
+    m_scenes.push_back(pyro::make_ref<noise2d_scene>(cam));
 }
 
 layer_2d::~layer_2d()
@@ -19,12 +22,16 @@ void layer_2d::on_attach()
 {
     PYRO_PROFILE_FUNCTION();
     imgui_layer::on_attach();
-    m_scene1->init();
+    m_current_scene_index = 0;
+    for(auto scene : m_scenes)
+        scene->init();
 }
 
 void layer_2d::on_detach()
 {
     PYRO_PROFILE_FUNCTION();
+    for(auto &scene : m_scenes)
+        scene->deinit();
 }
 
 void layer_2d::on_update(const pyro::timestep &ts)
@@ -32,7 +39,7 @@ void layer_2d::on_update(const pyro::timestep &ts)
     // Update
     PYRO_PROFILE_FUNCTION();
     m_2d_camera_controller.on_update(ts);
-    m_scene1->on_update(ts);
+    m_scenes[m_current_scene_index]->on_update(ts);
 }
 
 void layer_2d::on_render() const
@@ -41,23 +48,13 @@ void layer_2d::on_render() const
     {
         // Render
         PYRO_PROFILE_SCOPE("layer_2d::render");
-        m_scene1->on_render();
+        m_scenes[m_current_scene_index]->on_render();
     }
 }
 
 void layer_2d::on_imgui_render()
 {
     ImGui::Begin("Settings");
-
-    //ImGui::ColorEdit3("Squares color", glm::value_ptr(m_rect_color));
-    //for (auto& result : m_profile_results)
-    //{
-    //    char label[50];
-    //    strcpy_s(label, "%.3fms ");
-    //    strcat_s(label, result.name);
-    //    ImGui::Text(label, result.time);
-    //}
-    //m_profile_results.clear();
 
     auto stats = pyro::renderer_2d::stats();
     ImGui::Text("-- 2D Renderer stats:");
@@ -104,10 +101,26 @@ void layer_2d::on_imgui_render()
 void layer_2d::on_event(pyro::event &e)
 {
     m_2d_camera_controller.on_event(e);
-
-
     pyro::event_dispatcher dispatcher(e);
     // dispatch event on window X pressed 
-    //dispatcher.dispatch<pyro::key_pressed_event>(BIND_EVENT_FN(noise1d_scene::on_key_pressed));
+    dispatcher.dispatch<pyro::key_pressed_event>([&](pyro::key_pressed_event ev) {
+
+        switch(ev.key_code())
+        {
+        case pyro::key_codes::KEY_1: 
+            m_current_scene_index = 0; 
+            break;
+        case pyro::key_codes::KEY_2: 
+            m_current_scene_index = 1; 
+            break;
+        }
+        // clamp to last scene
+        if(m_current_scene_index > m_scenes.size())
+            m_current_scene_index = m_scenes.size() - 1;
+
+        m_scenes[m_current_scene_index]->on_event(ev);
+        // return if event is handled or not
+        return false;
+    });
 }
 

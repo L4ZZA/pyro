@@ -20,7 +20,7 @@ namespace pyro
         virtual ~application();
 
         /// \brief
-        virtual void on_event(event &event);
+        virtual void on_event(event &e);
 
         /// \brief Adds a layer to the stack.
         void push_layer(ref<layer> const &layer);

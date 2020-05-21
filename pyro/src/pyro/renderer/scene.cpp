@@ -1,5 +1,5 @@
 #include "pyro_pch.h"
-#include "scene.h"
+#include "pyro/renderer/scene.h"
 #include "pyro/renderer/renderer_2d.h"
 #include "pyro/renderer/render_command.h"
 

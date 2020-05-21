@@ -27,23 +27,20 @@ public:
     {
     }
 
-    void on_event(pyro::event &event) override
+    void on_event(pyro::event &e) override
     {
-        application::on_event(event);
+        application::on_event(e);
 
-        pyro::event_dispatcher dispatcher(event);
+        pyro::event_dispatcher dispatcher(e);
         // dispatch event on window X pressed 
         dispatcher.dispatch<pyro::key_pressed_event>(BIND_EVENT_FN(sandbox_app::on_key_pressed));
     }
 
-    bool on_key_pressed(pyro::key_pressed_event &event)
+    bool on_key_pressed(pyro::key_pressed_event &e)
     {
-        if(event.event_type() == pyro::event_type_e::key_pressed)
+        if(e.key_code() == pyro::key_codes::KEY_ESCAPE)
         {
-            if(event.key_code() == pyro::key_codes::KEY_ESCAPE)
-            {
-                exit();
-            }
+            exit();
         }
         return false;
     }

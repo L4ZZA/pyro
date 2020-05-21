@@ -1,6 +1,12 @@
 #pragma once
 #include <array>
 
+enum class e_noise_type
+{
+    one_d,
+    two_d
+};
+
 namespace utils
 {
 
