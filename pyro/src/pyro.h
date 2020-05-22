@@ -6,6 +6,7 @@
 #include "pyro/core/layer.h"
 #include "pyro/core/logger.h"
 
+#include "pyro/core/timer.h"
 #include "pyro/core/timestep.h"
 
 #include "pyro/core/input.h"

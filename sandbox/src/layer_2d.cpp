@@ -64,6 +64,9 @@ void layer_2d::on_imgui_render()
 
     auto stats = pyro::renderer_2d::stats();
     ImGui::Text("-- 2D Renderer stats:");
+    ImGui::Text("- Frame time: %f", pyro::application::frame_time());
+    ImGui::Text("- FPS: %d/s", pyro::application::fps());
+    ImGui::Text("- UPS: %d/s", pyro::application::ups());
     ImGui::Text("- Draw calls: %d", stats.draw_calls);
     ImGui::Text("- Quads: %d", stats.quad_count);
     ImGui::Text("- Vertices: %d", stats.total_vertex_count());

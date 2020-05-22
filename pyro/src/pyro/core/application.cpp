@@ -3,6 +3,7 @@
 
 #include "platform/opengl/gl_shader.h"
 #include "pyro/renderer/renderer.h"
+#include "pyro/core/timer.h"
 #include "GLFW/glfw3.h"
 
 //----------------------------------------------------------------------------- 
@@ -38,25 +39,39 @@ pyro::application::~application()
 void pyro::application::run()
 {
     PYRO_PROFILE_FUNCTION();
+
+    m_timer = new timer();
+    float tot_time = 0.f;
+    uint32_t frames = 0;
+    uint32_t updates = 0;
+
     while(s_running)
     {
         PYRO_PROFILE_SCOPE("run loop");
-        float time = static_cast<float>(glfwGetTime()); //  platform independent
-        timestep timestep = time - m_last_frame_time;
-        m_last_frame_time = time;
-
+        timestep timestep(m_timer->elapsed());
+        tot_time += timestep;
+        
         if(!s_minimized)
         {
+            // Total time spent for all layers to be rendered
+            float tot_frame_time = 0.f;
+            // Total time spent for all layers to be updated
+            float tot_update_time = 0.f;
+
             for(auto &layer : m_layers_stack)
             {
                 {
-                    PYRO_PROFILE_SCOPE("layer_stack - on_update");
+                    timer update_time;
                     layer->on_update(timestep);
+                    tot_update_time += update_time.elapsed();
+                    updates++;
                 }
-
                 {
+                    timer frame_time;
                     layer->on_render();
-                    PYRO_PROFILE_SCOPE("layer_stack - on_render");
+                    m_frame_time = frame_time.elapsed();
+                    tot_frame_time += m_frame_time;
+                    frames++;
                 }
                 if(layer->is_imgui())
                 {
@@ -64,15 +79,25 @@ void pyro::application::run()
                     PYRO_CORE_ASSERT(imgui_layer, "imgui_layer couldn't be cast!");
                     imgui_layer->begin();
                     {
-                        PYRO_PROFILE_SCOPE("layer_stack - on_imgui_render");
                         imgui_layer->on_imgui_render();
                     }
                     imgui_layer->end();
                 }
             }
+            tot_time += tot_frame_time;
+            tot_time += tot_update_time;
         }
 
         m_window->on_update();
+
+        if(tot_time > 1.0f)
+        {
+            m_FramesPerSecond = frames;
+            m_UpdatesPerSecond = updates;
+            frames = 0;
+            updates = 0;
+            tot_time -= 1.0f;
+        }
     }
 }
 

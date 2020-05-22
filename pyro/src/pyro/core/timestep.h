@@ -6,6 +6,7 @@ namespace pyro
     class PYRO_API timestep final
     {
     public:
+        // Takes the starting time in seconds
         timestep(float time = 0.f) 
             :m_time(time)
         {}
