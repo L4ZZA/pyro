@@ -73,7 +73,6 @@ void pyro::win_window::init(window_props const &props)
     // we're telling glfw to pass the window_data struct to all the defined callbacks
     // so that we can work with our defined data.
     glfwSetWindowUserPointer(m_window, &m_data);
-    vsync(true);
 
     // GLFW callbacks
     glfwSetWindowSizeCallback(m_window, [](GLFWwindow *window, int32_t width, int32_t height)
