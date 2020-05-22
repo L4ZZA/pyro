@@ -1,10 +1,10 @@
 #include "scenes/noise2d_scene.h"
-
+#include "imgui/imgui.h"
 #include "utils/noise.h"
 #include "utils/random.h"
 
 noise2d_scene::noise2d_scene(pyro::ref<pyro::camera> const &camera)
-    : scene(camera)
+    : base_noise_scene(camera)
 {
 }
 
@@ -14,8 +14,6 @@ noise2d_scene::~noise2d_scene()
 
 void noise2d_scene::init()
 {
-    utils::random::init(m_seed);
-
     {
         pyro::texture_parameters params;
         params.format = pyro::e_texture_format::red;
@@ -29,7 +27,7 @@ void noise2d_scene::init()
         m_my_texture = pyro::texture_2d::create(s_texture_size, s_texture_size, params);
     }
 
-    m_seed_changed = true;
+    on_seed_changed();
 }
 
 void noise2d_scene::deinit()
@@ -38,14 +36,6 @@ void noise2d_scene::deinit()
 
 void noise2d_scene::on_update(pyro::timestep const &ts)
 {
-    if(m_seed_changed)
-    {
-        reset_noise_seed(e_noise_type::one_d);
-        reset_noise_seed(e_noise_type::two_d);
-        m_other_noise.change_seed(m_seed);
-        m_noise_changed = true;
-        m_seed_changed = false;
-    }
     if(m_noise_changed)
     {
         m_noise_changed = false;
@@ -56,9 +46,6 @@ void noise2d_scene::on_update(pyro::timestep const &ts)
         if(m_bias < 0.2f)
             m_bias = 0.2f;
 
-        utils::perlin_noise_1d(
-            s_texture_size, 
-            m_octaves, m_bias, m_noise1d_seed.data(), m_noise_1d.data());
         utils::perlin_noise_2d(
             s_texture_size, 
             m_octaves, m_bias, m_noise2d_seed.data(), m_noise_2d.data());
@@ -107,7 +94,7 @@ void noise2d_scene::on_render_internal() const
             props.size = { rect_width, rect_width };
             pyro::renderer_2d::draw_quad(props);
 
-            props.position = { -x * (rect_width),  y * (rect_width), 0.0f };
+            props.position = { - (s_texture_size * step) + x * (rect_width),  y * (rect_width), 0.0f };
             props.color = color_map(noise2);
             pyro::renderer_2d::draw_quad(props);
         }
@@ -131,6 +118,31 @@ void noise2d_scene::on_render_internal() const
     }
 }
 
+void noise2d_scene::on_imgui_render()
+{
+    ImGui::Text("- Octaves: ");
+    ImGui::SameLine();
+    m_noise_changed |= ImGui::SliderInt("##octaves", &m_octaves, 1, 8);
+    ImGui::Text("- Bias: ");
+    ImGui::SameLine();
+    m_noise_changed |= ImGui::SliderFloat("##bias", &m_bias, 0.1f, 2.f);
+
+    ImGui::Text("- Scale: ");
+    ImGui::SameLine();
+    m_noise_changed |= ImGui::SliderInt("##scale", &m_scale, 1, 100);
+    ImGui::Text("- Morph: ");
+    ImGui::SameLine();
+    m_noise_changed |= ImGui::SliderFloat("##morph", &m_morph, 0.1f, 50.f);
+    ImGui::Text("- Move x: ");
+    ImGui::SameLine();
+    m_noise_changed |= ImGui::SliderFloat("##move_x", &m_move_x, -50.f, 50.f);
+    ImGui::Text("- Move y: ");
+    ImGui::SameLine();
+    m_noise_changed |= ImGui::SliderFloat("##move_y", &m_move_y, -50.f, 50.f);
+
+    ImGui::Text("- Line width: %f", rect_width);
+}
+
 void noise2d_scene::on_event(pyro::event &e)
 {
     pyro::event_dispatcher dispatcher(e);
@@ -142,16 +154,6 @@ bool noise2d_scene::on_key_pressed(pyro::key_pressed_event &e)
 {
     if(e.event_type() == pyro::event_type_e::key_pressed)
     {
-        if(e.key_code() == pyro::key_codes::KEY_Q)
-        {
-            m_seed--;
-            m_seed_changed = true;
-        }
-        else if(e.key_code() == pyro::key_codes::KEY_E)
-        {
-            m_seed++;
-            m_seed_changed = true;
-        }
         if(e.key_code() == pyro::key_codes::KEY_DOWN)
         {
             m_octaves--;
@@ -207,23 +209,14 @@ glm::vec4 noise2d_scene::color_map(float noise) const
     return color;
 }
 
-void noise2d_scene::reset_noise_seed(e_noise_type const &noise_type)
+void noise2d_scene::on_seed_changed()
 {
-    switch(noise_type)
+    for(int i = 0; i < s_texture_size * s_texture_size; i++)
     {
-    case e_noise_type::one_d:
-        for(int i = 0; i < s_texture_size; i++)
-        {
-            m_noise1d_seed[i] = utils::random::get_float();
-        }
-        //m_noise1d_seed[0] = 0.5f; // this will make generation always average around 0.5, since the first octave will be sampling from this value 
-        break;
-    case e_noise_type::two_d:
-        for(int i = 0; i < s_texture_size * s_texture_size; i++)
-        {
-            m_noise2d_seed[i] = utils::random::get_float();
-        }
-        //m_noise1d_seed[0] = 0.5f; 
-        break;
+        m_noise2d_seed[i] = utils::random::get_float();
     }
+    //m_noise1d_seed[0] = 0.5f; 
+
+    m_other_noise.on_seed_changed();
+    m_noise_changed = true;
 }

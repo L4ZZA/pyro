@@ -1,5 +1,6 @@
 #pragma once 
-#include "pyro.h" 
+#include "pyro.h"
+#include "scenes/base_noise_scene.h"
 #include "utils/perlin_noise.h" 
 
 
@@ -19,8 +20,10 @@ public:
 private:
     pyro::orthographic_camera_controller m_2d_camera_controller;
 
+
+    int32_t m_seed;
     int32_t m_current_scene_index = 0;
-    std::vector<pyro::ref<pyro::scene>> m_scenes;
+    std::vector<pyro::ref<base_noise_scene>> m_scenes;
 
     struct profile_result
     {

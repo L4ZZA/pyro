@@ -2,11 +2,13 @@
 #include "imgui/imgui.h"
 #include "scenes/noise1d_scene.h" 
 #include "scenes/noise2d_scene.h" 
+#include "utils/random.h" 
 
 
 layer_2d::layer_2d(float width, float height)
     : imgui_layer("Sandbox2D")
     , m_2d_camera_controller({ 0.f,0.f,0.f }, width / height, 10.f)
+    , m_seed(0)
 {
     auto cam = m_2d_camera_controller.camera();
     m_scenes.push_back(pyro::make_ref<noise1d_scene>(cam));
@@ -20,6 +22,7 @@ layer_2d::~layer_2d()
 
 void layer_2d::on_attach()
 {
+    utils::random::init(m_seed);
     PYRO_PROFILE_FUNCTION();
     imgui_layer::on_attach();
     m_current_scene_index = 0;
@@ -74,28 +77,13 @@ void layer_2d::on_imgui_render()
     ImGui::Text("---------------------");
 
     ImGui::Text("-- Noise:");
-    //ImGui::Text("- Seed: ");
-    //ImGui::SameLine(); 
-    //m_seed_changed |= ImGui::InputInt("##seed", &m_seed);
-    //ImGui::Text("- Scale: ");
-    //ImGui::SameLine();
-    //m_noise_changed |= ImGui::SliderInt("##scale", &m_scale, 1, 100);
-    //ImGui::Text("- Morph: ");
-    //ImGui::SameLine();
-    //m_noise_changed |= ImGui::SliderFloat("##morph", &m_morph, 0.1f, 50.f);
-    //ImGui::Text("- Move x: ");
-    //ImGui::SameLine();
-    //m_noise_changed |= ImGui::SliderFloat("##move_x", &m_move_x, -50.f, 50.f);
-    //ImGui::Text("- Move y: ");
-    //ImGui::SameLine();
-    //m_noise_changed |= ImGui::SliderFloat("##move_y", &m_move_y, -50.f, 50.f);
-    //ImGui::Text("- Octaves: ");
-    //ImGui::SameLine(); 
-    //m_noise_changed |= ImGui::SliderInt("##octaves", &m_octaves, 1, 8);
-    //ImGui::Text("- Bias: ");
-    //ImGui::SameLine(); 
-    //m_noise_changed |= ImGui::SliderFloat("##bias", &m_bias, 0.1f, 2.f);
-    //ImGui::Text("- Line width: %f", rect_width);
+    ImGui::Text("- Seed: ");
+    ImGui::SameLine(); 
+    if(ImGui::InputInt("##seed", &m_seed))
+    {
+        m_scenes[m_current_scene_index]->on_seed_changed();
+    }
+    m_scenes[m_current_scene_index]->on_imgui_render();
     ImGui::Text("---------------------");
 
     pyro::ref<pyro::camera> camera = m_2d_camera_controller.camera();

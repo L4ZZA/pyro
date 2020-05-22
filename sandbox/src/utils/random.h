@@ -25,6 +25,8 @@ namespace utils{
 		// Cast the result to uint if you want all positive numbers
 		static int32_t get_int(int32_t min = 0, int32_t max = s_uint_max);
 
+		static std::mt19937 &engine();
+
 	private:
 		inline static bool s_initialized = false;
 		inline static std::mt19937 s_random_engine;
@@ -66,6 +68,11 @@ namespace utils{
 	{
 		std::uniform_int_distribution<std::mt19937::result_type> distribution(min,max);
 		return distribution(s_random_engine);
+	}
+
+	inline std::mt19937 &random::engine()
+	{
+		return s_random_engine;
 	}
 
 }

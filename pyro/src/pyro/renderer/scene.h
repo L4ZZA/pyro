@@ -14,6 +14,7 @@ namespace pyro
         virtual void deinit() = 0;
         virtual void on_update(pyro::timestep const &ts) = 0;
         virtual void on_render() const;
+        virtual void on_imgui_render() = 0;
         virtual void on_event(pyro::event &e) = 0;
 
     protected:

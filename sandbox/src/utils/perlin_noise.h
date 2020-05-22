@@ -19,12 +19,10 @@ namespace utils
 	public:
 		// Initialize with the reference values for the permutation vector
 		perlin_noise();
-		// Generate a new permutation vector based on the value of seed
-		perlin_noise(uint32_t seed);
 		// Get a noise value, for 2D images z can have any value
 		float noise(float x, float y, float z);
 
-		void change_seed(uint32_t seed);
+		void on_seed_changed();
 
 	private:
 		float fade(float t);
@@ -33,7 +31,7 @@ namespace utils
 
 	private:
 		// rendom engine
-		std::default_random_engine m_engine; // TODO: test with std::mt19937 instead
+		//std::default_random_engine m_engine; // TODO: test with std::mt19937 instead
 		// The permutation vector, consists of a vector of unique numbers from 0 to 255
 		// with random order. This values are then duplicated to expand the table to 512 values.
 		std::vector<int32_t> m_permutation;
