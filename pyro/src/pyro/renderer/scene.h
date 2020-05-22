@@ -7,9 +7,7 @@ namespace pyro
     class scene
     {
     public:
-        scene(
-            ref<camera> const &camera, 
-            glm::vec4 clear_color = { 0.1f, 0.1f, 0.1f, 1.f });
+        scene(ref<camera> const &camera);
         virtual ~scene() = default;
 
         virtual void init() = 0;
@@ -24,7 +22,6 @@ namespace pyro
 
     protected:
         ref<camera> m_camera;
-        glm::vec4 m_clear_color;
 
     };
 }

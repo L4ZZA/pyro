@@ -46,6 +46,12 @@ void layer_2d::on_render() const
 {
     pyro::renderer_2d::reset_stats();
     {
+        // Pre Render
+        PYRO_PROFILE_SCOPE("scene::pre_render");
+        pyro::render_command::clear_color({ 0.1f, 0.1f, 0.1f, 1.f });
+        pyro::render_command::clear();
+    }
+    {
         // Render
         PYRO_PROFILE_SCOPE("layer_2d::render");
         m_scenes[m_current_scene_index]->on_render();
