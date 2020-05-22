@@ -39,7 +39,7 @@ namespace  pyro
 
     //=========================================================================
 
-    /// \brief 
+    /// 
     class event
     {
 
@@ -53,7 +53,7 @@ namespace  pyro
         virtual int category_flags() const = 0;
         virtual std::string to_string() const { return name(); }
 
-        ///\brief Tells if event is in the given category.
+        ///Tells if event is in the given category.
         ///\param category 
         ///\return 0 (false) if not in the category, true elsewhere
         bool is_in_category(event_category_e category) const
@@ -65,7 +65,7 @@ namespace  pyro
 
     //=========================================================================
 
-    /// \brief 
+    /// 
     class event_dispatcher
     {
         //---------------------------------------------------------------------
@@ -75,7 +75,7 @@ namespace  pyro
         {
         }
 
-        /// \brief F will be deducted by the compiler
+        /// F will be deducted by the compiler
         template<typename T, typename F>
         bool dispatch(const F& func)
         {

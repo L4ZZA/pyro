@@ -31,7 +31,7 @@ namespace pyro
         {
         }
 
-        /// \brief Returns the number of times the key repeated event is fired.
+        /// Returns the number of times the key repeated event is fired.
         /// It's usually fired when the key is held down for a long time.
         int32_t repeats_count() const { return m_repeats_count; }
 
@@ -70,7 +70,7 @@ namespace pyro
 
     //=========================================================================
 
-    /// \brief Represents the char value of the key pressed. 
+    /// Represents the char value of the key pressed. 
     /// [Most commonly known as char_event in windows]
     class PYRO_API key_typed_event : public key_event
     {

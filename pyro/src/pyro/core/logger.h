@@ -5,7 +5,7 @@
 
 namespace pyro
 {
-    /// \brief Wrapper around spdlog logger.
+    /// Wrapper around spdlog logger.
     class PYRO_API logger
     {
     public:

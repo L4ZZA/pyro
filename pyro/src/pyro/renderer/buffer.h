@@ -5,7 +5,7 @@ namespace pyro
 
     //=================== buffer element ======================================
 
-    /// \brief Type used to match the shading language types, in order to 
+    /// Type used to match the shading language types, in order to 
     /// construct 
     enum class e_shader_data_type
     {
@@ -66,32 +66,32 @@ namespace pyro
 
     //=================== buffer layout =======================================
 
-    /// \brief Calculates the layout the the graphics api needs based on the given elements.
+    /// Calculates the layout the the graphics api needs based on the given elements.
     class PYRO_API buffer_layout
     {
     public:
-        /// \brief Default ctor.
+        /// Default ctor.
         buffer_layout() = default;
-        /// \brief Initializer list constructor.
+        /// Initializer list constructor.
         buffer_layout(std::initializer_list<buffer_element>);
-        /// \brief Elements getter
+        /// Elements getter
         const std::vector<buffer_element> &elements() const;
-        /// \brief Stride getter
+        /// Stride getter
         uint32_t stride() const;
 
         // To iterate through a range-based for-loop [i.e. for( auto elem : elements)]
-        /// \brief Implicit implementation of .begin()
+        /// Implicit implementation of .begin()
         std::vector<buffer_element>::iterator begin() { return m_elements.begin(); }
-        /// \brief Implicit implementation of .end()
+        /// Implicit implementation of .end()
         std::vector<buffer_element>::iterator end() { return m_elements.end(); }
-        /// \brief Implicit implementation of .cbegin()
+        /// Implicit implementation of .cbegin()
         std::vector<buffer_element>::const_iterator begin() const { return m_elements.begin(); }
-        /// \brief Implicit implementation of .cend()
+        /// Implicit implementation of .cend()
         std::vector<buffer_element>::const_iterator end() const { return m_elements.end(); }
 
 
     private:
-        /// \brief 
+        /// 
         void calculate_offset_and_stride();
 
     private:
@@ -101,7 +101,7 @@ namespace pyro
 
     //=================== vertex buffer =======================================
 
-    /// \brief Vertex buffer (platform agnostic) interface
+    /// Vertex buffer (platform agnostic) interface
     class PYRO_API vertex_buffer
     {
     public:
@@ -111,9 +111,9 @@ namespace pyro
         virtual void unbind() const = 0;
 
         virtual void data(void const* data, uint32_t size) = 0;
-        /// \brief Layout setter.
+        /// Layout setter.
         virtual void layout(const buffer_layout &layout) = 0;
-        /// \brief Layout getter.
+        /// Layout getter.
         virtual const buffer_layout &layout() const = 0;
 
         static ref<vertex_buffer> create(uint32_t size);
@@ -122,7 +122,7 @@ namespace pyro
 
     //=================== index buffer ========================================
 
-    /// \brief Index buffer (platform agnostic) interface [32-bit index]
+    /// Index buffer (platform agnostic) interface [32-bit index]
     class PYRO_API index_buffer
     {
     public:
@@ -131,7 +131,7 @@ namespace pyro
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
 
-        /// \brief Count getter.
+        /// Count getter.
         virtual uint32_t count() const = 0;
 
         static ref<index_buffer> create(uint32_t const *indices, uint32_t count);

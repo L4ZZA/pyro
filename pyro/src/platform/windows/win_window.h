@@ -43,7 +43,7 @@ namespace pyro
         GLFWwindow* m_window;
 		graphics_context* m_graphics_context;
 
-        /// \brief struct to pass to the glfw callback user_ptr
+        /// struct to pass to the glfw callback user_ptr
         struct window_data
         {
             std::string title;

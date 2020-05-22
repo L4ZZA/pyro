@@ -21,7 +21,7 @@ namespace pyro
         }
     };
 
-    /// \brief Interface representing a desktop system based window.
+    /// Interface representing a desktop system based window.
     class PYRO_API window
     {
     public:

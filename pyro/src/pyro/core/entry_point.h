@@ -5,7 +5,7 @@
 
 extern pyro::application* pyro::create_application();
 
-/// \brief Adjusts the console to take 1/3rd of the monitor height.
+/// Adjusts the console to take 1/3rd of the monitor height.
 void move_console();
 
 

@@ -82,7 +82,7 @@ namespace pyro
         float m_zoom_level;
         bool  m_rotation;
         glm::vec3 m_camera_position;
-        /// \brief Rotation in degrees in anti-clockwise direction.
+        /// Rotation in degrees in anti-clockwise direction.
         float m_camera_rotation;
         float m_camera_translation_speed;
         const float m_camera_rotation_speed;
@@ -127,7 +127,7 @@ namespace pyro
 
         bool m_should_rotate;
         glm::vec3 m_camera_position;
-        /// \brief Rotation in degrees in anti-clockwise direction.
+        /// Rotation in degrees in anti-clockwise direction.
         /// pitch -> rotation over x axis
         /// yaw -> rotation over y axis
         /// roll -> rotation over z axis
@@ -136,7 +136,7 @@ namespace pyro
         const float m_camera_rotation_speed;
 
         inline static e_control_type s_control_type = e_control_type::first_person;
-        /// \brief in degrees per second. 
+        /// in degrees per second. 
         inline static const float s_mouse_sensitivity = 0.1f;
     
     };

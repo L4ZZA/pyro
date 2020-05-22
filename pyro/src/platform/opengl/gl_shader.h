@@ -3,7 +3,7 @@
 
 namespace pyro
 {
-    /// \brief OpenGL shader implementation.
+    /// OpenGL shader implementation.
     class PYRO_API gl_shader final : public shader
     {
     public:

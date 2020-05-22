@@ -118,7 +118,7 @@ namespace pyro
         glm::mat4   m_view_projection_mat;
 
         glm::vec3   m_position;
-        /// \brief Rotation in degrees in anti-clockwise direction.
+        /// Rotation in degrees in anti-clockwise direction.
         /// pitch -> rotation over x axis
         /// yaw -> rotation over y axis
         /// roll -> rotation over z axis
@@ -129,18 +129,18 @@ namespace pyro
         glm::vec3   m_right_vector;
         glm::vec3   m_world_up_vector;
 
-        /// \brief  
+        ///  
         float m_aspect_ratio;
-        /// \brief Field of view in degrees.  
+        /// Field of view in degrees.  
         float m_fov;
-        /// \brief Near clipping plane.  
+        /// Near clipping plane.  
         float m_near_plane;
-        /// \brief ar clipping plane.  
+        /// ar clipping plane.  
         float m_far_plane;
 
-        /// \brief in units per seconds.  
+        /// in units per seconds.  
         inline static const float s_movement_speed = 2.5f;
-        /// \brief in degrees per second.  
+        /// in degrees per second.  
         inline static const float s_rotation_speed = 90.f;
     };
 

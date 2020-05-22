@@ -3,7 +3,7 @@
 
 namespace pyro
 {
-    /// \brief Shader (platform agnostic) interface. Implemented in platform/api_name folder (i.e. opengl)
+    /// Shader (platform agnostic) interface. Implemented in platform/api_name folder (i.e. opengl)
     class PYRO_API shader
     {
     public:

@@ -5,7 +5,7 @@ struct GLFWwindow;
 
 namespace pyro
 {
-    /// \brief OpenGL specific implementation of the graphics_context interface
+    /// OpenGL specific implementation of the graphics_context interface
     class PYRO_API gl_context : public graphics_context
     {
     public:

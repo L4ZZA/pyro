@@ -22,15 +22,15 @@ namespace pyro
         /// \brief
         virtual void on_event(event &e);
 
-        /// \brief Adds a layer to the stack.
+        /// Adds a layer to the stack.
         void push_layer(ref<layer> const &layer);
-        /// \brief Adds a overlay to the stack.
+        /// Adds a overlay to the stack.
         void push_overlay(ref<layer> const &overlay);
 
-        /// \brief Returns a reference to the application window.
+        /// Returns a reference to the application window.
         static window &window() { return *(s_instance->m_window); }
 
-        /// \brief Returns a reference to the application.
+        /// Returns a reference to the application.
         static application &instance() { return *s_instance; }
 
     public:
