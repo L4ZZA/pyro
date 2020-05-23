@@ -78,6 +78,16 @@ float pyro::orthographic_camera_controller::zoom_level() const
     return m_zoom_level;
 }
 
+void pyro::orthographic_camera_controller::position(glm::vec3 const &pos)
+{
+    m_camera_position = pos;
+}
+
+void pyro::orthographic_camera_controller::rotation(glm::vec3 const &rot)
+{
+    m_camera_rotation = rot;
+}
+
 void pyro::orthographic_camera_controller::calculate_view()
 {
     m_bounds.left = -m_aspect_ratio * m_zoom_level;
@@ -104,11 +114,11 @@ void pyro::orthographic_camera_controller::rotate(e_rotation rotation, e_axis ro
 {
     if(rotation == clock_wise)
     {
-        m_camera_rotation -= m_camera_rotation_speed * ts;
+        m_camera_rotation.z -= m_camera_rotation_speed * ts;
     }
     else if(rotation == anticlock_wise)
     {
-        m_camera_rotation += m_camera_rotation_speed * ts;
+        m_camera_rotation.z += m_camera_rotation_speed * ts;
     }
 }
 
@@ -190,6 +200,16 @@ void pyro::perspective_camera_controller::zoom_level(float level)
 float pyro::perspective_camera_controller::zoom_level() const
 {
     return m_camera->fov();
+}
+
+void pyro::perspective_camera_controller::position(glm::vec3 const &pos)
+{
+    m_camera_position = pos;
+}
+
+void pyro::perspective_camera_controller::rotation(glm::vec3 const &rot)
+{
+    m_camera_rotation = rot;
 }
 
 void pyro::perspective_camera_controller::process_mouse(

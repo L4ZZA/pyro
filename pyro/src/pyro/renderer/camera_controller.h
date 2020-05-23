@@ -33,6 +33,9 @@ namespace pyro
         virtual void zoom_level(float level) = 0;
         virtual float zoom_level() const = 0;
 
+        virtual void position(glm::vec3 const &pos) = 0;
+        virtual void rotation(glm::vec3 const &rot) = 0;
+
     };
     
     //=========== 2D CAMERA CONTROLLER ============
@@ -69,6 +72,9 @@ namespace pyro
         void zoom_level(float level) override;
         float zoom_level() const override;
 
+        void position(glm::vec3 const &pos) override;
+        void rotation(glm::vec3 const &rot) override;
+
     private:
         void calculate_view();
         void move(e_direction direction, timestep ts);
@@ -82,8 +88,9 @@ namespace pyro
         float m_zoom_level;
         bool  m_rotation;
         glm::vec3 m_camera_position;
-        /// Rotation in degrees in anti-clockwise direction.
-        float m_camera_rotation;
+        // Rotation in degrees in anti-clockwise direction. Only the z-value 
+        // is used for orthographic camera.
+        glm::vec3 m_camera_rotation;
         float m_camera_translation_speed;
         const float m_camera_rotation_speed;
 
@@ -114,6 +121,8 @@ namespace pyro
         ref<pyro::camera> camera() const override;
         void zoom_level(float level) override;
         float zoom_level() const override;
+        void position(glm::vec3 const &pos) override;
+        void rotation(glm::vec3 const &rot) override;
 
     private:
         void process_mouse(e_control_type control_type, float mouse_x, float mouse_y, bool constrain_pitch = true);

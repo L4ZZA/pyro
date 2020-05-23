@@ -18,10 +18,10 @@ namespace pyro
         virtual glm::mat4 const &view_matrix() const = 0;
         virtual glm::mat4 const &view_projection_matrix() const = 0;
 
-        virtual void position(const glm::vec3 &pos) = 0;
+        virtual void position(glm::vec3 const &pos) = 0;
         virtual glm::vec3 const &position() const = 0;
 
-        virtual void rotation(const glm::vec3 &rot) = 0;
+        virtual void rotation(glm::vec3 const &rot) = 0;
         virtual glm::vec3 const &rotation() const = 0;
     };
 
@@ -33,10 +33,10 @@ namespace pyro
         orthographic_camera(float left, float right, float bottom, float top);
 
         glm::vec3 const &position() const override { return m_position; }
-        void position(const glm::vec3 &pos) override { m_position = pos; update_view_matrix(); }
+        void position(glm::vec3 const &pos) override { m_position = pos; update_view_matrix(); }
 
         glm::vec3 const &rotation() const override { return m_rotation; }
-        void rotation(const glm::vec3 &rot) override { m_rotation = rot; update_view_matrix(); }
+        void rotation(glm::vec3 const &rot) override { m_rotation = rot; update_view_matrix(); }
 
         void projection_matrix(float left, float right, float bottom, float top);
         void projection_matrix(glm::mat4 const &mat) override;
@@ -90,10 +90,10 @@ namespace pyro
             float near_z = 0.1f, float far_z = 100.f);
 
         glm::vec3 const &position() const override { return m_position; }
-        void position(const glm::vec3 &pos) override { m_position = pos; }
+        void position(glm::vec3 const &pos) override { m_position = pos; }
 
         glm::vec3 const &rotation() const override { return m_rotation; }
-        void rotation(const glm::vec3 &rot) override { m_rotation = rot; }
+        void rotation(glm::vec3 const &rot) override { m_rotation = rot; }
 
         void fov(float fov) { m_fov = fov; }
         float fov() const { return m_fov; }
