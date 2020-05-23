@@ -1,10 +1,12 @@
 #include "scenes/noise2d_scene.h"
 #include "imgui/imgui.h"
 #include "utils/noise.h"
-#include "utils/random.h"
 
 noise2d_scene::noise2d_scene(pyro::ref<pyro::camera> const &camera)
     : base_noise_scene(camera)
+    , m_seed(0)
+    , m_rand(0)
+    , m_other_noise(0)
 {
 }
 
@@ -14,19 +16,13 @@ noise2d_scene::~noise2d_scene()
 
 void noise2d_scene::init()
 {
-    {
-        pyro::texture_parameters params;
-        params.format = pyro::e_texture_format::red;
-        params.filter = pyro::e_texture_filter::nearest;
-        params.wrap = pyro::e_texture_wrap::clamp_to_edge;
-        m_noise_texture = pyro::texture_2d::create(s_texture_size, s_texture_size, params);
-    }
-    {
-        pyro::texture_parameters params;
-        params.format = pyro::e_texture_format::red;
-        m_my_texture = pyro::texture_2d::create(s_texture_size, s_texture_size, params);
-    }
-
+    pyro::texture_parameters params;
+    params.format = pyro::e_texture_format::red;
+    params.filter = pyro::e_texture_filter::nearest;
+    m_noise_texture = pyro::texture_2d::create(s_texture_size, s_texture_size, params);
+    
+    m_my_texture = pyro::texture_2d::create(s_texture_size, s_texture_size, params);
+    
     on_seed_changed();
 }
 
@@ -47,8 +43,7 @@ void noise2d_scene::on_update(pyro::timestep const &ts)
             m_bias = 0.2f;
 
         utils::perlin_noise_2d(
-            s_texture_size, 
-            m_octaves, m_bias, m_noise2d_seed.data(), m_noise_2d.data());
+            s_texture_size, m_octaves, m_bias, m_seed, m_noise_2d.data());
 
         m_noise_texture->data(m_noise_2d.data(), m_noise_2d.size(), pyro::e_texture_data_type::Float);
 
@@ -120,6 +115,12 @@ void noise2d_scene::on_render_internal() const
 
 void noise2d_scene::on_imgui_render()
 {
+    ImGui::Text("- Seed: ");
+    ImGui::SameLine();
+    if(ImGui::InputInt("##seed", &m_seed))
+    {
+        on_seed_changed();
+    }
     ImGui::Text("- Octaves: ");
     ImGui::SameLine();
     m_noise_changed |= ImGui::SliderInt("##octaves", &m_octaves, 1, 8);
@@ -211,12 +212,7 @@ glm::vec4 noise2d_scene::color_map(float noise) const
 
 void noise2d_scene::on_seed_changed()
 {
-    for(int i = 0; i < s_texture_size * s_texture_size; i++)
-    {
-        m_noise2d_seed[i] = utils::random::get_float();
-    }
-    //m_noise1d_seed[0] = 0.5f; 
-
-    m_other_noise.on_seed_changed();
+    m_rand.seed(m_seed);
+    m_other_noise.change_seed(m_rand.seed());
     m_noise_changed = true;
 }

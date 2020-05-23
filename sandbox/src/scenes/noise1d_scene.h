@@ -1,5 +1,6 @@
 #pragma once
 #include "base_noise_scene.h"
+#include "utils/random.h"
 
 class noise1d_scene final : public base_noise_scene
 {
@@ -23,9 +24,10 @@ private:
     static const int s_texture_size = 256;
     pyro::ref<pyro::texture_2d> m_noise_texture;
 
-    std::array<float, s_texture_size> m_noise1d_seed{ 0 };
     std::array<float, s_texture_size> m_noise_1d{ 0 };
 
+    utils::random m_rand;
+    int m_seed;
     bool m_noise_changed = false;
     int m_octaves = 5;
     float m_bias = 0.2f;

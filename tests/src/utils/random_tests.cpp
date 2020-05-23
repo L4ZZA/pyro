@@ -29,41 +29,63 @@ using namespace utils;
 
 BOOST_AUTO_TEST_SUITE(randoms)
 
+BOOST_AUTO_TEST_CASE(same_random_float, *utf::tolerance(0.00001))
+{
+    float first;
+    float second;
+    float third;
+
+    {
+        random rand(1);
+        first = rand.get_float();
+    }
+    {
+        random rand(1);
+        second = rand.get_float();
+    }
+    {
+        random rand(1);
+        third = rand.get_float();
+    }
+    BOOST_TEST(first == second);
+    BOOST_TEST(first == third);
+}
+
 BOOST_AUTO_TEST_CASE(seeded_random_float, *utf::tolerance(0.00001))
 {
-    random::init(1);
-    float first = random::get_float();
-    random::seed(2);
-    float sedond = random::get_float();
-    random::seed(1);
-    float twin = random::get_float();
+    random rand(1);
+    float first = rand.get_float();
+    rand.seed(2);
+    float second = rand.get_float();
+    rand.seed(1);
+    float twin = rand.get_float();
 
     BOOST_TEST(first == twin); // irrelevant difference
 }
 
 BOOST_AUTO_TEST_CASE(seeded_random_float_array)
 {
+    random rand(1);
     const int size = 100;
     std::array<float, size> first_array;
     std::array<float, size> second_array;
     std::array<float, size> twin_array;
 
-    random::init(1);
     for (int i = 0; i < size; i++)
-        first_array[i] = random::get_float();
+        first_array[i] = rand.get_float();
 
     std::array<int, 2> seeds{ 2,1 };
     int repetitions = 4;
     for (int r = 0; r < repetitions; r++)
     {
-        random::seed(2);
+        rand.seed(2);
         for (int i = 0; i < size; i++)
-            second_array[i] = random::get_float();
-        //float sedond = random::get_float();
-        random::seed(1);
+            second_array[i] = rand.get_float();
+        //float second = rand.get_float();
+        rand.seed(1);
         for (int i = 0; i < size; i++)
         {
-            twin_array[i] = random::get_float();
+            twin_array[i] = rand.get_float();
             BOOST_TEST(first_array[i] == twin_array[i]); 
             BOOST_CHECK(first_array[i] == twin_array[i]); 
         }

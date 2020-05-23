@@ -1,10 +1,11 @@
 #include "scenes/noise1d_scene.h"
 #include "imgui/imgui.h"
 #include "utils/noise.h"
-#include "utils/random.h"
 
 noise1d_scene::noise1d_scene(pyro::ref<pyro::camera> const &camera)
     : base_noise_scene(camera)
+    , m_seed(0)
+    , m_rand(0)
     , m_octaves(5)
 {
 }
@@ -35,8 +36,7 @@ void noise1d_scene::on_update(pyro::timestep const &ts)
             m_bias = 0.2f;
 
         utils::perlin_noise_1d(
-            s_texture_size, 
-            m_octaves, m_bias, m_noise1d_seed.data(), m_noise_1d.data());
+            s_texture_size, m_octaves, m_bias, m_seed, m_noise_1d.data());
     }
 }
 
@@ -68,6 +68,12 @@ void noise1d_scene::on_render_internal() const
 
 void noise1d_scene::on_imgui_render()
 {
+    ImGui::Text("- Seed: ");
+    ImGui::SameLine();
+    if(ImGui::InputInt("##seed", &m_seed))
+    {
+        on_seed_changed();
+    }
     ImGui::Text("- Octaves: ");
     ImGui::SameLine(); 
     m_noise_changed |= ImGui::SliderInt("##octaves", &m_octaves, 1, 8);
@@ -142,11 +148,5 @@ glm::vec4 noise1d_scene::color_map(float noise) const
 
 void noise1d_scene::on_seed_changed()
 {
-    for(int i = 0; i < s_texture_size; i++)
-    {
-        m_noise1d_seed[i] = utils::random::get_float();
-    }
-    //m_noise1d_seed[0] = 0.5f; // this will make generation always average around 0.5, since the first octave will be sampling from this value 
-
     m_noise_changed = true;
 }

@@ -1,5 +1,4 @@
 #include "perlin_noise.h"
-#include "random.h"
 
 // You could use this program under the terms of GPL v3, for more details see :
 // http://www.gnu.org/copyleft/gpl.html
@@ -15,11 +14,11 @@
 #include <algorithm>
 #include <numeric>
 
-// Initialize with the reference values for the permutation vector
-utils::perlin_noise::perlin_noise()
-	//: m_engine()
+// Generate a new permutation vector based on the value of seed
+utils::perlin_noise::perlin_noise(uint32_t seed)
+	: m_engine(seed)
 {
-	//m_engine.seed(std::random_device()());
+	//m_engine.seed(seed);
 
 	// Initialize the permutation vector with the reference values
 	m_permutation = 
@@ -87,10 +86,10 @@ float utils::perlin_noise::noise(float x, float y, float z)
 	return (res + 1.0) / 2.0;
 }
 
-void utils::perlin_noise::on_seed_changed()
+void utils::perlin_noise::change_seed(uint32_t seed)
 {
 	// Initialize a random engine with seed
-	//m_engine.seed(seed);
+	m_engine.seed(seed);
 	
 	m_permutation.resize(256);
 
@@ -98,7 +97,7 @@ void utils::perlin_noise::on_seed_changed()
 	std::iota(m_permutation.begin(), m_permutation.end(), 0);
 
 	// Suffle  using the above random engine
-	std::shuffle(m_permutation.begin(), m_permutation.end(), utils::random::engine());
+	std::shuffle(m_permutation.begin(), m_permutation.end(), m_engine);
 
 	// Duplicate the permutation vector
 	m_permutation.insert(m_permutation.end(), m_permutation.begin(), m_permutation.end());

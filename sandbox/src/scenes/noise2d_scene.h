@@ -1,6 +1,6 @@
 #pragma once
 #include "base_noise_scene.h"
-
+#include "utils/random.h"
 
 class noise2d_scene final : public base_noise_scene
 {
@@ -30,8 +30,10 @@ private:
     float gap_width = step - rect_width;
     float gap = 0.0f;
 
-    pyro::ref<pyro::texture_2d> m_my_texture;
+    utils::random m_rand;
+    int m_seed;
     static const int s_texture_size = 256;
+    pyro::ref<pyro::texture_2d> m_my_texture;
     pyro::ref<pyro::texture_2d> m_noise_texture;
 
     std::array<float, s_texture_size *s_texture_size> m_noise2d_seed{ 0 };

@@ -22,7 +22,6 @@ layer_2d::~layer_2d()
 
 void layer_2d::on_attach()
 {
-    utils::random::init(m_seed);
     PYRO_PROFILE_FUNCTION();
     imgui_layer::on_attach();
     m_current_scene_index = 0;
@@ -77,12 +76,6 @@ void layer_2d::on_imgui_render()
     ImGui::Text("---------------------");
 
     ImGui::Text("-- Noise:");
-    ImGui::Text("- Seed: ");
-    ImGui::SameLine(); 
-    if(ImGui::InputInt("##seed", &m_seed))
-    {
-        m_scenes[m_current_scene_index]->on_seed_changed();
-    }
     m_scenes[m_current_scene_index]->on_imgui_render();
     ImGui::Text("---------------------");
 
