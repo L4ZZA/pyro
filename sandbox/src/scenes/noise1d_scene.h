@@ -20,8 +20,6 @@ private:
     glm::vec4 color_map(float noise) const;
 
 private:
-    pyro::ref<pyro::camera> m_camera;
-
     static const int s_texture_size = 256;
     pyro::ref<pyro::texture_2d> m_noise_texture;
 
