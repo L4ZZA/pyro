@@ -1,6 +1,7 @@
 #pragma once 
 #include "pyro.h"
 #include "scenes/base_noise_scene.h"
+#include "scenes/scene_manager.h"
 #include "utils/perlin_noise.h" 
 
 
@@ -18,13 +19,11 @@ public:
     void on_event(pyro::event &e) override;
 
 private:
-    pyro::orthographic_camera_controller m_2d_camera_controller;
-
+    pyro::ref<pyro::camera_controller> m_2d_camera_controller;
+    scene_manager m_scene_manager;
 
     int32_t m_seed;
-    int32_t m_current_scene_index = 0;
-    std::vector<pyro::ref<base_noise_scene>> m_scenes;
-
+    
     struct profile_result
     {
         char const *name;

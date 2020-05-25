@@ -2,8 +2,9 @@
 #include "imgui/imgui.h"
 #include "utils/noise.h"
 
-noise1d_scene::noise1d_scene(pyro::ref<pyro::camera> const &camera)
-    : base_noise_scene(camera)
+noise1d_scene::noise1d_scene(pyro::ref<pyro::camera_controller> cam_controller)
+    : base_noise_scene(cam_controller->camera())
+    , m_cam_controller(cam_controller)
     , m_seed(0)
     , m_rand(0)
     , m_octaves(5)
@@ -16,6 +17,8 @@ noise1d_scene::~noise1d_scene()
 
 void noise1d_scene::init()
 {
+    m_cam_controller->position({ 124.f, 45.f, 0.f });
+    m_cam_controller->zoom_level(83.f);
     on_seed_changed();
 }
 

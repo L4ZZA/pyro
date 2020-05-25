@@ -8,6 +8,7 @@ class base_noise_scene : public pyro::scene
 public:
 	base_noise_scene(pyro::ref<pyro::camera> const &camera);
 	virtual ~base_noise_scene() = default;
+protected:
 	virtual void on_seed_changed() = 0;
 };
 

@@ -2,8 +2,9 @@
 #include "imgui/imgui.h"
 #include "utils/noise.h"
 
-noise2d_scene::noise2d_scene(pyro::ref<pyro::camera> const &camera)
-    : base_noise_scene(camera)
+noise2d_scene::noise2d_scene(pyro::ref<pyro::camera_controller> cam_controller)
+    : base_noise_scene(cam_controller->camera())
+    , m_cam_controller(cam_controller)
     , m_seed(0)
     , m_rand(0)
     , m_other_noise(0)
@@ -16,6 +17,9 @@ noise2d_scene::~noise2d_scene()
 
 void noise2d_scene::init()
 {
+    m_cam_controller->position({ -8.5f, 266.5f, 0.f });
+    m_cam_controller->zoom_level(300.f);
+
     pyro::texture_parameters params;
     params.format = pyro::e_texture_format::red;
     params.filter = pyro::e_texture_filter::nearest;

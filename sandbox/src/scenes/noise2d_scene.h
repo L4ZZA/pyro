@@ -5,7 +5,7 @@
 class noise2d_scene final : public base_noise_scene
 {
 public:
-    noise2d_scene(pyro::ref<pyro::camera> const &cam);
+    noise2d_scene(pyro::ref<pyro::camera_controller> cam_controller);
     virtual ~noise2d_scene();
 
     void init() override;
@@ -14,13 +14,15 @@ public:
     void on_render_internal() const override;
     void on_imgui_render() override;
     void on_event(pyro::event &e) override;
-    void on_seed_changed() override;
 
 private:
+    void on_seed_changed() override;
     bool on_key_pressed(pyro::key_pressed_event &e);
     glm::vec4 color_map(float noise) const;
 
 private:
+    pyro::ref<pyro::camera_controller> m_cam_controller;
+
     int width = s_texture_size;
     int height = s_texture_size / 4;
     int step = 1;
@@ -36,7 +38,6 @@ private:
     pyro::ref<pyro::texture_2d> m_my_texture;
     pyro::ref<pyro::texture_2d> m_noise_texture;
 
-    std::array<float, s_texture_size *s_texture_size> m_noise2d_seed{ 0 };
     std::array<float, s_texture_size *s_texture_size> m_noise_2d{ 0 };
     std::array<float, s_texture_size *s_texture_size> m_vendor_noise_2d{ 0 };
 

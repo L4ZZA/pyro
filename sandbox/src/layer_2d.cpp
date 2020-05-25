@@ -7,12 +7,14 @@
 
 layer_2d::layer_2d(float width, float height)
     : imgui_layer("Sandbox2D")
-    , m_2d_camera_controller({ 0.f,0.f,0.f }, width / height, 10.f)
     , m_seed(0)
+    , m_2d_camera_controller(
+            new pyro::orthographic_camera_controller(
+                glm::vec3{ 0.f,0.f,0.f }, width / height, 10.f))
 {
-    auto cam = m_2d_camera_controller.camera();
-    m_scenes.push_back(pyro::make_ref<noise1d_scene>(cam));
-    m_scenes.push_back(pyro::make_ref<noise2d_scene>(cam));
+    auto cam = m_2d_camera_controller->camera();
+    m_scene_manager.add_scene(pyro::make_ref<noise1d_scene>(m_2d_camera_controller));
+    m_scene_manager.add_scene(pyro::make_ref<noise2d_scene>(m_2d_camera_controller));
 }
 
 layer_2d::~layer_2d()
@@ -24,24 +26,20 @@ void layer_2d::on_attach()
 {
     PYRO_PROFILE_FUNCTION();
     imgui_layer::on_attach();
-    m_current_scene_index = 0;
-    for(auto scene : m_scenes)
-        scene->init();
+    m_scene_manager.init_first_scene();
 }
 
 void layer_2d::on_detach()
 {
     PYRO_PROFILE_FUNCTION();
-    for(auto &scene : m_scenes)
-        scene->deinit();
 }
 
 void layer_2d::on_update(const pyro::timestep &ts)
 {
     // Update
     PYRO_PROFILE_FUNCTION();
-    m_2d_camera_controller.on_update(ts);
-    m_scenes[m_current_scene_index]->on_update(ts);
+    m_2d_camera_controller->on_update(ts);
+    m_scene_manager.on_update(ts);
 }
 
 void layer_2d::on_render() const
@@ -56,7 +54,7 @@ void layer_2d::on_render() const
     {
         // Render
         PYRO_PROFILE_SCOPE("layer_2d::render");
-        m_scenes[m_current_scene_index]->on_render();
+        m_scene_manager.on_render();
     }
 }
 
@@ -76,13 +74,13 @@ void layer_2d::on_imgui_render()
     ImGui::Text("---------------------");
 
     ImGui::Text("-- Noise:");
-    m_scenes[m_current_scene_index]->on_imgui_render();
+    m_scene_manager.on_imgui_render();
     ImGui::Text("---------------------");
 
-    pyro::ref<pyro::camera> camera = m_2d_camera_controller.camera();
+    pyro::ref<pyro::camera> camera = m_2d_camera_controller->camera();
     ImGui::Text("-- Camera:");
     ImGui::Text("- Position: [%f,%f,%f]", camera->position().x, camera->position().y, camera->position().z);
-    ImGui::Text("- Zoom: %f", m_2d_camera_controller.zoom_level());
+    ImGui::Text("- Zoom: %f", m_2d_camera_controller->zoom_level());
     ImGui::Text("---------------------");
 
     ImGui::End();
@@ -90,7 +88,7 @@ void layer_2d::on_imgui_render()
 
 void layer_2d::on_event(pyro::event &e)
 {
-    m_2d_camera_controller.on_event(e);
+    m_2d_camera_controller->on_event(e);
     pyro::event_dispatcher dispatcher(e);
     // dispatch event on window X pressed 
     dispatcher.dispatch<pyro::key_pressed_event>([&](pyro::key_pressed_event ev) {
@@ -98,19 +96,16 @@ void layer_2d::on_event(pyro::event &e)
         switch(ev.key_code())
         {
         case pyro::key_codes::KEY_1: 
-            m_current_scene_index = 0; 
+            m_scene_manager.go_to(0); 
             break;
-        case pyro::key_codes::KEY_2: 
-            m_current_scene_index = 1; 
+        case pyro::key_codes::KEY_2:
+            m_scene_manager.go_to(1);
             break;
         }
-        // clamp to last scene
-        if(m_current_scene_index > m_scenes.size())
-            m_current_scene_index = m_scenes.size() - 1;
 
-        m_scenes[m_current_scene_index]->on_event(ev);
         // return if event is handled or not
         return false;
     });
+    m_scene_manager.on_event(e);
 }
 
