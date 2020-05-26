@@ -3,15 +3,15 @@
 #include "layer_2d.h"
 
 
-class sandbox_app : public pyro::application
+class level_editor : public pyro::application
 {
 public:
-    sandbox_app(uint32_t width, uint32_t height)
+    level_editor(uint32_t width, uint32_t height)
         :application(width,height)
     {
     }
 
-    ~sandbox_app() = default;
+    ~level_editor() = default;
 
     // Inherited via application
     virtual void init() override
@@ -33,7 +33,7 @@ public:
 
         pyro::event_dispatcher dispatcher(e);
         // dispatch event on window X pressed 
-        dispatcher.dispatch<pyro::key_pressed_event>(BIND_EVENT_FN(sandbox_app::on_key_pressed));
+        dispatcher.dispatch<pyro::key_pressed_event>(BIND_EVENT_FN(level_editor::on_key_pressed));
     }
 
     bool on_key_pressed(pyro::key_pressed_event &e)
@@ -52,5 +52,5 @@ private:
 
 pyro::application *pyro::create_application()
 {
-    return new sandbox_app(1280, 720);
+    return new level_editor(1280, 720);
 }
