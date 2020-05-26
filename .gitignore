@@ -6,7 +6,7 @@ inter/
 ## Files
 *.user
 *.filters
-Sandbox/imgui\.ini
+**/imgui\.ini
 
 ## VisualStudio Specific
 *.vcxproj
