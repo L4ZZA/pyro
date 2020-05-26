@@ -2,12 +2,10 @@
 #include <pyro/events/event.h>
 #include <pyro/renderer/camera.h>
 
-namespace pyro
-{
     class scene
     {
     public:
-        scene(ref<camera> const &camera);
+        scene(pyro::ref<pyro::camera> const &camera);
         virtual ~scene() = default;
 
         virtual void init() = 0;
@@ -22,7 +20,5 @@ namespace pyro
         virtual void on_render_internal() const = 0;
 
     protected:
-        ref<camera> m_camera;
-
+        pyro::ref<pyro::camera> m_camera;
     };
-}

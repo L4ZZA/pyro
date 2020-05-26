@@ -1,9 +1,10 @@
 #pragma once
-#include "pyro.h"
+#include <pyro.h>
+#include "renderer/scene.h"
 #include "utils/noise.h"
 #include "utils/perlin_noise.h"
 
-class base_noise_scene : public pyro::scene
+class base_noise_scene : public scene
 {
 public:
 	base_noise_scene(pyro::ref<pyro::camera> const &camera);

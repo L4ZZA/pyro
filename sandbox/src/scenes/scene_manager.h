@@ -1,11 +1,11 @@
 #pragma once
-#include "pyro.h"
+#include "renderer/scene.h"
 #include <vector>
 
 class scene_manager
 {
 public:
-	void add_scene(pyro::ref<pyro::scene> scene);
+	void add_scene(pyro::ref<scene> scene);
 	// initializes the current scene.
 	void init_first_scene();
 	void next_scene();
@@ -17,8 +17,6 @@ public:
 	void on_event(pyro::event &e);
 	void on_imgui_render();
 private:
-	std::vector<pyro::ref<pyro::scene>> m_scenes;
+	std::vector<pyro::ref<scene>> m_scenes;
 	int m_scene_index = -1;
-
-	friend class pyro::application;
 };

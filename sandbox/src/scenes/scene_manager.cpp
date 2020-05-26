@@ -1,6 +1,6 @@
 #include "scene_manager.h"
 
-void scene_manager::add_scene(pyro::ref<pyro::scene> scene)
+void scene_manager::add_scene(pyro::ref<scene> scene)
 {
     m_scenes.push_back(scene);
 }

@@ -52,7 +52,7 @@ namespace pyro
         std::unique_ptr<pyro::window>   m_window;
         layers_stack                    m_layers_stack;
         float                           m_frame_time = 0.f;
-        pyro::timer                     *m_timer = nullptr;
+        pyro::timer                    *m_timer = nullptr;
         uint32_t                        m_UpdatesPerSecond;
         uint32_t                        m_FramesPerSecond;
 
