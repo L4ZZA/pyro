@@ -9,6 +9,8 @@
 // - changed all parameter and return types from double to float, I don't need that precision.
 // - random engine is now a member variable
 // - added ability to change random engine seed
+// - added noise_array getter
+// - made most methods const
 
 #include <cmath>
 #include <algorithm>
@@ -40,7 +42,7 @@ utils::perlin_noise::perlin_noise(uint32_t seed)
 	m_permutation.insert(m_permutation.end(), m_permutation.begin(), m_permutation.end());
 }
 
-float utils::perlin_noise::noise(float x, float y, float z)
+float utils::perlin_noise::noise(float x, float y, float z) const
 {
 	// Find the unit cube that contains the point
 	int32_t X = (int32_t)floor(x) & 255;
@@ -86,6 +88,69 @@ float utils::perlin_noise::noise(float x, float y, float z)
 	return (res + 1.0) / 2.0;
 }
 
+std::vector<float> utils::perlin_noise::noise_1d_array(
+	const int size,
+	int scale,
+	float morph,
+	float move_x /*= 0.f*/) const
+{
+	std::vector<float> result;
+	result.resize(size);
+
+	// other noise 
+	// Visit every pixel of the image and assign a color generated with Perlin noise 
+	int pos = 0;
+	for(unsigned int x = 0; x < size; ++x)
+	{  // y 
+		float dx = static_cast<float>(x) / (static_cast<float>(size));
+
+		// Typical Perlin noise 
+		float n = noise(scale * dx - move_x, 0.f, morph);
+
+		//// Wood like structure 
+		//n = 20 * m_other_noise.noise(x, y, m_something);
+		//n = n - floor(n);
+
+		result[pos] = n;
+		pos++;
+	}
+	return std::move(result);
+}
+std::vector<float> utils::perlin_noise::noise_2d_array(
+	const int size,
+	int scale,
+	float morph,
+	float move_x /*= 0.f*/,
+	float move_y /*= 0.f*/) const
+{
+	std::vector<float> result;
+	int new_size = size * size;
+	result.resize(new_size);
+
+	// other noise 
+	// Visit every pixel of the image and assign a color generated with Perlin noise 
+	int pos = 0;
+	for(unsigned int y = 0; y < size; ++y)
+	{     // x 
+		for(unsigned int x = 0; x < size; ++x)
+		{  // y 
+			float dx = static_cast<float>(x) / (static_cast<float>(size));
+			float dy = static_cast<float>(y) / (static_cast<float>(size));
+
+			// Typical Perlin noise 
+			float n = noise(scale * dx - move_x, scale * dy + move_y, morph);
+
+			//// Wood like structure 
+			//n = 20 * m_other_noise.noise(x, y, m_something);
+			//n = n - floor(n);
+
+			result[pos] = n;
+			pos++;
+		}
+	}
+	return std::move(result);
+}
+
 void utils::perlin_noise::change_seed(uint32_t seed)
 {
 	// Initialize a random engine with seed
@@ -103,17 +168,17 @@ void utils::perlin_noise::change_seed(uint32_t seed)
 	m_permutation.insert(m_permutation.end(), m_permutation.begin(), m_permutation.end());
 }
 
-float utils::perlin_noise::fade(float t)
+float utils::perlin_noise::fade(float t) const
 {
 	return t * t * t * (t * (t * 6 - 15) + 10);
 }
 
-float utils::perlin_noise::lerp(float t, float a, float b)
+float utils::perlin_noise::lerp(float t, float a, float b) const
 {
 	return a + t * (b - a);
 }
 
-float utils::perlin_noise::grad(int32_t hash, float x, float y, float z)
+float utils::perlin_noise::grad(int32_t hash, float x, float y, float z) const
 {
 	int32_t h = hash & 15;
 	// Convert lower 4 bits of hash into 12 gradient directions
