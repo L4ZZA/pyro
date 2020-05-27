@@ -17,15 +17,14 @@ noise2d_scene::~noise2d_scene()
 
 void noise2d_scene::init()
 {
-    m_cam_controller->position({ -8.5f, 266.5f, 0.f });
+    m_cam_controller->position({ 295.f, 266.5f, 0.f });
     m_cam_controller->zoom_level(300.f);
 
     pyro::texture_parameters params;
     params.format = pyro::e_texture_format::red;
     params.filter = pyro::e_texture_filter::nearest;
-    m_noise_texture = pyro::texture_2d::create(s_texture_size, s_texture_size, params);
-    
-    m_my_texture = pyro::texture_2d::create(s_texture_size, s_texture_size, params);
+    m_noise_texture = 
+        pyro::texture_2d::create(s_texture_size, s_texture_size, params);
     
     on_seed_changed();
 }
@@ -46,33 +45,25 @@ void noise2d_scene::on_update(pyro::timestep const &ts)
         if(m_bias < 0.2f)
             m_bias = 0.2f;
 
-        utils::perlin_noise_2d(
-            s_texture_size, m_octaves, m_bias, m_seed, m_noise_2d.data());
+        if(m_noise_type == 0)
+        {
+            utils::perlin_noise_2d(
+                s_texture_size, m_octaves, m_bias, m_seed, m_noise_2d.data());
 
-        m_noise_texture->data(m_noise_2d.data(), m_noise_2d.size(), pyro::e_texture_data_type::Float);
-
-        // other noise 
-        // Visit every pixel of the image and assign a color generated with Perlin noise 
-        int pos = 0;
-        for(unsigned int y = 0; y < s_texture_size; ++y)
-        {     // x 
-            for(unsigned int x = 0; x < s_texture_size; ++x)
-            {  // y 
-                float dx = static_cast<float>(x) / (static_cast<float>(s_texture_size));
-                float dy = static_cast<float>(y) / (static_cast<float>(s_texture_size));
-
-                // Typical Perlin noise 
-                float n = m_other_noise.noise(m_scale * dx - m_move_x, m_scale * dy + m_move_y, m_morph);
-
-                //// Wood like structure 
-                //n = 20 * m_other_noise.noise(x, y, m_something);
-                //n = n - floor(n);
-
-                m_vendor_noise_2d[pos] = n;
-                pos++;
-            }
+            m_noise_texture->data(m_noise_2d.data(), m_noise_2d.size(), 
+                pyro::e_texture_data_type::Float);
         }
-        m_my_texture->data(m_vendor_noise_2d.data(), m_vendor_noise_2d.size(), pyro::e_texture_data_type::Float);
+        else if(m_noise_type == 1)
+        {
+            auto tmp_vec = m_other_noise.noise_2d_array(
+                s_texture_size, 
+                m_scale, 
+                m_morph, 
+                m_move_x, m_move_y);
+            std::copy_n(std::move(tmp_vec.begin()), tmp_vec.size(), m_noise_2d.begin());
+            m_noise_texture->data(m_noise_2d.data(), m_noise_2d.size(), 
+                pyro::e_texture_data_type::Float);
+        }
     }
 }
 
@@ -85,16 +76,11 @@ void noise2d_scene::on_render_internal() const
             pyro::quad_properties props;
             uint32_t index = y * s_texture_size + x;
             float noise1 = m_noise_2d[index];
-            float noise2 = m_vendor_noise_2d[index];
 
             props.color = color_map(noise1);
             //props.color = { noise ,noise ,noise, 1.f };
             props.position = { x * (rect_width), y * (rect_width), 0.0f };
             props.size = { rect_width, rect_width };
-            pyro::renderer_2d::draw_quad(props);
-
-            props.position = { - (s_texture_size * step) + x * (rect_width),  y * (rect_width), 0.0f };
-            props.color = color_map(noise2);
             pyro::renderer_2d::draw_quad(props);
         }
 
@@ -107,43 +93,70 @@ void noise2d_scene::on_render_internal() const
         props.texture = m_noise_texture;
         pyro::renderer_2d::draw_quad(props);
     }
-    {
-        pyro::quad_properties props;
-        props.position = { -rect_width * s_texture_size * 1.5f, rect_width * s_texture_size * .5f, 0.1f };
-        props.color = { 1.f, 1.0f, 1.f, 1.f };
-        props.size = { rect_width * s_texture_size, rect_width * s_texture_size };
-        props.texture = m_my_texture;
-        pyro::renderer_2d::draw_quad(props);
-    }
 }
 
 void noise2d_scene::on_imgui_render()
 {
+    const std::array<char *, 2> items = { "Simple Noise", "Improved Perlin" };
+    static const char *current_item = "Simple Noise";
+
+    ImGui::Text("- Type: ");
+    ImGui::SameLine();
+    // The second parameter is the label previewed before opening the combo.
+    if(ImGui::BeginCombo("##combo", current_item))
+    {
+        for(int n = 0; n < items.size(); n++)
+        {
+            // You can store your selection however you want, outside or inside your objects
+            bool is_selected = (current_item == items[n]);
+            if(ImGui::Selectable(items[n], is_selected))
+            {
+                if(m_noise_type != n)
+                {
+                    m_noise_type = n;
+                    on_seed_changed();
+                    current_item = items[n];
+                }
+                //if(is_selected)
+                //{
+                    //// You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+                    //ImGui::SetItemDefaultFocus();   
+                //}
+            }
+        }
+        ImGui::EndCombo();
+    }
     ImGui::Text("- Seed: ");
     ImGui::SameLine();
     if(ImGui::InputInt("##seed", &m_seed))
     {
         on_seed_changed();
     }
-    ImGui::Text("- Octaves: ");
-    ImGui::SameLine();
-    m_noise_changed |= ImGui::SliderInt("##octaves", &m_octaves, 1, 8);
-    ImGui::Text("- Bias: ");
-    ImGui::SameLine();
-    m_noise_changed |= ImGui::SliderFloat("##bias", &m_bias, 0.1f, 2.f);
 
-    ImGui::Text("- Scale: ");
-    ImGui::SameLine();
-    m_noise_changed |= ImGui::SliderInt("##scale", &m_scale, 1, 100);
-    ImGui::Text("- Morph: ");
-    ImGui::SameLine();
-    m_noise_changed |= ImGui::SliderFloat("##morph", &m_morph, 0.1f, 50.f);
-    ImGui::Text("- Move x: ");
-    ImGui::SameLine();
-    m_noise_changed |= ImGui::SliderFloat("##move_x", &m_move_x, -50.f, 50.f);
-    ImGui::Text("- Move y: ");
-    ImGui::SameLine();
-    m_noise_changed |= ImGui::SliderFloat("##move_y", &m_move_y, -50.f, 50.f);
+    if(m_noise_type == 0)
+    {
+        ImGui::Text("- Octaves: ");
+        ImGui::SameLine();
+        m_noise_changed |= ImGui::SliderInt("##octaves", &m_octaves, 1, 8);
+        ImGui::Text("- Bias: ");
+        ImGui::SameLine();
+        m_noise_changed |= ImGui::SliderFloat("##bias", &m_bias, 0.1f, 2.f);
+    }
+    else if(m_noise_type == 1)
+    {
+        ImGui::Text("- Scale: ");
+        ImGui::SameLine();
+        m_noise_changed |= ImGui::SliderInt("##scale", &m_scale, 1, 100);
+        ImGui::Text("- Morph: ");
+        ImGui::SameLine();
+        m_noise_changed |= ImGui::SliderFloat("##morph", &m_morph, 0.1f, 50.f);
+        ImGui::Text("- Move x: ");
+        ImGui::SameLine();
+        m_noise_changed |= ImGui::SliderFloat("##move_x", &m_move_x, -50.f, 50.f);
+        ImGui::Text("- Move y: ");
+        ImGui::SameLine();
+        m_noise_changed |= ImGui::SliderFloat("##move_y", &m_move_y, -50.f, 50.f);
+    }
 
     ImGui::Text("- Line width: %f", rect_width);
 }

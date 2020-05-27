@@ -8,6 +8,7 @@ noise1d_scene::noise1d_scene(pyro::ref<pyro::camera_controller> cam_controller)
     , m_seed(0)
     , m_rand(0)
     , m_octaves(5)
+    , m_other_noise(0)
 {
 }
 
@@ -38,8 +39,20 @@ void noise1d_scene::on_update(pyro::timestep const &ts)
         if(m_bias < 0.2f)
             m_bias = 0.2f;
 
-        utils::perlin_noise_1d(
-            s_texture_size, m_octaves, m_bias, m_seed, m_noise_1d.data());
+        if(m_noise_type == 0)
+        {
+            utils::perlin_noise_1d(
+                s_texture_size, m_octaves, m_bias, m_seed, m_noise_1d.data());
+        }
+        else if(m_noise_type == 1)
+        {
+            auto tmp_vec = m_other_noise.noise_1d_array(
+                s_texture_size,
+                m_scale,
+                m_morph,
+                m_move_x);
+            std::copy_n(std::move(tmp_vec.begin()), tmp_vec.size(), m_noise_1d.begin());
+        }
     }
 }
 
@@ -71,18 +84,59 @@ void noise1d_scene::on_render_internal() const
 
 void noise1d_scene::on_imgui_render()
 {
+    const std::array<char*, 2> items = { "Simple Noise", "Improved Perlin" };
+    static const char *current_item = "Simple Noise";
+
+    ImGui::Text("- Type: ");
+    ImGui::SameLine();
+    // The second parameter is the label previewed before opening the combo.
+    if(ImGui::BeginCombo("##combo", current_item))
+    {
+        for(int n = 0; n < items.size(); n++)
+        {
+            // You can store your selection however you want, outside or inside your objects
+            bool is_selected = (current_item == items[n]); 
+            if(ImGui::Selectable(items[n], is_selected))
+            {
+                if(m_noise_type != n)
+                {
+                    m_noise_type = n;
+                    on_seed_changed();
+                    current_item = items[n];
+                }
+                //if(is_selected)
+                //{
+                    //// You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+                    //ImGui::SetItemDefaultFocus();   
+                //}
+            }
+        }
+        ImGui::EndCombo();
+    }
     ImGui::Text("- Seed: ");
     ImGui::SameLine();
-    if(ImGui::InputInt("##seed", &m_seed))
+
+    if(m_noise_type == 0)
     {
-        on_seed_changed();
+        ImGui::Text("- Octaves: ");
+        ImGui::SameLine();
+        m_noise_changed |= ImGui::SliderInt("##octaves", &m_octaves, 1, 8);
+        ImGui::Text("- Bias: ");
+        ImGui::SameLine();
+        m_noise_changed |= ImGui::SliderFloat("##bias", &m_bias, 0.1f, 2.f);
     }
-    ImGui::Text("- Octaves: ");
-    ImGui::SameLine(); 
-    m_noise_changed |= ImGui::SliderInt("##octaves", &m_octaves, 1, 8);
-    ImGui::Text("- Bias: ");
-    ImGui::SameLine(); 
-    m_noise_changed |= ImGui::SliderFloat("##bias", &m_bias, 0.1f, 2.f);
+    else if(m_noise_type == 1)
+    {
+        ImGui::Text("- Scale: ");
+        ImGui::SameLine();
+        m_noise_changed |= ImGui::SliderInt("##scale", &m_scale, 1, 100);
+        ImGui::Text("- Morph: ");
+        ImGui::SameLine();
+        m_noise_changed |= ImGui::SliderFloat("##morph", &m_morph, 0.1f, 50.f);
+        ImGui::Text("- Move x: ");
+        ImGui::SameLine();
+        m_noise_changed |= ImGui::SliderFloat("##move_x", &m_move_x, -50.f, 50.f);
+    }
     ImGui::Text("- Line width: %f", rect_width);
 }
 

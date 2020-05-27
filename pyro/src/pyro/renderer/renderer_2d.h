@@ -32,7 +32,7 @@ namespace pyro
 
         static const uint32_t s_quad_vertex_count = 4;
         static const uint32_t s_quad_indices = 6;
-        static const uint32_t s_max_quads = 20000;
+        static const uint32_t s_max_quads = 100000;
         static const uint32_t s_max_vertices = s_max_quads * s_quad_vertex_count;
         static const uint32_t s_max_indices = s_max_quads * s_quad_indices;
         static const uint32_t s_max_texture_slots = 32;

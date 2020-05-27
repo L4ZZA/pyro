@@ -33,13 +33,12 @@ private:
     float gap = 0.0f;
 
     utils::random m_rand;
+    int m_noise_type = 0;
     int m_seed;
     static const int s_texture_size = 256;
-    pyro::ref<pyro::texture_2d> m_my_texture;
     pyro::ref<pyro::texture_2d> m_noise_texture;
 
     std::array<float, s_texture_size *s_texture_size> m_noise_2d{ 0 };
-    std::array<float, s_texture_size *s_texture_size> m_vendor_noise_2d{ 0 };
 
     int m_scale = 10;
     float m_morph = 0.8f;
