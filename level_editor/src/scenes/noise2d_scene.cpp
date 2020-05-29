@@ -23,9 +23,9 @@ void noise2d_scene::init()
     pyro::texture_parameters params;
     params.format = pyro::e_texture_format::red;
     params.filter = pyro::e_texture_filter::nearest;
-    m_noise_texture = 
+    m_noise_texture =
         pyro::texture_2d::create(s_texture_size, s_texture_size, params);
-    
+
     on_seed_changed();
 }
 
@@ -50,20 +50,19 @@ void noise2d_scene::on_update(pyro::timestep const &ts)
             utils::perlin_noise_2d(
                 s_texture_size, m_octaves, m_bias, m_seed, m_noise_2d.data());
 
-            m_noise_texture->data(m_noise_2d.data(), m_noise_2d.size(), 
-                pyro::e_texture_data_type::Float);
         }
         else if(m_noise_type == 1)
         {
             auto tmp_vec = m_other_noise.noise_2d_array(
-                s_texture_size, 
-                m_scale, 
-                m_morph, 
+                s_texture_size,
+                m_scale,
+                m_morph,
                 m_move_x, m_move_y);
             std::copy_n(std::move(tmp_vec.begin()), tmp_vec.size(), m_noise_2d.begin());
-            m_noise_texture->data(m_noise_2d.data(), m_noise_2d.size(), 
-                pyro::e_texture_data_type::Float);
+
         }
+        m_noise_texture->data(m_noise_2d.data(), m_noise_2d.size(),
+            pyro::e_texture_data_type::Float);
     }
 }
 
