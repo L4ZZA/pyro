@@ -194,8 +194,8 @@ project "tests"
     cppdialect "C++17"
     staticruntime "on"
 
-    targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("../inter/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("inter/" .. outputdir .. "/%{prj.name}")
 
     files
     {
