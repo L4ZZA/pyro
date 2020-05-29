@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE(noise_2d_changed)
     std::array<float, size * size> noise_2d_second;
 
     utils::perlin_noise_2d(size, 5, 0.2f, 0, noise_2d.data());
-    utils::perlin_noise_2d(size, 7, 0.2f, 0, noise_2d_second.data());
+    utils::perlin_noise_2d(size, 7, 0.3f, 0, noise_2d_second.data());
 
     for(int i = 0; i < size * size; i++)
     {
