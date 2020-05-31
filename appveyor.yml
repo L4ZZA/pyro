@@ -1,0 +1,42 @@
+environment:
+  matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      ROOT: c:/dev/source
+      CONFIG: Release
+      OS: windows
+      PLAT: x86_64
+
+image:
+  - Visual Studio 2019
+
+# branches to build
+branches:
+  # whitelist
+  only:
+    - procedural_generation
+
+clone_folder: $(ROOT)
+
+version: '0.1.{build}'
+
+configuration:
+- Release
+
+install:
+- cmd: vcpkg install boost-test:x64-windows-static
+- cmd: git submodule update --init
+- cmd: c:/dev/source/generate_solution_vs2019.bat
+
+build:
+  parallel: true    # enable MSBuild parallel builds
+  project: pyro.sln # path to Visual Studio solution or project
+
+after_build: 
+- cmd: '%ROOT%/bin/%CONFIG%-%OS%-%PLAT%/tests/tests.exe' 
+
+test_script:
+- cmd: vstest.console /logger:Appveyor bin/%CONFIG%-%OS%-%PLAT%/tests/tests.exe
+
+artifacts:
+- path: '**/*level_editor.exe'
+- path: '**/*pyro.lib'
