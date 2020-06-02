@@ -113,6 +113,7 @@ void pyro::renderer_2d::begin_scene(ref<camera> camera)
     s_data.texture_shader->bind();
     s_data.texture_shader->set_mat4("u_view_projection", 
         camera->view_projection_matrix());
+    s_data.texture_shader->set_int("u_grayscale", false);
 
     reset_render_data();
 }
