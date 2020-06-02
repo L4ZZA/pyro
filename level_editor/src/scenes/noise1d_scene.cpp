@@ -115,6 +115,10 @@ void noise1d_scene::on_imgui_render()
     }
     ImGui::Text("- Seed: ");
     ImGui::SameLine();
+    if(ImGui::InputInt("##seed", &m_seed))
+    {
+        on_seed_changed();
+    }
 
     if(m_noise_type == 0)
     {
@@ -149,28 +153,38 @@ void noise1d_scene::on_event(pyro::event &e)
 
 bool noise1d_scene::on_key_pressed(pyro::key_pressed_event &e)
 {
+    if(e.key_code() == pyro::key_codes::KEY_KP_ADD)
+    {
+        m_seed++;
+        on_seed_changed();
+    }
+    else if(e.key_code() == pyro::key_codes::KEY_KP_SUBTRACT)
+    {
+        m_seed--;
+        on_seed_changed();
+    }
     if(e.key_code() == pyro::key_codes::KEY_DOWN)
     {
         m_octaves--;
-        m_noise_changed = true;
+        on_seed_changed();
     }
     else if(e.key_code() == pyro::key_codes::KEY_UP)
     {
         m_octaves++;
-        m_noise_changed = true;
+        on_seed_changed();
     }
     if(e.key_code() == pyro::key_codes::KEY_LEFT)
     {
         if(m_bias > 0.2f)
         {
             m_bias -= 0.2f;
-            m_noise_changed = true;
+            on_seed_changed();
         }
     }
     else if(e.key_code() == pyro::key_codes::KEY_RIGHT)
     {
         m_bias += 0.2f;
-        m_noise_changed = true;
+        on_seed_changed();
     }
 
 
@@ -205,5 +219,7 @@ glm::vec4 noise1d_scene::color_map(float noise) const
 
 void noise1d_scene::on_seed_changed()
 {
+    m_rand.seed(m_seed);
+    m_other_noise.change_seed(m_seed);
     m_noise_changed = true;
 }

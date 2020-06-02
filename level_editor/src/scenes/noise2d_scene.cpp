@@ -68,6 +68,7 @@ void noise2d_scene::on_update(pyro::timestep const &ts)
 
 void noise2d_scene::on_render_internal() const
 {
+    pyro::renderer_2d::current_shader()->set_int("u_grayscale", true);
     for(int y = 0; y < s_texture_size; y += step)
         for(int x = 0; x < s_texture_size; x += step)
         {
@@ -83,7 +84,6 @@ void noise2d_scene::on_render_internal() const
             pyro::renderer_2d::draw_quad(props);
         }
 
-    pyro::renderer_2d::current_shader()->set_int("u_grayscale", true);
     {
         pyro::quad_properties props;
         props.position = { rect_width * s_texture_size * 1.5f, rect_width * s_texture_size * .5f, 0.1f };
@@ -169,35 +169,43 @@ void noise2d_scene::on_event(pyro::event &e)
 
 bool noise2d_scene::on_key_pressed(pyro::key_pressed_event &e)
 {
-    if(e.event_type() == pyro::event_type_e::key_pressed)
+    if(e.key_code() == pyro::key_codes::KEY_KP_ADD)
     {
-        if(e.key_code() == pyro::key_codes::KEY_DOWN)
-        {
-            m_octaves--;
-            m_noise_changed = true;
-        }
-        else if(e.key_code() == pyro::key_codes::KEY_UP)
-        {
-            m_octaves++;
-            m_noise_changed = true;
-        }
-        if(e.key_code() == pyro::key_codes::KEY_LEFT)
-        {
-            if(m_bias > 0.2f)
-            {
-                m_bias -= 0.2f;
-                m_noise_changed = true;
-            }
-        }
-        else if(e.key_code() == pyro::key_codes::KEY_RIGHT)
-        {
-            m_bias += 0.2f;
-            m_noise_changed = true;
-        }
-
-
-        //PYRO_TRACE("{0}", static_cast<char>(e.key_code())); 
+        m_seed++;
+        on_seed_changed();
     }
+    else if(e.key_code() == pyro::key_codes::KEY_KP_SUBTRACT)
+    {
+        m_seed--;
+        on_seed_changed();
+    }
+    if(e.key_code() == pyro::key_codes::KEY_DOWN)
+    {
+        m_octaves--;
+        m_noise_changed = true;
+    }
+    else if(e.key_code() == pyro::key_codes::KEY_UP)
+    {
+        m_octaves++;
+        m_noise_changed = true;
+    }
+    if(e.key_code() == pyro::key_codes::KEY_LEFT)
+    {
+        if(m_bias > 0.2f)
+        {
+            m_bias -= 0.2f;
+            m_noise_changed = true;
+        }
+    }
+    else if(e.key_code() == pyro::key_codes::KEY_RIGHT)
+    {
+        m_bias += 0.2f;
+        m_noise_changed = true;
+    }
+
+
+    //PYRO_TRACE("{0}", static_cast<char>(e.key_code())); 
+
     return false;
 }
 
@@ -229,6 +237,6 @@ glm::vec4 noise2d_scene::color_map(float noise) const
 void noise2d_scene::on_seed_changed()
 {
     m_rand.seed(m_seed);
-    m_other_noise.change_seed(m_rand.seed());
+    m_other_noise.change_seed(m_seed);
     m_noise_changed = true;
 }
