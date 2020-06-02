@@ -13,13 +13,12 @@ namespace utils
 
     public:
 
-        random(int32_t custom_seed);
-        bool init(int32_t custom_seed);
+        random(uint32_t custom_seed);
 
-        void seed(int32_t seed);
+        void seed(uint32_t seed);
         uint32_t seed();
         // Returns a random floating point value between 0 and 1.
-        float get_float();
+        float get_float() const;
         // Returns a random uint32 value between a given range [min,max]
         // default values are int32_t min values and int32_t max value,
         // or between the specified range.
@@ -29,26 +28,21 @@ namespace utils
     private:
         uint32_t m_seed;
         bool m_initialized = false;
+        // This is mutable to allow const method to change its value,
+        // as apparently distribution(engine) does..
+        mutable std::mt19937 m_random_engine;
     };
 
-    inline random::random(int32_t custom_seed)
+    inline random::random(uint32_t custom_seed)
         : m_seed(custom_seed)
+        , m_random_engine(custom_seed)
     {
     }
 
-    inline bool random::init(int32_t custom_seed)
-    {
-        if(m_initialized)
-            return false;
-
-        seed(custom_seed);
-        m_initialized = true;
-        return true;
-    }
-
-    inline void random::seed(int32_t seed)
+    inline void random::seed(uint32_t seed)
     {
         m_seed = seed;
+        m_random_engine = std::mt19937(seed);
     }
 
     inline uint32_t random::seed()
@@ -56,17 +50,18 @@ namespace utils
         return m_seed;
     }
 
-    inline float random::get_float()
+    inline float random::get_float() const
     {
-        std::mt19937 m_random_engine(m_seed);
-        std::uniform_int_distribution<int32_t> distribution;
-        return static_cast<float>(distribution(m_random_engine)) / static_cast<float>(s_uint_max);
+        std::uniform_int_distribution<std::mt19937::result_type> distribution;
+        auto a = distribution(m_random_engine);
+        auto max = s_uint_max;
+        float res = static_cast<float>(a) / static_cast<float>(max);
+        return res;
     }
 
     inline int32_t random::get_int(int32_t min /*= s_uint_min*/, int32_t max /*= s_uint_max*/) const
     {
-        std::mt19937 m_random_engine(m_seed);
-        std::uniform_int_distribution<int32_t> distribution(min, max);
+        std::uniform_int_distribution<std::mt19937::result_type> distribution(min, max);
         return distribution(m_random_engine);
     }
 

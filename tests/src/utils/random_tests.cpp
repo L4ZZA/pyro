@@ -29,6 +29,24 @@ using namespace utils;
 
 BOOST_AUTO_TEST_SUITE(randoms)
 
+BOOST_AUTO_TEST_CASE(random_values, *utf::tolerance(0.00001))
+{
+    float first;
+    float second;
+    float third;
+
+    {
+        random rand(1);
+        first = rand.get_float();
+    
+        second = rand.get_float();
+        BOOST_TEST(first != second);
+    
+        third = rand.get_float();
+        BOOST_TEST(first  != third);
+        BOOST_TEST(second != third);
+    }
+}
 BOOST_AUTO_TEST_CASE(same_random_float, *utf::tolerance(0.00001))
 {
     float first;
