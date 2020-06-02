@@ -15,7 +15,7 @@ namespace utils
     }
 
     inline void perlin_noise_1d(int output_size, float octaves, float bias, 
-                                uint64_t seed, float* output_noise,
+                                uint32_t seed, float* output_noise,
                                 bool connect = false)
     {
         utils::random rand(seed);
@@ -59,10 +59,10 @@ namespace utils
     }
 
     inline void perlin_noise_2d(int output_size, float octaves, float bias, 
-                                uint64_t seedd, float* output_noise,
+                                uint32_t seed, float* output_noise,
                                 bool connect = false)
     {
-        utils::random rand(seedd);
+        utils::random rand(seed);
         std::vector<float> seed_array;
         seed_array.resize(output_size * output_size);
         for(auto &slot : seed_array)
