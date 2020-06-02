@@ -2,6 +2,7 @@
 #include "imgui/imgui.h"
 #include "scenes/noise1d_scene.h" 
 #include "scenes/noise2d_scene.h" 
+#include "scenes/roguelike_scene.h" 
 #include "utils/random.h" 
 
 
@@ -15,6 +16,7 @@ layer_2d::layer_2d(float width, float height)
     auto cam = m_2d_camera_controller->camera();
     m_scene_manager.add_scene(pyro::make_ref<noise1d_scene>(m_2d_camera_controller));
     m_scene_manager.add_scene(pyro::make_ref<noise2d_scene>(m_2d_camera_controller));
+    m_scene_manager.add_scene(pyro::make_ref<roguelike_scene>(m_2d_camera_controller));
 }
 
 layer_2d::~layer_2d()
@@ -100,6 +102,9 @@ void layer_2d::on_event(pyro::event &e)
             break;
         case pyro::key_codes::KEY_2:
             m_scene_manager.go_to(1);
+            break;
+        case pyro::key_codes::KEY_3:
+            m_scene_manager.go_to(2);
             break;
         }
 
