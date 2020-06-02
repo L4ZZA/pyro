@@ -27,7 +27,7 @@ namespace utils
         }
         if(connect)
         {
-            seed_array[0] = 0.5;
+            seed_array[0] = 0.5f;
         }
 
         for (int x = 0; x < output_size; x++)
