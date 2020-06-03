@@ -17,10 +17,15 @@ roguelike_scene::~roguelike_scene()
 {
 }
 
-bool is_room(room r, int x, int y)
+bool is_floor(room r, int x, int y)
 {
-    return
-        x >= r.pos_x && x < r.pos_x + r.width &&
+    return x > r.pos_x && x < r.pos_x + r.width -1 &&
+        y > r.pos_y && y < r.pos_y + r.height - 1;
+}
+
+bool is_wall(room r, int x, int y)
+{
+    return x >= r.pos_x && x < r.pos_x + r.width &&
         y >= r.pos_y && y < r.pos_y + r.height;
 }
 
@@ -33,11 +38,6 @@ void roguelike_scene::init()
     m_floor_texture = pyro::texture_2d::create_from_file("assets/textures/floor.png");
     m_nothing_texture   = pyro::texture_2d::create_from_file("assets/textures/nothing.png");
     
-
-    r.pos_x  = m_rand.get_int(0, width / 2.f);
-    r.pos_y  = m_rand.get_int(0, height / 2.f);
-    r.width  = m_rand.get_int(2, 5);
-    r.height = m_rand.get_int(2, 5);
     m_rooms.push_back(r);
 
     size_t size = width * height;
@@ -55,8 +55,8 @@ void roguelike_scene::on_update(pyro::timestep const &ts)
     if(m_noise_changed)
     {
         m_noise_changed = false;
-        r.width = m_rand.get_int(2, 5);
-        r.height = m_rand.get_int(2, 5);
+        r.width = m_rand.get_int(3, 6);
+        r.height = m_rand.get_int(3, 6);
         r.pos_x = width / 2.f  - r.width / 2.f;
         r.pos_y = height / 2.f - r.height / 2.f;
         m_rooms[0] = r;
@@ -66,13 +66,15 @@ void roguelike_scene::on_update(pyro::timestep const &ts)
             {
                 int index = x * height + y;
                 pyro::quad_properties props;
+                //props.size = glm::vec2(0.95f);
                 props.position = { x, y, 0.f };
                 for(auto &room : m_rooms)
                 {
-                    if(is_room(room, x, y))
+                    props.texture = m_nothing_texture;
+                    if(is_wall(room, x, y))
+                        props.texture = m_wall_texture;
+                    if(is_floor(room, x, y))
                         props.texture = m_floor_texture;
-                    else
-                        props.texture = m_nothing_texture;
                 }
                 m_tiles[index].props = props;
             }

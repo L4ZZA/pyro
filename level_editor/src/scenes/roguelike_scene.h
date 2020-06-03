@@ -58,7 +58,8 @@ private:
 
     bool m_noise_changed = false;
     int max_rooms = 5;
-    int width = 50, height = 50;
+    int width  = 80;
+    int height = 50;
     pyro::ref<pyro::texture_2d> m_wall_texture;
     pyro::ref<pyro::texture_2d> m_floor_texture;
     pyro::ref<pyro::texture_2d> m_nothing_texture;
