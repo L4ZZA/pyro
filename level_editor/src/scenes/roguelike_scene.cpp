@@ -7,7 +7,7 @@
 roguelike_scene::roguelike_scene(pyro::ref<pyro::camera_controller> cam_controller)
     : base_noise_scene(cam_controller->camera())
     , m_cam_controller(cam_controller)
-    , m_seed(0)
+    , m_seed(7)
     , m_rand(0)
     , m_other_noise(0)
 {
@@ -17,30 +17,41 @@ roguelike_scene::~roguelike_scene()
 {
 }
 
-bool is_floor(room r, int x, int y)
+bool is_floor(room const &r, int x, int y)
 {
     return x > r.pos_x && x < r.pos_x + r.width -1 &&
         y > r.pos_y && y < r.pos_y + r.height - 1;
 }
 
-bool is_wall(room r, int x, int y)
+bool is_wall(room const &r, int x, int y)
 {
     return x >= r.pos_x && x < r.pos_x + r.width &&
         y >= r.pos_y && y < r.pos_y + r.height;
 }
 
+bool are_overlapping(room const &a, room const &b)
+{
+    glm::vec2 min(a.pos_x, a.pos_y);
+    glm::vec2 max(a.pos_x + a.width, a.pos_y + a.height);
+    glm::vec2 other_min(b.pos_x,  b.pos_y);
+    glm::vec2 other_max(b.pos_x + b.width, b.pos_y + b.height);
+
+    bool overlapping = (max >= other_min && min < other_max) 
+                    || (min <= other_max && max < other_min);
+    return overlapping;
+}
+
+
 void roguelike_scene::init()
 {
-    m_cam_controller->position({ 21.f, 24.f, 0.f });
+    m_cam_controller->position({ 39.f, 24.f, 0.f });
     m_cam_controller->zoom_level(29.f);
 
     m_wall_texture  = pyro::texture_2d::create_from_file("assets/textures/wall.png");
     m_floor_texture = pyro::texture_2d::create_from_file("assets/textures/floor.png");
     m_nothing_texture   = pyro::texture_2d::create_from_file("assets/textures/nothing.png");
-    
-    m_rooms.push_back(r);
 
-    size_t size = width * height;
+    size_t size = m_width * m_height;
     m_tiles.resize(size);
 
     on_seed_changed();
@@ -55,26 +66,72 @@ void roguelike_scene::on_update(pyro::timestep const &ts)
     if(m_noise_changed)
     {
         m_noise_changed = false;
-        r.width = m_rand.get_int(3, 6);
-        r.height = m_rand.get_int(3, 6);
-        r.pos_x = width / 2.f  - r.width / 2.f;
-        r.pos_y = height / 2.f - r.height / 2.f;
-        m_rooms[0] = r;
 
-        for(float x = 0; x < width; x++)
-            for(float y = 0; y < height; y++)
+        int n_rooms = m_rand.get_int(4, 10);
+        m_rooms.resize(n_rooms);
+
+        int i = 0;
+        for(int i = 0; i < n_rooms; i++)
+        {
+            // create random room
+            room rr;
+            rr.width = m_rand.get_int(4, 8);
+            rr.height = m_rand.get_int(4, 8);
+            rr.pos_x = m_rand.get_int(0, m_width - rr.width);
+            rr.pos_y = m_rand.get_int(0, m_height - rr.height);
+            //rr.pos_x = width / 2.f  - rr.width / 2.f;
+            //rr.pos_y = height / 2.f - rr.height / 2.f;
+
+            // go through all the previously created rooms if any
+            int j = 0;
+            while(j < i)
             {
-                int index = x * height + y;
+                // if the new room isn't overlapping with any other keep it 
+                bool overlapping = are_overlapping(rr, m_rooms[j]);
+                
+                if(overlapping)
+                {
+                    // change room
+                    rr.width = m_rand.get_int(4, 8);
+                    rr.height = m_rand.get_int(4, 8);
+                    rr.pos_x = m_rand.get_int(0, m_width - rr.width);
+                    rr.pos_y = m_rand.get_int(0, m_height - rr.height);
+                    j = 0;
+                }
+                else
+                {
+                    // check against next previously created room
+                    j++;
+                }
+            }
+            m_rooms[i] = rr;
+            i++;
+        }
+
+
+        for(float x = 0; x < m_width; x++)
+            for(float y = 0; y < m_height; y++)
+            {
+                int index = x * m_height + y;
                 pyro::quad_properties props;
                 //props.size = glm::vec2(0.95f);
                 props.position = { x, y, 0.f };
                 for(auto &room : m_rooms)
                 {
                     props.texture = m_nothing_texture;
+                    bool room_found = false;
                     if(is_wall(room, x, y))
+                    {
                         props.texture = m_wall_texture;
+                        room_found = true;
+                    }
                     if(is_floor(room, x, y))
+                    {
                         props.texture = m_floor_texture;
+                        room_found = true;
+                    }
+                    if(room_found)
+                        break;
                 }
                 m_tiles[index].props = props;
             }
@@ -122,12 +179,10 @@ void roguelike_scene::on_imgui_render()
     //const std::array<char *, 2> items = { "Simple Noise", "Improved Perlin" };
     //static const char *current_item = "Simple Noise";
 
-    ImGui::Text("-- Room: ");
-    ImGui::Text("- pos_x : %d", r.pos_x);
-    ImGui::Text("- pos_y : %d", r.pos_y);
-    ImGui::Text("- width : %d", r.width);
-    ImGui::Text("- height: %d", r.height);
-    //ImGui::Text("- Type: ");
+    ImGui::Text("- Seed: %d", m_seed);
+
+    ImGui::Text("-- Rooms: ");
+    ImGui::Text("- Count : %d", m_rooms.size());
     //ImGui::SameLine();
     //// The second parameter is the label previewed before opening the combo.
     //if(ImGui::BeginCombo("##combo", current_item))

@@ -1,3 +1,4 @@
+#include "pyro.h"
 #include "layer_2d.h"
 #include "imgui/imgui.h"
 #include "scenes/noise1d_scene.h" 
@@ -28,7 +29,8 @@ void layer_2d::on_attach()
 {
     PYRO_PROFILE_FUNCTION();
     imgui_layer::on_attach();
-    m_scene_manager.init_first_scene();
+    //m_scene_manager.init_first_scene();
+    m_scene_manager.go_to(2);
 }
 
 void layer_2d::on_detach()

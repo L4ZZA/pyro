@@ -2,6 +2,7 @@
 #include "base_noise_scene.h"
 #include "utils/random.h"
 #include <vector>
+#include <unordered_map>
 
 enum class e_tile_type
 {
@@ -27,7 +28,25 @@ struct room
     int pos_y;
     int width;
     int height;
+    
+    bool is_the_same(room const &other) const
+    {
+        return pos_x  == other.pos_x 
+            && pos_y == other.pos_y
+            && width == other.width
+            && height == other.height;
+    }
 };
+
+inline bool operator==(room const &left, room const &right)
+{
+    return left.is_the_same(right);
+}
+
+inline bool operator!=(room const &left, room const &right)
+{
+    return !left.is_the_same(right);
+}
 
 class roguelike_scene final : public base_noise_scene
 {
@@ -50,20 +69,19 @@ private:
 private:
     pyro::ref<pyro::camera_controller> m_cam_controller;
     
-
-    room                r;
     int                 m_seed;
     utils::random       m_rand;
     utils::perlin_noise m_other_noise;
 
     bool m_noise_changed = false;
     int max_rooms = 5;
-    int width  = 80;
-    int height = 50;
+    int m_width  = 80;
+    int m_height = 50;
     pyro::ref<pyro::texture_2d> m_wall_texture;
     pyro::ref<pyro::texture_2d> m_floor_texture;
     pyro::ref<pyro::texture_2d> m_nothing_texture;
     std::vector<tile> m_tiles;
     std::vector<room>        m_rooms;
+    std::unordered_map<uint32_t, room> m_rooms_map;
     //map_generator m_map_gen;
 };
