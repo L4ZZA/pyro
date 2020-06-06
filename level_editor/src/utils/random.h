@@ -19,11 +19,10 @@ namespace utils
         uint32_t seed();
         // Returns a random floating point value between 0 and 1.
         float get_float() const;
-        // Returns a random uint32 value between a given range [min,max]
-        // default values are int32_t min values and int32_t max value,
-        // or between the specified range.
+        // Returns a random uint32 value between a given range [min,max].
+        // Default values are zero for min and int32_t::max for max.
         // Cast the result to uint if you want all positive numbers
-        int32_t get_int(int32_t min = 0, int32_t max = s_uint_max) const;
+        int32_t get_int(int32_t min = 0, int32_t max = s_int_max) const;
 
     private:
         uint32_t m_seed;
@@ -59,7 +58,7 @@ namespace utils
         return res;
     }
 
-    inline int32_t random::get_int(int32_t min /*= s_uint_min*/, int32_t max /*= s_uint_max*/) const
+    inline int32_t random::get_int(int32_t min /*= s_int_min*/, int32_t max /*= s_int_max*/) const
     {
         std::uniform_int_distribution<std::mt19937::result_type> distribution(min, max);
         return distribution(m_random_engine);
