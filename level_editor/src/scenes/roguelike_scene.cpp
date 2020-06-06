@@ -7,9 +7,13 @@
 roguelike_scene::roguelike_scene(pyro::ref<pyro::camera_controller> cam_controller)
     : base_noise_scene(cam_controller->camera())
     , m_cam_controller(cam_controller)
-    , m_seed(7)
+    , m_seed(0)
     , m_rand(0)
     , m_other_noise(0)
+    , min_rooms(30)
+    , max_rooms(40)
+    , m_width(80)
+    , m_height(50)
 {
 }
 
@@ -29,19 +33,76 @@ bool is_wall(room const &r, int x, int y)
         y >= r.pos_y && y < r.pos_y + r.height;
 }
 
-bool are_overlapping(room const &a, room const &b)
+bool are_overlapping(room const &bb1, room const &bb2)
 {
-    glm::vec2 min(a.pos_x, a.pos_y);
-    glm::vec2 max(a.pos_x + a.width, a.pos_y + a.height);
-    glm::vec2 other_min(b.pos_x,  b.pos_y);
-    glm::vec2 other_max(b.pos_x + b.width, b.pos_y + b.height);
+    glm::vec2 min(bb1.pos_x, bb1.pos_y);
+    glm::vec2 max(bb1.pos_x + bb1.width - 1, bb1.pos_y + bb1.height - 1);
+    glm::vec2 other_min(bb2.pos_x, bb2.pos_y);
+    glm::vec2 other_max(bb2.pos_x + bb2.width - 1, bb2.pos_y + bb2.height - 1);
 
-    bool overlapping = (max >= other_min && min < other_max) 
-                    || (min <= other_max && max < other_min);
+    float left   = min.x; float other_left   = other_min.x;
+    float right  = max.x; float other_right  = other_max.x;
+    float top    = max.y; float other_top    = other_max.y;
+    float bottom = min.y; float other_bottom = other_min.y;
+    bool overlapping = left   <= other_right
+                    && right  >= other_left
+                    && top    >= other_bottom
+                    && bottom <= other_top;
     return overlapping;
 }
+bool are_touching(room const &bb1, room const &bb2)
+{
+    glm::vec2 min(bb1.pos_x, bb1.pos_y);
+    glm::vec2 max(bb1.pos_x + bb1.width - 1, bb1.pos_y + bb1.height - 1);
+    glm::vec2 other_min(bb2.pos_x, bb2.pos_y);
+    glm::vec2 other_max(bb2.pos_x + bb2.width - 1, bb2.pos_y + bb2.height - 1);
+    
+    float left   = min.x; float other_left   = other_min.x;
+    float right  = max.x; float other_right  = other_max.x;
+    float top    = max.y; float other_top    = other_max.y;
+    float bottom = min.y; float other_bottom = other_min.y;
+    
+    int gap = 1;
+    bool touching = left   == other_right + gap
+                 || right  == other_left - gap
+                 || top    == other_bottom - gap
+                 || bottom == other_top + gap;
+    return touching;
+}
 
+bool roguelike_scene::is_any_overlapping(room const &r) const
+{
+    for(auto const &existing_room : m_rooms)
+    {
+        if(are_overlapping(r, existing_room))
+            return true;
+    }
+    // none are overlapping
+    return false;
+}
 
+bool roguelike_scene::is_any_touching(room const &r) const
+{
+    for(auto const &existing_room : m_rooms)
+    {
+        if(are_touching(r, existing_room))
+            return true;
+    }
+    // none are overlapping
+    return false;
+}
+
+bool roguelike_scene::is_any_overlapping_or_touching(room const &r) const
+{
+    for(auto const &existing_room : m_rooms)
+    {
+        if(are_overlapping(r, existing_room) 
+           || are_touching(r, existing_room))
+            return true;
+    }
+    // none are overlapping
+    return false;
+}
 void roguelike_scene::init()
 {
     m_cam_controller->position({ 39.f, 24.f, 0.f });
@@ -66,46 +127,39 @@ void roguelike_scene::on_update(pyro::timestep const &ts)
     if(m_noise_changed)
     {
         m_noise_changed = false;
+        m_rooms.resize(0);
+        int n_rooms = m_rand.get_int(min_rooms, max_rooms);
 
-        int n_rooms = m_rand.get_int(4, 10);
-        m_rooms.resize(n_rooms);
+        // create random room
+        room first_room;
+        first_room.width = m_rand.get_int(4, 8);
+        first_room.height = m_rand.get_int(4, 8);
+        first_room.pos_x = m_rand.get_int(0, m_width - first_room.width);
+        first_room.pos_y = m_rand.get_int(0, m_height - first_room.height);
+        m_rooms.push_back(first_room);
 
-        int i = 0;
-        for(int i = 0; i < n_rooms; i++)
+        for(int i = 1; i < n_rooms; i++)
         {
             // create random room
-            room rr;
-            rr.width = m_rand.get_int(4, 8);
-            rr.height = m_rand.get_int(4, 8);
-            rr.pos_x = m_rand.get_int(0, m_width - rr.width);
-            rr.pos_y = m_rand.get_int(0, m_height - rr.height);
-            //rr.pos_x = width / 2.f  - rr.width / 2.f;
-            //rr.pos_y = height / 2.f - rr.height / 2.f;
+            room proposed_room;
+            proposed_room.width = m_rand.get_int(4, 8);
+            proposed_room.height = m_rand.get_int(4, 8);
+            proposed_room.pos_x = m_rand.get_int(0, m_width - proposed_room.width);
+            proposed_room.pos_y = m_rand.get_int(0, m_height - proposed_room.height);
 
-            // go through all the previously created rooms if any
-            int j = 0;
-            while(j < i)
+            // go through all the previously created rooms to check if 
+            // the proposed_room overlaps with any of them.
+            // only add if it doesn't
+            if(!is_any_overlapping_or_touching(proposed_room))
             {
-                // if the new room isn't overlapping with any other keep it 
-                bool overlapping = are_overlapping(rr, m_rooms[j]);
-                
-                if(overlapping)
-                {
-                    // change room
-                    rr.width = m_rand.get_int(4, 8);
-                    rr.height = m_rand.get_int(4, 8);
-                    rr.pos_x = m_rand.get_int(0, m_width - rr.width);
-                    rr.pos_y = m_rand.get_int(0, m_height - rr.height);
-                    j = 0;
-                }
-                else
-                {
-                    // check against next previously created room
-                    j++;
-                }
+                m_rooms.push_back(proposed_room);
+
+                PYRO_TRACE("----- room");
+                PYRO_TRACE("x - {}", proposed_room.pos_x);
+                PYRO_TRACE("y - {}", proposed_room.pos_y);
+                PYRO_TRACE("width - {}", proposed_room.width);
+                PYRO_TRACE("height - {}", proposed_room.height);
             }
-            m_rooms[i] = rr;
-            i++;
         }
 
 
@@ -114,7 +168,7 @@ void roguelike_scene::on_update(pyro::timestep const &ts)
             {
                 int index = x * m_height + y;
                 pyro::quad_properties props;
-                //props.size = glm::vec2(0.95f);
+                //props.size = glm::vec2(0.5f);
                 props.position = { x, y, 0.f };
                 for(auto &room : m_rooms)
                 {
@@ -181,6 +235,7 @@ void roguelike_scene::on_imgui_render()
 
     ImGui::Text("- Seed: %d", m_seed);
 
+    ImGui::Text("-------- ");
     ImGui::Text("-- Rooms: ");
     ImGui::Text("- Count : %d", m_rooms.size());
     //ImGui::SameLine();

@@ -65,6 +65,9 @@ private:
     void on_seed_changed() override;
     bool on_key_pressed(pyro::key_pressed_event &e);
     glm::vec4 color_map(float noise) const;
+    bool is_any_overlapping(room const &r) const;
+    bool is_any_touching(room const &r) const;
+    bool is_any_overlapping_or_touching(room const &r) const;
 
 private:
     pyro::ref<pyro::camera_controller> m_cam_controller;
@@ -74,9 +77,10 @@ private:
     utils::perlin_noise m_other_noise;
 
     bool m_noise_changed = false;
-    int max_rooms = 5;
-    int m_width  = 80;
-    int m_height = 50;
+    int min_rooms;
+    int max_rooms;
+    int m_width  ;
+    int m_height ;
     pyro::ref<pyro::texture_2d> m_wall_texture;
     pyro::ref<pyro::texture_2d> m_floor_texture;
     pyro::ref<pyro::texture_2d> m_nothing_texture;
