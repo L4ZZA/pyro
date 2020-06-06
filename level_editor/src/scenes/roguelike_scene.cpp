@@ -14,6 +14,8 @@ roguelike_scene::roguelike_scene(pyro::ref<pyro::camera_controller> cam_controll
     , max_rooms(40)
     , m_width(80)
     , m_height(50)
+    , m_min_room_size(8)
+    , m_max_room_size(16)
 {
 }
 
@@ -23,50 +25,69 @@ roguelike_scene::~roguelike_scene()
 
 bool is_floor(room const &r, int x, int y)
 {
-    return x > r.pos_x && x < r.pos_x + r.width -1 &&
-        y > r.pos_y && y < r.pos_y + r.height - 1;
+    const int right_wall = r.pos_x + r.width - 1;
+    const int top_wall = r.pos_y + r.height - 1;
+    const int left_wall = r.pos_x;
+    const int bottom_wall = r.pos_y;
+
+    return x > left_wall && x < right_wall &&
+           y > bottom_wall && y < top_wall;
 }
 
 bool is_wall(room const &r, int x, int y)
 {
-    return x >= r.pos_x && x < r.pos_x + r.width &&
-        y >= r.pos_y && y < r.pos_y + r.height;
+    const glm::vec2 min(r.pos_x, r.pos_y);
+    const glm::vec2 max(r.pos_x + r.width - 1, r.pos_y + r.height - 1);
+    const glm::vec2 pos(x, y);
+
+    const float left = min.x;  
+    const float right = max.x; 
+    const float top = max.y;   
+    const float bottom = min.y;
+
+    const bool is_left_wall   = x == left   && y >= bottom && y <= top;
+    const bool is_right_wall  = x == right  && y >= bottom && y <= top;
+    const bool is_top_wall    = y == top    && x >= left   && x <= right;
+    const bool is_bottom_wall = y == bottom && x >= left   && x <= right;
+
+    return is_left_wall || is_right_wall || is_top_wall || is_bottom_wall;
 }
 
-bool are_overlapping(room const &bb1, room const &bb2)
+bool are_overlapping(room const &room_a, room const &room_b)
 {
-    glm::vec2 min(bb1.pos_x, bb1.pos_y);
-    glm::vec2 max(bb1.pos_x + bb1.width - 1, bb1.pos_y + bb1.height - 1);
-    glm::vec2 other_min(bb2.pos_x, bb2.pos_y);
-    glm::vec2 other_max(bb2.pos_x + bb2.width - 1, bb2.pos_y + bb2.height - 1);
+    const glm::vec2 min(room_a.pos_x, room_a.pos_y);
+    const glm::vec2 max(room_a.pos_x + room_a.width - 1, room_a.pos_y + room_a.height - 1);
+    const glm::vec2 other_min(room_b.pos_x, room_b.pos_y);
+    const glm::vec2 other_max(room_b.pos_x + room_b.width - 1, room_b.pos_y + room_b.height - 1);
 
-    float left   = min.x; float other_left   = other_min.x;
-    float right  = max.x; float other_right  = other_max.x;
-    float top    = max.y; float other_top    = other_max.y;
-    float bottom = min.y; float other_bottom = other_min.y;
-    bool overlapping = left   <= other_right
-                    && right  >= other_left
-                    && top    >= other_bottom
-                    && bottom <= other_top;
+    const float left   = min.x; const float other_left   = other_min.x;
+    const float right  = max.x; const float other_right  = other_max.x;
+    const float top    = max.y; const float other_top    = other_max.y;
+    const float bottom = min.y; const float other_bottom = other_min.y;
+
+    const bool overlapping = left   <= other_right
+                          && right  >= other_left
+                          && top    >= other_bottom
+                          && bottom <= other_top;
     return overlapping;
 }
-bool are_touching(room const &bb1, room const &bb2)
+bool are_touching(room const &room_a, room const &room_b)
 {
-    glm::vec2 min(bb1.pos_x, bb1.pos_y);
-    glm::vec2 max(bb1.pos_x + bb1.width - 1, bb1.pos_y + bb1.height - 1);
-    glm::vec2 other_min(bb2.pos_x, bb2.pos_y);
-    glm::vec2 other_max(bb2.pos_x + bb2.width - 1, bb2.pos_y + bb2.height - 1);
+    glm::vec2 min(room_a.pos_x, room_a.pos_y);
+    glm::vec2 max(room_a.pos_x + room_a.width - 1, room_a.pos_y + room_a.height - 1);
+    glm::vec2 other_min(room_b.pos_x, room_b.pos_y);
+    glm::vec2 other_max(room_b.pos_x + room_b.width - 1, room_b.pos_y + room_b.height - 1);
     
-    float left   = min.x; float other_left   = other_min.x;
-    float right  = max.x; float other_right  = other_max.x;
-    float top    = max.y; float other_top    = other_max.y;
-    float bottom = min.y; float other_bottom = other_min.y;
+    const float left   = min.x; const float other_left   = other_min.x;
+    const float right  = max.x; const float other_right  = other_max.x;
+    const float top    = max.y; const float other_top    = other_max.y;
+    const float bottom = min.y; const float other_bottom = other_min.y;
     
-    int gap = 1;
-    bool touching = left   == other_right + gap
-                 || right  == other_left - gap
-                 || top    == other_bottom - gap
-                 || bottom == other_top + gap;
+    const int gap = 1;
+    const bool touching = left   == other_right + gap
+                       || right  == other_left - gap
+                       || top    == other_bottom - gap
+                       || bottom == other_top + gap;
     return touching;
 }
 
@@ -132,8 +153,8 @@ void roguelike_scene::on_update(pyro::timestep const &ts)
 
         // create random room
         room first_room;
-        first_room.width = m_rand.get_int(4, 8);
-        first_room.height = m_rand.get_int(4, 8);
+        first_room.width  = m_rand.get_int(m_min_room_size, m_max_room_size);
+        first_room.height = m_rand.get_int(m_min_room_size, m_max_room_size);
         first_room.pos_x = m_rand.get_int(0, m_width - first_room.width);
         first_room.pos_y = m_rand.get_int(0, m_height - first_room.height);
         m_rooms.push_back(first_room);
@@ -168,7 +189,7 @@ void roguelike_scene::on_update(pyro::timestep const &ts)
             {
                 int index = x * m_height + y;
                 pyro::quad_properties props;
-                //props.size = glm::vec2(0.5f);
+                props.size = glm::vec2(0.75f);
                 props.position = { x, y, 0.f };
                 for(auto &room : m_rooms)
                 {
@@ -184,6 +205,8 @@ void roguelike_scene::on_update(pyro::timestep const &ts)
                         props.texture = m_floor_texture;
                         room_found = true;
                     }
+
+                    // stop looking for other rooms
                     if(room_found)
                         break;
                 }

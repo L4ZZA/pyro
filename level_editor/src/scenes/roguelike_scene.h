@@ -81,6 +81,8 @@ private:
     int max_rooms;
     int m_width  ;
     int m_height ;
+    int m_min_room_size;
+    int m_max_room_size;
     pyro::ref<pyro::texture_2d> m_wall_texture;
     pyro::ref<pyro::texture_2d> m_floor_texture;
     pyro::ref<pyro::texture_2d> m_nothing_texture;
