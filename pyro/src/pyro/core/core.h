@@ -103,7 +103,7 @@ namespace pyro
     template<typename T>
     using ref = std::shared_ptr<T>;
     template<typename T, typename ... Args>
-    constexpr scope<T> make_ref(Args&& ... args)
+    constexpr ref<T> make_ref(Args&& ... args)
     {
         return std::make_unique<T>(std::forward<Args>(args)...);
     }
