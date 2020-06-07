@@ -1,52 +1,9 @@
 #pragma once
 #include "base_noise_scene.h"
 #include "utils/random.h"
+#include "utils/board_generator.h"
 #include <vector>
 #include <unordered_map>
-
-enum class e_tile_type
-{
-    room = 0, wall, corridor, nothing
-};
-
-enum class e_room_type
-{
-    start = 0, anything, end
-};
-
-struct tile
-{
-    int pos_x;
-    int pos_y;
-    e_tile_type type;
-    pyro::quad_properties props;
-};
-
-struct room
-{
-    int pos_x;
-    int pos_y;
-    int width;
-    int height;
-    
-    bool is_the_same(room const &other) const
-    {
-        return pos_x  == other.pos_x 
-            && pos_y == other.pos_y
-            && width == other.width
-            && height == other.height;
-    }
-};
-
-inline bool operator==(room const &left, room const &right)
-{
-    return left.is_the_same(right);
-}
-
-inline bool operator!=(room const &left, room const &right)
-{
-    return !left.is_the_same(right);
-}
 
 class roguelike_scene final : public base_noise_scene
 {
@@ -65,9 +22,6 @@ private:
     void on_seed_changed() override;
     bool on_key_pressed(pyro::key_pressed_event &e);
     glm::vec4 color_map(float noise) const;
-    bool is_any_overlapping(room const &r) const;
-    bool is_any_touching(room const &r) const;
-    bool is_any_overlapping_or_touching(room const &r) const;
 
 private:
     pyro::ref<pyro::camera_controller> m_cam_controller;
@@ -77,17 +31,7 @@ private:
     utils::perlin_noise m_other_noise;
 
     bool m_noise_changed = false;
-    int min_rooms;
-    int max_rooms;
-    int m_width  ;
-    int m_height ;
-    int m_min_room_size;
-    int m_max_room_size;
-    pyro::ref<pyro::texture_2d> m_wall_texture;
-    pyro::ref<pyro::texture_2d> m_floor_texture;
-    pyro::ref<pyro::texture_2d> m_nothing_texture;
-    std::vector<tile> m_tiles;
-    std::vector<room>        m_rooms;
-    std::unordered_map<uint32_t, room> m_rooms_map;
+    board_generator m_board_generator;
+    //std::unordered_map<uint32_t, pyro::ref<room>> m_rooms_map;
     //map_generator m_map_gen;
 };

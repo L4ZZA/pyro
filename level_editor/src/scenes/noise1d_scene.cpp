@@ -87,6 +87,7 @@ void noise1d_scene::on_imgui_render()
     const std::array<char*, 2> items = { "Simple Noise", "Improved Perlin" };
     static const char *current_item = "Simple Noise";
 
+    ImGui::Text("-- Noise:");
     ImGui::Text("- Type: ");
     ImGui::SameLine();
     // The second parameter is the label previewed before opening the combo.
@@ -142,6 +143,7 @@ void noise1d_scene::on_imgui_render()
         m_noise_changed |= ImGui::SliderFloat("##move_x", &m_move_x, -50.f, 50.f);
     }
     ImGui::Text("- Line width: %f", rect_width);
+    ImGui::Text("---------------------");
 }
 
 void noise1d_scene::on_event(pyro::event &e)

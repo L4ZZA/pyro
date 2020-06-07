@@ -77,10 +77,8 @@ void layer_2d::on_imgui_render()
     ImGui::Text("- Indices: %d", stats.total_index_count());
     ImGui::Text("---------------------");
 
-    ImGui::Text("-- Noise:");
     m_scene_manager.on_imgui_render();
-    ImGui::Text("---------------------");
-
+    
     pyro::ref<pyro::camera> camera = m_2d_camera_controller->camera();
     ImGui::Text("-- Camera:");
     ImGui::Text("- Position: [%f,%f,%f]", camera->position().x, camera->position().y, camera->position().z);
