@@ -43,15 +43,13 @@ class board_generator
 public:
     board_generator(int width, int height);
 
-    void init(int min_rooms, int max_rooms, int min_room_size, int max_room_size);
-
-    void create_room(utils::random &rand);
-    void create_room(utils::random &rand, 
-        std::vector<pyro::ref<room>> const &other_rooms);
     void on_update(pyro::timestep const &ts);
     void on_render() const;
     void on_imgui_render();
     void on_event(pyro::event &e);
+
+    void init(int min_rooms, int max_rooms, int min_room_size, int max_room_size);
+    void create_room(utils::random &rand);
 
     bool are_overlapping(pyro::ref<room> room_a, pyro::ref<room> room_b) const;
     bool are_touching(pyro::ref<room> room_a, pyro::ref<room> room_b) const;

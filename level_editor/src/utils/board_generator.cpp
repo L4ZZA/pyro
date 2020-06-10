@@ -9,11 +9,51 @@ board_generator::board_generator(int width, int height)
     , m_max_rooms(35)
     , m_min_room_size(6)
     , m_max_room_size(12)
+    , m_possible_rooms(0)
+{
+}
+
+void board_generator::on_update(pyro::timestep const &ts)
+{
+}
+
+void board_generator::on_render() const
+{
+    // create first room roughly in the middle of the 
+    for(auto const &tile : m_tiles)
+    {
+        pyro::quad_properties props;
+        props.position = { tile.x, tile.y, 0 };
+        props.size = glm::vec2(0.75f);
+        switch(tile.type)
+        {
+        case e_tile_type::wall:
+            props.texture = m_wall_texture;
+            break;
+        case e_tile_type::floor:
+            props.texture = m_floor_texture;
+            break;
+        case e_tile_type::nothing:
+            props.texture = m_nothing_texture;
+            break;
+        }
+        pyro::renderer_2d::draw_quad(props);
+    }
+}
+
+void board_generator::on_imgui_render()
+{
+    ImGui::Text("-- Rooms: ");
+    ImGui::Text("- Count : %d", m_rooms.size());
+    ImGui::Text("---------------------");
+}
+
+void board_generator::on_event(pyro::event &e)
 {
 }
 
 void board_generator::init(
-    int min_rooms, int max_rooms, 
+    int min_rooms, int max_rooms,
     int min_room_size, int max_room_size)
 {
     m_min_rooms = min_rooms;
@@ -95,53 +135,6 @@ void board_generator::create_room(utils::random &rand)
             }
         }
 }
-
-void board_generator::create_room(
-    utils::random &rand, 
-    std::vector<pyro::ref<room>> const &other_rooms)
-{
-
-}
-
-void board_generator::on_update(pyro::timestep const &ts)
-{
-}
-
-void board_generator::on_render() const
-{
-    // create first room roughly in the middle of the 
-    for(auto const &tile : m_tiles)
-    {
-        pyro::quad_properties props;
-        props.position = { tile.x, tile.y, 0 };
-        props.size = glm::vec2(0.75f);
-        switch(tile.type)
-        {
-        case e_tile_type::wall:
-            props.texture = m_wall_texture;
-            break;
-        case e_tile_type::floor:
-            props.texture = m_floor_texture;
-            break;
-        case e_tile_type::nothing:
-            props.texture = m_nothing_texture;
-            break;
-        }
-        pyro::renderer_2d::draw_quad(props);
-    }
-}
-
-void board_generator::on_imgui_render()
-{
-    ImGui::Text("-- Rooms: ");
-    ImGui::Text("- Count : %d", m_rooms.size());
-    ImGui::Text("---------------------");
-}
-
-void board_generator::on_event(pyro::event &e)
-{
-}
-
 
 bool board_generator::are_overlapping(pyro::ref<room> room_a, pyro::ref<room> room_b) const
 {
