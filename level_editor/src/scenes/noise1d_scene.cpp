@@ -56,8 +56,9 @@ void noise1d_scene::on_update(pyro::timestep const &ts)
     }
 }
 
-void noise1d_scene::on_render_internal() const
+void noise1d_scene::on_render() const
 {
+    pyro::renderer_2d::begin_scene(m_camera);
     int width = s_texture_size;
     int height = s_texture_size / 4;
     int step = 1;
@@ -80,6 +81,7 @@ void noise1d_scene::on_render_internal() const
         props.size = { line_rect_width, rect_heigth };
         pyro::renderer_2d::draw_quad(props);
     }
+    pyro::renderer_2d::end_scene();
 }
 
 void noise1d_scene::on_imgui_render()

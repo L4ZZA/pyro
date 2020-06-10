@@ -44,9 +44,11 @@ void roguelike_scene::on_update(pyro::timestep const &ts)
 }
 
 
-void roguelike_scene::on_render_internal() const
+void roguelike_scene::on_render() const
 {
+    pyro::renderer_2d::begin_scene(m_camera);
     m_board_generator.on_render();
+    pyro::renderer_2d::end_scene();
 }
 
 void roguelike_scene::on_imgui_render()

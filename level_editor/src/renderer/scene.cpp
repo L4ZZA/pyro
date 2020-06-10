@@ -9,7 +9,5 @@ scene::scene(pyro::ref<pyro::camera> const &camera)
 
 void scene::on_render() const
 {
-    pyro::renderer_2d::begin_scene(m_camera);
-    on_render_internal();
-    pyro::renderer_2d::end_scene();
+    on_render();
 }
