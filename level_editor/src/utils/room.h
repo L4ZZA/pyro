@@ -3,19 +3,25 @@
 
 struct room
 {
-    int pos_x;
-    int pos_y;
-    int width;
-    int height;
+    room(int x, int y, int w, int h)
+    {
+        left   = x;
+        bottom = y;
+        right  = x + w-1;
+        top    = y + h-1;
+    }
 
-
+    int left;   // coordinate of the left wall
+    int bottom; // coordinate of the bottom wall
+    int right;  // coordinate of the right wall
+    int top;    // coordinate of the top wall
 
     bool is_the_same(room const &other) const
     {
-        return pos_x == other.pos_x
-            && pos_y == other.pos_y
-            && width == other.width
-            && height == other.height;
+        return left == other.left
+            && bottom == other.bottom
+            && right == other.right
+            && top == other.top;
     }
 };
 

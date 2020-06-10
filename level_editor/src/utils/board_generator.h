@@ -23,32 +23,16 @@ struct tile
 
     bool is_floor(pyro::ref<room> r)
     {
-        const int right_wall = r->pos_x + r->width - 1;
-        const int top_wall = r->pos_y + r->height - 1;
-        const int left_wall = r->pos_x;
-        const int bottom_wall = r->pos_y;
-
-        return x > left_wall && x < right_wall &&
-            y > bottom_wall && y < top_wall;
-
-        return x > left_wall && x < right_wall &&
-            y > bottom_wall && y < top_wall;
+        return x > r->left && x < r->right &&
+            y > r->bottom && y < r->top;
     }
 
     bool is_wall(pyro::ref<room> r)
     {
-        const glm::vec2 min(r->pos_x, r->pos_y);
-        const glm::vec2 max(r->pos_x + r->width - 1, r->pos_y + r->height - 1);
-
-        const float left = min.x;
-        const float right = max.x;
-        const float top = max.y;
-        const float bottom = min.y;
-
-        const bool is_left_wall = x == left && y >= bottom && y <= top;
-        const bool is_right_wall = x == right && y >= bottom && y <= top;
-        const bool is_top_wall = y == top && x >= left && x <= right;
-        const bool is_bottom_wall = y == bottom && x >= left && x <= right;
+        const bool is_left_wall = x == r->left && y >= r->bottom && y <= r->top;
+        const bool is_right_wall = x == r->right && y >= r->bottom && y <= r->top;
+        const bool is_top_wall = y == r->top && x >= r->left && x <= r->right;
+        const bool is_bottom_wall = y == r->bottom && x >= r->left && x <= r->right;
 
         return is_left_wall || is_right_wall || is_top_wall || is_bottom_wall;
     }

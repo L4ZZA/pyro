@@ -33,21 +33,21 @@ void board_generator::create_room(utils::random &rand)
     m_possible_rooms = rand.get_int(m_min_rooms, m_max_rooms);
 
     // create random room
-    auto first_room = pyro::make_ref<room>();
-    first_room->width = rand.get_int(m_min_room_size, m_max_room_size);
-    first_room->height = rand.get_int(m_min_room_size, m_max_room_size);
-    first_room->pos_x = rand.get_int(0, m_width - first_room->width);
-    first_room->pos_y = rand.get_int(0, m_height - first_room->height);
+    int width = rand.get_int(m_min_room_size, m_max_room_size);
+    int height = rand.get_int(m_min_room_size, m_max_room_size);
+    int x = rand.get_int(0, m_width - width);
+    int y = rand.get_int(0, m_height - height);
+    auto first_room = pyro::make_ref<room>(x, y, width, height);
     m_rooms.push_back(first_room);
 
     for(int i = 1; i < m_possible_rooms; i++)
     {
         // create random room
-        auto proposed_room = pyro::make_ref<room>();
-        proposed_room->width = rand.get_int(4, 8);
-        proposed_room->height = rand.get_int(4, 8);
-        proposed_room->pos_x = rand.get_int(0, m_width - proposed_room->width);
-        proposed_room->pos_y = rand.get_int(0, m_height - proposed_room->height);
+        int width = rand.get_int(4, 8);
+        int height = rand.get_int(4, 8);
+        int x = rand.get_int(0, m_width - width);
+        int y = rand.get_int(0, m_height - height);
+        auto proposed_room = pyro::make_ref<room>(x, y, width, height);
 
         // go through all the previously created rooms to check if 
         // the proposed_room overlaps with any of them.
@@ -145,40 +145,20 @@ void board_generator::on_event(pyro::event &e)
 
 bool board_generator::are_overlapping(pyro::ref<room> room_a, pyro::ref<room> room_b) const
 {
-    const glm::vec2 min(room_a->pos_x, room_a->pos_y);
-    const glm::vec2 max(room_a->pos_x + room_a->width - 1, room_a->pos_y + room_a->height - 1);
-    const glm::vec2 other_min(room_b->pos_x, room_b->pos_y);
-    const glm::vec2 other_max(room_b->pos_x + room_b->width - 1, room_b->pos_y + room_b->height - 1);
-
-    const float left   = min.x; const float other_left   = other_min.x;
-    const float right  = max.x; const float other_right  = other_max.x;
-    const float top    = max.y; const float other_top    = other_max.y;
-    const float bottom = min.y; const float other_bottom = other_min.y;
-
-    const bool overlapping = left   <= other_right
-                          && right  >= other_left
-                          && top    >= other_bottom
-                          && bottom <= other_top;
+    const bool overlapping = room_a->left   <= room_b->right
+                          && room_a->right  >= room_b->left
+                          && room_a->top    >= room_b->bottom
+                          && room_a->bottom <= room_b->top;
     return overlapping;
 }
 
 bool board_generator::are_touching(pyro::ref<room> room_a, pyro::ref<room> room_b) const
 {
-    glm::vec2 min(room_a->pos_x, room_a->pos_y);
-    glm::vec2 max(room_a->pos_x + room_a->width - 1, room_a->pos_y + room_a->height - 1);
-    glm::vec2 other_min(room_b->pos_x, room_b->pos_y);
-    glm::vec2 other_max(room_b->pos_x + room_b->width - 1, room_b->pos_y + room_b->height - 1);
-    
-    const float left   = min.x; const float other_left   = other_min.x;
-    const float right  = max.x; const float other_right  = other_max.x;
-    const float top    = max.y; const float other_top    = other_max.y;
-    const float bottom = min.y; const float other_bottom = other_min.y;
-    
     const int gap = 1;
-    const bool touching = left   == other_right + gap
-                       || right  == other_left - gap
-                       || top    == other_bottom - gap
-                       || bottom == other_top + gap;
+    const bool touching = room_a->left   == room_b->right + gap
+                       || room_a->right  == room_b->left - gap
+                       || room_a->top    == room_b->bottom - gap
+                       || room_a->bottom == room_b->top + gap;
     return touching;
 }
 
