@@ -60,7 +60,7 @@ namespace utils
 
     inline int32_t random::get_int(int32_t min /*= s_int_min*/, int32_t max /*= s_int_max*/) const
     {
-        std::uniform_int_distribution<std::mt19937::result_type> distribution(min, max);
+        std::uniform_int_distribution<int32_t> distribution(min, max);
         return distribution(m_random_engine);
     }
 
