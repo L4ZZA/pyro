@@ -13,6 +13,12 @@ struct door
     // direction in which the door is facing, so on which wall is placed.
     e_orientation direction;
     bool open = false;
+    bool is_the_same(door const &other) const
+    {
+        return x == other.x
+            && y == other.y;
+            //&& direction == other.direction;
+    }
 };
 
 struct room
@@ -26,8 +32,8 @@ struct room
         top    = y + h-1;
         width  = w;
         height = h;
-        in_door = generate_door(rand);
-        out_door = generate_door(rand);
+        generate_doors(rand, in_door, out_door);
+        
         //sort_doors();
     }
 
@@ -41,34 +47,53 @@ struct room
     door out_door;
     door in_door;
 
-    door generate_door(utils::random &rand)
+    void generate_doors(utils::random const &rand, door &in, door &out)
     {
-        auto direction = static_cast<e_orientation>(rand.get_int() % 4);
+        in.direction = static_cast<e_orientation>(rand.get_int() % 4);
+        out.direction = static_cast<e_orientation>(rand.get_int() % 4);
+        fix_direction(rand, out.direction, in.direction);
+        
+        generate_location(rand, in.direction, in.x, in.y);
+        generate_location(rand, out.direction, out.x, out.y);
+    }
 
-        door d;
-        d.direction = direction;
+    // generates a new orientation until dir is different from the previous one.
+    void fix_direction(
+        utils::random const &rand, 
+        e_orientation &dir, 
+        e_orientation const &previous)
+    {
+        while(dir == previous)
+        {
+            int int_dir = (static_cast<int>(dir) + rand.get_int()) % 4;
+            dir = static_cast<e_orientation>(int_dir);
+        }
+    }
 
-        switch(direction)
+    void generate_location(
+        utils::random const &rand, 
+        e_orientation dir, 
+        int &x, int &y)
+    {
+        switch(dir)
         {
         case e_orientation::north:
-            d.x = rand.get_int(left + 1, right - 1);
-            d.y = top;
+            x = rand.get_int(left + 1, right - 1);
+            y = top;
             break;
-        case e_orientation::south: 
-            d.x = rand.get_int(left + 1, right - 1);
-            d.y = bottom;
+        case e_orientation::south:
+            x = rand.get_int(left + 1, right - 1);
+            y = bottom;
             break;
         case e_orientation::east:
-            d.x = left;
-            d.y = rand.get_int(bottom + 1, top - 1);
+            x = left;
+            y = rand.get_int(bottom + 1, top - 1);
             break;
         case e_orientation::west:
-            d.x = right;
-            d.y = rand.get_int(bottom + 1, top - 1);
+            x = right;
+            y = rand.get_int(bottom + 1, top - 1);
             break;
         }
-
-        return std::move(d);
     }
 
     bool is_the_same(room const &other) const
