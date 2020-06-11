@@ -38,9 +38,12 @@ void roguelike_scene::on_update(pyro::timestep const &ts)
         int max_rooms = 40;
         int min_room_size = 4;
         int max_room_size = 8;
-        m_board_generator.init(min_rooms, max_rooms, min_room_size, max_room_size);
-        m_board_generator.create_room(m_rand);
+        m_board_generator.init(m_rand,
+                               min_rooms, max_rooms, 
+                               min_room_size, max_room_size);
     }
+
+    m_board_generator.on_update(ts);
 }
 
 
