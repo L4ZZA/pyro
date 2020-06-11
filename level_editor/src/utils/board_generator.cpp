@@ -13,6 +13,22 @@ board_generator::board_generator(int width, int height)
 {
 }
 
+void board_generator::init(
+    int min_rooms, int max_rooms,
+    int min_room_size, int max_room_size)
+{
+    m_min_rooms = min_rooms;
+    m_max_rooms = max_rooms;
+    m_min_room_size = min_room_size;
+    m_max_room_size = max_room_size;
+    m_tiles.resize(m_width * m_height);
+
+    m_wall_texture = pyro::texture_2d::create_from_file("assets/textures/wall.png");
+    m_floor_texture = pyro::texture_2d::create_from_file("assets/textures/floor.png");
+    m_door_texture = pyro::texture_2d::create_from_file("assets/textures/door.png");
+    m_nothing_texture = pyro::texture_2d::create_from_file("assets/textures/nothing.png");
+}
+
 void board_generator::on_update(pyro::timestep const &ts)
 {
 }
@@ -24,7 +40,8 @@ void board_generator::on_render() const
     {
         pyro::quad_properties props;
         props.position = { tile.x, tile.y, 0 };
-        props.size = glm::vec2(0.75f);
+        //props.size = glm::vec2(0.75f);
+        float opacity = 0.75f;
         switch(tile.type)
         {
         case e_tile_type::wall:
@@ -33,8 +50,17 @@ void board_generator::on_render() const
         case e_tile_type::floor:
             props.texture = m_floor_texture;
             break;
+        case e_tile_type::in_door:
+            props.texture = m_door_texture;
+            props.color = { 0.f,1.f,0.f,opacity };
+            break;
+        case e_tile_type::out_door:
+            props.texture = m_door_texture;
+            props.color = { 1.f,0.f,0.f,opacity };
+            break;
         case e_tile_type::nothing:
             props.texture = m_nothing_texture;
+            props.color = { 1.f,1.f,1.f,opacity };
             break;
         }
         pyro::renderer_2d::draw_quad(props);
@@ -50,21 +76,6 @@ void board_generator::on_imgui_render()
 
 void board_generator::on_event(pyro::event &e)
 {
-}
-
-void board_generator::init(
-    int min_rooms, int max_rooms,
-    int min_room_size, int max_room_size)
-{
-    m_min_rooms = min_rooms;
-    m_max_rooms = max_rooms;
-    m_min_room_size = min_room_size;
-    m_max_room_size = max_room_size;
-    m_tiles.resize(m_width * m_height);
-
-    m_wall_texture = pyro::texture_2d::create_from_file("assets/textures/wall.png");
-    m_floor_texture = pyro::texture_2d::create_from_file("assets/textures/floor.png");
-    m_nothing_texture = pyro::texture_2d::create_from_file("assets/textures/nothing.png");
 }
 
 void board_generator::create_room(utils::random &rand)
@@ -97,8 +108,10 @@ void board_generator::create_room(utils::random &rand)
             m_rooms.push_back(proposed_room);
 
             PYRO_TRACE("----- room");
-            PYRO_TRACE("x - {}", proposed_room->pos_x);
-            PYRO_TRACE("y - {}", proposed_room->pos_y);
+            PYRO_TRACE("x - {}", proposed_room->left);
+            PYRO_TRACE("y - {}", proposed_room->bottom);
+            PYRO_TRACE("right - {}", proposed_room->right);
+            PYRO_TRACE("top - {}", proposed_room->top);
             PYRO_TRACE("width - {}", proposed_room->width);
             PYRO_TRACE("height - {}", proposed_room->height);
         }
@@ -118,7 +131,18 @@ void board_generator::create_room(utils::random &rand)
                 bool room_found = false;
                 if(current_tile.is_wall(r))
                 {
-                    current_tile.type = e_tile_type::wall;
+                    if(current_tile.is_in_door(r))
+                    {
+                        current_tile.type = e_tile_type::in_door;
+                    }
+                    else if(current_tile.is_out_door(r))
+                    {
+                        current_tile.type = e_tile_type::out_door;
+                    }
+                    else
+                    {
+                        current_tile.type = e_tile_type::wall;
+                    }
                     room_found = true;
                 }
                 if(current_tile.is_floor(r))
