@@ -12,6 +12,6 @@ struct tile
 {
     int x;
     int y;
-    e_tile_type type;
+    e_tile_type type = e_tile_type::nothing;
     pyro::ref<room> room_ptr;
 };
