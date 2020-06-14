@@ -5,12 +5,15 @@
 board_generator::board_generator(int width, int height)
     : m_width(width)
     , m_height(height)
-    , m_min_rooms(20)
-    , m_max_rooms(35)
+    , m_min_rooms(70)
+    , m_max_rooms(85)
     , m_min_room_size(6)
     , m_max_room_size(12)
-    , m_possible_rooms(0)
-    , m_delay(1.f)
+    , m_possible_rooms(85)
+    , m_tiles_delay(0.f)
+    , m_rooms_delay(0.f)
+    , m_corridors_delay(0.25f)
+    , m_show_rooms(true)
 {
 }
 
@@ -19,19 +22,23 @@ void board_generator::init(
     int min_rooms, int max_rooms,
     int min_room_size, int max_room_size)
 {
-    up_to = 0;
+    m_tiles_up_to = 0;
+    m_rooms_up_to = 0;
+    m_corridors_up_to = 0;
     m_min_rooms = min_rooms;
     m_max_rooms = max_rooms;
     m_min_room_size = min_room_size;
     m_max_room_size = max_room_size;
 
     m_wall_texture = pyro::texture_2d::create_from_file("assets/textures/wall.png");
-    m_floor_texture = pyro::texture_2d::create_from_file("assets/textures/floor.png");
+    m_floor_texture = pyro::texture_2d::create_from_file("assets/textures/stone-floor.png");
     m_door_texture = pyro::texture_2d::create_from_file("assets/textures/door.png");
     m_nothing_texture = pyro::texture_2d::create_from_file("assets/textures/nothing.png");
 
-    m_tiles.resize(m_width * m_height); m_rooms.resize(0);
-    m_possible_rooms = rand.get_int(m_min_rooms, m_max_rooms);
+    m_tiles.resize(m_width * m_height); 
+    m_rooms.resize(0);
+    m_corridors.resize(0);
+    //m_possible_rooms = rand.get_int(m_min_rooms, m_max_rooms);
     auto first_room = create_room(rand);
     m_rooms.push_back(first_room);
 
@@ -56,13 +63,13 @@ void board_generator::init(
         }
     }
 
+    connect_rooms(rand);
 
     for(int x = 0; x < m_width; x++)
         for(int y = 0; y < m_height; y++)
         {
             int index = x * m_height + y;
             tile &current_tile = m_tiles[index];
-            current_tile.type = e_tile_type::nothing;
             current_tile.x = x;
             current_tile.y = y;
             for(auto const &r : m_rooms)
@@ -70,18 +77,19 @@ void board_generator::init(
                 bool room_found = false;
                 if(is_wall(x,y,r))
                 {
-                    if(is_in_door(x,y,r))
-                    {
-                        current_tile.type = e_tile_type::in_door;
-                    }
-                    else if(is_out_door(x,y,r))
-                    {
-                        current_tile.type = e_tile_type::out_door;
-                    }
-                    else
-                    {
-                        current_tile.type = e_tile_type::wall;
-                    }
+                    //if(is_in_door(x,y,r))
+                    //{
+                    //    current_tile.type = e_tile_type::in_door;
+                    //}
+                    //else if(is_out_door(x,y,r))
+                    //{
+                    //    current_tile.type = e_tile_type::out_door;
+                    //}
+                    //else
+                    //{
+                    //    current_tile.type = e_tile_type::wall;
+                    //}
+                    current_tile.type = e_tile_type::floor;
                     room_found = true;
                 }
                 if(is_floor(x,y,r))
@@ -97,76 +105,134 @@ void board_generator::init(
                 }
             }
         }
+
 }
 
 void board_generator::on_update(pyro::timestep const &ts)
 {
-    if(m_time > m_delay)
+    if(m_tiles_delay > 0.f)
     {
-        m_time = m_time - m_delay;
-        if(up_to < m_rooms.size())
-            up_to++;
+        if(m_tiles_time > m_tiles_delay)
+        {
+            m_tiles_time = m_tiles_time - m_tiles_delay;
+            if(m_tiles_up_to < m_tiles.size())
+                m_tiles_up_to++;
+        }
+        m_tiles_time += ts;
+    }
+    else
+    {
+        m_tiles_up_to = m_tiles.size();
     }
 
-    m_time += ts;
+    if(m_rooms_delay > 0.f)
+    {
+        if(m_rooms_time > m_rooms_delay)
+        {
+            m_rooms_time = m_rooms_time - m_rooms_delay;
+            if(m_rooms_up_to < m_rooms.size())
+                m_rooms_up_to++;
+        }
+        m_rooms_time += ts;
+    }
+    else
+    {
+        m_rooms_up_to = m_rooms.size();
+    }
+
+    if(m_corridors_delay > 0.f)
+    {
+        if(m_corridors_time > m_corridors_delay)
+        {
+            m_corridors_time = m_corridors_time - m_corridors_delay;
+            if(m_corridors_up_to < m_corridors.size())
+                m_corridors_up_to++;
+        }
+        m_corridors_time += ts;
+    }
+    else
+    {
+        m_corridors_up_to = m_corridors.size();
+    }
 }
 
 void board_generator::on_render() const
 {
     // create first room roughly in the middle of the 
-    for(int i = 0; i < m_tiles.size(); i++)
+    for(int i = 0; i < m_tiles_up_to; i++)
     {
         tile const &tile = m_tiles[i];
+        pyro::quad_properties props;
+        props.position = { tile.x, tile.y, 0 };
+        float opacity = 0.75f;
         if(tile.type == e_tile_type::nothing)
         {
-            pyro::quad_properties props;
-            props.position = { tile.x, tile.y, 0 };
             props.texture = m_nothing_texture;
-            float opacity = 0.75f;
             props.color = { 1.f,1.f,1.f,opacity };
             pyro::renderer_2d::draw_quad(props);
         }
     }
 
-    for(int i = 0; i < up_to; i++)
-    //for(int i = 0; i < m_rooms.size(); i++)
+    for(int i = 0; i < m_corridors_up_to; i++)
     {
-        auto const &room = m_rooms[i];
-        int x_start = room->left;
-        int x_end = room->right;
-        int y_start = room->bottom;
-        int y_end = room->top;
+        float opacity = 0.75f;
+        for(int index : m_corridors[i]->tiles_indexes)
+        {
+            tile const &tile = m_tiles[index];
+            pyro::quad_properties props;
+            props.position = { tile.x, tile.y, 0 };
+            props.texture = m_floor_texture;
+            //props.color = { 1.f,0.f,1.f,opacity };
+            pyro::renderer_2d::draw_quad(props);
+        }
+    }
 
-        for(int x = x_start; x <= x_end; x++)
-            for(int y = y_start; y <= y_end; y++)
-            {
-                pyro::quad_properties props;
-                props.position = { x, y, 0 };
-                //props.size = glm::vec2(0.75f);
-                float opacity = 0.75f;
-                if(is_wall(x, y, room))
+    if(m_show_rooms)
+    {
+        for(int i = 0; i < m_rooms_up_to; i++)
+        {
+            auto const &room = m_rooms[i];
+            int x_start = room->left;
+            int x_end = room->right;
+            int y_start = room->bottom;
+            int y_end = room->top;
+
+            for(int x = x_start; x <= x_end; x++)
+                for(int y = y_start; y <= y_end; y++)
                 {
-                    if(is_in_door(x, y, room))
+                    pyro::quad_properties props;
+                    props.position = { x, y, 0 };
+                    //props.size = glm::vec2(0.75f);
+                    float opacity = 0.75f;
+                    if(is_wall(x, y, room))
                     {
-                        props.texture = m_door_texture;
-                        props.color = { 0.f,1.f,0.f,opacity };
+                        if(is_in_door(x, y, room))
+                        {
+                            props.texture = m_floor_texture;
+                            //props.color = { 0.f,1.f,0.f,opacity };
+                        }
+                        else if(is_out_door(x, y, room))
+                        {
+                            props.texture = m_floor_texture;
+                            //props.color = { 1.f,0.f,0.f,opacity };
+                        }
+                        //else
+                        //{
+                        //}
+                            props.texture = m_floor_texture;
                     }
-                    else if(is_out_door(x, y, room))
+                    else if(is_floor(x, y, room))
                     {
-                        props.texture = m_door_texture;
-                        props.color = { 1.f,0.f,0.f,opacity };
+                        props.texture = m_floor_texture;
+                        if(is_centre(x, y, room))
+                        {
+                            // 58, 89.8, 1
+                            props.color = { 0.58f,0.89f,1.f,1.f };
+                        }
                     }
-                    else
-                    {
-                        props.texture = m_wall_texture;
-                    }
+                    pyro::renderer_2d::draw_quad(props);
                 }
-                else if(is_floor(x, y, room))
-                {
-                    props.texture = m_floor_texture;
-                }
-                pyro::renderer_2d::draw_quad(props);
-            }
+        }
     }
 }
 
@@ -179,6 +245,16 @@ void board_generator::on_imgui_render()
 
 void board_generator::on_event(pyro::event &e)
 {
+    pyro::event_dispatcher dispatcher(e);
+    dispatcher.dispatch<pyro::key_pressed_event>([&](pyro::key_pressed_event ev)
+        {
+            auto key_code = ev.key_code();
+            if(key_code == pyro::key_codes::KEY_T)
+                m_show_rooms = !m_show_rooms;
+
+            // return if event is handled or not
+            return false;
+        });
 }
 
 pyro::ref<room> board_generator::create_room(utils::random const &rand)
@@ -191,6 +267,82 @@ pyro::ref<room> board_generator::create_room(utils::random const &rand)
     int y = rand.get_int(gap, m_height - height - gap);
     return std::move(pyro::make_ref<room>(x, y, width, height));
   
+}
+
+void board_generator::connect_rooms(utils::random const &rand)
+{
+    int max_corridors = m_rooms.size() - 1;
+    for(int i = 0; i < max_corridors; i++)
+    {
+        int next = i + 1;
+        auto current_room = m_rooms[i];
+        auto next_room = m_rooms[next];
+
+        // get start door location (red-door) from first room
+        glm::ivec2 start_tile(current_room->center.x, current_room->center.y);
+        // get end door location (green-door) from next room
+        glm::ivec2 dest_tile(next_room->center.x, next_room->center.y);
+        
+        
+        // get the vector between going from the start doo to the dest door
+        glm::ivec2 diff = dest_tile - start_tile;
+
+        // store the offsets from which to start the corridor based on the 
+        // displacement vector of the locations of the two doors
+        int x_dir = diff.x < 0 ? -1 : 1;
+        int y_dir = diff.y < 0 ? -1 : 1;
+
+        // get units to travel
+        glm::ivec2 displacement = glm::abs(diff);
+
+        auto corr = pyro::make_ref<corridor>();
+        corr->start_tile = start_tile;
+        corr->end_tile = dest_tile;
+
+        int end_tile = 0;
+        for(int x = 0; x < displacement.x; x++)
+        {
+            int current_tile_x = start_tile.x + (x * x_dir);
+            int current_tile_y = start_tile.y;
+            int index = current_tile_x * m_height + current_tile_y;
+            tile &tile = m_tiles[index];
+            tile.type = e_tile_type::coridor_floor;
+            corr->tiles_indexes.push_back(index);
+            end_tile = current_tile_x;
+        }
+
+        for(int y = 0; y < displacement.y; y++)
+        {
+            int current_tile_x = end_tile;
+            int current_tile_y = start_tile.y + (y * y_dir);
+            int index = current_tile_x * m_height + current_tile_y;
+            tile &tile = m_tiles[index];
+            tile.type = e_tile_type::coridor_floor;
+            corr->tiles_indexes.push_back(index);
+        }
+
+        // add corridor to list of corridors.
+        m_corridors.push_back(corr);
+    }
+}
+
+void board_generator::adjust_corridor_end(e_orientation const &dir, glm::ivec2 &door_pos)
+{
+    switch(dir)
+    {
+    case e_orientation::north:
+        door_pos.y += 1;
+        break;
+    case e_orientation::south:
+        door_pos.y -= 1;
+        break;
+    case e_orientation::east:
+        door_pos.x -= 1;
+        break;
+    case e_orientation::west:
+        door_pos.x += 1;
+        break;
+    }
 }
 
 bool board_generator::are_overlapping(pyro::ref<room> room_a, pyro::ref<room> room_b) const
@@ -215,11 +367,18 @@ bool board_generator::are_touching(pyro::ref<room> room_a, pyro::ref<room> room_
 bool board_generator::are_near(pyro::ref<room> room_a, pyro::ref<room> room_b) const
 {
     const int gap = 3;
-    const bool touching = room_a->left   < room_b->right + gap
-                       || room_a->right  > room_b->left - gap
-                       || room_a->top    > room_b->bottom - gap
-                       || room_a->bottom < room_b->top + gap;
-    return touching;
+
+    int gap_up = room_b->bottom - room_a->top;
+    int gap_down = room_a->bottom - room_b->top;
+    int gap_left = room_a->left - room_b->right;
+    int gap_right = room_b->left - room_a->right;
+
+    const bool a = gap_up    >= 0  && gap_up    <= gap;
+    const bool b = gap_down  >= 0  && gap_down  <= gap;
+    const bool c = gap_left  >= 0  && gap_left  <= gap;
+    const bool d = gap_right >= 0  && gap_right <= gap;
+    const bool are_near = a || b || c || d;
+    return are_near;
 }
 
 bool board_generator::is_any_overlapping(pyro::ref<room> r) const
@@ -261,7 +420,7 @@ bool board_generator::is_any_overlapping_or_near(pyro::ref<room> r) const
     for(auto const &existing_room : m_rooms)
     {
         if(are_overlapping(r, existing_room) 
-           || are_touching(r, existing_room))
+           || are_near(r, existing_room))
             return true;
     }
     // none are overlapping

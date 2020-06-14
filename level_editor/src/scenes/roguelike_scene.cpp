@@ -67,6 +67,7 @@ void roguelike_scene::on_event(pyro::event &e)
 {
     pyro::event_dispatcher dispatcher(e);
     dispatcher.dispatch<pyro::key_pressed_event>(BIND_EVENT_FN(roguelike_scene::on_key_pressed));
+    m_board_generator.on_event(e);
 }
 
 

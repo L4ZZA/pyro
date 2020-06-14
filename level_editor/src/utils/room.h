@@ -21,6 +21,13 @@ struct door
     }
 };
 
+struct corridor
+{
+    std::vector<int> tiles_indexes;
+    glm::ivec2 start_tile;
+    glm::ivec2 end_tile;
+};
+
 struct room
 {
     room(int x, int y, int w, int h)
@@ -32,9 +39,9 @@ struct room
         top    = y + h-1;
         width  = w;
         height = h;
+        center.x = right - ((right - left) / 2.f);
+        center.y = top - ((top - bottom) / 2.f);
         generate_doors(rand, in_door, out_door);
-        
-        //sort_doors();
     }
 
     int left;   // coordinate of the left wall
@@ -43,6 +50,8 @@ struct room
     int top;    // coordinate of the top wall
     int width;
     int height;
+
+    glm::ivec2 center;
 
     door out_door;
     door in_door;

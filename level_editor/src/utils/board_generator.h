@@ -24,6 +24,11 @@ public:
     void on_event(pyro::event &e);
 
     pyro::ref<room> create_room(utils::random const &rand);
+    void connect_rooms(utils::random const &rand);
+
+    // takes the direction of the room's door and it's position to adjust the position
+    // to start from outside the room's walls.
+    void adjust_corridor_end(e_orientation const &dir, glm::ivec2 &door_pos);
 
     bool are_overlapping(pyro::ref<room> room_a, pyro::ref<room> room_b) const;
     bool are_touching(pyro::ref<room> room_a, pyro::ref<room> room_b) const;
@@ -33,6 +38,11 @@ public:
     bool is_any_overlapping_or_touching(pyro::ref<room> r) const;
     bool is_any_overlapping_or_near(pyro::ref<room> r) const;
 
+
+    bool is_centre(int x, int y, pyro::ref<room> r) const
+    {
+        return false; //x == r->center.x && y == r->center.y;
+    }
 
     bool is_floor(int x, int y, pyro::ref<room> r) const
     {
@@ -71,9 +81,15 @@ public:
     }
 
 private:
-    float m_delay;
-    float m_time = 0.f;
-    int up_to = 0;
+    float m_tiles_delay;
+    float m_rooms_delay;
+    float m_corridors_delay;
+    float m_tiles_time = 0.f;
+    float m_rooms_time = 0.f;
+    float m_corridors_time = 0.f;
+    int m_tiles_up_to = 0;
+    int m_rooms_up_to = 0;
+    int m_corridors_up_to = 0;
     int m_min_rooms;
     int m_max_rooms;
     int m_width;
@@ -81,9 +97,11 @@ private:
     int m_min_room_size;
     int m_max_room_size;
     int m_possible_rooms;
+    bool m_show_rooms;
 
     std::vector<tile> m_tiles;
     std::vector<pyro::ref<room>> m_rooms;
+    std::vector<pyro::ref<corridor>> m_corridors;
 
     pyro::ref<pyro::texture_2d> m_wall_texture;
     pyro::ref<pyro::texture_2d> m_floor_texture;
