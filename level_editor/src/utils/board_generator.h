@@ -26,10 +26,6 @@ public:
     pyro::ref<room> create_room(utils::random const &rand);
     void connect_rooms(utils::random const &rand);
 
-    // takes the direction of the room's door and it's position to adjust the position
-    // to start from outside the room's walls.
-    void adjust_corridor_end(e_orientation const &dir, glm::ivec2 &door_pos);
-
     bool are_overlapping(pyro::ref<room> room_a, pyro::ref<room> room_b) const;
     bool are_touching(pyro::ref<room> room_a, pyro::ref<room> room_b) const;
     bool are_near(pyro::ref<room> room_a, pyro::ref<room> room_b) const;
@@ -103,8 +99,6 @@ private:
     std::vector<pyro::ref<room>> m_rooms;
     std::vector<pyro::ref<corridor>> m_corridors;
 
-    pyro::ref<pyro::texture_2d> m_wall_texture;
     pyro::ref<pyro::texture_2d> m_floor_texture;
-    pyro::ref<pyro::texture_2d> m_door_texture;
     pyro::ref<pyro::texture_2d> m_nothing_texture;
 };

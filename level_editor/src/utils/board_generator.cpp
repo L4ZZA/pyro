@@ -12,7 +12,7 @@ board_generator::board_generator(int width, int height)
     , m_possible_rooms(85)
     , m_tiles_delay(0.f)
     , m_rooms_delay(0.f)
-    , m_corridors_delay(0.25f)
+    , m_corridors_delay(0.15f)
     , m_show_rooms(true)
 {
 }
@@ -30,15 +30,13 @@ void board_generator::init(
     m_min_room_size = min_room_size;
     m_max_room_size = max_room_size;
 
-    m_wall_texture = pyro::texture_2d::create_from_file("assets/textures/wall.png");
     m_floor_texture = pyro::texture_2d::create_from_file("assets/textures/stone-floor.png");
-    m_door_texture = pyro::texture_2d::create_from_file("assets/textures/door.png");
     m_nothing_texture = pyro::texture_2d::create_from_file("assets/textures/nothing.png");
 
     m_tiles.resize(m_width * m_height); 
     m_rooms.resize(0);
     m_corridors.resize(0);
-    //m_possible_rooms = rand.get_int(m_min_rooms, m_max_rooms);
+
     auto first_room = create_room(rand);
     m_rooms.push_back(first_room);
 
@@ -75,24 +73,7 @@ void board_generator::init(
             for(auto const &r : m_rooms)
             {
                 bool room_found = false;
-                if(is_wall(x,y,r))
-                {
-                    //if(is_in_door(x,y,r))
-                    //{
-                    //    current_tile.type = e_tile_type::in_door;
-                    //}
-                    //else if(is_out_door(x,y,r))
-                    //{
-                    //    current_tile.type = e_tile_type::out_door;
-                    //}
-                    //else
-                    //{
-                    //    current_tile.type = e_tile_type::wall;
-                    //}
-                    current_tile.type = e_tile_type::floor;
-                    room_found = true;
-                }
-                if(is_floor(x,y,r))
+                if(is_wall(x,y,r) || is_floor(x,y,r))
                 {
                     current_tile.type = e_tile_type::floor;
                     room_found = true;
@@ -110,6 +91,8 @@ void board_generator::init(
 
 void board_generator::on_update(pyro::timestep const &ts)
 {
+    // logic for visualization effects
+
     if(m_tiles_delay > 0.f)
     {
         if(m_tiles_time > m_tiles_delay)
@@ -202,33 +185,12 @@ void board_generator::on_render() const
                 {
                     pyro::quad_properties props;
                     props.position = { x, y, 0 };
-                    //props.size = glm::vec2(0.75f);
                     float opacity = 0.75f;
-                    if(is_wall(x, y, room))
-                    {
-                        if(is_in_door(x, y, room))
-                        {
-                            props.texture = m_floor_texture;
-                            //props.color = { 0.f,1.f,0.f,opacity };
-                        }
-                        else if(is_out_door(x, y, room))
-                        {
-                            props.texture = m_floor_texture;
-                            //props.color = { 1.f,0.f,0.f,opacity };
-                        }
-                        //else
-                        //{
-                        //}
-                            props.texture = m_floor_texture;
-                    }
-                    else if(is_floor(x, y, room))
+                    // only use floor texture if the tile is geometrically
+                    // part of the floor (ignoring tile-type)
+                    if(is_floor(x, y, room))
                     {
                         props.texture = m_floor_texture;
-                        if(is_centre(x, y, room))
-                        {
-                            // 58, 89.8, 1
-                            props.color = { 0.58f,0.89f,1.f,1.f };
-                        }
                     }
                     pyro::renderer_2d::draw_quad(props);
                 }
@@ -240,6 +202,8 @@ void board_generator::on_imgui_render()
 {
     ImGui::Text("-- Rooms: ");
     ImGui::Text("- Count : %d", m_rooms.size());
+    ImGui::Text("-- Corridors: ");
+    ImGui::Text("- Count : %d", m_corridors.size());
     ImGui::Text("---------------------");
 }
 
@@ -323,25 +287,6 @@ void board_generator::connect_rooms(utils::random const &rand)
 
         // add corridor to list of corridors.
         m_corridors.push_back(corr);
-    }
-}
-
-void board_generator::adjust_corridor_end(e_orientation const &dir, glm::ivec2 &door_pos)
-{
-    switch(dir)
-    {
-    case e_orientation::north:
-        door_pos.y += 1;
-        break;
-    case e_orientation::south:
-        door_pos.y -= 1;
-        break;
-    case e_orientation::east:
-        door_pos.x -= 1;
-        break;
-    case e_orientation::west:
-        door_pos.x += 1;
-        break;
     }
 }
 
