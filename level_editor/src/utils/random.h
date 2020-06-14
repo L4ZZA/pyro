@@ -16,7 +16,7 @@ namespace utils
         random(uint32_t custom_seed);
 
         void seed(uint32_t seed);
-        uint32_t seed();
+        uint32_t seed() const;
         // Returns a random floating point value between 0 and 1.
         float get_float() const;
         // Returns a random uint32 value between a given range [min,max].
@@ -44,7 +44,7 @@ namespace utils
         m_random_engine = std::mt19937(seed);
     }
 
-    inline uint32_t random::seed()
+    inline uint32_t random::seed() const
     {
         return m_seed;
     }
