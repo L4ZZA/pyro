@@ -14,6 +14,7 @@ board_generator::board_generator(int width, int height)
     , m_rooms_delay(0.f)
     , m_corridors_delay(0.15f)
     , m_show_rooms(true)
+    , m_delays_ended(false)
 {
 }
 
@@ -22,6 +23,7 @@ void board_generator::init(
     int min_rooms, int max_rooms,
     int min_room_size, int max_room_size)
 {
+    m_delays_ended = false;
     m_tiles_up_to = 0;
     m_rooms_up_to = 0;
     m_corridors_up_to = 0;
@@ -92,11 +94,12 @@ void board_generator::init(
 void board_generator::on_update(pyro::timestep const &ts)
 {
     // logic for visualization effects
-
-    if(m_tiles_delay > 0.f)
+    if(!m_delays_ended)
     {
-        if(m_tiles_time > m_tiles_delay)
+        if(m_tiles_delay > 0.f)
         {
+            if(m_tiles_time > m_tiles_delay)
+            {
             m_tiles_time = m_tiles_time - m_tiles_delay;
             if(m_tiles_up_to < m_tiles.size())
                 m_tiles_up_to++;
@@ -134,8 +137,13 @@ void board_generator::on_update(pyro::timestep const &ts)
         m_corridors_time += ts;
     }
     else
-    {
-        m_corridors_up_to = m_corridors.size();
+        {
+            m_corridors_up_to = m_corridors.size();
+        }
+
+        m_delays_ended = m_tiles_up_to == m_tiles.size()
+                       && m_rooms_up_to == m_rooms.size()
+                       && m_corridors_up_to == m_corridors.size();
     }
 }
 

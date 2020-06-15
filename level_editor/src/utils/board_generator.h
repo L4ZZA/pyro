@@ -94,6 +94,7 @@ private:
     int m_max_room_size;
     int m_possible_rooms;
     bool m_show_rooms;
+    bool m_delays_ended;
 
     std::vector<tile> m_tiles;
     std::vector<pyro::ref<room>> m_rooms;
