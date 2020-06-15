@@ -270,7 +270,7 @@ void board_generator::connect_rooms(utils::random const &rand)
             int current_tile_y = start_tile.y;
             int index = current_tile_x * m_height + current_tile_y;
             tile &tile = m_tiles[index];
-            tile.type = e_tile_type::coridor_floor;
+            tile.type = e_tile_type::floor;
             corr->tiles_indexes.push_back(index);
             end_tile = current_tile_x;
         }
@@ -281,7 +281,7 @@ void board_generator::connect_rooms(utils::random const &rand)
             int current_tile_y = start_tile.y + (y * y_dir);
             int index = current_tile_x * m_height + current_tile_y;
             tile &tile = m_tiles[index];
-            tile.type = e_tile_type::coridor_floor;
+            tile.type = e_tile_type::floor;
             corr->tiles_indexes.push_back(index);
         }
 

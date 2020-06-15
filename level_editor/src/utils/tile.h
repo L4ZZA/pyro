@@ -5,7 +5,7 @@
 
 enum class e_tile_type
 {
-    floor = 0, wall, room_center, in_door, out_door, coridor_floor, nothing
+    floor = 0, nothing
 };
 
 struct tile
