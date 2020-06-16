@@ -26,55 +26,18 @@ public:
     pyro::ref<room> create_room(utils::random const &rand);
     void connect_rooms(utils::random const &rand);
 
-    bool are_overlapping(pyro::ref<room> room_a, pyro::ref<room> room_b) const;
-    bool are_touching(pyro::ref<room> room_a, pyro::ref<room> room_b) const;
-    bool are_near(pyro::ref<room> room_a, pyro::ref<room> room_b) const;
+    // This method assumes that the room pass as parameter is not yet
+    // in the list of existing rooms.
     bool is_any_overlapping(pyro::ref<room> r) const;
+    // This method assumes that the room pass as parameter is not yet
+    // in the list of existing rooms.
     bool is_any_touching(pyro::ref<room> r) const;
+    // This method assumes that the room pass as parameter is not yet
+    // in the list of existing rooms.
     bool is_any_overlapping_or_touching(pyro::ref<room> r) const;
+    // This method assumes that the room pass as parameter is not yet
+    // in the list of existing rooms.
     bool is_any_overlapping_or_near(pyro::ref<room> r) const;
-
-
-    bool is_centre(int x, int y, pyro::ref<room> r) const
-    {
-        return false; //x == r->center.x && y == r->center.y;
-    }
-
-    bool is_floor(int x, int y, pyro::ref<room> r) const
-    {
-        return x > r->left && x < r->right &&
-            y > r->bottom && y < r->top;
-    }
-
-    bool is_wall(int x, int y, pyro::ref<room> r) const
-    {
-        const bool is_left_wall = x == r->left && y >= r->bottom && y <= r->top;
-        const bool is_right_wall = x == r->right && y >= r->bottom && y <= r->top;
-        const bool is_top_wall = y == r->top && x >= r->left && x <= r->right;
-        const bool is_bottom_wall = y == r->bottom && x >= r->left && x <= r->right;
-
-        return is_left_wall || is_right_wall || is_top_wall || is_bottom_wall;
-    }
-
-    bool is_door(int x, int y, pyro::ref<room> r) const
-    {
-        const bool is_in_door = x == r->in_door.x && y == r->in_door.y;
-        const bool is_out_door = x == r->out_door.x && y == r->out_door.y;
-
-        return is_in_door || is_out_door;
-    }
-
-    bool is_in_door(int x, int y, pyro::ref<room> r) const
-    {
-        const bool is_in_door = x == r->in_door.x && y == r->in_door.y;
-        return is_in_door;
-    }
-
-    bool is_out_door(int x, int y, pyro::ref<room> r) const
-    {
-        const bool is_out_door = x == r->out_door.x && y == r->out_door.y;
-        return is_out_door;
-    }
 
 private:
     float m_tiles_delay;

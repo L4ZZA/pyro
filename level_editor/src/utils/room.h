@@ -39,8 +39,8 @@ struct room
         top    = y + h-1;
         width  = w;
         height = h;
-        center.x = right - ((right - left) / 2.f);
-        center.y = top - ((top - bottom) / 2.f);
+        center.x = left + (width / 2.f);
+        center.y = bottom + (height / 2.f);
         generate_doors(rand, in_door, out_door);
     }
 
@@ -111,6 +111,81 @@ struct room
             && bottom == other.bottom
             && right == other.right
             && top == other.top;
+    }
+
+    bool is_centre(int x, int y) const
+    {
+        return x == center.x && y == center.y;
+    }
+
+    bool is_floor(int x, int y) const
+    {
+        return x > left && x < right &&
+            y > bottom && y < top;
+    }
+
+    bool is_wall(int x, int y) const
+    {
+        const bool is_left_wall = x == left && y >= bottom && y <= top;
+        const bool is_right_wall = x == right && y >= bottom && y <= top;
+        const bool is_top_wall = y == top && x >= left && x <= right;
+        const bool is_bottom_wall = y == bottom && x >= left && x <= right;
+
+        return is_left_wall || is_right_wall || is_top_wall || is_bottom_wall;
+    }
+
+    bool is_door(int x, int y) const
+    {
+        const bool is_in_door = x == in_door.x && y == in_door.y;
+        const bool is_out_door = x == out_door.x && y == out_door.y;
+
+        return is_in_door || is_out_door;
+    }
+
+    bool is_in_door(int x, int y) const
+    {
+        const bool is_in_door = x == in_door.x && y == in_door.y;
+        return is_in_door;
+    }
+
+    bool is_out_door(int x, int y) const
+    {
+        const bool is_out_door = x == out_door.x && y == out_door.y;
+        return is_out_door;
+    }
+
+    bool are_overlapping(pyro::ref<room> other) const
+    {
+        const bool overlapping = left <= other->right
+            && right >= other->left
+            && top >= other->bottom
+            && bottom <= other->top;
+        return overlapping;
+    }
+    bool are_touching(pyro::ref<room> other) const
+    {
+        const int gap = 1;
+        const bool touching = left == other->right + gap
+            || right == other->left - gap
+            || top == other->bottom - gap
+            || bottom == other->top + gap;
+        return touching;
+    }
+    bool are_near(pyro::ref<room> other) const
+    {
+        const int gap = 3;
+
+        int gap_up = other->bottom - top;
+        int gap_down = bottom - other->top;
+        int gap_left = left - other->right;
+        int gap_right = other->left - right;
+
+        const bool a = gap_up >= 0 && gap_up <= gap;
+        const bool b = gap_down >= 0 && gap_down <= gap;
+        const bool c = gap_left >= 0 && gap_left <= gap;
+        const bool d = gap_right >= 0 && gap_right <= gap;
+        const bool are_near = a || b || c || d;
+        return are_near;
     }
 };
 

@@ -75,7 +75,7 @@ void board_generator::init(
             for(auto const &r : m_rooms)
             {
                 bool room_found = false;
-                if(is_wall(x,y,r) || is_floor(x,y,r))
+                if(r->is_wall(x,y) || r->is_floor(x,y))
                 {
                     current_tile.type = e_tile_type::floor;
                     room_found = true;
@@ -196,7 +196,7 @@ void board_generator::on_render() const
                     float opacity = 0.75f;
                     // only use floor texture if the tile is geometrically
                     // part of the floor (ignoring tile-type)
-                    if(is_floor(x, y, room))
+                    if(room->is_floor(x, y))
                     {
                         props.texture = m_floor_texture;
                     }
@@ -298,47 +298,11 @@ void board_generator::connect_rooms(utils::random const &rand)
     }
 }
 
-bool board_generator::are_overlapping(pyro::ref<room> room_a, pyro::ref<room> room_b) const
-{
-    const bool overlapping = room_a->left   <= room_b->right
-                          && room_a->right  >= room_b->left
-                          && room_a->top    >= room_b->bottom
-                          && room_a->bottom <= room_b->top;
-    return overlapping;
-}
-
-bool board_generator::are_touching(pyro::ref<room> room_a, pyro::ref<room> room_b) const
-{
-    const int gap = 1;
-    const bool touching = room_a->left   == room_b->right + gap
-                       || room_a->right  == room_b->left - gap
-                       || room_a->top    == room_b->bottom - gap
-                       || room_a->bottom == room_b->top + gap;
-    return touching;
-}
-
-bool board_generator::are_near(pyro::ref<room> room_a, pyro::ref<room> room_b) const
-{
-    const int gap = 3;
-
-    int gap_up = room_b->bottom - room_a->top;
-    int gap_down = room_a->bottom - room_b->top;
-    int gap_left = room_a->left - room_b->right;
-    int gap_right = room_b->left - room_a->right;
-
-    const bool a = gap_up    >= 0  && gap_up    <= gap;
-    const bool b = gap_down  >= 0  && gap_down  <= gap;
-    const bool c = gap_left  >= 0  && gap_left  <= gap;
-    const bool d = gap_right >= 0  && gap_right <= gap;
-    const bool are_near = a || b || c || d;
-    return are_near;
-}
-
 bool board_generator::is_any_overlapping(pyro::ref<room> r) const
 {
     for(auto existing_room : m_rooms)
     {
-        if(are_overlapping(r, existing_room))
+        if(r->are_overlapping(existing_room))
             return true;
     }
     // none are overlapping
@@ -349,7 +313,7 @@ bool board_generator::is_any_touching(pyro::ref<room> r) const
 {
     for(auto existing_room : m_rooms)
     {
-        if(are_touching(r, existing_room))
+        if(r->are_touching(existing_room))
             return true;
     }
     // none are overlapping
@@ -360,8 +324,8 @@ bool board_generator::is_any_overlapping_or_touching(pyro::ref<room> r) const
 {
     for(auto const &existing_room : m_rooms)
     {
-        if(are_overlapping(r, existing_room) 
-           || are_touching(r, existing_room))
+        if(r->are_overlapping(existing_room)
+           || r->are_touching(existing_room))
             return true;
     }
     // none are overlapping
@@ -372,8 +336,8 @@ bool board_generator::is_any_overlapping_or_near(pyro::ref<room> r) const
 {
     for(auto const &existing_room : m_rooms)
     {
-        if(are_overlapping(r, existing_room) 
-           || are_near(r, existing_room))
+        if(r->are_overlapping(existing_room)
+           || r->are_near(existing_room))
             return true;
     }
     // none are overlapping
