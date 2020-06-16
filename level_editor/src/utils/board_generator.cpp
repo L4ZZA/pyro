@@ -12,7 +12,7 @@ board_generator::board_generator(int width, int height)
     , m_possible_rooms(85)
     , m_tiles_delay(0.f)
     , m_rooms_delay(0.f)
-    , m_corridors_delay(0.15f)
+    , m_corridors_delay(0.f)
     , m_show_dungeon(true)
     , m_show_walls(true)
     , m_delays_ended(false)
@@ -57,14 +57,6 @@ void board_generator::init(
         if(!is_any_overlapping_or_near(proposed_room))
         {
             m_rooms.push_back(proposed_room);
-
-            PYRO_TRACE("----- room");
-            PYRO_TRACE("x - {}", proposed_room->left);
-            PYRO_TRACE("y - {}", proposed_room->bottom);
-            PYRO_TRACE("right - {}", proposed_room->right);
-            PYRO_TRACE("top - {}", proposed_room->top);
-            PYRO_TRACE("width - {}", proposed_room->width);
-            PYRO_TRACE("height - {}", proposed_room->height);
         }
     }
 
@@ -103,45 +95,48 @@ void board_generator::on_update(pyro::timestep const &ts)
     {
         if(m_tiles_delay > 0.f)
         {
+            // draw tiles one by one in order of creation
             if(m_tiles_time > m_tiles_delay)
             {
-            m_tiles_time = m_tiles_time - m_tiles_delay;
-            if(m_tiles_up_to < m_tiles.size())
-                m_tiles_up_to++;
+                m_tiles_time = m_tiles_time - m_tiles_delay;
+                if(m_tiles_up_to < m_tiles.size())
+                    m_tiles_up_to++;
+            }
+            m_tiles_time += ts;
         }
-        m_tiles_time += ts;
-    }
-    else
-    {
-        m_tiles_up_to = m_tiles.size();
-    }
-
-    if(m_rooms_delay > 0.f)
-    {
-        if(m_rooms_time > m_rooms_delay)
+        else
         {
-            m_rooms_time = m_rooms_time - m_rooms_delay;
-            if(m_rooms_up_to < m_rooms.size())
-                m_rooms_up_to++;
+            m_tiles_up_to = m_tiles.size();
         }
-        m_rooms_time += ts;
-    }
-    else
-    {
-        m_rooms_up_to = m_rooms.size();
-    }
 
-    if(m_corridors_delay > 0.f)
-    {
-        if(m_corridors_time > m_corridors_delay)
+        if(m_rooms_delay > 0.f)
         {
-            m_corridors_time = m_corridors_time - m_corridors_delay;
-            if(m_corridors_up_to < m_corridors.size())
-                m_corridors_up_to++;
+            // draw rooms one by one in order of creation
+            if(m_rooms_time > m_rooms_delay)
+            {
+                m_rooms_time = m_rooms_time - m_rooms_delay;
+                if(m_rooms_up_to < m_rooms.size())
+                    m_rooms_up_to++;
+            }
+            m_rooms_time += ts;
         }
-        m_corridors_time += ts;
-    }
-    else
+        else
+        {
+            m_rooms_up_to = m_rooms.size();
+        }
+
+        if(m_corridors_delay > 0.f)
+        {
+            // draw corridors one by one in order of creation
+            if(m_corridors_time > m_corridors_delay)
+            {
+                m_corridors_time = m_corridors_time - m_corridors_delay;
+                if(m_corridors_up_to < m_corridors.size())
+                    m_corridors_up_to++;
+            }
+            m_corridors_time += ts;
+        }
+        else
         {
             m_corridors_up_to = m_corridors.size();
         }
@@ -159,24 +154,26 @@ void board_generator::on_render() const
     {
         tile const &tile = m_tiles[i];
         pyro::quad_properties props;
-        props.position = { tile.x, tile.y, 0 };
+        props.position = { tile.x, tile.y, 0.f };
         float opacity = 0.75f;
-        if(tile.type == e_tile_type::nothing)
-        {
-            float dx = static_cast<float>(tile.x) / (static_cast<float>(m_width));
-            float dy = static_cast<float>(tile.y) / (static_cast<float>(m_height));
 
-            float move_x = 0.f;
-            float move_y = 0.f;
-            float morph = 0.f;
-            int scale = 10;
-            // Typical Perlin noise 
-            float n = m_perlin_noise.noise(scale * dx - move_x, scale * dy + move_y, morph);
+        // the coordinates to the noise method have to be floating points values.
+        float dx = static_cast<float>(tile.x) / (static_cast<float>(m_width));
+        float dy = static_cast<float>(tile.y) / (static_cast<float>(m_height));
 
-            props.texture = m_bg_textures[tile_map(n)];
-            props.color = { 1.f,1.f,1.f,opacity };
-            pyro::renderer_2d::draw_quad(props);
-        }
+        float move_x = 0.f;
+        float move_y = 0.f;
+        float morph = 0.f;
+
+        // to scale multiply by an integer
+        int scale = 10;
+        // Typical Perlin noise 
+        float n = m_perlin_noise.noise(scale * dx - move_x, scale * dy + move_y, morph);
+
+        props.texture = m_bg_textures[tile_map(n)];
+        props.color = { 1.f,1.f,1.f,opacity };
+        pyro::renderer_2d::draw_quad(props);
+        
     }
 
     if(m_show_dungeon)
@@ -207,7 +204,7 @@ void board_generator::on_render() const
                 for(int y = y_start; y <= y_end; y++)
                 {
                     pyro::quad_properties props;
-                    props.position = { x, y, 0 };
+                    props.position = { x, y, 0.1f };
                     float opacity = 0.75f;
                     // only use floor texture if the tile is geometrically
                     // part of the floor (ignoring tile-type)
@@ -228,6 +225,8 @@ void board_generator::on_render() const
     }
 }
 
+// Sample code from: https://github.com/ocornut/imgui/issues/1537#issuecomment-355562097
+// This method is not a member, to prevent compilation and usage in other classes.
 void ToggleButton(const char *str_id, bool *v)
 {
     ImVec2 p = ImGui::GetCursorScreenPos();
@@ -340,8 +339,6 @@ void board_generator::connect_rooms(utils::random const &rand)
             int current_tile_x = start_tile.x + (x * x_dir);
             int current_tile_y = start_tile.y;
             int index = current_tile_x * m_height + current_tile_y;
-            tile &tile = m_tiles[index];
-            tile.type = e_tile_type::floor;
             corr->tiles_indexes.push_back(index);
             end_tile = current_tile_x;
         }
@@ -351,8 +348,6 @@ void board_generator::connect_rooms(utils::random const &rand)
             int current_tile_x = end_tile;
             int current_tile_y = start_tile.y + (y * y_dir);
             int index = current_tile_x * m_height + current_tile_y;
-            tile &tile = m_tiles[index];
-            tile.type = e_tile_type::floor;
             corr->tiles_indexes.push_back(index);
         }
 
