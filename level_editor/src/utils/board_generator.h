@@ -59,7 +59,8 @@ private:
     int m_min_room_size;
     int m_max_room_size;
     int m_possible_rooms;
-    bool m_show_rooms;
+    bool m_show_dungeon;
+    bool m_show_walls;
     bool m_delays_ended;
 
     utils::perlin_noise m_perlin_noise;
