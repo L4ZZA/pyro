@@ -1,12 +1,15 @@
 #pragma once
 #include "base_noise_scene.h"
 #include "utils/random.h"
+#include "utils/board_generator.h"
+#include <vector>
+#include <unordered_map>
 
-class noise1d_scene final : public base_noise_scene
+class roguelike_scene final : public base_noise_scene
 {
 public:
-    noise1d_scene(pyro::ref<pyro::camera_controller> cam_controller);
-    virtual ~noise1d_scene();
+    roguelike_scene(pyro::ref<pyro::camera_controller> cam_controller);
+    virtual ~roguelike_scene();
 
     void init() override;
     void deinit() override;
@@ -23,21 +26,12 @@ private:
 private:
     pyro::ref<pyro::camera_controller> m_cam_controller;
     
-    static const int s_texture_size = 256;
+    int                 m_seed;
+    utils::random       m_rand;
+    utils::perlin_noise m_other_noise;
 
-    std::array<float, s_texture_size> m_noise_1d{ 0 };
-
-    utils::random m_rand;
-    int m_noise_type = 0;
-    int m_seed;
     bool m_noise_changed = false;
-    int m_octaves = 5;
-    float m_bias = 0.2f;
-
-    int m_scale = 10;
-    float m_morph = 0.8f;
-    float m_move_x = 0.8f;
-
-    utils::perlin_noise             m_other_noise;
-    float rect_width = 1.f;
+    board_generator m_board_generator;
+    //std::unordered_map<uint32_t, pyro::ref<room>> m_rooms_map;
+    //map_generator m_map_gen;
 };

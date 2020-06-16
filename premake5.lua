@@ -114,11 +114,6 @@ project "pyro"
     filter "system:windows"
         systemversion "latest" -- windows SDK version
 
-        defines
-        {
-            "PYRO_PLATFORM_WIN",
-        }
-
     filter "configurations:Debug"
         defines "PYRO_DEBUG"
         runtime "Debug"

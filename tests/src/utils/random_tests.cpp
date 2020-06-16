@@ -29,6 +29,25 @@ using namespace utils;
 
 BOOST_AUTO_TEST_SUITE(randoms)
 
+BOOST_AUTO_TEST_CASE(random_values, *utf::tolerance(0.00001))
+{
+    float first;
+    float second;
+    float third;
+
+    {
+        random rand(1);
+        first = rand.get_float();
+    
+        second = rand.get_float();
+        BOOST_TEST(first != second);
+    
+        third = rand.get_float();
+        BOOST_TEST(first  != third);
+        BOOST_TEST(second != third);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(same_random_float, *utf::tolerance(0.00001))
 {
     float first;
@@ -51,7 +70,7 @@ BOOST_AUTO_TEST_CASE(same_random_float, *utf::tolerance(0.00001))
     BOOST_TEST(first == third);
 }
 
-BOOST_AUTO_TEST_CASE(seeded_random_float, *utf::tolerance(0.00001))
+BOOST_AUTO_TEST_CASE(random_float, *utf::tolerance(0.00001))
 {
     random rand(1);
     float first = rand.get_float();
@@ -63,7 +82,7 @@ BOOST_AUTO_TEST_CASE(seeded_random_float, *utf::tolerance(0.00001))
     BOOST_TEST(first == twin); // irrelevant difference
 }
 
-BOOST_AUTO_TEST_CASE(seeded_random_float_array)
+BOOST_AUTO_TEST_CASE(random_float_array)
 {
     random rand(1);
     const int size = 100;
@@ -89,6 +108,20 @@ BOOST_AUTO_TEST_CASE(seeded_random_float_array)
             BOOST_TEST(first_array[i] == twin_array[i]); 
             BOOST_CHECK(first_array[i] == twin_array[i]); 
         }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(random_int_range)
+{
+    random rand(1);
+    int tries = 1000;
+    int min = 2;
+    int max = 10; 
+    for(int i = 0; i < tries; i++)
+    {
+        int val = rand.get_int(min,max);
+        BOOST_TEST((val >= min && val <= max));
+        BOOST_TEST(!(val < min || val > max));
     }
 }
 
