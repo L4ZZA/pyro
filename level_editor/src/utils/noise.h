@@ -2,14 +2,22 @@
 #include <array>
 #include <cmath>
 #include "utils/random.h"
-#include "utils/math.h"
 
 namespace utils
 {
+
+    /* Function to linearly interpolate between a and b
+     * The weight parameter should be in the range [0.0, 1.0]
+     */
+    inline float lerp(float a, float b, float weight)
+    {
+        return (1.0f - weight) * a + weight * b;
+    }
+    
     inline std::vector<float> generate_seed(int size, 
                               uint32_t seed,
                               float average = 0.0f)
-    {
+   {
         utils::random rand(seed);
         std::vector<float> seed_array;
         seed_array.resize(size);
@@ -97,16 +105,14 @@ namespace utils
                     // both samples use the same 
                     const float sample_t = 
                         lerp(
-                            blend_x,
                             seed_array[sample_y1 * output_size + sample_x1], 
-                            seed_array[sample_y1 * output_size + sample_x2]
-                            );
+                            seed_array[sample_y1 * output_size + sample_x2], 
+                            blend_x);
                     const float sample_b = 
                         lerp(
-                            blend_x,
                             seed_array[sample_y2 * output_size + sample_x1], 
-                            seed_array[sample_y2 * output_size + sample_x2]
-                            );
+                            seed_array[sample_y2 * output_size + sample_x2], 
+                            blend_x);
 
                     scale_accumulator += scale;
                     noise += (blend_y * (sample_b - sample_t) + sample_t) * scale;
