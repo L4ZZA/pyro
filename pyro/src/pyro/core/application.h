@@ -15,7 +15,7 @@ namespace pyro
     class PYRO_API application
     {
     public:
-        application();
+        application(std::string const &name = "pyro");
         virtual ~application();
 
         /// \brief

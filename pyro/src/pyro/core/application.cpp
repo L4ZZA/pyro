@@ -13,7 +13,7 @@ bool pyro::application::s_minimized = false;
 
 //----------------------------------------------------------------------------- 
 
-pyro::application::application()
+pyro::application::application(std::string const &name /*= "Pyro"*/)
 {
     PYRO_PROFILE_FUNCTION();
 

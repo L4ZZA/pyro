@@ -1,7 +1,7 @@
 -- workspace is the solution
 workspace "pyro"
     architecture "x64"
-    startproject "sandbox"
+    startproject "sparkle"
 
     configurations
     {
@@ -89,6 +89,55 @@ project "pyro"
             "GLFW_INCLUDE_NONE",
             "PYRO_PLATFORM_WIN",
         }
+
+    filter "configurations:Debug"
+        defines "PYRO_DEBUG"
+        runtime "Debug"
+        symbols "on"
+
+    filter "configurations:Release"
+        defines "PYRO_RELEASE"
+        runtime "Release"
+        optimize "on"
+
+    filter "configurations:Dist"
+        defines "PYRO_DIST"
+        runtime "Release"
+        optimize "on"
+
+-- editor application
+project "sparkle"
+    location "sparkle"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "on"
+
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("inter/" .. outputdir .. "/%{prj.name}")
+
+    files
+    {
+        "%{prj.name}/src/**.h",
+        "%{prj.name}/src/**.cpp"
+    }
+
+    includedirs
+    {
+        "pyro/external/spdlog/include",
+        "pyro/src",
+        "pyro/external",
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.ImGui}",
+    }
+
+    links
+    {
+        "pyro"
+    }
+
+    filter "system:windows"
+        systemversion "latest"
 
     filter "configurations:Debug"
         defines "PYRO_DEBUG"
