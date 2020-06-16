@@ -14,8 +14,8 @@ struct room
         top    = y + h-1;
         width  = w;
         height = h;
-        center.x = left + (width / 2.f);
-        center.y = bottom + (height / 2.f);
+        center.x = left   + static_cast<int>(width / 2.f);
+        center.y = bottom + static_cast<int>(height / 2.f);
         generate_doors(rand, in_door, out_door);
     }
 
