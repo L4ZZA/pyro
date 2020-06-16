@@ -333,7 +333,9 @@ void board_generator::connect_rooms(utils::random const &rand)
         corr->start_tile = start_tile;
         corr->end_tile = dest_tile;
 
-        int end_tile = 0;
+        // if displacement is zero, the end_tile should 
+        // be on the same x coordinate of the start_tile
+        int end_tile = start_tile.x;
         for(int x = 0; x < displacement.x; x++)
         {
             int current_tile_x = start_tile.x + (x * x_dir);
