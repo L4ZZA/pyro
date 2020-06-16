@@ -17,15 +17,23 @@ public:
     void on_render() const override;
     void on_imgui_render() override;
     void on_event(pyro::event &e) override;
+    virtual void play() override { m_play_mode = true; }
+    virtual void stop_playing() override { m_play_mode = false; }
+    virtual bool is_playing() override { return m_play_mode; }
 
 private:
     void on_seed_changed() override;
+
+private:
+    void editor_update(pyro::timestep const &ts);
+    void play_mode_update(pyro::timestep const &ts);
     bool on_key_pressed(pyro::key_pressed_event &e);
     glm::vec4 color_map(float noise) const;
 
 private:
     pyro::ref<pyro::camera_controller> m_cam_controller;
-    
+    bool m_play_mode;
+
     int                 m_seed;
     utils::random       m_rand;
     utils::perlin_noise m_other_noise;

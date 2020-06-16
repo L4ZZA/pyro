@@ -8,6 +8,7 @@ noise2d_scene::noise2d_scene(pyro::ref<pyro::camera_controller> cam_controller)
     , m_seed(0)
     , m_rand(0)
     , m_other_noise(0)
+    , m_play_mode(false)
 {
 }
 
@@ -35,35 +36,10 @@ void noise2d_scene::deinit()
 
 void noise2d_scene::on_update(pyro::timestep const &ts)
 {
-    if(m_noise_changed)
-    {
-        m_noise_changed = false;
-        if(m_octaves > 8)
-            m_octaves = 8;
-        if(m_octaves < 1)
-            m_octaves = 1;
-        if(m_bias < 0.2f)
-            m_bias = 0.2f;
-
-        if(m_noise_type == 0)
-        {
-            utils::perlin_noise_2d(
-                s_texture_size, m_octaves, m_bias, m_seed, m_noise_2d.data());
-
-        }
-        else if(m_noise_type == 1)
-        {
-            auto tmp_vec = m_other_noise.noise_2d_array(
-                s_texture_size,
-                m_scale,
-                m_morph,
-                m_move_x, m_move_y);
-            std::copy_n(std::move(tmp_vec.begin()), tmp_vec.size(), m_noise_2d.begin());
-
-        }
-        m_noise_texture->data(m_noise_2d.data(), m_noise_2d.size(),
-            pyro::e_texture_data_type::Float);
-    }
+    if(m_play_mode)
+        play_mode_update(ts);
+    else
+        editor_update(ts);
 }
 
 void noise2d_scene::on_render() const
@@ -172,6 +148,43 @@ void noise2d_scene::on_event(pyro::event &e)
     dispatcher.dispatch<pyro::key_pressed_event>(BIND_EVENT_FN(noise2d_scene::on_key_pressed));
 }
 
+
+void noise2d_scene::editor_update(pyro::timestep const &ts)
+{
+    if(m_noise_changed)
+    {
+        m_noise_changed = false;
+        if(m_octaves > 8)
+            m_octaves = 8;
+        if(m_octaves < 1)
+            m_octaves = 1;
+        if(m_bias < 0.2f)
+            m_bias = 0.2f;
+
+        if(m_noise_type == 0)
+        {
+            utils::perlin_noise_2d(
+                s_texture_size, m_octaves, m_bias, m_seed, m_noise_2d.data());
+
+        }
+        else if(m_noise_type == 1)
+        {
+            auto tmp_vec = m_other_noise.noise_2d_array(
+                s_texture_size,
+                m_scale,
+                m_morph,
+                m_move_x, m_move_y);
+            std::copy_n(std::move(tmp_vec.begin()), tmp_vec.size(), m_noise_2d.begin());
+
+        }
+        m_noise_texture->data(m_noise_2d.data(), m_noise_2d.size(),
+            pyro::e_texture_data_type::Float);
+    }
+}
+
+void noise2d_scene::play_mode_update(pyro::timestep const &ts)
+{
+}
 
 bool noise2d_scene::on_key_pressed(pyro::key_pressed_event &e)
 {

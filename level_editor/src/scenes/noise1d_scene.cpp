@@ -7,7 +7,8 @@ noise1d_scene::noise1d_scene(pyro::ref<pyro::camera_controller> cam_controller)
     , m_cam_controller(cam_controller)
     , m_seed(0)
     , m_rand(0)
-    , m_octaves(5)
+    , m_octaves(8)
+    , m_bias(2.f)
     , m_other_noise(0)
 {
 }
@@ -29,57 +30,41 @@ void noise1d_scene::deinit()
 
 void noise1d_scene::on_update(pyro::timestep const &ts)
 {
-    if(m_noise_changed)
+    if(m_play_mode)
     {
-        m_noise_changed = false;
-        if(m_octaves > 8)
-            m_octaves = 8;
-        if(m_octaves < 1)
-            m_octaves = 1;
-        if(m_bias < 0.2f)
-            m_bias = 0.2f;
-
-        if(m_noise_type == 0)
-        {
-            utils::perlin_noise_1d(
-                s_texture_size, m_octaves, m_bias, m_seed, m_noise_1d.data());
-        }
-        else if(m_noise_type == 1)
-        {
-            auto tmp_vec = m_other_noise.noise_1d_array(
-                s_texture_size,
-                m_scale,
-                m_morph,
-                m_move_x);
-            std::copy_n(std::move(tmp_vec.begin()), tmp_vec.size(), m_noise_1d.begin());
-        }
+        // update play mode objects
+        play_mode_update(ts);
+    }
+    else
+    {
+        // update editor
+        editor_update(ts);
     }
 }
 
 void noise1d_scene::on_render() const
 {
     pyro::renderer_2d::begin_scene(m_camera);
-    int width = s_texture_size;
-    int height = s_texture_size / 4;
-    int step = 1;
-    float line_rect_width = 0.2f;
-    float rect_heigth_max = 10.f;
-    float gap_width = step - rect_width;
-    float gap = 0.0f;
+    int32_t width = m_map_width;
+    int32_t height = m_map_height;
 
-    for (int x = 0; x < width; x += step)
+    for(int32_t x = 0; x < width; x++)
     {
-        float rect_heigth = 
-            (m_noise_1d[x] * static_cast<float>(rect_heigth_max) / 2.0f) 
-            + static_cast<float>(rect_heigth_max) / 2.0f;
-        //float rect_heigth = m_noise_1d.at(x);
-        pyro::quad_properties props;
-        props.color = { 1.f, 0.0f, 0.0, 0.7f };
-        float x_pos = x - (x * gap_width);
-        float y_offset = (rect_heigth / 2) + 0.5;
-        props.position = { x_pos, y_offset - rect_heigth_max, 0.f };
-        props.size = { line_rect_width, rect_heigth };
-        pyro::renderer_2d::draw_quad(props);
+        for(int32_t y = 0; y < height; y++)
+        {
+            pyro::quad_properties props;
+            props.position = { static_cast<float>(x - width / 2), static_cast<float>(y - height / 2), 0.f };
+            //props.size = glm::vec2(0.75f);
+            //props.position = { x, y, 0.f };
+            int32_t cell = m_surface[x * height + y];
+
+            switch(cell)
+            {
+            case 0: props.color = { 0.2f, 0.8, 0.2f, 1.0f }; break; // green
+            case 1: props.color = { 0.3f, 0.3, 0.8f, 1.0f }; break; // light blue
+            }
+            pyro::renderer_2d::draw_quad(props);
+        }
     }
     pyro::renderer_2d::end_scene();
 }
@@ -95,7 +80,7 @@ void noise1d_scene::on_imgui_render()
     // The second parameter is the label previewed before opening the combo.
     if(ImGui::BeginCombo("##combo", current_item))
     {
-        for(int n = 0; n < items.size(); n++)
+        for(int32_t n = 0; n < items.size(); n++)
         {
             // You can store your selection however you want, outside or inside your objects
             bool is_selected = (current_item == items[n]); 
@@ -154,6 +139,14 @@ void noise1d_scene::on_event(pyro::event &e)
     dispatcher.dispatch<pyro::key_pressed_event>(BIND_EVENT_FN(noise1d_scene::on_key_pressed));
 }
 
+void noise1d_scene::on_seed_changed()
+{
+    m_rand.seed(m_seed);
+    m_other_noise.change_seed(m_seed);
+    m_noise_changed = true;
+}
+
+
 
 bool noise1d_scene::on_key_pressed(pyro::key_pressed_event &e)
 {
@@ -190,8 +183,7 @@ bool noise1d_scene::on_key_pressed(pyro::key_pressed_event &e)
         m_bias += 0.2f;
         on_seed_changed();
     }
-
-
+ 
     //PYRO_TRACE("{0}", static_cast<char>(e.key_code())); 
     return false;
 }
@@ -221,9 +213,56 @@ glm::vec4 noise1d_scene::color_map(float noise) const
     return color;
 }
 
-void noise1d_scene::on_seed_changed()
+void noise1d_scene::create_map()
 {
-    m_rand.seed(m_seed);
-    m_other_noise.change_seed(m_seed);
-    m_noise_changed = true;
+    int32_t width = m_map_width;
+    int32_t height = m_map_height;
+
+    for(int32_t x = 0; x < width; x++)
+    {
+        for(int32_t y = 0; y < height; y++)
+        {
+            int32_t index = x * height + y;
+            // [0,0] is bottom left
+            if(y < m_noise_1d[x] * m_map_height)
+                m_surface[index] = 0; // land
+            else
+                m_surface[index] = 1; // sky
+        }
+    }
+}
+
+void noise1d_scene::editor_update(pyro::timestep const &ts)
+{
+    if(m_noise_changed)
+    {
+        m_noise_changed = false;
+        if(m_octaves > 8)
+            m_octaves = 8;
+        if(m_octaves < 1)
+            m_octaves = 1;
+        if(m_bias < 0.2f)
+            m_bias = 0.2f;
+
+        if(m_noise_type == 0)
+        {
+            utils::perlin_noise_1d(
+                m_map_width, m_octaves, m_bias, m_seed, m_noise_1d.data(), 0.5f);
+        }
+        else if(m_noise_type == 1)
+        {
+            auto tmp_vec = m_other_noise.noise_1d_array(
+                m_map_width,
+                m_scale,
+                m_morph,
+                m_move_x);
+            std::copy_n(std::move(tmp_vec.begin()), tmp_vec.size(), m_noise_1d.begin());
+        }
+
+        create_map();
+    }
+}
+
+void noise1d_scene::play_mode_update(pyro::timestep const &ts)
+{ 
 }

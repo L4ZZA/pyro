@@ -14,18 +14,30 @@ public:
     void on_render() const override;
     void on_imgui_render() override;
     void on_event(pyro::event &e) override;
+    virtual void play() override { m_play_mode = true; }
+    virtual void stop_playing() override { m_play_mode = false; }
+    virtual bool is_playing() override { return m_play_mode; }
 
 private:
     void on_seed_changed() override;
+
+private:
+    void editor_update(pyro::timestep const &ts);
+    void play_mode_update(pyro::timestep const &ts);
+    void create_map();
     bool on_key_pressed(pyro::key_pressed_event &e);
     glm::vec4 color_map(float noise) const;
 
 private:
     pyro::ref<pyro::camera_controller> m_cam_controller;
-    
+    bool m_play_mode;
+
+    int m_map_width;
+    int m_map_height;
     static const int s_texture_size = 256;
 
-    std::array<float, s_texture_size> m_noise_1d{ 0 };
+    std::vector<float> m_noise_1d;
+    std::vector<unsigned char> m_surface;
 
     utils::random m_rand;
     int m_noise_type = 0;

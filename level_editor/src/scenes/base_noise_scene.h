@@ -9,6 +9,9 @@ class base_noise_scene : public scene
 public:
 	base_noise_scene(pyro::ref<pyro::camera> const &camera);
 	virtual ~base_noise_scene() = default;
+	virtual void play() = 0;
+	virtual void stop_playing() = 0;
+	virtual bool is_playing() = 0;
 protected:
 	virtual void on_seed_changed() = 0;
 };

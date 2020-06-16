@@ -29,8 +29,7 @@ void layer_2d::on_attach()
 {
     PYRO_PROFILE_FUNCTION();
     imgui_layer::on_attach();
-    //m_scene_manager.init_first_scene();
-    m_scene_manager.go_to(2);
+    m_scene_manager.init_first_scene();
 }
 
 void layer_2d::on_detach()
@@ -64,18 +63,30 @@ void layer_2d::on_render() const
 
 void layer_2d::on_imgui_render()
 {
+    auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
+
+    // hide all ui if the scene is being played
+    if(current_scene->is_playing())
+        return;
+
     ImGui::Begin("Settings");
 
     auto stats = pyro::renderer_2d::stats();
     ImGui::Text("-- 2D Renderer stats:");
     ImGui::Text("- Frame time: %f", pyro::application::frame_time());
     ImGui::Text("- FPS: %d/s", pyro::application::fps());
-    ImGui::Text("- UPS: %d/s", pyro::application::ups());
     ImGui::Text("- Draw calls: %d", stats.draw_calls);
     ImGui::Text("- Quads: %d", stats.quad_count);
     ImGui::Text("- Vertices: %d", stats.total_vertex_count());
     ImGui::Text("- Indices: %d", stats.total_index_count());
     ImGui::Text("---------------------");
+
+    if(ImGui::Button("PLAY", { 100.f,25.f })) 
+    {
+        current_scene->play();
+    }
+    ImGui::SameLine();
+    ImGui::Text("Once in play mode press Q to quit.");
 
     m_scene_manager.on_imgui_render();
     
@@ -93,8 +104,12 @@ void layer_2d::on_event(pyro::event &e)
     m_2d_camera_controller->on_event(e);
     pyro::event_dispatcher dispatcher(e);
     // dispatch event on window X pressed 
+    auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
     dispatcher.dispatch<pyro::key_pressed_event>([&](pyro::key_pressed_event ev) {
-
+        if(current_scene->is_playing() && ev.key_code() == pyro::key_codes::KEY_Q)
+        {
+            current_scene->stop_playing();
+        }
         switch(ev.key_code())
         {
         case pyro::key_codes::KEY_1: 
@@ -111,6 +126,7 @@ void layer_2d::on_event(pyro::event &e)
         // return if event is handled or not
         return false;
     });
+
     m_scene_manager.on_event(e);
 }
 

@@ -9,6 +9,7 @@ roguelike_scene::roguelike_scene(pyro::ref<pyro::camera_controller> cam_controll
     , m_rand(0)
     , m_other_noise(0)
     , m_board_generator(80,50)
+    , m_play_mode(false)
 {
 }
 
@@ -30,20 +31,10 @@ void roguelike_scene::deinit()
 
 void roguelike_scene::on_update(pyro::timestep const &ts)
 {
-    if(m_noise_changed)
-    {
-        m_noise_changed = false;
-
-        int min_rooms = 30;
-        int max_rooms = 40;
-        int min_room_size = 4;
-        int max_room_size = 8;
-        m_board_generator.init(m_rand,
-                               min_rooms, max_rooms, 
-                               min_room_size, max_room_size);
-    }
-
-    m_board_generator.on_update(ts);
+    if(m_play_mode)
+        play_mode_update(ts);
+    else
+        editor_update(ts);
 }
 
 
@@ -75,6 +66,35 @@ void roguelike_scene::on_event(pyro::event &e)
     m_board_generator.on_event(e);
 }
 
+void roguelike_scene::on_seed_changed()
+{
+    m_rand.seed(m_seed);
+    m_other_noise.change_seed(m_rand.seed());
+    m_noise_changed = true;
+}
+
+
+void roguelike_scene::editor_update(pyro::timestep const &ts)
+{
+    if(m_noise_changed)
+    {
+        m_noise_changed = false;
+
+        int min_rooms = 30;
+        int max_rooms = 40;
+        int min_room_size = 4;
+        int max_room_size = 8;
+        m_board_generator.init(m_rand,
+            min_rooms, max_rooms,
+            min_room_size, max_room_size);
+    }
+
+    m_board_generator.on_update(ts);
+}
+
+void roguelike_scene::play_mode_update(pyro::timestep const &ts)
+{
+}
 
 bool roguelike_scene::on_key_pressed(pyro::key_pressed_event &e)
 {   
@@ -104,11 +124,4 @@ glm::vec4 roguelike_scene::color_map(float noise) const
         color = { 1.f, 1.f, 1.f, 1.0f };
 
     return color;
-}
-
-void roguelike_scene::on_seed_changed()
-{
-    m_rand.seed(m_seed);
-    m_other_noise.change_seed(m_rand.seed());
-    m_noise_changed = true;
 }
