@@ -18,8 +18,8 @@ roguelike_scene::~roguelike_scene()
 
 void roguelike_scene::init()
 {
-    m_cam_controller->position({ 39.f, 24.f, 0.f });
-    m_cam_controller->zoom_level(29.f);
+    m_cam_controller->position({ 55.f, 24.f, 0.f });
+    m_cam_controller->zoom_level(34.f);
 
     on_seed_changed();
 }

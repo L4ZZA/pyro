@@ -17,8 +17,8 @@ noise2d_scene::~noise2d_scene()
 
 void noise2d_scene::init()
 {
-    m_cam_controller->position({ 295.f, 266.5f, 0.f });
-    m_cam_controller->zoom_level(300.f);
+    m_cam_controller->position({ 350.f, 139.5f, 0.f });
+    m_cam_controller->zoom_level(205.f);
 
     pyro::texture_parameters params;
     params.format = pyro::e_texture_format::red;
