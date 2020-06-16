@@ -11,10 +11,12 @@
 // - added ability to change random engine seed
 // - added noise_array getter
 // - made most methods const
+// - moved interpolation methods to math utils 
 
 #include <cmath>
 #include <algorithm>
 #include <numeric>
+#include "utils/math.h"
 
 // Generate a new permutation vector based on the value of seed
 utils::perlin_noise::perlin_noise(uint32_t seed)
@@ -166,23 +168,4 @@ void utils::perlin_noise::change_seed(uint32_t seed)
 
 	// Duplicate the permutation vector
 	m_permutation.insert(m_permutation.end(), m_permutation.begin(), m_permutation.end());
-}
-
-float utils::perlin_noise::fade(float t) const
-{
-	return t * t * t * (t * (t * 6 - 15) + 10);
-}
-
-float utils::perlin_noise::lerp(float t, float a, float b) const
-{
-	return a + t * (b - a);
-}
-
-float utils::perlin_noise::grad(int32_t hash, float x, float y, float z) const
-{
-	int32_t h = hash & 15;
-	// Convert lower 4 bits of hash into 12 gradient directions
-	float u = h < 8 ? x : y,
-		v = h < 4 ? y : h == 12 || h == 14 ? x : z;
-	return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
 }

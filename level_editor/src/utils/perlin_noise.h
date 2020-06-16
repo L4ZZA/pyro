@@ -16,6 +16,7 @@ namespace utils
 	// - added ability to change random engine seed
 	// - added noise_array getter
 	// - made most methods const
+	// - added methods to retrieve arrays of noise
 
     class perlin_noise
     {
@@ -25,19 +26,28 @@ namespace utils
 		// Get a noise value, for 2D images z can have any value
 		float noise(float x, float y, float z) const;
 
+		// Returns a vector representing a 1d array of noise based on the input values.
+		// @param size   one dimensional size of the array. (total_size = size x size)
+		// @param scale  value by which the noise can be changed to look like is scaled up and down.
+		//               [must be int type]
+		// @param morph  [float value] value to modify the noise output
+		// @param move_x [float value] displacement on the x azis
 		std::vector<float> noise_1d_array(
 			const int size, int scale, float morph,
 			float move_x = 0.f) const;
+
+		// Returns a vector representing a 2d array of noise based on the input values.
+		// @param size   one dimensional size of the array. (total_size = size x size)
+		// @param scale  value by which the noise can be changed to look like is scaled up and down.
+		//               [must be int type]
+		// @param morph  [float value] value to modify the noise output
+		// @param move_x [float value] displacement on the x azis
+		// @param move_y [float value] displacement on the y azis
 		std::vector<float> noise_2d_array(
 			const int size, int scale, float morph,
 			float move_x = 0.f, float move_y = 0.f) const;
 
 		void change_seed(uint32_t seed);
-
-	private:
-		float fade(float t) const;
-		float lerp(float t, float a, float b) const;
-		float grad(int32_t hash, float x, float y, float z) const;
 
 	private:
 		// rendom engine
