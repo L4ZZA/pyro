@@ -57,7 +57,12 @@ void roguelike_scene::on_render() const
 void roguelike_scene::on_imgui_render()
 {
     ImGui::Text("-- Noise:");
-    ImGui::Text("- Seed: %d", m_seed);
+    ImGui::Text("- Seed: ");
+    ImGui::SameLine();
+    if(ImGui::InputInt("##seed", &m_seed))
+    {
+        on_seed_changed();
+    }
     ImGui::Text("---------------------");
 
     m_board_generator.on_imgui_render();
@@ -72,18 +77,7 @@ void roguelike_scene::on_event(pyro::event &e)
 
 
 bool roguelike_scene::on_key_pressed(pyro::key_pressed_event &e)
-{
-    if(e.key_code() == pyro::key_codes::KEY_KP_ADD)
-    {
-        m_seed++;
-        on_seed_changed();
-    }
-    else if(e.key_code() == pyro::key_codes::KEY_KP_SUBTRACT)
-    {
-        m_seed--;
-        on_seed_changed();
-    }
-    
+{   
     return false;
 }
 
