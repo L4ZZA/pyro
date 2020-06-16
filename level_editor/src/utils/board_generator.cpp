@@ -15,7 +15,14 @@ board_generator::board_generator(int width, int height)
     , m_corridors_delay(0.15f)
     , m_show_rooms(true)
     , m_delays_ended(false)
+    , m_perlin_noise(0)
 {
+
+    m_floor_texture = pyro::texture_2d::create_from_file("assets/textures/stone-floor.png");
+    m_bg_textures.resize(3);
+    m_bg_textures[0] = pyro::texture_2d::create_from_file("assets/textures/lava.png");
+    m_bg_textures[1] = pyro::texture_2d::create_from_file("assets/textures/nothing.png");
+    m_bg_textures[2] = pyro::texture_2d::create_from_file("assets/textures/water.png");
 }
 
 void board_generator::init(
@@ -23,21 +30,18 @@ void board_generator::init(
     int min_rooms, int max_rooms,
     int min_room_size, int max_room_size)
 {
-    m_delays_ended = false;
-    m_tiles_up_to = 0;
-    m_rooms_up_to = 0;
-    m_corridors_up_to = 0;
     m_min_rooms = min_rooms;
     m_max_rooms = max_rooms;
     m_min_room_size = min_room_size;
     m_max_room_size = max_room_size;
 
-    m_floor_texture = pyro::texture_2d::create_from_file("assets/textures/stone-floor.png");
-    m_nothing_texture = pyro::texture_2d::create_from_file("assets/textures/nothing.png");
+    m_perlin_noise.change_seed(rand.seed());
+    m_delays_ended = false;
+    m_tiles_up_to = 0;
+    m_rooms_up_to = 0;
+    m_corridors_up_to = 0;
 
-    m_tiles.resize(m_width * m_height); 
-    m_rooms.resize(0);
-    m_corridors.resize(0);
+    clear_board();
 
     auto first_room = create_room(rand);
     m_rooms.push_back(first_room);
@@ -158,7 +162,17 @@ void board_generator::on_render() const
         float opacity = 0.75f;
         if(tile.type == e_tile_type::nothing)
         {
-            props.texture = m_nothing_texture;
+            float dx = static_cast<float>(tile.x) / (static_cast<float>(m_width));
+            float dy = static_cast<float>(tile.y) / (static_cast<float>(m_height));
+
+            float move_x = 0.f;
+            float move_y = 0.f;
+            float morph = 0.f;
+            int scale = 10;
+            // Typical Perlin noise 
+            float n = m_perlin_noise.noise(scale * dx - move_x, scale * dy + move_y, morph);
+
+            props.texture = m_bg_textures[tile_map(n)];
             props.color = { 1.f,1.f,1.f,opacity };
             pyro::renderer_2d::draw_quad(props);
         }
@@ -229,6 +243,19 @@ void board_generator::on_event(pyro::event &e)
         });
 }
 
+void board_generator::clear_board()
+{
+    m_tiles.resize(m_width * m_height);
+    m_rooms.resize(0);
+    m_corridors.resize(0);
+
+
+    for(auto &tile : m_tiles)
+    {
+        tile.type = e_tile_type::nothing;
+    }
+}
+
 pyro::ref<room> board_generator::create_room(utils::random const &rand)
 {
     // create random room
@@ -243,6 +270,7 @@ pyro::ref<room> board_generator::create_room(utils::random const &rand)
 
 void board_generator::connect_rooms(utils::random const &rand)
 {
+    m_corridors.resize(0);
     int max_corridors = m_rooms.size() - 1;
     for(int i = 0; i < max_corridors; i++)
     {
@@ -254,7 +282,6 @@ void board_generator::connect_rooms(utils::random const &rand)
         glm::ivec2 start_tile(current_room->center.x, current_room->center.y);
         // get end door location (green-door) from next room
         glm::ivec2 dest_tile(next_room->center.x, next_room->center.y);
-        
         
         // get the vector between going from the start doo to the dest door
         glm::ivec2 diff = dest_tile - start_tile;
@@ -296,6 +323,18 @@ void board_generator::connect_rooms(utils::random const &rand)
         // add corridor to list of corridors.
         m_corridors.push_back(corr);
     }
+}
+
+int board_generator::tile_map(float noise) const
+{
+    // water
+    if(noise < 0.25f)
+        return 2;
+    // nothing
+    if(noise < 0.65f)
+        return 1;
+    // lava
+    return 0;
 }
 
 bool board_generator::is_any_overlapping(pyro::ref<room> r) const

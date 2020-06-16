@@ -3,6 +3,7 @@
 #include <vector>
 #include "utils/tile.h"
 #include "utils/random.h"
+#include "utils/perlin_noise.h"
 
 enum class e_room_type
 {
@@ -23,8 +24,10 @@ public:
     void on_imgui_render();
     void on_event(pyro::event &e);
 
+    void clear_board();
     pyro::ref<room> create_room(utils::random const &rand);
     void connect_rooms(utils::random const &rand);
+    int tile_map(float noise) const;
 
     // This method assumes that the room pass as parameter is not yet
     // in the list of existing rooms.
@@ -59,10 +62,11 @@ private:
     bool m_show_rooms;
     bool m_delays_ended;
 
+    utils::perlin_noise m_perlin_noise;
     std::vector<tile> m_tiles;
     std::vector<pyro::ref<room>> m_rooms;
     std::vector<pyro::ref<corridor>> m_corridors;
 
     pyro::ref<pyro::texture_2d> m_floor_texture;
-    pyro::ref<pyro::texture_2d> m_nothing_texture;
+    std::vector<pyro::ref<pyro::texture_2d>> m_bg_textures;
 };
