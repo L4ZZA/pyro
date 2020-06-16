@@ -1,32 +1,7 @@
 #pragma once
 #include "utils/random.h"
-
-enum class e_orientation
-{
-    north = 0, east, west, south
-};
-
-struct door
-{
-    int x;
-    int y;
-    // direction in which the door is facing, so on which wall is placed.
-    e_orientation direction;
-    bool open = false;
-    bool is_the_same(door const &other) const
-    {
-        return x == other.x
-            && y == other.y;
-            //&& direction == other.direction;
-    }
-};
-
-struct corridor
-{
-    std::vector<int> tiles_indexes;
-    glm::ivec2 start_tile;
-    glm::ivec2 end_tile;
-};
+#include "utils/door.h"
+#include "utils/corridor.h"
 
 struct room
 {
