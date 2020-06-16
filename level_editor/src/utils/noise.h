@@ -6,21 +6,33 @@
 
 namespace utils
 {
-    inline void perlin_noise_1d(int output_size, float octaves, float bias, 
-                                uint32_t seed, float* output_noise,
-                                bool connect = false)
+    inline std::vector<float> generate_seed(int size, 
+                              uint32_t seed,
+                              float average = 0.0f)
     {
         utils::random rand(seed);
         std::vector<float> seed_array;
-        seed_array.resize(output_size);
-        for(auto &slot : seed_array)
+        seed_array.resize(size);
+        
+        for(int i = 0; i < size; i++)
         {
-            slot = rand.get_float();
+            seed_array[i] = rand.get_float();
         }
-        if(connect)
+        if(average > 0.f)
         {
-            seed_array[0] = 0.5f;
+            //this will average the noise around the given value
+            //(i.e. average = 0.5f, the noise array will start and finish at 0.5)
+            seed_array[0] = average;
         }
+
+        return std::move(seed_array);
+    }
+
+    inline void perlin_noise_1d(int output_size, float octaves, float bias, 
+                                uint32_t seed, float* output_noise,
+                                float average = 0.0f)
+    {
+        std::vector<float> seed_array = generate_seed(output_size, seed, average);
 
         for (int x = 0; x < output_size; x++)
         {
@@ -52,19 +64,9 @@ namespace utils
 
     inline void perlin_noise_2d(int output_size, float octaves, float bias, 
                                 uint32_t seed, float* output_noise,
-                                bool connect = false)
+                                float average = 0.0f)
     {
-        utils::random rand(seed);
-        std::vector<float> seed_array;
-        seed_array.resize(output_size * output_size);
-        for(auto &slot : seed_array)
-        {
-            slot = rand.get_float();
-        }
-        if(connect)
-        {
-            seed_array[0] = 0.5;
-        }
+        std::vector<float> seed_array = generate_seed(output_size * output_size, seed, average);
 
         for (int y = 0; y < output_size; y++)
             for (int x = 0; x < output_size; x++)
