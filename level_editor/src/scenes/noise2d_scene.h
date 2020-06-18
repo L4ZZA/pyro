@@ -32,22 +32,21 @@ private:
     bool m_play_mode;
     bool m_show_texture;
 
-    int width = s_texture_size;
-    int height = s_texture_size / 4;
-    int step = 1;
-    float line_rect_width = 0.2f;
-    float rect_width = 1.f;
-    float rect_heigth_max = 10.f;
-    float gap_width = step - rect_width;
-    float gap = 0.0f;
+    int   m_width = 256;
+    int   m_height = 256 / 4;
+    int   m_step = 1;
+    float m_line_rect_width = 0.2f;
+    float m_rect_width = 1.f;
+    float m_rect_heigth_max = 10.f;
+    float m_gap_width = m_step - m_rect_width;
+    float m_gap = 0.0f;
 
     utils::random m_rand;
     int m_noise_type = 0;
     int m_seed;
-    static const int s_texture_size = 256;
-    pyro::ref<pyro::texture_2d> m_noise_texture;
 
-    std::array<float, s_texture_size *s_texture_size> m_noise_2d{ 0 };
+    pyro::ref<pyro::texture_2d> m_noise_texture;
+    std::vector<float> m_noise_2d;
 
     int m_scale = 10;
     float m_morph = 0.8f;

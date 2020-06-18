@@ -22,11 +22,13 @@ void noise2d_scene::init()
     m_cam_controller->position({ 350.f, 139.5f, 0.f });
     m_cam_controller->zoom_level(205.f);
 
+    m_noise_2d.resize(m_width * m_width);
+
     pyro::texture_parameters params;
     params.format = pyro::e_texture_format::red;
     params.filter = pyro::e_texture_filter::nearest;
     m_noise_texture =
-        pyro::texture_2d::create(s_texture_size, s_texture_size, params);
+        pyro::texture_2d::create(m_width, m_width, params);
 
     on_seed_changed();
 }
@@ -46,33 +48,36 @@ void noise2d_scene::on_update(pyro::timestep const &ts)
 void noise2d_scene::on_render() const
 {
     pyro::renderer_2d::begin_scene(m_camera);
-    for(int y = 0; y < s_texture_size; y += step)
-        for(int x = 0; x < s_texture_size; x += step)
+    for(int y = 0; y < m_width; y += m_step)
+        for(int x = 0; x < m_width; x += m_step)
         {
             //float rect_heigth = m_noise_1d.at(x);
             pyro::quad_properties props;
-            uint32_t index = y * s_texture_size + x;
+            uint32_t index = y * m_width + x;
             float noise1 = m_noise_2d[index];
 
             props.color = color_map(noise1);
             //props.color = { noise ,noise ,noise, 1.f };
-            props.position = { x * (rect_width), y * (rect_width), 0.0f };
-            props.size = { rect_width, rect_width };
+            props.position = { x * (m_rect_width), y * (m_rect_width), 0.0f };
+            props.size = { m_rect_width, m_rect_width };
             pyro::renderer_2d::draw_quad(props);
         }
     pyro::renderer_2d::end_scene();
 
-    pyro::renderer_2d::begin_scene(m_camera);
-    pyro::renderer_2d::current_shader()->set_int("u_grayscale", true);
+    if(m_show_texture)
     {
-        pyro::quad_properties props;
-        props.position = { rect_width * s_texture_size * 1.5f, rect_width * s_texture_size * .5f, 0.1f };
-        props.color = { 1.f, 1.0f, 1.f, 1.f };
-        props.size = { rect_width * s_texture_size, rect_width * s_texture_size };
-        props.texture = m_noise_texture;
-        pyro::renderer_2d::draw_quad(props);
+        pyro::renderer_2d::begin_scene(m_camera);
+        pyro::renderer_2d::current_shader()->set_int("u_grayscale", true);
+        {
+            pyro::quad_properties props;
+            props.position = { m_rect_width * m_width * 1.5f, m_rect_width * m_width * .5f, 0.1f };
+            props.color = { 1.f, 1.0f, 1.f, 1.f };
+            props.size = { m_rect_width * m_width, m_rect_width * m_width };
+            props.texture = m_noise_texture;
+            pyro::renderer_2d::draw_quad(props);
+        }
+        pyro::renderer_2d::end_scene();
     }
-    pyro::renderer_2d::end_scene();
 }
 
 void noise2d_scene::on_imgui_render()
@@ -145,7 +150,6 @@ void noise2d_scene::on_imgui_render()
         m_noise_changed |= ImGui::SliderFloat("##move_y", &m_move_y, -50.f, 50.f);
     }
 
-    ImGui::Text("- Line width: %f", rect_width);
     ImGui::Text("---------------------");
 }
 
@@ -171,13 +175,13 @@ void noise2d_scene::editor_update(pyro::timestep const &ts)
         if(m_noise_type == 0)
         {
             utils::perlin_noise_2d(
-                s_texture_size, m_octaves, m_bias, m_seed, m_noise_2d.data());
+                m_width, m_octaves, m_bias, m_seed, m_noise_2d.data());
 
         }
         else if(m_noise_type == 1)
         {
             auto tmp_vec = m_other_noise.noise_2d_array(
-                s_texture_size,
+                m_width,
                 m_scale,
                 m_morph,
                 m_move_x, m_move_y);
@@ -195,43 +199,6 @@ void noise2d_scene::play_mode_update(pyro::timestep const &ts)
 
 bool noise2d_scene::on_key_pressed(pyro::key_pressed_event &e)
 {
-    if(e.key_code() == pyro::key_codes::KEY_KP_ADD)
-    {
-        m_seed++;
-        on_seed_changed();
-    }
-    else if(e.key_code() == pyro::key_codes::KEY_KP_SUBTRACT)
-    {
-        m_seed--;
-        on_seed_changed();
-    }
-    if(e.key_code() == pyro::key_codes::KEY_DOWN)
-    {
-        m_octaves--;
-        m_noise_changed = true;
-    }
-    else if(e.key_code() == pyro::key_codes::KEY_UP)
-    {
-        m_octaves++;
-        m_noise_changed = true;
-    }
-    if(e.key_code() == pyro::key_codes::KEY_LEFT)
-    {
-        if(m_bias > 0.2f)
-        {
-            m_bias -= 0.2f;
-            m_noise_changed = true;
-        }
-    }
-    else if(e.key_code() == pyro::key_codes::KEY_RIGHT)
-    {
-        m_bias += 0.2f;
-        m_noise_changed = true;
-    }
-
-
-    //PYRO_TRACE("{0}", static_cast<char>(e.key_code())); 
-
     return false;
 }
 
