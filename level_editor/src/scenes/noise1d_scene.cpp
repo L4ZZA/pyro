@@ -23,7 +23,7 @@ noise1d_scene::~noise1d_scene()
 void noise1d_scene::init()
 {
     m_cam_controller->position({ 124.f, 45.f, 0.f });
-    m_cam_controller->zoom_level(83.f);
+    m_cam_controller->zoom_level(255.f);
 
     // creating empty slots in vectors
     // it also functions as speed optimization

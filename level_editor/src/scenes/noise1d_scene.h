@@ -46,7 +46,7 @@ private:
     int                        m_octaves = 5;
     float                      m_bias = 0.2f;
 
-    int                        m_scale = 10;
+    int                        m_scale = 4;
     float                      m_morph = 0.8f;
     float                      m_move_x = 0.8f;
 
