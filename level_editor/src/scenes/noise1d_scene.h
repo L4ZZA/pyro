@@ -30,26 +30,24 @@ private:
 
 private:
     pyro::ref<pyro::camera_controller> m_cam_controller;
-    bool m_play_mode;
 
-    int m_map_width;
-    int m_map_height;
-    static const int s_texture_size = 256;
-
-    std::vector<float> m_noise_1d;
+    
+    utils::random              m_rand;
+    utils::perlin_noise        m_improved_noise;
+    std::vector<float>         m_noise_1d;
     std::vector<unsigned char> m_surface;
 
-    utils::random m_rand;
-    int m_noise_type = 0;
-    int m_seed;
-    bool m_noise_changed = false;
-    int m_octaves = 5;
-    float m_bias = 0.2f;
+    bool                       m_play_mode;
+    int                        m_map_width;
+    int                        m_map_height;
+    int                        m_noise_type = 0;
+    int                        m_seed;
+    bool                       m_noise_changed = false;
+    int                        m_octaves = 5;
+    float                      m_bias = 0.2f;
 
-    int m_scale = 10;
-    float m_morph = 0.8f;
-    float m_move_x = 0.8f;
+    int                        m_scale = 10;
+    float                      m_morph = 0.8f;
+    float                      m_move_x = 0.8f;
 
-    utils::perlin_noise             m_other_noise;
-    float rect_width = 1.f;
 };

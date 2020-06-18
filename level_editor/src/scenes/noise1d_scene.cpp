@@ -9,7 +9,7 @@ noise1d_scene::noise1d_scene(pyro::ref<pyro::camera_controller> cam_controller)
     , m_rand(0)
     , m_octaves(8)
     , m_bias(2.f)
-    , m_other_noise(0)
+    , m_improved_noise(0)
     , m_play_mode(false)
     , m_map_width (1280 >> 1)
     , m_map_height(720  >> 1)
@@ -80,12 +80,15 @@ void noise1d_scene::on_render() const
 
 void noise1d_scene::on_imgui_render()
 {
-    const std::array<char*, 2> items = { "Simple Noise", "Improved Perlin" };
-    static const char *current_item = "Simple Noise";
+    ImGui::Text("- Map width:  %d", m_map_width);
+    ImGui::Text("- Map height: %d", m_map_height);
 
     ImGui::Text("-- Noise:");
     ImGui::Text("- Type: ");
     ImGui::SameLine();
+
+    const std::array<char*, 2> items = { "Simple Noise", "Improved Perlin" };
+    static const char *current_item = "Simple Noise";
     // The second parameter is the label previewed before opening the combo.
     if(ImGui::BeginCombo("##combo", current_item))
     {
@@ -138,7 +141,6 @@ void noise1d_scene::on_imgui_render()
         ImGui::SameLine();
         m_noise_changed |= ImGui::SliderFloat("##move_x", &m_move_x, -50.f, 50.f);
     }
-    ImGui::Text("- Line width: %f", rect_width);
     ImGui::Text("---------------------");
 }
 
@@ -151,7 +153,7 @@ void noise1d_scene::on_event(pyro::event &e)
 void noise1d_scene::on_seed_changed()
 {
     m_rand.seed(m_seed);
-    m_other_noise.change_seed(m_seed);
+    m_improved_noise.change_seed(m_seed);
     m_noise_changed = true;
 }
 
@@ -159,40 +161,6 @@ void noise1d_scene::on_seed_changed()
 
 bool noise1d_scene::on_key_pressed(pyro::key_pressed_event &e)
 {
-    if(e.key_code() == pyro::key_codes::KEY_KP_ADD)
-    {
-        m_seed++;
-        on_seed_changed();
-    }
-    else if(e.key_code() == pyro::key_codes::KEY_KP_SUBTRACT)
-    {
-        m_seed--;
-        on_seed_changed();
-    }
-    if(e.key_code() == pyro::key_codes::KEY_DOWN)
-    {
-        m_octaves--;
-        on_seed_changed();
-    }
-    else if(e.key_code() == pyro::key_codes::KEY_UP)
-    {
-        m_octaves++;
-        on_seed_changed();
-    }
-    if(e.key_code() == pyro::key_codes::KEY_LEFT)
-    {
-        if(m_bias > 0.2f)
-        {
-            m_bias -= 0.2f;
-            on_seed_changed();
-        }
-    }
-    else if(e.key_code() == pyro::key_codes::KEY_RIGHT)
-    {
-        m_bias += 0.2f;
-        on_seed_changed();
-    }
- 
     //PYRO_TRACE("{0}", static_cast<char>(e.key_code())); 
     return false;
 }
@@ -224,7 +192,7 @@ glm::vec4 noise1d_scene::color_map(float noise) const
 
 void noise1d_scene::create_map()
 {
-    int32_t width = m_map_width;
+    int32_t width  = m_map_width;
     int32_t height = m_map_height;
 
     for(int32_t x = 0; x < width; x++)
@@ -256,11 +224,15 @@ void noise1d_scene::editor_update(pyro::timestep const &ts)
         if(m_noise_type == 0)
         {
             utils::perlin_noise_1d(
-                m_map_width, m_octaves, m_bias, m_seed, m_noise_1d.data(), 0.5f);
+                m_map_width, 
+                m_octaves, 
+                m_bias, 
+                m_seed, 
+                m_noise_1d.data(), 0.5f);
         }
         else if(m_noise_type == 1)
         {
-            auto tmp_vec = m_other_noise.noise_1d_array(
+            auto tmp_vec = m_improved_noise.noise_1d_array(
                 m_map_width,
                 m_scale,
                 m_morph,
