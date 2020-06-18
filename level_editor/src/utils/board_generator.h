@@ -16,7 +16,7 @@ public:
     board_generator(int width, int height);
 
     void init(utils::random const &rand,
-              int min_rooms, int max_rooms, 
+              int min_rooms, int max_tries, 
               int min_room_size, int max_room_size);
 
     void on_update(pyro::timestep const &ts);
@@ -25,8 +25,9 @@ public:
     void on_event(pyro::event &e);
 
     void clear_board();
-    pyro::ref<room> create_room(utils::random const &rand);
-    void connect_rooms(utils::random const &rand);
+    pyro::ref<room> create_room(utils::random const &rand, 
+                            int32_t min_size, int32_t max_size);
+    void connect_rooms();
     int tile_map(float noise) const;
 
     // This method assumes that the room pass as parameter is not yet
@@ -52,12 +53,12 @@ private:
     int m_tiles_up_to = 0;
     int m_rooms_up_to = 0;
     int m_corridors_up_to = 0;
-    int m_min_rooms;
-    int m_max_rooms;
+    //int m_min_rooms;
+    //int m_max_rooms;
     int m_width;
     int m_height;
-    int m_min_room_size;
-    int m_max_room_size;
+    //int m_min_room_size;
+    //int m_max_room_size;
     int m_possible_rooms;
     bool m_show_dungeon;
     bool m_show_walls;

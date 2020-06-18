@@ -5,10 +5,6 @@
 board_generator::board_generator(int width, int height)
     : m_width(width)
     , m_height(height)
-    , m_min_rooms(70)
-    , m_max_rooms(85)
-    , m_min_room_size(6)
-    , m_max_room_size(12)
     , m_possible_rooms(85)
     , m_tiles_delay(0.f)
     , m_rooms_delay(0.f)
@@ -28,15 +24,13 @@ board_generator::board_generator(int width, int height)
 
 void board_generator::init(
     utils::random const &rand,
-    int min_rooms, int max_rooms,
+    int min_rooms, int max_tries,
     int min_room_size, int max_room_size)
 {
-    m_min_rooms = min_rooms;
-    m_max_rooms = max_rooms;
-    m_min_room_size = min_room_size;
-    m_max_room_size = max_room_size;
-
-    m_perlin_noise.change_seed(rand.seed());
+    int32_t combined_seed = rand.seed() 
+                          + max_tries
+                          + min_room_size + max_room_size;
+    m_perlin_noise.change_seed(combined_seed);
     m_delays_ended = false;
     m_tiles_up_to = 0;
     m_rooms_up_to = 0;
@@ -44,23 +38,38 @@ void board_generator::init(
 
     clear_board();
 
-    auto first_room = create_room(rand);
+    auto first_room = create_room(rand, min_room_size, max_room_size);
     m_rooms.push_back(first_room);
 
-    for(int i = 1; i < m_possible_rooms; i++)
+    int rooms_created = 1;
+    int creation_tries = 0;
+    // create rooms to meat the min rooms number
+    while(true)
     {
-        auto proposed_room = create_room(rand);
+        auto proposed_room = create_room(rand, min_room_size, max_room_size);
 
         // go through all the previously created rooms to check if 
         // the proposed_room overlaps with any of them.
         // only add if it doesn't
         if(!is_any_overlapping_or_near(proposed_room))
-        {
+        {            
             m_rooms.push_back(proposed_room);
+            rooms_created++;
+            creation_tries = 0;
+        }
+        else
+        {
+            // stop from looping forever if there's no more space for more rooms.
+            // or if the min rooms requirement was met.
+            if(rooms_created >= min_rooms || creation_tries > max_tries)
+            {
+                break;
+            }
+            creation_tries++;
         }
     }
 
-    connect_rooms(rand);
+    connect_rooms();
 
     for(int x = 0; x < m_width; x++)
         for(int y = 0; y < m_height; y++)
@@ -270,19 +279,22 @@ void board_generator::clear_board()
     }
 }
 
-pyro::ref<room> board_generator::create_room(utils::random const &rand)
+pyro::ref<room> board_generator::create_room(
+    utils::random const &rand, 
+    int32_t min_size, 
+    int32_t max_size)
 {
     // create random room
     int gap = 3; // buffer around the edges of the world
-    int width = rand.get_int(m_min_room_size, m_max_room_size);
-    int height = rand.get_int(m_min_room_size, m_max_room_size);
+    int width = rand.get_int (min_size, max_size);
+    int height = rand.get_int(min_size, max_size);
     int x = rand.get_int(gap, m_width - width - gap);
     int y = rand.get_int(gap, m_height - height - gap);
     return std::move(pyro::make_ref<room>(x, y, width, height));
   
 }
 
-void board_generator::connect_rooms(utils::random const &rand)
+void board_generator::connect_rooms()
 {
     m_corridors.resize(0);
     int max_corridors = m_rooms.size() - 1;
