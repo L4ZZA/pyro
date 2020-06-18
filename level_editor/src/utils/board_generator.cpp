@@ -228,17 +228,19 @@ void board_generator::on_render() const
 void board_generator::on_imgui_render()
 {
     ImGui::Text("--- Dungeon ");
-    ImGui::Text("- Show dungeon "); ImGui::SameLine();
+    ImGui::Text("- Show dungeon "); 
     ImGui::ToggleButton("##dungeon", &m_show_dungeon);
-    ImGui::Text("- Show walls "); ImGui::SameLine();
+    ImGui::Text("- Show walls "); 
     ImGui::ToggleButton("##walls", &m_show_walls);
-    ImGui::Text("-- Rooms: "); ImGui::SameLine();
+    ImGui::Text("-- Change the following parameters to \n\
+   see the order of creation.");
+    ImGui::Text("-- Rooms: "); 
     if(ImGui::InputInt("##room_count", &m_rooms_up_to))
     {
         //also stop showing cooridors with room
         m_corridors_up_to = m_rooms_up_to - 1;
     }
-    ImGui::Text("-- Corridors: "); ImGui::SameLine();
+    ImGui::Text("-- Corridors: "); 
     ImGui::InputInt("##corridor_count", &m_corridors_up_to);
     if(m_rooms_up_to < 0)
         m_rooms_up_to = 0;

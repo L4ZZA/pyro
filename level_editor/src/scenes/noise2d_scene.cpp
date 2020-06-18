@@ -83,7 +83,7 @@ void noise2d_scene::on_render() const
 void noise2d_scene::on_imgui_render()
 {
 
-    ImGui::Text("- Show noise texture "); ImGui::SameLine();
+    ImGui::Text("- Show noise texture "); 
     ImGui::ToggleButton("##noise_texture", &m_show_texture);
 
 
@@ -119,7 +119,7 @@ void noise2d_scene::on_imgui_render()
         ImGui::EndCombo();
     }
     ImGui::Text("- Seed: ");
-    ImGui::SameLine();
+    
     if(ImGui::InputInt("##seed", &m_seed))
     {
         on_seed_changed();
@@ -128,25 +128,25 @@ void noise2d_scene::on_imgui_render()
     if(m_noise_type == 0)
     {
         ImGui::Text("- Octaves: ");
-        ImGui::SameLine();
+        
         m_noise_changed |= ImGui::SliderInt("##octaves", &m_octaves, 1, 8);
         ImGui::Text("- Bias: ");
-        ImGui::SameLine();
+        
         m_noise_changed |= ImGui::SliderFloat("##bias", &m_bias, 0.1f, 2.f);
     }
     else if(m_noise_type == 1)
     {
         ImGui::Text("- Scale: ");
-        ImGui::SameLine();
+        
         m_noise_changed |= ImGui::SliderInt("##scale", &m_scale, 1, 100);
         ImGui::Text("- Morph: ");
-        ImGui::SameLine();
+        
         m_noise_changed |= ImGui::SliderFloat("##morph", &m_morph, 0.1f, 50.f);
         ImGui::Text("- Move x: ");
-        ImGui::SameLine();
+        
         m_noise_changed |= ImGui::SliderFloat("##move_x", &m_move_x, -50.f, 50.f);
         ImGui::Text("- Move y: ");
-        ImGui::SameLine();
+        
         m_noise_changed |= ImGui::SliderFloat("##move_y", &m_move_y, -50.f, 50.f);
     }
 

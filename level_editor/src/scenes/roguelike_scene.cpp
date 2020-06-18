@@ -49,7 +49,7 @@ void roguelike_scene::on_imgui_render()
 {
     ImGui::Text("-- Noise:");
     ImGui::Text("- Seed: ");
-    ImGui::SameLine();
+    
     if(ImGui::InputInt("##seed", &m_seed))
     {
         on_seed_changed();
