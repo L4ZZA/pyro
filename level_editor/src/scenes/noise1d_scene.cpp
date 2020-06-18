@@ -10,6 +10,9 @@ noise1d_scene::noise1d_scene(pyro::ref<pyro::camera_controller> cam_controller)
     , m_octaves(8)
     , m_bias(2.f)
     , m_other_noise(0)
+    , m_play_mode(false)
+    , m_map_width (1280 >> 1)
+    , m_map_height(720  >> 1)
 {
 }
 
@@ -21,6 +24,12 @@ void noise1d_scene::init()
 {
     m_cam_controller->position({ 124.f, 45.f, 0.f });
     m_cam_controller->zoom_level(83.f);
+
+    // creating empty slots in vectors
+    // it also functions as speed optimization
+    m_noise_1d.resize(m_map_width);
+    m_surface.resize(m_map_width * m_map_height);
+
     on_seed_changed();
 }
 
