@@ -8,12 +8,15 @@
 
 ;--------------------------------
 ;Global definitions
- !define ROOT_DIR ".."
- !define PROJECT_DIR "${ROOT_DIR}\level_editor"
- !define OUTPUT_DIR "${ROOT_DIR}\bin\installers"
  !define APP_NAME "Level Editor"
+ !define APP_NAME_SLUG "level_editor"
  !define INST_FOLDER_NAME "LevelEditor"
  !define FILE_NAME "LevelEditorSetup.exe"
+ !define ROOT_DIR ".."
+ !define PROJECT_DIR "${ROOT_DIR}\${APP_NAME_SLUG}"
+ !define CONFIG_DIR "Release-windows-x86_64"
+ !define BIN_DIR "${ROOT_DIR}\bin\${CONFIG_DIR}"
+ !define OUTPUT_DIR "${BIN_DIR}\installers"
  ; http://www.differencebetween.net/technology/hardware-technology/difference-between-hkey_current_user-and-hkey_local_machine/#:~:text=Difference%20Between%20HKEY_CURRENT_USER%20and%20HKEY_LOCAL_MACHINE,-•%20Categorized%20under&text=HKEY_LOCAL_MACHINE%20holds%20information%20that%20is,is%20specific%20to%20the%20user.
  !define REG_ROOT "HKLM"
  !define REG_KEY "Software\${INST_FOLDER_NAME}"
@@ -49,6 +52,8 @@
 ;Interface Settings
 
   !define MUI_ABORTWARNING
+  ; Default, name is used if not defined
+  !define MUI_STARTMENUPAGE_DEFAULTFOLDER "${INST_FOLDER_NAME}" 
 
 ;--------------------------------
 ;Pages
@@ -77,18 +82,22 @@
 ;--------------------------------
 ;Installer Sections
 
-Section "Dummy Section" ComponentsSec
+; Remove empty quotes and uncomment the code after it
+; if want to bring back the component selection section
+; [don't forget the descriptions constants]
+Section "" ;"${APP_NAME}" ComponentsSec
 
   SetOutPath "$INSTDIR"
+  SetOverwrite ifnewer
   
-  ;ADD YOUR OWN FILES HERE...
-  File "${ROOT_DIR}\bin\Release-windows-x86_64\level_editor\level_editor.exe"
-  
-  SetOutPath "$INSTDIR\assets\shaders\"
-  File "${PROJECT_DIR}\assets\shaders\texture_2d.glsl"
+  ; remove all files inside installer folder
+  Delete "$INSTDIR\*.*"
+  RMDir /r "$INSTDIR\assets"
 
-  SetOutPath "$INSTDIR\assets\textures\"
-  File "${PROJECT_DIR}\assets\textures\*.png"
+  ; Editor
+  File "${BIN_DIR}\level_editor\level_editor.exe"
+  ; Assets
+  File /r "${PROJECT_DIR}\assets"
 
   ;Store installation folder
   WriteRegStr ${REG_ROOT} ${REG_KEY} "" $INSTDIR
@@ -109,13 +118,16 @@ SectionEnd
 ;--------------------------------
 ;Descriptions
 
-  ;Language strings
-  LangString DESC_ComponentsSec ${LANG_ENGLISH} "A test section."
+  ; Remove uncomment the code the following six lines
+  ; if want to bring back the component selection section
 
-  ;Assign language strings to sections
-  !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-    !insertmacro MUI_DESCRIPTION_TEXT ${ComponentsSec} $(DESC_ComponentsSec)
-  !insertmacro MUI_FUNCTION_DESCRIPTION_END
+  ; ;Language strings
+  ; LangString DESC_ComponentsSec ${LANG_ENGLISH} "A level editor for 2D games."
+
+  ; ;Assign language strings to sections
+  ; !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+  ;   !insertmacro MUI_DESCRIPTION_TEXT ${ComponentsSec} $(DESC_ComponentsSec)
+  ; !insertmacro MUI_FUNCTION_DESCRIPTION_END
  
 ;--------------------------------
 ;Uninstaller Section
@@ -126,7 +138,7 @@ Section "Uninstall"
 
   Delete "$INSTDIR\Uninstall.exe"
 
-  RMDir "$INSTDIR"
+  RMDir /r "$INSTDIR"
   
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
     
