@@ -35,6 +35,7 @@ namespace pyro
 
         static uint32_t fps() { return instance().m_FramesPerSecond; }
         static uint32_t ups() { return instance().m_UpdatesPerSecond; }
+        // Frame time in seconds
         static float    frame_time() { return instance().m_frame_time; }
     public:
         static void exit();

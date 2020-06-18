@@ -73,7 +73,7 @@ void layer_2d::on_imgui_render()
 
     auto stats = pyro::renderer_2d::stats();
     ImGui::Text("-- 2D Renderer stats:");
-    ImGui::Text("- Frame time: %f", pyro::application::frame_time());
+    ImGui::Text("- Frame time: %f ms", pyro::application::frame_time() * 1000.f);
     ImGui::Text("- FPS: %d/s", pyro::application::fps());
     ImGui::Text("- Draw calls: %d", stats.draw_calls);
     ImGui::Text("- Quads: %d", stats.quad_count);
@@ -81,20 +81,20 @@ void layer_2d::on_imgui_render()
     ImGui::Text("- Indices: %d", stats.total_index_count());
     ImGui::Text("---------------------");
 
-    if(ImGui::Button("PLAY", { 100.f,25.f })) 
-    {
-        current_scene->play();
-    }
-    ImGui::SameLine();
-    ImGui::Text("Once in play mode press Q to quit.");
-
-    m_scene_manager.on_imgui_render();
-    
     pyro::ref<pyro::camera> camera = m_2d_camera_controller->camera();
     ImGui::Text("-- Camera:");
     ImGui::Text("- Position: [%f,%f,%f]", camera->position().x, camera->position().y, camera->position().z);
     ImGui::Text("- Zoom: %f", m_2d_camera_controller->zoom_level());
     ImGui::Text("---------------------");
+
+    ImGui::Text("[Press Q to quit play mode]");
+    if(ImGui::Button("PLAY", { 100.f,25.f })) 
+    {
+        current_scene->play();
+    }
+    ImGui::Text("---------------------");
+
+    m_scene_manager.on_imgui_render();
 
     ImGui::End();
 }
