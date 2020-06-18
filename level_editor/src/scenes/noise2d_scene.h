@@ -30,6 +30,7 @@ private:
 private:
     pyro::ref<pyro::camera_controller> m_cam_controller;
     bool m_play_mode;
+    bool m_show_texture;
 
     int width = s_texture_size;
     int height = s_texture_size / 4;

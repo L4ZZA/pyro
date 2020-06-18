@@ -1,5 +1,5 @@
 #include "scenes/noise2d_scene.h"
-#include "imgui/imgui.h"
+#include "utils/imgui_extensions.h"
 #include "utils/noise.h"
 
 noise2d_scene::noise2d_scene(pyro::ref<pyro::camera_controller> cam_controller)
@@ -9,6 +9,7 @@ noise2d_scene::noise2d_scene(pyro::ref<pyro::camera_controller> cam_controller)
     , m_rand(0)
     , m_other_noise(0)
     , m_play_mode(false)
+    , m_show_texture(false)
 {
 }
 
@@ -76,12 +77,18 @@ void noise2d_scene::on_render() const
 
 void noise2d_scene::on_imgui_render()
 {
-    const std::array<char *, 2> items = { "Simple Noise", "Improved Perlin" };
-    static const char *current_item = "Simple Noise";
+
+    ImGui::Text("- Show noise texture "); ImGui::SameLine();
+    ImGui::ToggleButton("##noise_texture", &m_show_texture);
+
 
     ImGui::Text("-- Noise:");
     ImGui::Text("- Type: ");
     ImGui::SameLine();
+
+    const std::array<char *, 2> items = { "Simple Noise", "Improved Perlin" };
+    static const char *current_item = "Simple Noise";
+
     // The second parameter is the label previewed before opening the combo.
     if(ImGui::BeginCombo("##combo", current_item))
     {
