@@ -5,7 +5,7 @@
 ;Include Modern UI
 
   !include "MUI2.nsh"
-
+  
 ;--------------------------------
 ;Global definitions
  !define APP_NAME "Level Editor"
@@ -20,10 +20,19 @@
  ; http://www.differencebetween.net/technology/hardware-technology/difference-between-hkey_current_user-and-hkey_local_machine/#:~:text=Difference%20Between%20HKEY_CURRENT_USER%20and%20HKEY_LOCAL_MACHINE,-•%20Categorized%20under&text=HKEY_LOCAL_MACHINE%20holds%20information%20that%20is,is%20specific%20to%20the%20user.
  !define REG_ROOT "HKLM"
  !define REG_KEY "Software\${INST_FOLDER_NAME}"
+ !define CMD_PATH "C:\Windows\system32\cmd.exe"
 
 ;Scripts
- ; Reference: https://nsis-dev.github.io/NSIS-Forums/html/t-302311.html
- !system 'md ${OUTPUT_DIR}'
+  ; Reference: https://nsis-dev.github.io/NSIS-Forums/html/t-302311.html
+  !system 'md ${OUTPUT_DIR}'
+
+  !macro WebShortucts ScriptPath LinkName LinkDest LinkTarget
+      !system '${CMD_PATH} /C ${ScriptPath} ${LinkName} ${LinkDest} ${LinkTarget}'
+      ; ExecWait '"$R0" /C "create_shortcut.cmd" "${LinkName}" "${LinkDest}" "${LinkTarget}"'
+  !macroend
+
+  !insertmacro WebShortucts "${ROOT_DIR}\create_shortcut.cmd" "InstallerUserGuide" "." "https://imgur.com/gallery/D6Xad4l"
+  !insertmacro WebShortucts "${ROOT_DIR}\create_shortcut.cmd" "Readme" "." "https://imgur.com/gallery/D6Xad4l"
 
 ;General
 
@@ -41,7 +50,7 @@
   InstallDirRegKey ${REG_ROOT} ${REG_KEY} ""
 
   ;Request application privileges for Windows Vista
-  RequestExecutionLevel user
+  RequestExecutionLevel admin ;Require admin rights on NT6+ (When UAC is turned on)
 
 ;--------------------------------
 ;Variables
@@ -89,6 +98,7 @@ Section "" ;"${APP_NAME}" ComponentsSec
 
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
+  !verbose 4
   
   ; remove all files inside installer folder
   Delete "$INSTDIR\*.*"
@@ -98,6 +108,10 @@ Section "" ;"${APP_NAME}" ComponentsSec
   File "${BIN_DIR}\level_editor\level_editor.exe"
   ; Assets
   File /r "${PROJECT_DIR}\assets"
+  !echo "$OUTDIR"
+  ; Web Shorcuts
+  File "InstallerUserGuide.lnk"
+  File "Readme.lnk"
 
   ;Store installation folder
   WriteRegStr ${REG_ROOT} ${REG_KEY} "" $INSTDIR
