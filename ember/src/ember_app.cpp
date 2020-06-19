@@ -2,16 +2,17 @@
 #include "pyro/core/entry_point.h"
 #include "layer_2d.h"
 
-
-class level_editor : public pyro::application
+// Level editor
+// [Ember, a small piece burning or glowing in a fire]
+class ember : public pyro::application
 {
 public:
-    level_editor(uint32_t width, uint32_t height)
-        :application(width,height)
+    ember(uint32_t width, uint32_t height)
+        :application("Ember Editor",width,height)
     {
     }
 
-    ~level_editor() = default;
+    ~ember() = default;
 
     // Inherited via application
     virtual void init() override
@@ -33,7 +34,7 @@ public:
 
         pyro::event_dispatcher dispatcher(e);
         // dispatch event on window X pressed 
-        dispatcher.dispatch<pyro::key_pressed_event>(BIND_EVENT_FN(level_editor::on_key_pressed));
+        dispatcher.dispatch<pyro::key_pressed_event>(BIND_EVENT_FN(ember::on_key_pressed));
     }
 
     bool on_key_pressed(pyro::key_pressed_event &e)
@@ -52,5 +53,5 @@ private:
 
 pyro::application *pyro::create_application()
 {
-    return new level_editor(1280, 720);
+    return new ember(1280, 720);
 }

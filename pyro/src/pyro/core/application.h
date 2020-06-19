@@ -17,7 +17,7 @@ namespace pyro
     class PYRO_API application
     {
     public:
-        application(uint32_t width, uint32_t height);
+        application(std::string const &name, uint32_t width, uint32_t height);
         virtual ~application();
 
         virtual void on_event(event &e);
