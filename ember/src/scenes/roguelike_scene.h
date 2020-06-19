@@ -32,17 +32,17 @@ private:
 
 private:
     pyro::ref<pyro::camera_controller> m_cam_controller;
-    bool m_play_mode;
     
+    bool                m_play_mode;
     // Maximum amount of times that a room can take to be created.
     // if this number is met, no more rooms will be added to the m_rooms list.
-    int m_max_room_tries;
+    int                 m_max_room_tries;
     // The minimum amount of rooms to try create. 
     // [NOTE - It might not always get there as once the room couldn't 
     // be create for m_min_room_tries time the creation will stop]
-    int m_min_rooms;
-    int m_min_room_size;
-    int m_max_room_size;
+    int                 m_min_rooms;
+    int                 m_min_room_size;
+    int                 m_max_room_size;
     int                 m_seed;
     utils::random       m_rand;
     utils::perlin_noise m_other_noise;
