@@ -7,6 +7,8 @@ noise2d_scene::noise2d_scene(pyro::ref<pyro::camera_controller> cam_controller)
     , m_cam_controller(cam_controller)
     , m_seed(0)
     , m_rand(0)
+    , m_width(256)
+    , m_height(256)
     , m_other_noise(0)
     , m_play_mode(false)
     , m_show_texture(false)
@@ -22,13 +24,13 @@ void noise2d_scene::init()
     m_cam_controller->position({ 350.f, 139.5f, 0.f });
     m_cam_controller->zoom_level(205.f);
 
-    m_noise_2d.resize(m_width * m_width);
+    m_noise_2d.resize(m_width * m_height);
 
     pyro::texture_parameters params;
     params.format = pyro::e_texture_format::red;
     params.filter = pyro::e_texture_filter::nearest;
     m_noise_texture =
-        pyro::texture_2d::create(m_width, m_width, params);
+        pyro::texture_2d::create(m_width, m_height, params);
 
     on_seed_changed();
 }
@@ -48,18 +50,17 @@ void noise2d_scene::on_update(pyro::timestep const &ts)
 void noise2d_scene::on_render() const
 {
     pyro::renderer_2d::begin_scene(m_camera);
-    for(int y = 0; y < m_width; y += m_step)
-        for(int x = 0; x < m_width; x += m_step)
+    for(int y = 0; y < m_width; y ++)
+        for(int x = 0; x < m_height; x ++)
         {
             //float rect_heigth = m_noise_1d.at(x);
             pyro::quad_properties props;
-            uint32_t index = y * m_width + x;
+            uint32_t index = y * m_height + x;
             float noise1 = m_noise_2d[index];
 
             props.color = color_map(noise1);
             //props.color = { noise ,noise ,noise, 1.f };
-            props.position = { x * (m_rect_width), y * (m_rect_width), 0.0f };
-            props.size = { m_rect_width, m_rect_width };
+            props.position = { x, y, 0.0f };
             pyro::renderer_2d::draw_quad(props);
         }
     pyro::renderer_2d::end_scene();
@@ -70,9 +71,9 @@ void noise2d_scene::on_render() const
         pyro::renderer_2d::current_shader()->set_int("u_grayscale", true);
         {
             pyro::quad_properties props;
-            props.position = { m_rect_width * m_width * 1.5f, m_rect_width * m_width * .5f, 0.1f };
+            props.position = { m_width * 1.5f, m_height * .5f, 0.1f };
             props.color = { 1.f, 1.0f, 1.f, 1.f };
-            props.size = { m_rect_width * m_width, m_rect_width * m_width };
+            props.size = { m_width, m_height};
             props.texture = m_noise_texture;
             pyro::renderer_2d::draw_quad(props);
         }

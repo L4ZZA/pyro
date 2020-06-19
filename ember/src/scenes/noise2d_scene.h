@@ -32,14 +32,8 @@ private:
     bool m_play_mode;
     bool m_show_texture;
 
-    int   m_width = 256;
-    int   m_height = 256 / 4;
-    int   m_step = 1;
-    float m_line_rect_width = 0.2f;
-    float m_rect_width = 1.f;
-    float m_rect_heigth_max = 10.f;
-    float m_gap_width = m_step - m_rect_width;
-    float m_gap = 0.0f;
+    int   m_width;
+    int   m_height;
 
     utils::random m_rand;
     int m_noise_type = 0;
