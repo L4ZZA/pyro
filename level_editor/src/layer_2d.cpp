@@ -113,6 +113,7 @@ void layer_2d::on_imgui_render()
 
 void layer_2d::on_event(pyro::event &e)
 {
+    imgui_layer::on_event(e);
     m_2d_camera_controller->on_event(e);
     pyro::event_dispatcher dispatcher(e);
     // dispatch event on window X pressed 
