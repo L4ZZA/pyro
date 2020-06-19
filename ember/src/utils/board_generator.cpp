@@ -2,9 +2,9 @@
 #include "utils/imgui_extensions.h"
 
 
-board_generator::board_generator(int width, int height)
-    : m_width(width)
-    , m_height(height)
+board_generator::board_generator()
+    : m_width(1)
+    , m_height(1)
     , m_possible_rooms(85)
     , m_tiles_delay(0.f)
     , m_rooms_delay(0.f)
@@ -14,7 +14,6 @@ board_generator::board_generator(int width, int height)
     , m_delays_ended(false)
     , m_perlin_noise(0)
 {
-
     m_floor_texture = pyro::texture_2d::create_from_file("assets/textures/stone-floor.png");
     m_bg_textures.resize(3);
     m_bg_textures[0] = pyro::texture_2d::create_from_file("assets/textures/lava.png");
@@ -24,11 +23,15 @@ board_generator::board_generator(int width, int height)
 
 void board_generator::init(
     utils::random const &rand,
+    int width, int height,
     int min_rooms, int max_tries,
     int min_room_size, int max_room_size)
 {
+    m_width = width;
+    m_height = height;
+ 
     int32_t combined_seed = rand.seed() 
-                          + max_tries
+                          + min_rooms + max_tries
                           + min_room_size + max_room_size;
     m_perlin_noise.change_seed(combined_seed);
     m_delays_ended = false;

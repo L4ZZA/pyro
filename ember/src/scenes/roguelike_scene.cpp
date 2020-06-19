@@ -12,7 +12,9 @@ roguelike_scene::roguelike_scene(pyro::ref<pyro::camera_controller> cam_controll
     , m_min_room_size(6)
     , m_max_room_size(12)
     , m_seed(0)
-    , m_board_generator(80,50)
+    , m_board_width(80)
+    , m_board_height(50)
+    , m_board_generator()
     , m_play_mode(false)
 {
 }
@@ -51,6 +53,18 @@ void roguelike_scene::on_render() const
 
 void roguelike_scene::on_imgui_render()
 {
+    ImGui::Text("- Board width: ");
+    if(ImGui::SliderInt("##board_width", &m_board_width, 30, 100))
+    {
+        on_seed_changed();
+    }
+    ImGui::Text("- Board height: ");
+    if(ImGui::SliderInt("##board_height", &m_board_height, 30, 100))
+    {
+        on_seed_changed();
+    }
+    ImGui::Text("---------------------");
+
     ImGui::Text("-- Noise:");
     ImGui::Text("- Seed: ");
     
@@ -113,6 +127,7 @@ void roguelike_scene::editor_update(pyro::timestep const &ts)
         m_noise_changed = false;
 
         m_board_generator.init(m_rand,
+            m_board_width, m_board_height,
             m_min_rooms, m_max_room_tries,
             m_min_room_size, m_max_room_size);
     }

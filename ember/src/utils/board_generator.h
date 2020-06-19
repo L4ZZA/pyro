@@ -13,9 +13,10 @@ enum class e_room_type
 class board_generator
 {
 public:
-    board_generator(int width, int height);
+    board_generator();
 
     void init(utils::random const &rand,
+              int width, int height,
               int min_rooms, int max_tries, 
               int min_room_size, int max_room_size);
 

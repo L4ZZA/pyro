@@ -33,6 +33,8 @@ private:
 private:
     pyro::ref<pyro::camera_controller> m_cam_controller;
     
+    int                 m_board_width;
+    int                 m_board_height;
     bool                m_play_mode;
     // Maximum amount of times that a room can take to be created.
     // if this number is met, no more rooms will be added to the m_rooms list.
