@@ -79,6 +79,9 @@ namespace  pyro
         template<typename T, typename F>
         bool dispatch(const F& func)
         {
+            if(m_event.handled)
+                return false;
+
             // filtering events by type T
             if (m_event.event_type() == T::static_type())
             {
