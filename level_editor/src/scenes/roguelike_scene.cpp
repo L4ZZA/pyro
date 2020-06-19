@@ -61,12 +61,14 @@ void roguelike_scene::on_imgui_render()
     ImGui::Text("---------------------");
 
     ImGui::Text("- Min rooms: ");
+    ImGui::Text("- [migth not reach this number] ");
     if(ImGui::SliderInt("##min_rooms", &m_min_rooms, 2, 30))
     {
         on_seed_changed();
     }
 
-    ImGui::Text("- Max tries: [numbers of tries a rooms get regenerated for]");
+    ImGui::Text("- Max tries:");
+    ImGui::Text("- [numbers of tries a rooms get regenerated for]");
     if(ImGui::SliderInt("##max_tries", &m_max_room_tries, 0, 20))
     {
         on_seed_changed();
