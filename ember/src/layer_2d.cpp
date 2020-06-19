@@ -73,7 +73,8 @@ void layer_2d::on_imgui_render()
 
     auto stats = pyro::renderer_2d::stats();
     ImGui::Text("-- 2D Renderer stats:");
-    ImGui::Text("- Frame time: %f ms", pyro::application::frame_time() * 1000.f);
+    float ms = pyro::application::frame_time() * 1000.f;
+    ImGui::Text("- Frame time: %f ms", ms);
     ImGui::Text("- FPS: %d/s", pyro::application::fps());
     ImGui::Text("- Draw calls: %d", stats.draw_calls);
     ImGui::Text("- Quads: %d", stats.quad_count);

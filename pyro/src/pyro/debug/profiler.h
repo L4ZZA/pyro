@@ -175,12 +175,13 @@ pyro::debug::profiler::write_profile(profile_result const &result)
     m_output_stream << "\"ts\":" << result.start.count();
     m_output_stream << "}";
 
-
-    std::lock_guard lock(m_mutex);
-    if (m_current_session)
     {
-        m_output_stream << json.str();
-        m_output_stream.flush();
+        std::lock_guard lock(m_mutex);
+        if (m_current_session)
+        {
+            m_output_stream << json.str();
+            m_output_stream.flush();
+        }
     }
 }
 

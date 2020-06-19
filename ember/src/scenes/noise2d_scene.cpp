@@ -24,7 +24,8 @@ void noise2d_scene::init()
     m_cam_controller->position({ 350.f, 139.5f, 0.f });
     m_cam_controller->zoom_level(205.f);
 
-    m_noise_2d.resize(m_width * m_height);
+    int size = m_width * m_height;
+    m_noise_2d.resize(size);
 
     pyro::texture_parameters params;
     params.format = pyro::e_texture_format::red;
@@ -192,7 +193,7 @@ void noise2d_scene::editor_update(pyro::timestep const &ts)
             std::copy_n(std::move(tmp_vec.begin()), tmp_vec.size(), m_noise_2d.begin());
 
         }
-        m_noise_texture->data(m_noise_2d.data(), m_noise_2d.size(),
+        m_noise_texture->data(m_noise_2d.data(), static_cast<uint32_t>(m_noise_2d.size()),
             pyro::e_texture_data_type::Float);
     }
 }

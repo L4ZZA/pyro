@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning( disable : 26451 )
 #include <array>
 #include <cmath>
 #include "utils/random.h"
@@ -36,7 +37,7 @@ namespace utils
         return std::move(seed_array);
     }
 
-    inline void perlin_noise_1d(int output_size, float octaves, float bias, 
+    inline void perlin_noise_1d(int output_size, int octaves, float bias, 
                                 uint32_t seed, float* output_noise,
                                 float average = 0.0f)
     {
@@ -70,7 +71,7 @@ namespace utils
         }
     }
 
-    inline void perlin_noise_2d(int output_size, float octaves, float bias, 
+    inline void perlin_noise_2d(int output_size, int octaves, float bias, 
                                 uint32_t seed, float* output_noise,
                                 float average = 0.0f)
     {
@@ -105,8 +106,8 @@ namespace utils
                     // both samples use the same 
                     const float sample_t = 
                         lerp(
-                            seed_array[sample_y1 * output_size + sample_x1], 
-                            seed_array[sample_y1 * output_size + sample_x2], 
+                            seed_array[static_cast<int>(sample_y1 * output_size + sample_x1)], 
+                            seed_array[static_cast<int>(sample_y1 * output_size + sample_x2)], 
                             blend_x);
                     const float sample_b = 
                         lerp(

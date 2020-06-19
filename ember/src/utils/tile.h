@@ -10,8 +10,8 @@ enum class e_tile_type
 
 struct tile
 {
-    int x;
-    int y;
+    int x = 0;
+    int y = 0;
     e_tile_type type = e_tile_type::nothing;
-    pyro::ref<room> room_ptr;
+    pyro::ref<room> room_ptr = nullptr;
 };

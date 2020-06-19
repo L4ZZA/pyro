@@ -118,7 +118,7 @@ void board_generator::on_update(pyro::timestep const &ts)
         }
         else
         {
-            m_tiles_up_to = m_tiles.size();
+            m_tiles_up_to = static_cast<int>(m_tiles.size());
         }
 
         if(m_rooms_delay > 0.f)
@@ -134,7 +134,7 @@ void board_generator::on_update(pyro::timestep const &ts)
         }
         else
         {
-            m_rooms_up_to = m_rooms.size();
+            m_rooms_up_to = static_cast<int>(m_rooms.size());
         }
 
         if(m_corridors_delay > 0.f)
@@ -150,7 +150,7 @@ void board_generator::on_update(pyro::timestep const &ts)
         }
         else
         {
-            m_corridors_up_to = m_corridors.size();
+            m_corridors_up_to = static_cast<int>(m_corridors.size());
         }
 
         m_delays_ended = m_tiles_up_to == m_tiles.size()
@@ -257,11 +257,11 @@ void board_generator::on_imgui_render()
     if(m_rooms_up_to < 0)
         m_rooms_up_to = 0;
     if(m_rooms_up_to > m_rooms.size())
-        m_rooms_up_to = m_rooms.size();
+        m_rooms_up_to = static_cast<int>(m_rooms.size());
     if(m_corridors_up_to < 0)
         m_corridors_up_to = 0;
     if(m_corridors_up_to > m_corridors.size())
-        m_corridors_up_to = m_corridors.size();
+        m_corridors_up_to = static_cast<int>(m_corridors.size());
     ImGui::Text("---------------------");
 }
 
@@ -271,7 +271,8 @@ void board_generator::on_event(pyro::event &e)
 
 void board_generator::clear_board()
 {
-    m_tiles.resize(m_width * m_height);
+    int size = m_width * m_height;
+    m_tiles.resize(size);
     m_rooms.resize(0);
     m_corridors.resize(0);
 
@@ -300,7 +301,7 @@ pyro::ref<room> board_generator::create_room(
 void board_generator::connect_rooms()
 {
     m_corridors.resize(0);
-    int max_corridors = m_rooms.size() - 1;
+    int max_corridors = static_cast<int>(m_rooms.size()) - 1;
     for(int i = 0; i < max_corridors; i++)
     {
         int next = i + 1;

@@ -18,7 +18,7 @@ namespace pyro
 
         uint32_t width() const override;
         uint32_t height() const override;
-        ref<pyro::texture> const& texture() const override;
+        ref<pyro::texture> texture() const override;
 
 
     private:
