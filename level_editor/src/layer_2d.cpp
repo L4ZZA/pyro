@@ -87,6 +87,18 @@ void layer_2d::on_imgui_render()
     ImGui::Text("- Zoom: %f", m_2d_camera_controller->zoom_level());
     ImGui::Text("---------------------");
 
+    ImGui::Text("Select scenes");
+    static int scene_index = 0;
+    bool pressed = false;
+    pressed |= ImGui::RadioButton("1", &scene_index, 0); ImGui::SameLine();
+    pressed |= ImGui::RadioButton("2", &scene_index, 1); ImGui::SameLine();
+    pressed |= ImGui::RadioButton("3", &scene_index, 2);
+    
+    if(pressed)
+    {
+        m_scene_manager.go_to(scene_index);
+    }
+
     ImGui::Text("[Press Q to quit play mode]");
     if(ImGui::Button("PLAY", { 100.f,25.f })) 
     {
@@ -110,19 +122,6 @@ void layer_2d::on_event(pyro::event &e)
         {
             current_scene->stop_playing();
         }
-        switch(ev.key_code())
-        {
-        case pyro::key_codes::KEY_1: 
-            m_scene_manager.go_to(0); 
-            break;
-        case pyro::key_codes::KEY_2:
-            m_scene_manager.go_to(1);
-            break;
-        case pyro::key_codes::KEY_3:
-            m_scene_manager.go_to(2);
-            break;
-        }
-
         // return if event is handled or not
         return false;
     });
