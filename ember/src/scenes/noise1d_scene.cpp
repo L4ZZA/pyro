@@ -82,6 +82,7 @@ void noise1d_scene::on_imgui_render()
 {
     ImGui::Text("- Map width:  %d", m_map_width);
     ImGui::Text("- Map height: %d", m_map_height);
+    ImGui::Text("---------------------");
 
     ImGui::Text("-- Noise:");
     ImGui::Text("- Type: ");
@@ -104,11 +105,6 @@ void noise1d_scene::on_imgui_render()
                     on_seed_changed();
                     current_item = items[n];
                 }
-                //if(is_selected)
-                //{
-                    //// You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
-                    //ImGui::SetItemDefaultFocus();   
-                //}
             }
         }
         ImGui::EndCombo();

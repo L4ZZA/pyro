@@ -85,6 +85,7 @@ void noise2d_scene::on_imgui_render()
 {
     ImGui::Text("- Map [and textured quad] width:  %d", m_width);
     ImGui::Text("- Map [and textured quad] height: %d", m_height);
+    ImGui::Text("---------------------");
 
     ImGui::Text("- Show noise texture "); 
     ImGui::ToggleButton("##noise_texture", &m_show_texture);

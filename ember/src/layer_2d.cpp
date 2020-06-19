@@ -81,13 +81,7 @@ void layer_2d::on_imgui_render()
     ImGui::Text("- Indices: %d", stats.total_index_count());
     ImGui::Text("---------------------");
 
-    pyro::ref<pyro::camera> camera = m_2d_camera_controller->camera();
-    ImGui::Text("-- Camera:");
-    ImGui::Text("- Position: [%f,%f,%f]", camera->position().x, camera->position().y, camera->position().z);
-    ImGui::Text("- Zoom: %f", m_2d_camera_controller->zoom_level());
-    ImGui::Text("---------------------");
-
-    ImGui::Text("Select scenes");
+    ImGui::Text("Select level type");
     static int scene_index = 0;
     bool pressed = false;
     pressed |= ImGui::RadioButton("1", &scene_index, 0); ImGui::SameLine();
@@ -99,11 +93,11 @@ void layer_2d::on_imgui_render()
         m_scene_manager.go_to(scene_index);
     }
 
-    ImGui::Text("[Press Q to quit play mode]");
-    if(ImGui::Button("PLAY", { 100.f,25.f })) 
-    {
-        current_scene->play();
-    }
+    //ImGui::Text("[Press Q to quit play mode]");
+    //if(ImGui::Button("PLAY", { 100.f,25.f })) 
+    //{
+    //    current_scene->play();
+    //}
     ImGui::Text("---------------------");
 
     m_scene_manager.on_imgui_render();
