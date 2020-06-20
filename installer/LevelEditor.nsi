@@ -31,8 +31,7 @@
       ; ExecWait '"$R0" /C "create_shortcut.cmd" "${LinkName}" "${LinkDest}" "${LinkTarget}"'
   !macroend
 
-  !insertmacro WebShortucts "${ROOT_DIR}\create_shortcut.cmd" "InstallerUserGuide" "." "https://imgur.com/gallery/D6Xad4l"
-  !insertmacro WebShortucts "${ROOT_DIR}\create_shortcut.cmd" "Readme" "." "https://imgur.com/gallery/D6Xad4l"
+  !insertmacro WebShortucts "${ROOT_DIR}\create_shortcut.cmd" "Readme" "." "https://github.com/L4ZZA/pyro/blob/procedural_generation/README.md"
 
 ;General
 
