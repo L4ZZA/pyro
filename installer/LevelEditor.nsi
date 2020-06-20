@@ -108,7 +108,6 @@ Section "" ;"${APP_NAME}" ComponentsSec
   File /r "${PROJECT_DIR}\assets"
   !echo "$OUTDIR"
   ; Web Shorcuts
-  File "InstallerUserGuide.lnk"
   File "Readme.lnk"
 
   ;Store installation folder
