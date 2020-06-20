@@ -14,7 +14,7 @@ bool pyro::application::s_minimized = false;
 
 //----------------------------------------------------------------------------- 
 
-pyro::application::application(uint32_t width, uint32_t height)
+pyro::application::application(std::string const &name, uint32_t width, uint32_t height)
 {
     PYRO_PROFILE_FUNCTION();
 
@@ -22,6 +22,7 @@ pyro::application::application(uint32_t width, uint32_t height)
     s_instance = this;
 
     window_props props;
+    props.m_title = name;
     props.m_width = width;
     props.m_height = height;
     m_window = window::create(props);

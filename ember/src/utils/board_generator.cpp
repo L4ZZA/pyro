@@ -1,14 +1,10 @@
 #include "board_generator.h"
-#include "imgui/imgui.h"
+#include "utils/imgui_extensions.h"
 
 
-board_generator::board_generator(int width, int height)
-    : m_width(width)
-    , m_height(height)
-    , m_min_rooms(70)
-    , m_max_rooms(85)
-    , m_min_room_size(6)
-    , m_max_room_size(12)
+board_generator::board_generator()
+    : m_width(1)
+    , m_height(1)
     , m_possible_rooms(85)
     , m_tiles_delay(0.f)
     , m_rooms_delay(0.f)
@@ -18,7 +14,6 @@ board_generator::board_generator(int width, int height)
     , m_delays_ended(false)
     , m_perlin_noise(0)
 {
-
     m_floor_texture = pyro::texture_2d::create_from_file("assets/textures/stone-floor.png");
     m_bg_textures.resize(3);
     m_bg_textures[0] = pyro::texture_2d::create_from_file("assets/textures/lava.png");
@@ -28,15 +23,17 @@ board_generator::board_generator(int width, int height)
 
 void board_generator::init(
     utils::random const &rand,
-    int min_rooms, int max_rooms,
+    int width, int height,
+    int min_rooms, int max_tries,
     int min_room_size, int max_room_size)
 {
-    m_min_rooms = min_rooms;
-    m_max_rooms = max_rooms;
-    m_min_room_size = min_room_size;
-    m_max_room_size = max_room_size;
-
-    m_perlin_noise.change_seed(rand.seed());
+    m_width = width;
+    m_height = height;
+ 
+    int32_t combined_seed = rand.seed() 
+                          + min_rooms + max_tries
+                          + min_room_size + max_room_size;
+    m_perlin_noise.change_seed(combined_seed);
     m_delays_ended = false;
     m_tiles_up_to = 0;
     m_rooms_up_to = 0;
@@ -44,23 +41,38 @@ void board_generator::init(
 
     clear_board();
 
-    auto first_room = create_room(rand);
+    auto first_room = create_room(rand, min_room_size, max_room_size);
     m_rooms.push_back(first_room);
 
-    for(int i = 1; i < m_possible_rooms; i++)
+    int rooms_created = 1;
+    int creation_tries = 0;
+    // create rooms to meat the min rooms number
+    while(true)
     {
-        auto proposed_room = create_room(rand);
+        auto proposed_room = create_room(rand, min_room_size, max_room_size);
 
         // go through all the previously created rooms to check if 
         // the proposed_room overlaps with any of them.
         // only add if it doesn't
         if(!is_any_overlapping_or_near(proposed_room))
-        {
+        {            
             m_rooms.push_back(proposed_room);
+            rooms_created++;
+            creation_tries = 0;
+        }
+        else
+        {
+            // stop from looping forever if there's no more space for more rooms.
+            // or if the min rooms requirement was met.
+            if(rooms_created >= min_rooms || creation_tries > max_tries)
+            {
+                break;
+            }
+            creation_tries++;
         }
     }
 
-    connect_rooms(rand);
+    connect_rooms();
 
     for(int x = 0; x < m_width; x++)
         for(int y = 0; y < m_height; y++)
@@ -106,7 +118,7 @@ void board_generator::on_update(pyro::timestep const &ts)
         }
         else
         {
-            m_tiles_up_to = m_tiles.size();
+            m_tiles_up_to = static_cast<int>(m_tiles.size());
         }
 
         if(m_rooms_delay > 0.f)
@@ -122,7 +134,7 @@ void board_generator::on_update(pyro::timestep const &ts)
         }
         else
         {
-            m_rooms_up_to = m_rooms.size();
+            m_rooms_up_to = static_cast<int>(m_rooms.size());
         }
 
         if(m_corridors_delay > 0.f)
@@ -138,7 +150,7 @@ void board_generator::on_update(pyro::timestep const &ts)
         }
         else
         {
-            m_corridors_up_to = m_corridors.size();
+            m_corridors_up_to = static_cast<int>(m_corridors.size());
         }
 
         m_delays_ended = m_tiles_up_to == m_tiles.size()
@@ -225,52 +237,31 @@ void board_generator::on_render() const
     }
 }
 
-// Sample code from: https://github.com/ocornut/imgui/issues/1537#issuecomment-355562097
-// This method is not a member, to prevent compilation and usage in other classes.
-void ToggleButton(const char *str_id, bool *v)
-{
-    ImVec2 p = ImGui::GetCursorScreenPos();
-    ImDrawList *draw_list = ImGui::GetWindowDrawList();
-
-    float height = ImGui::GetFrameHeight();
-    float width = height * 1.55f;
-    float radius = height * 0.50f;
-
-    if(ImGui::InvisibleButton(str_id, ImVec2(width, height)))
-        *v = !*v;
-    ImU32 col_bg;
-    if(ImGui::IsItemHovered())
-        col_bg = *v ? IM_COL32(145 + 20, 211, 68 + 20, 255) : IM_COL32(218 - 20, 218 - 20, 218 - 20, 255);
-    else
-        col_bg = *v ? IM_COL32(145, 211, 68, 255) : IM_COL32(218, 218, 218, 255);
-
-    draw_list->AddRectFilled(p, ImVec2(p.x + width, p.y + height), col_bg, height * 0.5f);
-    draw_list->AddCircleFilled(ImVec2(*v ? (p.x + width - radius) : (p.x + radius), p.y + radius), radius - 1.5f, IM_COL32(255, 255, 255, 255));
-}
-
 void board_generator::on_imgui_render()
 {
     ImGui::Text("--- Dungeon ");
-    ImGui::Text("- Show dungeon "); ImGui::SameLine();
-    ToggleButton("##dungeon", &m_show_dungeon);
-    ImGui::Text("- Show walls "); ImGui::SameLine();
-    ToggleButton("##walls", &m_show_walls);
-    ImGui::Text("-- Rooms: "); ImGui::SameLine();
+    ImGui::Text("- Show dungeon "); 
+    ImGui::ToggleButton("##dungeon", &m_show_dungeon);
+    ImGui::Text("- Show walls "); 
+    ImGui::ToggleButton("##walls", &m_show_walls);
+    ImGui::Text("-- Change the following parameters to \n\
+   see the order of creation.");
+    ImGui::Text("-- Rooms: "); 
     if(ImGui::InputInt("##room_count", &m_rooms_up_to))
     {
         //also stop showing cooridors with room
         m_corridors_up_to = m_rooms_up_to - 1;
     }
-    ImGui::Text("-- Corridors: "); ImGui::SameLine();
+    ImGui::Text("-- Corridors: "); 
     ImGui::InputInt("##corridor_count", &m_corridors_up_to);
     if(m_rooms_up_to < 0)
         m_rooms_up_to = 0;
     if(m_rooms_up_to > m_rooms.size())
-        m_rooms_up_to = m_rooms.size();
+        m_rooms_up_to = static_cast<int>(m_rooms.size());
     if(m_corridors_up_to < 0)
         m_corridors_up_to = 0;
     if(m_corridors_up_to > m_corridors.size())
-        m_corridors_up_to = m_corridors.size();
+        m_corridors_up_to = static_cast<int>(m_corridors.size());
     ImGui::Text("---------------------");
 }
 
@@ -280,7 +271,8 @@ void board_generator::on_event(pyro::event &e)
 
 void board_generator::clear_board()
 {
-    m_tiles.resize(m_width * m_height);
+    int size = m_width * m_height;
+    m_tiles.resize(size);
     m_rooms.resize(0);
     m_corridors.resize(0);
 
@@ -291,22 +283,25 @@ void board_generator::clear_board()
     }
 }
 
-pyro::ref<room> board_generator::create_room(utils::random const &rand)
+pyro::ref<room> board_generator::create_room(
+    utils::random const &rand, 
+    int32_t min_size, 
+    int32_t max_size)
 {
     // create random room
     int gap = 3; // buffer around the edges of the world
-    int width = rand.get_int(m_min_room_size, m_max_room_size);
-    int height = rand.get_int(m_min_room_size, m_max_room_size);
+    int width = rand.get_int (min_size, max_size);
+    int height = rand.get_int(min_size, max_size);
     int x = rand.get_int(gap, m_width - width - gap);
     int y = rand.get_int(gap, m_height - height - gap);
     return std::move(pyro::make_ref<room>(x, y, width, height));
   
 }
 
-void board_generator::connect_rooms(utils::random const &rand)
+void board_generator::connect_rooms()
 {
     m_corridors.resize(0);
-    int max_corridors = m_rooms.size() - 1;
+    int max_corridors = static_cast<int>(m_rooms.size()) - 1;
     for(int i = 0; i < max_corridors; i++)
     {
         int next = i + 1;

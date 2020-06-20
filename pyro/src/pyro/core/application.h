@@ -17,7 +17,7 @@ namespace pyro
     class PYRO_API application
     {
     public:
-        application(uint32_t width, uint32_t height);
+        application(std::string const &name, uint32_t width, uint32_t height);
         virtual ~application();
 
         virtual void on_event(event &e);
@@ -35,6 +35,7 @@ namespace pyro
 
         static uint32_t fps() { return instance().m_FramesPerSecond; }
         static uint32_t ups() { return instance().m_UpdatesPerSecond; }
+        // Frame time in seconds
         static float    frame_time() { return instance().m_frame_time; }
     public:
         static void exit();

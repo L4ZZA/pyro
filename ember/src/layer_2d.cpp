@@ -29,8 +29,7 @@ void layer_2d::on_attach()
 {
     PYRO_PROFILE_FUNCTION();
     imgui_layer::on_attach();
-    //m_scene_manager.init_first_scene();
-    m_scene_manager.go_to(2);
+    m_scene_manager.init_first_scene();
 }
 
 void layer_2d::on_detach()
@@ -64,53 +63,65 @@ void layer_2d::on_render() const
 
 void layer_2d::on_imgui_render()
 {
+    auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
+
+    // hide all ui if the scene is being played
+    if(current_scene->is_playing())
+        return;
+
     ImGui::Begin("Settings");
 
     auto stats = pyro::renderer_2d::stats();
     ImGui::Text("-- 2D Renderer stats:");
-    ImGui::Text("- Frame time: %f", pyro::application::frame_time());
+    float ms = pyro::application::frame_time() * 1000.f;
+    ImGui::Text("- Frame time: %f ms", ms);
     ImGui::Text("- FPS: %d/s", pyro::application::fps());
-    ImGui::Text("- UPS: %d/s", pyro::application::ups());
     ImGui::Text("- Draw calls: %d", stats.draw_calls);
     ImGui::Text("- Quads: %d", stats.quad_count);
     ImGui::Text("- Vertices: %d", stats.total_vertex_count());
     ImGui::Text("- Indices: %d", stats.total_index_count());
     ImGui::Text("---------------------");
 
-    m_scene_manager.on_imgui_render();
+    ImGui::Text("Select level type");
+    static int scene_index = 0;
+    bool pressed = false;
+    pressed |= ImGui::RadioButton("1", &scene_index, 0); ImGui::SameLine();
+    pressed |= ImGui::RadioButton("2", &scene_index, 1); ImGui::SameLine();
+    pressed |= ImGui::RadioButton("3", &scene_index, 2);
     
-    pyro::ref<pyro::camera> camera = m_2d_camera_controller->camera();
-    ImGui::Text("-- Camera:");
-    ImGui::Text("- Position: [%f,%f,%f]", camera->position().x, camera->position().y, camera->position().z);
-    ImGui::Text("- Zoom: %f", m_2d_camera_controller->zoom_level());
+    if(pressed)
+    {
+        m_scene_manager.go_to(scene_index);
+    }
+
+    //ImGui::Text("[Press Q to quit play mode]");
+    //if(ImGui::Button("PLAY", { 100.f,25.f })) 
+    //{
+    //    current_scene->play();
+    //}
     ImGui::Text("---------------------");
+
+    m_scene_manager.on_imgui_render();
 
     ImGui::End();
 }
 
 void layer_2d::on_event(pyro::event &e)
 {
+    imgui_layer::on_event(e);
     m_2d_camera_controller->on_event(e);
     pyro::event_dispatcher dispatcher(e);
     // dispatch event on window X pressed 
+    auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
     dispatcher.dispatch<pyro::key_pressed_event>([&](pyro::key_pressed_event ev) {
-
-        switch(ev.key_code())
+        if(current_scene->is_playing() && ev.key_code() == pyro::key_codes::KEY_Q)
         {
-        case pyro::key_codes::KEY_1: 
-            m_scene_manager.go_to(0); 
-            break;
-        case pyro::key_codes::KEY_2:
-            m_scene_manager.go_to(1);
-            break;
-        case pyro::key_codes::KEY_3:
-            m_scene_manager.go_to(2);
-            break;
+            current_scene->stop_playing();
         }
-
         // return if event is handled or not
         return false;
     });
+
     m_scene_manager.on_event(e);
 }
 

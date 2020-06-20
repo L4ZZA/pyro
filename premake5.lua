@@ -30,7 +30,7 @@ end)
 -- workspace is the solution
 workspace "pyro"
     architecture "x64"
-    startproject "level_editor"
+    startproject "ember"
 
     configurations
     {
@@ -129,9 +129,9 @@ project "pyro"
         runtime "Release"
         optimize "on"
 
--- level_editor application
-project "level_editor"
-    location "level_editor"
+-- ember application
+project "ember"
+    location "ember"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
@@ -201,7 +201,7 @@ project "tests"
     includedirs
     {
         "%{prj.name}/src/",
-        "level_editor/src",
+        "ember/src",
         "pyro/external/spdlog/include",
         "pyro/src",
         "pyro/external",
@@ -211,7 +211,7 @@ project "tests"
 
     links
     {
-        "level_editor",
+        "ember",
         "pyro",
     }
 

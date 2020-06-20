@@ -74,7 +74,7 @@ uint32_t pyro::gl_frame_buffer_2d::height() const
     return m_width;
 }
 
-pyro::ref<pyro::texture> const &
+pyro::ref<pyro::texture>
 pyro::gl_frame_buffer_2d::texture() const
 {
     return m_texture;

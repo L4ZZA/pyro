@@ -52,6 +52,10 @@ void scene_manager::go_to(int scene_index)
         PYRO_ERROR("scene_manager::go_to - scene {} does not exist.", scene_index);
     }
 }
+pyro::ref<scene> scene_manager::current_scene() const
+{
+    return m_scenes[m_scene_index];
+}
 
 void scene_manager::on_update(pyro::timestep const &ts)
 {

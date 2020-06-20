@@ -75,8 +75,8 @@ void pyro::imgui_layer::on_imgui_render()
 void pyro::imgui_layer::on_event(event& e)
 {
     ImGuiIO &io = ImGui::GetIO();
-    e.handled |= e.is_in_category(event_category_mouse) & io.WantCaptureMouse;
-    e.handled |= e.is_in_category(event_category_keyboard) & io.WantCaptureKeyboard;
+    e.handled |= e.is_in_category(event_category_mouse) && io.WantCaptureMouse;
+    e.handled |= e.is_in_category(event_category_keyboard) && io.WantCaptureKeyboard;
 }
 
 void pyro::imgui_layer::begin() const

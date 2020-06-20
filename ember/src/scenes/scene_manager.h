@@ -11,6 +11,7 @@ public:
 	void next_scene();
 	void previous_scene();
 	void go_to(int scene_index);
+	pyro::ref<scene> current_scene() const;
 
 	void on_update(pyro::timestep const &ts);
 	void on_render() const;

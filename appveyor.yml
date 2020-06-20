@@ -14,6 +14,7 @@ branches:
   # whitelist
   only:
     - procedural_generation
+    - feature/cleanup
 
 clone_folder: $(ROOT)
 
@@ -38,5 +39,7 @@ test_script:
 - cmd: vstest.console /logger:Appveyor bin/%CONFIG%-%OS%-%PLAT%/tests/tests.exe
 
 artifacts:
-- path: '**/*level_editor.exe'
-- path: '**/*pyro.lib'
+- path: '**/ember/**.*'
+  name: Ember Editor
+- path: '**/*Setup.exe'
+  name: Ember Setup
