@@ -28,7 +28,6 @@
 
   !macro WebShortucts ScriptPath LinkName LinkDest LinkTarget
       !system '${CMD_PATH} /C ${ScriptPath} ${LinkName} ${LinkDest} ${LinkTarget}'
-      ; ExecWait '"$R0" /C "create_shortcut.cmd" "${LinkName}" "${LinkDest}" "${LinkTarget}"'
   !macroend
 
   !insertmacro WebShortucts "${ROOT_DIR}\create_shortcut.cmd" "Readme" "." "https://github.com/L4ZZA/pyro/blob/procedural_generation/README.md"
