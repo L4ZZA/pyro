@@ -2,6 +2,7 @@ environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       ROOT: c:/dev/source
+      SCRIPTS: '%ROOT%/scripts/'
       CONFIG: Release
       OS: windows
       PLAT: x86_64
@@ -25,7 +26,7 @@ configuration:
 install:
 - cmd: vcpkg install boost-test:x64-windows-static
 - cmd: git submodule update --init
-- cmd: c:/dev/source/generate_solution_vs2019.bat
+- cmd: '%SCRIPTS%/generate_solution_vs2019.bat'
 
 build:
   parallel: true    # enable MSBuild parallel builds
@@ -33,6 +34,7 @@ build:
 
 after_build: 
 - cmd: '%ROOT%/bin/%CONFIG%-%OS%-%PLAT%/tests/tests.exe' 
+- cmd: '%SCRIPTS%/create_installer.bat' 
 
 test_script:
 - cmd: vstest.console /logger:Appveyor bin/%CONFIG%-%OS%-%PLAT%/tests/tests.exe
