@@ -40,6 +40,6 @@ test_script:
 
 artifacts:
 - path: '**/ember/**.*'
-- name: 'Ember Editor'
+  name: Ember Editor
 - path: '**/*Setup.exe'
-- name: 'Ember Setup'
+  name: Ember Setup
