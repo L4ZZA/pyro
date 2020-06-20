@@ -8,12 +8,12 @@
   
 ;--------------------------------
 ;Global definitions
- !define APP_NAME "Level Editor"
- !define APP_NAME_SLUG "level_editor"
- !define INST_FOLDER_NAME "LevelEditor"
- !define FILE_NAME "LevelEditorSetup.exe"
+ !define TITLE "Ember"
+ !define APP_NAME "ember.exe"
+ !define INST_FOLDER_NAME "ember"
+ !define FILE_NAME "EmberSetup.exe"
  !define ROOT_DIR ".."
- !define PROJECT_DIR "${ROOT_DIR}\${APP_NAME_SLUG}"
+ !define PROJECT_DIR "${ROOT_DIR}\${INST_FOLDER_NAME}"
  !define CONFIG_DIR "Release-windows-x86_64"
  !define BIN_DIR "${ROOT_DIR}\bin\${CONFIG_DIR}"
  !define OUTPUT_DIR "${BIN_DIR}\installers"
@@ -35,7 +35,7 @@
 ;General
 
   ;Name and file
-  Name ${APP_NAME}
+  Name ${TITLE}
   OutFile "${OUTPUT_DIR}\${FILE_NAME}"
   Unicode True
   ShowInstDetails show
@@ -103,7 +103,7 @@ Section "" ;"${APP_NAME}" ComponentsSec
   RMDir /r "$INSTDIR\assets"
 
   ; Editor
-  File "${BIN_DIR}\level_editor\level_editor.exe"
+  File "${BIN_DIR}\${INST_FOLDER_NAME}\${APP_NAME}"
   ; Assets
   File /r "${PROJECT_DIR}\assets"
   !echo "$OUTDIR"

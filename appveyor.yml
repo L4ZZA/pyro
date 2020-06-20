@@ -34,7 +34,7 @@ build:
 
 after_build: 
 - cmd: '%ROOT%/bin/%CONFIG%-%OS%-%PLAT%/tests/tests.exe' 
-- cmd: '%SCRIPTS%/create_installer.bat' 
+- cmd: '%SCRIPTS%/create_installer.bat -s' 
 
 test_script:
 - cmd: vstest.console /logger:Appveyor bin/%CONFIG%-%OS%-%PLAT%/tests/tests.exe
