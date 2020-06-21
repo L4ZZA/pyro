@@ -14,6 +14,7 @@
  !define FILE_NAME "EmberSetup.exe"
  !define ROOT_DIR ".."
  !define PROJECT_DIR "${ROOT_DIR}\${INST_FOLDER_NAME}"
+ !define SCRIPTS_DIR "${ROOT_DIR}\scripts"
  !define CONFIG_DIR "Release-windows-x86_64"
  !define BIN_DIR "${ROOT_DIR}\bin\${CONFIG_DIR}"
  !define OUTPUT_DIR "${BIN_DIR}\installers"
@@ -30,7 +31,7 @@
       !system '${CMD_PATH} /C ${ScriptPath} ${LinkName} ${LinkDest} ${LinkTarget}'
   !macroend
 
-  !insertmacro WebShortucts "${ROOT_DIR}\create_shortcut.cmd" "Readme" "." "https://github.com/L4ZZA/pyro/blob/procedural_generation/README.md"
+  !insertmacro WebShortucts "${SCRIPTS_DIR}\create_shortcut.cmd" "Readme" "." "https://github.com/L4ZZA/pyro/blob/procedural_generation/README.md"
 
 ;General
 
