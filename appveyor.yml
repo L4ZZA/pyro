@@ -1,11 +1,33 @@
+# 
+# Reference list
+# - https://raw.githubusercontent.com/malaterre/GDCM/master/appveyor.yml
+# 
+# 
+# http://www.appveyor.com/docs/build-cache#caching-chocolatey-packages
+# https://github.com/kvirc/KVIrc/blob/master/.appveyor.yml
+cache:
+  - c:\Tools\vcpkg\installed -> appveyor.yml
+  # - 'C:\Program Files (x86)\NSIS'
+  # - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  # - C:\ProgramData\chocolatey\lib -> appveyor.yml
+
+# Set build version format here instead of in the admin panel.
+version: '{build}' 
+
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      ROOT: c:/dev/source
-      SCRIPTS: '%ROOT%/scripts/'
-      CONFIG: Release
-      OS: windows
-      PLAT: x86_64
+      ROOT: c:\dev\source
+      SCRIPTS: '%ROOT%\scripts\'
+      CONFIG_PARTIAL: 'Release'
+      OS_PARTIAL: 'windows'
+      PLAT_PARTIAL: 'x86_64'
+      PRODUCT_NAME: Ember
+      RELEASE_VERSION: 0.0
+      OUTPUT_FOLDER: 'bin\$(CONFIG_PARTIAL)-$(OS_PARTIAL)-$(PLAT_PARTIAL)'
+      FILE_VERSION: 'v%RELEASE_VERSION%.$(appveyor_build_version)_beta'
+      GITHUB_TOKEN:
+        secure: ShOkS4UEj4aiSabXwn0u0d0d3BoaVF0wW7TO4JyFdmMfdckHk5IbF1rAJO3aaSRg
 
 image:
   - Visual Studio 2019
@@ -16,31 +38,110 @@ branches:
   only:
     - procedural_generation
 
-clone_folder: $(ROOT)
+#---------------------------------#
+#   scripts that are called at    #
+#   very beginning, before        #
+#   repo cloning                  #
+#---------------------------------#
 
-version: '0.1.{build}'
+init:
+# Updating build version with correct values 
+# [has to be done here as environment variable are evaluated later in the process]
+- cmd: appveyor UpdateBuild -Version "%RELEASE_VERSION%.%APPVEYOR_BUILD_NUMBER%"
+# Print environment info ( set / systeminfo)
+# - set PATH=%JAVA_HOME%\bin;%PYTHONHOME%;%PATH%
+- msbuild /version
+# https://github.com/chocolatey/chocolatey/issues/431
+# - del c:\programdata\chocolatey\bin\cpack.exe
+  
+clone_folder: $(ROOT)
 
 configuration:
 - Release
 
+#---------------------------------#
+#   scripts that install/setup    #
+#---------------------------------#
+
 install:
+# Recursively remove all outadet vcpkg packages
+- cmd: vcpkg remove --outdated --recurse
+#  Install boost package
 - cmd: vcpkg install boost-test:x64-windows-static
+# Update all submodules
 - cmd: git submodule update --init
-- cmd: '%SCRIPTS%/generate_solution_vs2019.bat'
+
+#---------------------------------#
+#   scripts to run before build   #
+#---------------------------------#
+
+before_build:
+# Generate VS2019 solution
+- cmd: '%SCRIPTS%\generate_solution_vs2019.bat -s'
+
+
+#---------------------------------#
+#           build step            #
+#---------------------------------#
 
 build:
   parallel: true    # enable MSBuild parallel builds
   project: pyro.sln # path to Visual Studio solution or project
 
+
+#---------------------------------#
+#    scripts to run after build   #
+#---------------------------------#
+
 after_build: 
-- cmd: '%ROOT%/bin/%CONFIG%-%OS%-%PLAT%/tests/tests.exe' 
-- cmd: '%SCRIPTS%/create_installer.bat -s' 
+# Run test manually [until appveyor ]
+- cmd: '%ROOT%/bin/%CONFIG_PARTIAL%-%OS_PARTIAL%-%PLAT_PARTIAL%/tests/tests.exe'  
+# Create installer [it works because appveyor image comes with NSIS installed]
+- cmd: '%SCRIPTS%\create_installer.bat -s' 
+# Renaming installer to include version in its name
+- cmd: 'ren  %OUTPUT_FOLDER%\installers\%PRODUCT_NAME%Setup.exe "%PRODUCT_NAME%-%FILE_VERSION%-setup.exe"' 
 
 test_script:
-- cmd: vstest.console /logger:Appveyor bin/%CONFIG%-%OS%-%PLAT%/tests/tests.exe
+- cmd: vstest.console /logger:Appveyor  %OUTPUT_FOLDER%\tests\tests.exe
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
 
 artifacts:
-- path: '**/ember/**.*'
-  name: Ember Editor
-- path: '**/*Setup.exe'
-  name: Ember Setup
+- path: '**\*Setup.exe'
+  name: installer
+- path: 'bin\**\ember\**.exe'
+  name: editor
+- path: 'ember\assets\shaders\**'
+  name: editor
+- path: 'ember\assets\textures\**'
+  name: editor
+
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
+
+# scripts to run before deployment
+#before_deploy:
+
+# scripts to run after deployment
+#after_deploy:
+
+# to run your custom scripts instead of provider deployments
+#deploy_script:
+
+deploy:
+  - provider: GitHub
+    auth_token:
+      secure: ShOkS4UEj4aiSabXwn0u0d0d3BoaVF0wW7TO4JyFdmMfdckHk5IbF1rAJO3aaSRg
+    release: "%PRODUCT_NAME%-%FILE_VERSION%"
+    description: 'Beta release of Ember editor v$(appveyor_build_version)'
+    # github automatically does source zip\tarball for us
+    artifact: installer
+    draft: true
+    prerelease: true
+    on:
+      branch: procedural_generation # release from master branch only
+      configuration: Release 
+      appveyor_repo_tag: false      # deploy on tag push only
