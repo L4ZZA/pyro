@@ -1,6 +1,7 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/r3k87jbaegd8v3fc/branch/procedural_generation?svg=true)](https://ci.appveyor.com/project/L4ZZA/pyro-procedural-gen/branch/procedural_generation)
 
-# Ember Editor
+# Ember Editor [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Build status](https://ci.appveyor.com/api/projects/status/r3k87jbaegd8v3fc/branch/procedural_generation?svg=true)](https://ci.appveyor.com/project/L4ZZA/pyro-procedural-gen/branch/procedural_generation) 
+==================
+
 
 > A small piece of burning or glowing coal or wood in a dying fire.
 

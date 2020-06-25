@@ -6,10 +6,13 @@
 # http://www.appveyor.com/docs/build-cache#caching-chocolatey-packages
 # https://github.com/kvirc/KVIrc/blob/master/.appveyor.yml
 cache:
-  - c:\Tools\vcpkg\installed -> appveyor.yml
-  # - 'C:\Program Files (x86)\NSIS'
-  # - C:\ProgramData\chocolatey\bin -> appveyor.yml
-  # - C:\ProgramData\chocolatey\lib -> appveyor.yml
+  - C:\Tools\vcpkg\installed -> appveyor.yml
+# caching binries and intermediates to allow incremental build
+  - C:\dev\source\bin -> appveyor.yml
+  - C:\dev\source\inter -> appveyor.yml
+# - 'C:\Program Files (x86)\NSIS'
+# - C:\ProgramData\chocolatey\bin -> appveyor.yml
+# - C:\ProgramData\chocolatey\lib -> appveyor.yml
 
 # Set build version format here instead of in the admin panel.
 version: '{build}' 
@@ -25,7 +28,7 @@ environment:
       PRODUCT_NAME: Ember
       RELEASE_VERSION: 0.0
       OUTPUT_FOLDER: 'bin\$(CONFIG_PARTIAL)-$(OS_PARTIAL)-$(PLAT_PARTIAL)'
-      FILE_VERSION: 'v%RELEASE_VERSION%.$(appveyor_build_version)_beta'
+      FILE_VERSION: 'v%RELEASE_VERSION%.$(appveyor_build_version)-beta'
       GITHUB_TOKEN:
         secure: ShOkS4UEj4aiSabXwn0u0d0d3BoaVF0wW7TO4JyFdmMfdckHk5IbF1rAJO3aaSRg
 
@@ -53,6 +56,8 @@ init:
 - msbuild /version
 # https://github.com/chocolatey/chocolatey/issues/431
 # - del c:\programdata\chocolatey\bin\cpack.exe
+# separating output
+- cmd: ''
   
 clone_folder: $(ROOT)
 
@@ -99,10 +104,10 @@ after_build:
 # Create installer [it works because appveyor image comes with NSIS installed]
 - cmd: '%SCRIPTS%\create_installer.bat -s' 
 # Renaming installer to include version in its name
-- cmd: 'ren  %OUTPUT_FOLDER%\installers\%PRODUCT_NAME%Setup.exe "%PRODUCT_NAME%-%FILE_VERSION%-setup.exe"' 
+- cmd: 'ren %OUTPUT_FOLDER%\installers\%PRODUCT_NAME%Setup.exe "%PRODUCT_NAME%-%FILE_VERSION%-setup.exe"' 
 
 test_script:
-- cmd: vstest.console /logger:Appveyor  %OUTPUT_FOLDER%\tests\tests.exe
+- cmd: vstest.console /logger:Appveyor %OUTPUT_FOLDER%\tests\tests.exe
 
 #---------------------------------#
 #      artifacts configuration    #
@@ -141,7 +146,7 @@ deploy:
     artifact: installer
     draft: true
     prerelease: true
+    appveyor_repo_tag: false      # deploy on tag push only
     on:
       branch: procedural_generation # release from master branch only
       configuration: Release 
-      appveyor_repo_tag: false      # deploy on tag push only
