@@ -5,7 +5,7 @@
 
 extern pyro::application* pyro::create_application();
 
-/// \brief Adjusts the console to take 1/3rd of the monitor height.
+/// Adjusts the console to take 1/3rd of the monitor height.
 void move_console();
 
 
@@ -19,8 +19,16 @@ int main(int argc, char** argv)
     auto app = pyro::create_application();
     PYRO_PROFILE_END_SESSION();
 
+    PYRO_PROFILE_BEGIN_SESSION("initialization", "pyro_profile_initialization.json");
+    app->init();
+    PYRO_PROFILE_END_SESSION();
+    
     PYRO_PROFILE_BEGIN_SESSION("runtime", "pyro_profile_runtime.json");
     app->run();
+    PYRO_PROFILE_END_SESSION();
+
+    PYRO_PROFILE_BEGIN_SESSION("deinitialization", "pyro_profile_deinitialization.json");
+    app->deinit();
     PYRO_PROFILE_END_SESSION();
 
     PYRO_PROFILE_BEGIN_SESSION("shutdown", "pyro_profile_shutdown.json");

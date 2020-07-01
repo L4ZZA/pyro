@@ -5,7 +5,7 @@
 namespace pyro
 {
     enum class e_primitive_type;
-    /// \brief   
+    ///   
     class PYRO_API renderer_api
     {
     public:

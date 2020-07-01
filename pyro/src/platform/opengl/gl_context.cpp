@@ -27,7 +27,8 @@ void pyro::gl_context::init()
 		glGetIntegerv(GL_MAJOR_VERSION, &version_major);
 		glGetIntegerv(GL_MINOR_VERSION, &version_minor);
 
-		PYRO_CORE_ASSERT(version_major > 4 || (version_major == 4 && version_minor >= 5), "Pyro requires at least OpenGL version 4.5!");
+		PYRO_CORE_ASSERT(version_major > 4 || (version_major == 4 && version_minor >= 5), 
+			"Pyro requires at least OpenGL version 4.5!");
 	#endif
 }
 

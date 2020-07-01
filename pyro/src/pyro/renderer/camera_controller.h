@@ -28,16 +28,26 @@ namespace pyro
 		virtual void on_update(timestep ts) = 0;
         virtual void on_event(event &e) = 0;
 
-        virtual pyro::camera &      camera() = 0;
-        virtual pyro::camera const& camera() const = 0;
+        virtual ref<pyro::camera> camera() const = 0;
 
         virtual void zoom_level(float level) = 0;
         virtual float zoom_level() const = 0;
 
-    protected:
+        virtual void position(glm::vec3 const &pos) = 0;
+        virtual void rotation(glm::vec3 const &rot) = 0;
+
     };
     
     //=========== 2D CAMERA CONTROLLER ============
+
+    struct orthographic_camera_bounds
+    {
+        float left, right;
+        float bottom, top;
+
+        float width() const { return right - left; }
+        float height() const { return top - bottom; }
+    };
 
     class PYRO_API orthographic_camera_controller final : public camera_controller
     {
@@ -50,16 +60,23 @@ namespace pyro
             right 
         }; 
     public:
-        orthographic_camera_controller(float aspect_ratio, bool rotation = false);
+        orthographic_camera_controller(
+            glm::vec3 const &position, 
+            float aspect_ratio, 
+            float zoom_level = 1.f,
+            bool rotation = false);
         void on_update(timestep ts) override;
         void on_event(event& e) override;
-        pyro::camera& camera() override;
-        pyro::camera const& camera() const override;
+        ref<pyro::camera> camera() const override;
 
         void zoom_level(float level) override;
         float zoom_level() const override;
 
+        void position(glm::vec3 const &pos) override;
+        void rotation(glm::vec3 const &rot) override;
+
     private:
+        void calculate_view();
         void move(e_direction direction, timestep ts);
         void rotate(e_rotation rotation, e_axis rotation_axis, timestep ts);
         bool on_mouse_scrolled(mouse_scrolled_event& e);
@@ -67,15 +84,18 @@ namespace pyro
 
     private:
         float m_aspect_ratio;
+        float m_zoom_speed;
         float m_zoom_level;
-        orthographic_camera m_camera;
-
-        bool m_rotation;
+        bool  m_rotation;
         glm::vec3 m_camera_position;
-        /// \brief Rotation in degrees in anti-clockwise direction.
-        float m_camera_rotation;
+        // Rotation in degrees in anti-clockwise direction. Only the z-value 
+        // is used for orthographic camera.
+        glm::vec3 m_camera_rotation;
         float m_camera_translation_speed;
         const float m_camera_rotation_speed;
+
+        orthographic_camera_bounds m_bounds;
+        ref<orthographic_camera> m_camera;
     };
     
     //=========== 3D CAMERA CONTROLLER ============
@@ -98,10 +118,11 @@ namespace pyro
         
         void on_update(timestep ts) override;
         void on_event(event& e) override;
-        pyro::camera& camera() override;
-        pyro::camera const& camera() const override;
+        ref<pyro::camera> camera() const override;
         void zoom_level(float level) override;
         float zoom_level() const override;
+        void position(glm::vec3 const &pos) override;
+        void rotation(glm::vec3 const &rot) override;
 
     private:
         void process_mouse(e_control_type control_type, float mouse_x, float mouse_y, bool constrain_pitch = true);
@@ -111,12 +132,11 @@ namespace pyro
         void rotate(perspective_camera::e_rotation rotation, perspective_camera::e_axis rotation_axis, timestep ts);
 
     private:    
-
-        perspective_camera m_camera;
+        ref<perspective_camera> m_camera;
 
         bool m_should_rotate;
         glm::vec3 m_camera_position;
-        /// \brief Rotation in degrees in anti-clockwise direction.
+        /// Rotation in degrees in anti-clockwise direction.
         /// pitch -> rotation over x axis
         /// yaw -> rotation over y axis
         /// roll -> rotation over z axis
@@ -125,7 +145,7 @@ namespace pyro
         const float m_camera_rotation_speed;
 
         inline static e_control_type s_control_type = e_control_type::first_person;
-        /// \brief in degrees per second. 
+        /// in degrees per second. 
         inline static const float s_mouse_sensitivity = 0.1f;
     
     };

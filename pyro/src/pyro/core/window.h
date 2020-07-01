@@ -8,7 +8,7 @@ namespace pyro
 {
     struct PYRO_API window_props
     {
-        std::string m_title  = "none";
+        std::string m_title  = "";
         uint32_t    m_width  = 0;
         uint32_t    m_height = 0;
         bool        m_vsync  = false;
@@ -21,7 +21,7 @@ namespace pyro
         }
     };
 
-    /// \brief Interface representing a desktop system based window.
+    /// Interface representing a desktop system based window.
     class PYRO_API window
     {
     public:

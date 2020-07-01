@@ -3,7 +3,7 @@
 
 namespace pyro
 {
-    /// \brief Shader (platform agnostic) interface. Implemented in platform/api_name folder (i.e. opengl)
+    /// Shader (platform agnostic) interface. Implemented in platform/api_name folder (i.e. opengl)
     class PYRO_API shader
     {
     public:
@@ -13,6 +13,7 @@ namespace pyro
         virtual void unbind() const = 0;
         virtual std::string const &name() const = 0;
 
+        virtual void set_bool(std::string const &name, bool val) = 0;
         virtual void set_int(std::string const &name, int32_t val) = 0;
         virtual void set_float(std::string const &name, float val) = 0;
         virtual void set_float2(std::string const &name, const glm::vec2 &vec) = 0;

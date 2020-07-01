@@ -2,7 +2,7 @@
 
 namespace  pyro
 {
-    /// \brief Keycodes from glf3.h
+    /// Keycodes from glf3.h
     class PYRO_API key_codes
     {
     public:

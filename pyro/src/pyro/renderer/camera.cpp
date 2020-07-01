@@ -15,6 +15,8 @@ pyro::orthographic_camera::orthographic_camera(float left, float right, float bo
     m_view_projection_mat = m_projection_mat * m_view_mat;
 }
 
+//-----------------------------------------------------------------------------
+
 void pyro::orthographic_camera::projection_matrix(float left, float right, float bottom, float top)
 {
 	PYRO_PROFILE_FUNCTION();

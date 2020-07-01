@@ -11,7 +11,9 @@ namespace pyro
 
         void on_attach() override;
         void on_detach() override;
-        void on_imgui_render() override;
+        void on_render() const override;
+        virtual void on_imgui_render();
+        void on_event(event& e) override;
 
         void begin() const;
         void end() const;

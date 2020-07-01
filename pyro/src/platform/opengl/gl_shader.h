@@ -3,7 +3,7 @@
 
 namespace pyro
 {
-    /// \brief OpenGL shader implementation.
+    /// OpenGL shader implementation.
     class PYRO_API gl_shader final : public shader
     {
     public:
@@ -16,6 +16,7 @@ namespace pyro
         void unbind() const override;
         std::string const &name() const override;
 
+        void set_bool(std::string const &name, bool val) override;
         void set_int(std::string const &name, int32_t val) override;
         void set_float(std::string const &name, float val) override;
         void set_float2(std::string const &name, const glm::vec2 &vec) override;
@@ -25,6 +26,7 @@ namespace pyro
         void set_int_array(std::string const& name, int32_t const *values, uint32_t count) override;
 
     private:
+        void upload_uniform(std::string const &name, bool val) const;
         void upload_uniform(std::string const &name, int32_t val) const;
         void upload_uniform(std::string const &name, float val) const;
         void upload_uniform(std::string const &name, const glm::vec2 &vec) const;

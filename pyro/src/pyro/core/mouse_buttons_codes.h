@@ -2,7 +2,7 @@
 
 namespace  pyro
 {
-    /// \brief Mouse button codes from glf3.h
+    /// Mouse button codes from glf3.h
     class PYRO_API mouse_button_codes
     {
         static constexpr int MOUSE_BUTTON_1         = 0;

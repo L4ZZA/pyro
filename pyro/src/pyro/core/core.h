@@ -66,12 +66,20 @@
 #define BIT(x) 1 << x
 
 #if PYRO_DEBUG
+    #if defined(PYRO_PLATFORM_WIN)
+        #define PYRO_DEBUGBREAK() __debugbreak()
+    #elif defined(PYRO_PLATFORM_LINUX)
+        #include <signal.h>
+        #define PYRO_DEBUGBREAK() raise(SIGTRAP)
+    #else
+        #error "Platform doesn't support debugbreak yet!"
+    #endif
     #define PYRO_ENABLE_ASSERTS
 #endif
 
 #ifdef PYRO_ENABLE_ASSERTS
-    #define PYRO_ASSERT(expression, ...) { if(!(expression)) {PYRO_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();}}
-    #define PYRO_CORE_ASSERT(expression, ...) { if(!(expression)) {PYRO_CORE_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();}}
+    #define PYRO_ASSERT(expression, ...) { if(!(expression)) {PYRO_ERROR("Assertion failed: {0}", __VA_ARGS__); PYRO_DEBUGBREAK();}}
+    #define PYRO_CORE_ASSERT(expression, ...) { if(!(expression)) {PYRO_CORE_ERROR("Assertion failed: {0}", __VA_ARGS__); PYRO_DEBUGBREAK();}}
 #else
     #define PYRO_ASSERT(expression, ...)
     #define PYRO_CORE_ASSERT(expression, ...)
@@ -95,7 +103,7 @@ namespace pyro
     template<typename T>
     using ref = std::shared_ptr<T>;
     template<typename T, typename ... Args>
-    constexpr scope<T> make_ref(Args&& ... args)
+    constexpr ref<T> make_ref(Args&& ... args)
     {
         return std::make_unique<T>(std::forward<Args>(args)...);
     }

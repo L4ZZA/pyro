@@ -148,7 +148,7 @@ void pyro::gl_shader::compile(std::unordered_map<uint32_t, std::string> const &s
     for(auto const&[type, source] : sources)
     {
         uint32_t shader = glCreateShader(type);
-        PYRO_CORE_INFO("[gl_shader] Compiling shader id: {} - {}", shader, m_name);
+        PYRO_CORE_TRACE("[gl_shader] Compiling shader id: {} - {}", shader, m_name);
 
         const char *source_cstr = source.c_str();
         glShaderSource(shader, 1, &source_cstr, 0);
@@ -207,7 +207,7 @@ void pyro::gl_shader::compile(std::unordered_map<uint32_t, std::string> const &s
     for(auto id : shader_ids)
     {
         glDetachShader(program, id);
-        PYRO_CORE_INFO("[gl_shader] Deleted shader id:{} - '{}'", id, m_name);
+        PYRO_CORE_TRACE("[gl_shader] Deleted shader id:{} - '{}'", id, m_name);
         glDeleteShader(id);
     }
 }
@@ -250,6 +250,12 @@ std::string const &pyro::gl_shader::name() const
     return m_name;
 }
 
+void pyro::gl_shader::set_bool(std::string const& name, bool val)
+{
+    PYRO_PROFILE_FUNCTION();
+    upload_uniform(name, val);
+}
+
 void pyro::gl_shader::set_int(std::string const &name, int32_t val)
 {
     PYRO_PROFILE_FUNCTION();
@@ -290,6 +296,13 @@ void pyro::gl_shader::set_int_array(std::string const& name, int32_t const* valu
 {
     PYRO_PROFILE_FUNCTION();
     upload_uniform(name, values, count);
+}
+
+void pyro::gl_shader::upload_uniform(std::string const& name, bool val) const
+{
+    const int32_t uniformLocation = get_uniform_location(name);
+    glUniform1i(uniformLocation, static_cast<int32_t>(val));
+
 }
 
 void pyro::gl_shader::upload_uniform(std::string const &name, int32_t val) const

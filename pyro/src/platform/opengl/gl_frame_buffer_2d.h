@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "pyro/renderer/frame_buffer_2d.h"
-#include "pyro/renderer/texture_2d.h"
+#include "pyro/renderer/texture.h"
 
 namespace pyro
 {
@@ -18,7 +18,7 @@ namespace pyro
 
         uint32_t width() const override;
         uint32_t height() const override;
-        ref<pyro::texture> const& texture() const override;
+        ref<pyro::texture> texture() const override;
 
 
     private:

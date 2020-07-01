@@ -1,47 +1,37 @@
-﻿#include "pyro_pch.h"
-#include "texture.h"
-#include "pyro_pch.h" 
-#include "texture.h" 
- 
-pyro::texture_parameters::texture_parameters() 
-    :format(e_texture_format::rgba), 
-    filter(e_texture_filter::linear), 
-    wrap(e_texture_wrap::clamp_to_edge) 
-{ 
-} 
- 
-pyro::texture_parameters::texture_parameters( 
-    e_texture_filter filter) 
-    :format(e_texture_format::rgba), filter(filter), wrap(e_texture_wrap::clamp_to_edge) 
-{ 
-} 
- 
-pyro::texture_parameters::texture_parameters( 
-    e_texture_filter filter, 
-    e_texture_wrap wrap) 
-    : format(e_texture_format::rgba), filter(filter), wrap(wrap) 
-{ 
-} 
- 
-pyro::texture_parameters::texture_parameters( 
-    e_texture_format format, 
-    e_texture_filter filter, 
-    e_texture_wrap wrap) 
-    : format(format), filter(filter), wrap(wrap) 
-{ 
+#include "pyro_pch.h"
+#include "pyro/renderer/texture.h"
+
+#include "pyro/renderer/renderer.h"
+#include "platform/opengl/gl_texture.h"
+
+
+pyro::ref<pyro::texture_2d>
+pyro::texture_2d::create(
+    uint32_t width,
+    uint32_t height,
+    texture_parameters const &params /*= texture_parameters()*/)
+{
+    switch(renderer::api())
+    {
+        case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[texture_2d] e_renderer_api::none currently not supported!"); return nullptr;
+        case renderer_api::e_api::opengl: return make_ref<gl_texture_2d>(width, height, params);
+    }
+
+    PYRO_CORE_ASSERT(false, "[texture_2d] Unknown renderer api!");
+    return nullptr;
 }
 
-//----------------------------------------------------------------------------- 
-
-pyro::e_texture_wrap pyro::texture::s_wrap_mode = pyro::e_texture_wrap::clamp_to_edge;
-pyro::e_texture_filter pyro::texture::s_filter_mode = pyro::e_texture_filter::linear;
-
-void pyro::texture::wrap(e_texture_wrap mode)
+std::shared_ptr<pyro::texture_2d>
+pyro::texture_2d::create_from_file(
+    std::string const &path,
+    texture_parameters const &params /*= texture_parameters()*/)
 {
-    s_wrap_mode = mode; 
-}
+    switch(renderer::api())
+    {
+        case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[texture_2d] e_renderer_api::none currently not supported!"); return nullptr;
+        case renderer_api::e_api::opengl: return make_ref<gl_texture_2d>(path, params);
+    }
 
-void pyro::texture::filter(e_texture_filter mode)
-{
-    s_filter_mode = mode; 
+    PYRO_CORE_ASSERT(false, "[texture_2d] Unknown renderer api!");
+    return nullptr;
 }

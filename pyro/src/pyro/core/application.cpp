@@ -3,6 +3,7 @@
 
 #include "platform/opengl/gl_shader.h"
 #include "pyro/renderer/renderer.h"
+#include "pyro/core/timer.h"
 #include "GLFW/glfw3.h"
 
 //----------------------------------------------------------------------------- 
@@ -13,14 +14,18 @@ bool pyro::application::s_minimized = false;
 
 //----------------------------------------------------------------------------- 
 
-pyro::application::application()
+pyro::application::application(std::string const &name, uint32_t width, uint32_t height)
 {
     PYRO_PROFILE_FUNCTION();
 
     PYRO_CORE_ASSERT(!s_instance, "Application already exists!");
     s_instance = this;
 
-    m_window = window::create();
+    window_props props;
+    props.m_title = name;
+    props.m_width = width;
+    props.m_height = height;
+    m_window = window::create(props);
     m_window->event_callback(BIND_EVENT_FN(application::on_event));
 
     renderer::init();
@@ -35,37 +40,65 @@ pyro::application::~application()
 void pyro::application::run()
 {
     PYRO_PROFILE_FUNCTION();
+
+    m_timer = new timer();
+    float tot_time = 0.f;
+    uint32_t frames = 0;
+    uint32_t updates = 0;
+
     while(s_running)
     {
         PYRO_PROFILE_SCOPE("run loop");
-        float time = static_cast<float>(glfwGetTime()); //  platform independent
-        timestep timestep = time - m_last_frame_time;
-        m_last_frame_time = time;
-
+        timestep timestep(m_timer->elapsed());
+        tot_time += timestep;
+        
         if(!s_minimized)
         {
+            // Total time spent for all layers to be rendered
+            float tot_frame_time = 0.f;
+            // Total time spent for all layers to be updated
+            float tot_update_time = 0.f;
+
             for(auto &layer : m_layers_stack)
             {
                 {
-                    PYRO_PROFILE_SCOPE("layer_stack - on_update");
+                    timer update_time;
                     layer->on_update(timestep);
+                    tot_update_time += update_time.elapsed();
+                    updates++;
                 }
-
+                {
+                    timer frame_time;
+                    layer->on_render();
+                    m_frame_time = frame_time.elapsed();
+                    tot_frame_time += m_frame_time;
+                    frames++;
+                }
                 if(layer->is_imgui())
                 {
                     auto const &imgui_layer = std::dynamic_pointer_cast<pyro::imgui_layer>(layer);
                     PYRO_CORE_ASSERT(imgui_layer, "imgui_layer couldn't be cast!");
                     imgui_layer->begin();
                     {
-                        PYRO_PROFILE_SCOPE("layer_stack - on_imgui_render");
                         imgui_layer->on_imgui_render();
                     }
                     imgui_layer->end();
                 }
             }
+            tot_time += tot_frame_time;
+            tot_time += tot_update_time;
         }
 
         m_window->on_update();
+
+        if(tot_time > 1.0f)
+        {
+            m_FramesPerSecond = frames;
+            m_UpdatesPerSecond = updates;
+            frames = 0;
+            updates = 0;
+            tot_time -= 1.0f;
+        }
     }
 }
 
@@ -84,10 +117,10 @@ void pyro::application::on_event(event &e)
     // events are executed from top of the stack to bottom (aka end to start of the list) 
     for(auto it = m_layers_stack.end(); it != m_layers_stack.begin(); )
     {
-        (*--it)->on_event(e);
         // stop event propagation to next layer if flagged as handled 
         if(e.handled)
             break;
+        (*--it)->on_event(e);
     }
 }
 
