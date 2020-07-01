@@ -26,9 +26,8 @@ namespace utils
 
     private:
         uint32_t m_seed;
-        bool m_initialized = false;
         // This is mutable to allow const method to change its value,
-        // as apparently distribution(engine) does..
+        // as apparently distribution(engine) is not a const method..
         mutable std::mt19937 m_random_engine;
     };
 
@@ -52,9 +51,8 @@ namespace utils
     inline float random::get_float() const
     {
         std::uniform_int_distribution<std::mt19937::result_type> distribution;
-        auto a = distribution(m_random_engine);
-        auto max = s_uint_max;
-        float res = static_cast<float>(a) / static_cast<float>(max);
+        auto random_value = distribution(m_random_engine);
+        float res = static_cast<float>(random_value) / static_cast<float>(s_uint_max);
         return res;
     }
 
