@@ -1,15 +1,13 @@
 # 
 # Reference list
 # - https://raw.githubusercontent.com/malaterre/GDCM/master/appveyor.yml
-# 
+# - https://github.com/KhronosGroup/SPIRV-Tools/blob/master/.appveyor.yml
+# - https://gitlab.com/eyeo/adblockplus/libadblockplus/blob/master/appveyor.yml
 # 
 # http://www.appveyor.com/docs/build-cache#caching-chocolatey-packages
 # https://github.com/kvirc/KVIrc/blob/master/.appveyor.yml
 cache:
-  - C:\Tools\vcpkg\installed -> appveyor.yml
-# caching binries and intermediates to allow incremental build
-  - C:\dev\source\bin -> appveyor.yml
-  - C:\dev\source\inter -> appveyor.yml
+  - C:\Tools\vcpkg\installed
 # - 'C:\Program Files (x86)\NSIS'
 # - C:\ProgramData\chocolatey\bin -> appveyor.yml
 # - C:\ProgramData\chocolatey\lib -> appveyor.yml
@@ -35,11 +33,16 @@ environment:
 image:
   - Visual Studio 2019
 
+# stop infinite cycle of tag creation and build on tag
+skip_tags: true
+
+clone_depth: 1
+
 # branches to build
 branches:
   # whitelist
   only:
-    - procedural_generation
+    - develop
 
 #---------------------------------#
 #   scripts that are called at    #
@@ -146,7 +149,6 @@ deploy:
     artifact: installer
     draft: false
     prerelease: true
-    appveyor_repo_tag: false      # deploy on tag push only
     on:
-      branch: procedural_generation # release from master branch only
+      branch: develop # release from master branch only
       configuration: Release 

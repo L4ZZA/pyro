@@ -6,7 +6,7 @@ inter/
 ## Files
 *.user
 *.filters
-**/imgui\.ini
+**\.ini
 
 ## VisualStudio Specific
 *.vcxproj

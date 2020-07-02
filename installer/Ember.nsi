@@ -31,7 +31,7 @@
       !system '${CMD_PATH} /C ${ScriptPath} ${LinkName} ${LinkDest} ${LinkTarget}'
   !macroend
 
-  !insertmacro WebShortucts "${SCRIPTS_DIR}\create_shortcut.cmd" "Readme" "." "https://github.com/L4ZZA/pyro/blob/procedural_generation/README.md"
+  !insertmacro WebShortucts "${SCRIPTS_DIR}\create_shortcut.cmd" "Readme" "." "https://github.com/L4ZZA/pyro/blob/develop/README.md"
 
 ;General
 
