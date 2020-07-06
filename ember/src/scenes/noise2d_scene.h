@@ -25,12 +25,13 @@ private:
     void editor_update(pyro::timestep const &ts);
     void play_mode_update(pyro::timestep const &ts);
     bool on_key_pressed(pyro::key_pressed_event &e);
-    glm::vec4 color_map(float noise) const;
+    int color_map(float noise) const;
 
 private:
     pyro::ref<pyro::camera_controller> m_cam_controller;
     bool m_play_mode;
     bool m_show_texture;
+    bool m_textured_tiles;
 
     int   m_width;
     int   m_height;
@@ -40,6 +41,8 @@ private:
     int m_seed;
 
     pyro::ref<pyro::texture_2d> m_noise_texture;
+    std::vector<glm::vec4>      m_bg_colors;
+    std::vector<pyro::ref<pyro::texture_2d>> m_bg_textures;
     std::vector<float> m_noise_2d;
 
     int m_scale = 10;

@@ -12,6 +12,7 @@ noise2d_scene::noise2d_scene(pyro::ref<pyro::camera_controller> cam_controller)
     , m_other_noise(0)
     , m_play_mode(false)
     , m_show_texture(false)
+    , m_textured_tiles(false)
 {
 }
 
@@ -33,6 +34,22 @@ void noise2d_scene::init()
     m_noise_texture =
         pyro::texture_2d::create(m_width, m_height, params);
 
+
+    m_bg_colors.resize(6);
+    m_bg_colors[0] = { 0.1f, 0.1f, 0.8, 1.0f };   // blue
+    m_bg_colors[1] = { 0.3f, 0.3, 0.9f, 1.0f };   // light blue
+    m_bg_colors[2] = { 0.2f, 0.8, 0.2f, 1.0f };   // green
+    m_bg_colors[3] = { .46f, 0.35f, 0.3f, 1.0f }; // light brown
+    m_bg_colors[4] = { .36f, 0.25f, 0.2f, 1.0f }; // brown
+    m_bg_colors[5] = { 1.f, 1.f, 1.f, 1.0f };     // white
+
+    m_bg_textures.resize(6);
+    m_bg_textures[0] = pyro::texture_2d::create_from_file("assets/textures/water.png");
+    m_bg_textures[1] = pyro::texture_2d::create_from_file("assets/textures/water-light.png");
+    m_bg_textures[2] = pyro::texture_2d::create_from_file("assets/textures/grass.png");
+    m_bg_textures[3] = pyro::texture_2d::create_from_file("assets/textures/forest.png");
+    m_bg_textures[4] = pyro::texture_2d::create_from_file("assets/textures/dirt.png");
+    m_bg_textures[5] = pyro::texture_2d::create_from_file("assets/textures/snow.png");
     on_seed_changed();
 }
 
@@ -58,9 +75,12 @@ void noise2d_scene::on_render() const
             pyro::quad_properties props;
             uint32_t index = y * m_height + x;
             float noise1 = m_noise_2d[index];
-
-            props.color = color_map(noise1);
-            //props.color = { noise ,noise ,noise, 1.f };
+            
+            if(m_textured_tiles)
+                props.texture = m_bg_textures[color_map(noise1)];
+            else
+                props.color = m_bg_colors[color_map(noise1)];
+            
             props.position = { x, y, 0.0f };
             pyro::renderer_2d::draw_quad(props);
         }
@@ -88,8 +108,10 @@ void noise2d_scene::on_imgui_render()
     ImGui::Text("- Map [and textured quad] height: %d", m_height);
     ImGui::Text("---------------------");
 
-    ImGui::Text("- Show noise texture "); 
+    ImGui::Text("- Show noise texture"); ImGui::SameLine();
     ImGui::ToggleButton("##noise_texture", &m_show_texture);
+    ImGui::Text("- Textured tiles"); ImGui::SameLine();
+    ImGui::ToggleButton("##textured_tiles", &m_textured_tiles);
 
 
     ImGui::Text("-- Noise:");
@@ -207,27 +229,26 @@ bool noise2d_scene::on_key_pressed(pyro::key_pressed_event &e)
     return false;
 }
 
-glm::vec4 noise2d_scene::color_map(float noise) const
+int noise2d_scene::color_map(float noise) const
 {
-    glm::vec4 color;
-
     // blue
-    color = { 0.1f, 0.1f, 0.8, 1.0f };
+    int color = 0;
+
     // light blue
     if(noise > 0.1f)
-        color = { 0.3f, 0.3, 0.9f, 1.0f };
+        color = 1;
     // green
     if(noise > 0.25f)
-        color = { 0.2f, 0.8, 0.2f, 1.0f };
+        color = 2;
     // light brown
     if(noise > 0.45f)
-        color = { .46f, 0.35f, 0.3f, 1.0f };
+        color = 3;
     // brown
     if(noise > 0.65f)
-        color = { .36f, 0.25f, 0.2f, 1.0f };
+        color = 4;
     // white
     if(noise > 0.85f)
-        color = { 1.f, 1.f, 1.f, 1.0f };
+        color = 5;
 
     return color;
 }
