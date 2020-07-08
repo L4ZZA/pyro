@@ -9,9 +9,9 @@ end
 
 local function vcpkg(prj)
     if prj.name == 'tests' then 
-        printf("Appended to '%s' project", prj.name)
-        premake.w('<VcpkgTriplet>x64-windows-static</VcpkgTriplet>')
-        premake.w('<VcpkgEnabled>true</VcpkgEnabled>')
+        local triplet = '<VcpkgTriplet>x64-windows-static</VcpkgTriplet>'
+        printf("Appended '%s' to '%s' project", triplet, prj.name)
+        premake.w(triplet)
     end
 end
 
