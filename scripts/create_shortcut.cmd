@@ -1,4 +1,3 @@
-@echo off
 @rem credits: https://superuser.com/a/392082
 
 @SETLOCAL ENABLEDELAYEDEXPANSION

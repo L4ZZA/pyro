@@ -1,4 +1,3 @@
-@echo off
 @rem this script was created to clear the repository from all the wrongly
 @rem generated release tags.
 
