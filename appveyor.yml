@@ -17,7 +17,7 @@ version: '{build}'
 
 environment:
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    - APPVEYOR_BUILD_WORKER_IMAGE: Previous Visual Studio 2019
       ROOT: c:\dev\source
       SCRIPTS: '%ROOT%\scripts\'
       CONFIG_PARTIAL: 'Release'
@@ -25,13 +25,16 @@ environment:
       PLAT_PARTIAL: 'x86_64'
       PRODUCT_NAME: Ember
       RELEASE_VERSION: 0.0
+      TRIPLET: 'x64-windows-static'
       OUTPUT_FOLDER: 'bin\$(CONFIG_PARTIAL)-$(OS_PARTIAL)-$(PLAT_PARTIAL)'
       FILE_VERSION: 'v%RELEASE_VERSION%.$(appveyor_build_version)-beta'
       GITHUB_TOKEN:
         secure: ShOkS4UEj4aiSabXwn0u0d0d3BoaVF0wW7TO4JyFdmMfdckHk5IbF1rAJO3aaSRg
-
-image:
-  - Visual Studio 2019
+      # Environment variables used by boost tests
+      BOOST_TEST_LOG_LEVEL: unit_scope
+      BOOST_TEST_REPORT_FORMAT: XML
+      BOOST_TEST_REPORT_LEVEL: short
+      BOOST_TEST_REPORT_SINK: test_report.xml
 
 # stop infinite cycle of tag creation and build on tag
 skip_tags: true
@@ -75,7 +78,9 @@ install:
 # Recursively remove all outadet vcpkg packages
 - cmd: vcpkg remove --outdated --recurse
 #  Install boost package
-- cmd: vcpkg install boost-test:x64-windows-static
+- cmd: 'vcpkg install boost-test:%TRIPLET%'
+# show content of test dir to see if report is created. 
+- cmd: 'dir c:\tools\vcpkg\installed\%TRIPLET%\include'
 # Update all submodules
 - cmd: git submodule update --init
 
@@ -103,11 +108,13 @@ build:
 
 after_build: 
 # Run test manually [until appveyor ]
-- cmd: '%ROOT%/bin/%CONFIG_PARTIAL%-%OS_PARTIAL%-%PLAT_PARTIAL%/tests/tests.exe'  
+- cmd: '%ROOT%/bin/%CONFIG_PARTIAL%-%OS_PARTIAL%-%PLAT_PARTIAL%/tests/tests.exe'
+# show content of test dir to see if report is created. 
+- cmd: 'dir bin\%CONFIG_PARTIAL%-%OS_PARTIAL%-%PLAT_PARTIAL%\tests'
 # Create installer [it works because appveyor image comes with NSIS installed]
-- cmd: '%SCRIPTS%\create_installer.bat -s' 
+- cmd: '%SCRIPTS%\create_installer.bat -s'
 # Renaming installer to include version in its name
-- cmd: 'ren %OUTPUT_FOLDER%\installers\%PRODUCT_NAME%Setup.exe "%PRODUCT_NAME%-%FILE_VERSION%-setup.exe"' 
+- cmd: 'ren %OUTPUT_FOLDER%\installers\%PRODUCT_NAME%Setup.exe "%PRODUCT_NAME%-%FILE_VERSION%-setup.exe"'
 
 test_script:
 - cmd: vstest.console /logger:Appveyor %OUTPUT_FOLDER%\tests\tests.exe
