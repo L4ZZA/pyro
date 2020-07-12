@@ -52,6 +52,7 @@ IF "%SILENT_MODE%" == "true" (
 
 @rem run following lines one folder above
 pushd %~dp0..\
+echo %~dp0
 @rem variables have to be defined before passing the installer path
 call "C:\Program Files (x86)\NSIS\makensis.exe" "/DCONFIG_PARAM=%CONFIG%" "installer\Ember.nsi"
 popd
