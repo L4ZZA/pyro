@@ -5,12 +5,13 @@
 @rem Prevent env variables to escape to the calling environment
 SETLOCAL
 
-rem By Garret Wilson
-
 SET CONFIG=%~1
+SET DEFAULT_CONFIG=Release
 
 IF "%CONFIG%" == "" (
-  GOTO usage
+    SET CONFIG=%DEFAULT_CONFIG%
+    echo No Configuration passed. Defaulted to %CONFIG%
+    echo Usage: create_installer.bat ^<configuration^> [-s]
 )
 
 @rem redefine variables in case already defined in the calling environment
