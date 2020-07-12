@@ -5,7 +5,7 @@
 ;Include Modern UI
 
   !include "MUI2.nsh"
-  
+
 ;--------------------------------
 ;Global definitions
  !define TITLE "Ember"
@@ -44,7 +44,7 @@
 
   ;Default installation folder
   InstallDir "$DESKTOP\${INST_FOLDER_NAME}"
-  
+
   ;Get installation folder from registry if available
   InstallDirRegKey ${REG_ROOT} ${REG_KEY} ""
 
@@ -61,7 +61,7 @@
 
   !define MUI_ABORTWARNING
   ; Default, name is used if not defined
-  !define MUI_STARTMENUPAGE_DEFAULTFOLDER "${INST_FOLDER_NAME}" 
+  !define MUI_STARTMENUPAGE_DEFAULTFOLDER "${INST_FOLDER_NAME}"
 
 ;--------------------------------
 ;Pages
@@ -69,22 +69,32 @@
   !insertmacro MUI_PAGE_LICENSE "${ROOT_DIR}\license.md"
   ; !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
-  
+
   ;Start Menu Folder Page Configuration
-  !define MUI_STARTMENUPAGE_REGISTRY_ROOT ${REG_ROOT} 
-  !define MUI_STARTMENUPAGE_REGISTRY_KEY ${REG_KEY} 
+  !define MUI_STARTMENUPAGE_REGISTRY_ROOT ${REG_ROOT}
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY ${REG_KEY}
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
-  
+
   !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
-  
+
   !insertmacro MUI_PAGE_INSTFILES
-  
-  !insertmacro MUI_UNPAGE_CONFIRM
-  !insertmacro MUI_UNPAGE_INSTFILES
+
+    # These indented statements modify settings for MUI_PAGE_FINISH
+    # https://nsis.sourceforge.io/Docs/Modern%20UI%202/Readme.html
+    !define MUI_FINISHPAGE_NOAUTOCLOSE
+    !define MUI_FINISHPAGE_SHOWREADME
+    !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
+    !define MUI_FINISHPAGE_SHOWREADME_TEXT "Start Ember"
+    !define MUI_FINISHPAGE_SHOWREADME_FUNCTION "StartProgram"
+    !define MUI_FINISHPAGE_RUN
+    !define MUI_FINISHPAGE_RUN_NOTCHECKED
+    !define MUI_FINISHPAGE_RUN_TEXT "Open installation directory"
+    !define MUI_FINISHPAGE_RUN_FUNCTION "OpenInstallDir"
+  !insertmacro MUI_PAGE_FINISH
 
 ;--------------------------------
 ;Languages
- 
+
   !insertmacro MUI_LANGUAGE "English"
 
 ;--------------------------------
@@ -98,7 +108,7 @@ Section "" ;"${APP_NAME}" ComponentsSec
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   !verbose 4
-  
+
   ; remove all files inside installer folder
   Delete "$INSTDIR\*.*"
   RMDir /r "$INSTDIR\assets"
@@ -113,16 +123,16 @@ Section "" ;"${APP_NAME}" ComponentsSec
 
   ;Store installation folder
   WriteRegStr ${REG_ROOT} ${REG_KEY} "" $INSTDIR
-  
+
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
-  
+
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
-    
+
     ;Create shortcuts
     CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
     CreateShortcut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
-  
+
   !insertmacro MUI_STARTMENU_WRITE_END
 
 SectionEnd
@@ -140,7 +150,7 @@ SectionEnd
   ; !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   ;   !insertmacro MUI_DESCRIPTION_TEXT ${ComponentsSec} $(DESC_ComponentsSec)
   ; !insertmacro MUI_FUNCTION_DESCRIPTION_END
- 
+
 ;--------------------------------
 ;Uninstaller Section
 
@@ -151,12 +161,23 @@ Section "Uninstall"
   Delete "$INSTDIR\Uninstall.exe"
 
   RMDir /r "$INSTDIR"
-  
+
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
-    
+
   Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
-  
+
   DeleteRegKey /ifempty ${REG_ROOT} ${REG_KEY}
 
 SectionEnd
+
+;--------------------------------
+;Functions Section
+
+Function OpenInstallDir
+  ExecShell "" "$INSTDIR\"
+FunctionEnd
+
+Function StartProgram
+  ExecShell "" "Ember.exe"
+FunctionEnd
