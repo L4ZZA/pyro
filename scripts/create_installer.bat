@@ -5,17 +5,25 @@
 @rem Prevent env variables to escape to the calling environment
 SETLOCAL
 
+@rem redefine variables in case already defined in the calling environment
 SET CONFIG=%~1
 SET DEFAULT_CONFIG=Release
+SET SILENT_MODE=false
 
 IF "%CONFIG%" == "" (
     SET CONFIG=%DEFAULT_CONFIG%
     echo No Configuration passed. Defaulted to %CONFIG%
     echo Usage: create_installer.bat ^<configuration^> [-s]
+) ELSE IF "%CONFIG%" == "-s" (
+    SET SILENT_MODE=true
+    SET CONFIG=%DEFAULT_CONFIG%
+    echo No Configuration passed. Defaulted to %CONFIG%
+    echo Usage: create_installer.bat ^<configuration^> [-s]
+) ELSE IF "%CONFIG:~0,1%" == "-" (
+    SET CONFIG=%DEFAULT_CONFIG%
+    echo No Configuration passed. Defaulted to %CONFIG%
+    echo Usage: create_installer.bat ^<configuration^> [-s]
 )
-
-@rem redefine variables in case already defined in the calling environment
-SET SILENT_MODE=false
 
 SHIFT
 :args

@@ -90,7 +90,7 @@ install:
 
 before_build:
 # Generate VS2019 solution
-- cmd: '%SCRIPTS%\generate_solution_vs2019.bat %CONFIG_PARTIAL% -s'
+- cmd: '%SCRIPTS%\generate_solution_vs2019.bat -s'
 
 
 #---------------------------------#
@@ -112,7 +112,7 @@ after_build:
 # show content of test dir to see if report is created.
 - cmd: 'dir bin\%CONFIG_PARTIAL%-%OS_PARTIAL%-%PLAT_PARTIAL%\tests'
 # Create installer [it works because appveyor image comes with NSIS installed]
-- cmd: '%SCRIPTS%\create_installer.bat -s'
+- cmd: '%SCRIPTS%\create_installer.bat %CONFIG_PARTIAL% -s'
 # Renaming installer to include version in its name
 - cmd: 'ren %OUTPUT_FOLDER%\installers\%PRODUCT_NAME%Setup.exe "%PRODUCT_NAME%-%FILE_VERSION%-setup.exe"'
 
