@@ -15,7 +15,7 @@
  !define ROOT_DIR ".."
  !define PROJECT_DIR "${ROOT_DIR}\${INST_FOLDER_NAME}"
  !define SCRIPTS_DIR "${ROOT_DIR}\scripts"
- !define CONFIG_DIR "Release-windows-x86_64"
+ !define CONFIG_DIR "${CONFIG_PARAM}-windows-x86_64"
  !define BIN_DIR "${ROOT_DIR}\bin\${CONFIG_DIR}"
  !define OUTPUT_DIR "${BIN_DIR}\installers"
  ; http://www.differencebetween.net/technology/hardware-technology/difference-between-hkey_current_user-and-hkey_local_machine/#:~:text=Difference%20Between%20HKEY_CURRENT_USER%20and%20HKEY_LOCAL_MACHINE,-•%20Categorized%20under&text=HKEY_LOCAL_MACHINE%20holds%20information%20that%20is,is%20specific%20to%20the%20user.

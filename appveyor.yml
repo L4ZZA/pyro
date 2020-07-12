@@ -1,9 +1,9 @@
-# 
+#
 # Reference list
 # - https://raw.githubusercontent.com/malaterre/GDCM/master/appveyor.yml
 # - https://github.com/KhronosGroup/SPIRV-Tools/blob/master/.appveyor.yml
 # - https://gitlab.com/eyeo/adblockplus/libadblockplus/blob/master/appveyor.yml
-# 
+#
 # http://www.appveyor.com/docs/build-cache#caching-chocolatey-packages
 # https://github.com/kvirc/KVIrc/blob/master/.appveyor.yml
 cache:
@@ -13,7 +13,7 @@ cache:
 # - C:\ProgramData\chocolatey\lib -> appveyor.yml
 
 # Set build version format here instead of in the admin panel.
-version: '{build}' 
+version: '{build}'
 
 environment:
   matrix:
@@ -54,7 +54,7 @@ branches:
 #---------------------------------#
 
 init:
-# Updating build version with correct values 
+# Updating build version with correct values
 # [has to be done here as environment variable are evaluated later in the process]
 - cmd: appveyor UpdateBuild -Version "%RELEASE_VERSION%.%APPVEYOR_BUILD_NUMBER%"
 # Print environment info ( set / systeminfo)
@@ -64,7 +64,7 @@ init:
 # - del c:\programdata\chocolatey\bin\cpack.exe
 # separating output
 - cmd: ''
-  
+
 clone_folder: $(ROOT)
 
 configuration:
@@ -79,7 +79,7 @@ install:
 - cmd: vcpkg remove --outdated --recurse
 #  Install boost package
 - cmd: 'vcpkg install boost-test:%TRIPLET%'
-# show content of test dir to see if report is created. 
+# show content of test dir to see if report is created.
 - cmd: 'dir c:\tools\vcpkg\installed\%TRIPLET%\include'
 # Update all submodules
 - cmd: git submodule update --init
@@ -90,7 +90,7 @@ install:
 
 before_build:
 # Generate VS2019 solution
-- cmd: '%SCRIPTS%\generate_solution_vs2019.bat -s'
+- cmd: '%SCRIPTS%\generate_solution_vs2019.bat %CONFIG_PARTIAL% -s'
 
 
 #---------------------------------#
@@ -106,10 +106,10 @@ build:
 #    scripts to run after build   #
 #---------------------------------#
 
-after_build: 
+after_build:
 # Run test manually [until appveyor ]
 - cmd: '%ROOT%/bin/%CONFIG_PARTIAL%-%OS_PARTIAL%-%PLAT_PARTIAL%/tests/tests.exe'
-# show content of test dir to see if report is created. 
+# show content of test dir to see if report is created.
 - cmd: 'dir bin\%CONFIG_PARTIAL%-%OS_PARTIAL%-%PLAT_PARTIAL%\tests'
 # Create installer [it works because appveyor image comes with NSIS installed]
 - cmd: '%SCRIPTS%\create_installer.bat -s'
@@ -158,4 +158,4 @@ deploy:
     prerelease: true
     on:
       branch: develop # release from master branch only
-      configuration: Release 
+      configuration: Release
