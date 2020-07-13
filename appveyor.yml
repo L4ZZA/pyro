@@ -54,16 +54,17 @@ branches:
 #---------------------------------#
 
 init:
+- cmd:
 # Updating build version with correct values
 # [has to be done here as environment variable are evaluated later in the process]
-- cmd: appveyor UpdateBuild -Version "%RELEASE_VERSION%.%APPVEYOR_BUILD_NUMBER%"
+- appveyor UpdateBuild -Version "%RELEASE_VERSION%.%APPVEYOR_BUILD_NUMBER%"
 # Print environment info ( set / systeminfo)
 # - set PATH=%JAVA_HOME%\bin;%PYTHONHOME%;%PATH%
 - msbuild /version
 # https://github.com/chocolatey/chocolatey/issues/431
 # - del c:\programdata\chocolatey\bin\cpack.exe
 # separating output
-- cmd: ''
+- echo The current directory is %CD%
 
 clone_folder: $(ROOT)
 
@@ -111,11 +112,9 @@ after_build:
 - cmd: '%ROOT%/bin/%CONFIG_PARTIAL%-%OS_PARTIAL%-%PLAT_PARTIAL%/tests/tests.exe'
 # show content of test dir to see if report is created.
 - cmd: 'dir bin\%CONFIG_PARTIAL%-%OS_PARTIAL%-%PLAT_PARTIAL%\tests'
-- cmd: 'dir .'
 # Change directory, call installer script and step back one directory
 # Operators in CMD https://stackoverflow.com/questions/28889954/what-does-do-in-this-batch-file/28889980#28889980
 - cmd: "cd %SCRIPTS% & create_installer.bat %CONFIG_PARTIAL% -s"
-- cmd: 'dir .'
 # Renaming installer to include version in its name
 - cmd: 'ren %OUTPUT_FOLDER%\installers\%PRODUCT_NAME%Setup.exe "%PRODUCT_NAME%-%FILE_VERSION%-setup.exe"'
 
