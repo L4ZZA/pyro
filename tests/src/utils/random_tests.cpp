@@ -1,34 +1,13 @@
 #include <boost/test/unit_test.hpp>
 #include <array>
 #include "utils/random.h"
-//
-//#define BOOST_CHECK_REL_EQ_MESSAGE_EXTENSION(L, R, M, CMP, ICMP, CT)         \
-//    {                                                                       \
-//        auto _1(L);                                                         \
-//        auto _2(R);                                                         \
-//        std::stringstream ss;                                               \
-//        ss << "check " << BOOST_TEST_STRINGIZE(L) << " " << BOOST_TEST_STRINGIZE(CMP) << " " << BOOST_TEST_STRINGIZE(R) << " failed [" << _1 << " " << BOOST_TEST_STRINGIZE(ICMP) << " " << _2 << "] : " << M;\
-//        BOOST_CHECK_IMPL( (_1 CMP _2), ss.str(), CT, CHECK_MSG );           \
-//    }        
-//#define BOOST_TEST_REL_EQ_MESSAGE_EXTENSION(L, R, M, CMP, ICMP, CT)         \
-//    {                                                                       \
-//        auto _1(L);                                                         \
-//        auto _2(R);                                                         \
-//        std::stringstream ss;                                               \
-//        ss << "check " << BOOST_TEST_STRINGIZE(L) << " " << BOOST_TEST_STRINGIZE(CMP) << " " << BOOST_TEST_STRINGIZE(R) << " failed [" << _1 << " " << BOOST_TEST_STRINGIZE(ICMP) << " " << _2 << "] : " << M;\
-//        BOOST_CHECK_IMPL( (_1 CMP _2), ss.str(), CT, CHECK_MSG );           \
-//    }                                                                       \
-///**/
-//
-//#define BOOST_CHECK_EQUAL_MESSAGE(L, R, M)      BOOST_TEST_REL_EQ_MESSAGE_EXTENSION(L, R, M, ==, !=, CHECK )
-//#define BOOST_WARN_EQUAL_MESSAGE(L, R, M)       BOOST_TEST_REL_EQ_MESSAGE_EXTENSION(L, R, M, ==, !=, WARN )
-//#define BOOST_REQUIRE_EQUAL_MESSAGE(L, R, M)    BOOST_TEST_REL_EQ_MESSAGE_EXTENSION(L, R, M, ==, !=, REQUIRE )
 
 namespace utf = boost::unit_test;
 using namespace utils;
 
 BOOST_AUTO_TEST_SUITE(randoms)
 
+// Check that consecutive random floats are not the same value
 BOOST_AUTO_TEST_CASE(random_values, *utf::tolerance(0.00001))
 {
     float first;
@@ -48,6 +27,7 @@ BOOST_AUTO_TEST_CASE(random_values, *utf::tolerance(0.00001))
     }
 }
 
+// Check that random floats with the same seed have the same value at their first call
 BOOST_AUTO_TEST_CASE(same_random_float, *utf::tolerance(0.00001))
 {
     float first;
@@ -70,6 +50,7 @@ BOOST_AUTO_TEST_CASE(same_random_float, *utf::tolerance(0.00001))
     BOOST_TEST(first == third);
 }
 
+// Check that going back to the same seed results in the same random first value
 BOOST_AUTO_TEST_CASE(random_float, *utf::tolerance(0.00001))
 {
     random rand(1);
@@ -82,6 +63,7 @@ BOOST_AUTO_TEST_CASE(random_float, *utf::tolerance(0.00001))
     BOOST_TEST(first == twin); // irrelevant difference
 }
 
+// Check that random floats with the same seed have the same value at over several calls
 BOOST_AUTO_TEST_CASE(random_float_array)
 {
     random rand(1);
@@ -111,6 +93,7 @@ BOOST_AUTO_TEST_CASE(random_float_array)
     }
 }
 
+// Check that random integers do not exceed the given range
 BOOST_AUTO_TEST_CASE(random_int_range)
 {
     random rand(1);

@@ -41,7 +41,7 @@ struct room
         generate_location(rand, out.direction, out.x, out.y);
     }
 
-    // generates a new orientation until dir is different from the previous one.
+    // generates a new orientation until different from the previous one.
     void fix_direction(
         utils::random const &rand, 
         e_orientation &dir, 

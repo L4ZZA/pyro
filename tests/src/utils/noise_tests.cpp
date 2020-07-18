@@ -8,6 +8,8 @@ using namespace utils;
 
 BOOST_AUTO_TEST_SUITE(noise_tests)
 
+// checks that noise arrays with same seed contain the same values 
+// even if random generator instances are different
 BOOST_AUTO_TEST_CASE(same_rand_different_obj, *utf::tolerance(0.00001))
 {
     const int size = 256;
@@ -35,6 +37,9 @@ BOOST_AUTO_TEST_CASE(same_rand_different_obj, *utf::tolerance(0.00001))
         BOOST_TEST(noise_2d[i] == noise_2d_third[i]);
     }
 }
+
+// checks that noise arrays with same seed contain the same values when updating
+// the seed via the class method
 BOOST_AUTO_TEST_CASE(same_rand_same_obj, *utf::tolerance(0.00001))
 {
     const int size = 256;
@@ -62,6 +67,7 @@ BOOST_AUTO_TEST_CASE(same_rand_same_obj, *utf::tolerance(0.00001))
     }
 }
 
+// checks that perlin_1d method with same parameters returns the same values
 BOOST_AUTO_TEST_CASE(same_noise_1d)
 {
     const int size = 256;
@@ -77,6 +83,7 @@ BOOST_AUTO_TEST_CASE(same_noise_1d)
     }
 }
 
+// checks that perlin_2d method with same parameters returns the same values
 BOOST_AUTO_TEST_CASE(same_noise_2d)
 {
     const int size = 256;
@@ -92,6 +99,7 @@ BOOST_AUTO_TEST_CASE(same_noise_2d)
     }
 }
 
+// checks that perlin_2d method with different parameters does not return the same values
 BOOST_AUTO_TEST_CASE(noise_2d_changed)
 {
     const int size = 256;

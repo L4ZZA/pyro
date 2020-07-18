@@ -65,5 +65,6 @@ namespace pyro
         friend int ::main(int argc, char** argv);
     };
 
+    // returns the instance of the class realizing this abstract class.
     application *create_application();
 }

@@ -5,11 +5,8 @@
 #include "utils/random.h"
 #include "utils/perlin_noise.h"
 
-enum class e_room_type
-{
-    start = 0, anything, end
-};
-
+// Takes care of generating grid, doors and cooridors
+// as well as rendering them.
 class board_generator
 {
 public:

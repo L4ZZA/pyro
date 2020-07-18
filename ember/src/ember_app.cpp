@@ -20,7 +20,6 @@ public:
         const float width  = static_cast<float>(window().width());
         const float height = static_cast<float>(window().height());
         m_layer_2d = pyro::make_ref<layer_2d>(width, height);
-        //push_layer(new layer_3d()); 
         push_layer(m_layer_2d);
     }
 

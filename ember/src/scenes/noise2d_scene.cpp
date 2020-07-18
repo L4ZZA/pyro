@@ -74,12 +74,13 @@ void noise2d_scene::on_render() const
             //float rect_heigth = m_noise_1d.at(x);
             pyro::quad_properties props;
             uint32_t index = y * m_height + x;
-            float noise1 = m_noise_2d[index];
+            float noise = m_noise_2d[index];
             
+            // switch between colored and textured tiles
             if(m_textured_tiles)
-                props.texture = m_bg_textures[color_map(noise1)];
+                props.texture = m_bg_textures[color_map(noise)];
             else
-                props.color = m_bg_colors[color_map(noise1)];
+                props.color = m_bg_colors[color_map(noise)];
             
             props.position = { x, y, 0.0f };
             pyro::renderer_2d::draw_quad(props);
@@ -92,7 +93,8 @@ void noise2d_scene::on_render() const
         pyro::renderer_2d::current_shader()->set_int("u_grayscale", true);
         {
             pyro::quad_properties props;
-            props.position = { m_width * 1.5f, m_height * .5f, 0.1f };
+            float offset = -0.5f;
+            props.position = { m_width * 1.5f + offset, m_height * .5f + offset, 0.1f };
             props.color = { 1.f, 1.0f, 1.f, 1.f };
             props.size = { m_width, m_height};
             props.texture = m_noise_texture;
@@ -136,11 +138,6 @@ void noise2d_scene::on_imgui_render()
                     on_seed_changed();
                     current_item = items[n];
                 }
-                //if(is_selected)
-                //{
-                    //// You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
-                    //ImGui::SetItemDefaultFocus();   
-                //}
             }
         }
         ImGui::EndCombo();

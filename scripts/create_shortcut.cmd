@@ -1,3 +1,4 @@
+@echo off
 @rem credits: https://superuser.com/a/392082
 
 @SETLOCAL ENABLEDELAYEDEXPANSION
@@ -7,9 +8,9 @@
 @SET cSctVBS=CreateShortcut.vbs
 @SET LOG=".\%~N0_runtime.log"
 ((
-  echo Set oWS = WScript.CreateObject^("WScript.Shell"^) 
+  echo Set oWS = WScript.CreateObject^("WScript.Shell"^)
   echo sLinkFile = oWS.ExpandEnvironmentStrings^("!Esc_LinkDest!"^)
-  echo Set oLink = oWS.CreateShortcut^(sLinkFile^) 
+  echo Set oLink = oWS.CreateShortcut^(sLinkFile^)
   echo oLink.TargetPath = oWS.ExpandEnvironmentStrings^("!Esc_LinkTarget!"^)
   echo oLink.Save
 )1>!cSctVBS!

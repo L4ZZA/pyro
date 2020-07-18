@@ -2,6 +2,12 @@
 #include "imgui/imgui.h"
 #include "utils/noise.h"
 
+namespace noise1d
+{
+    static float s_min_bias = 0.1f;
+    static float s_max_bias = 5.0f;
+}
+
 noise1d_scene::noise1d_scene(pyro::ref<pyro::camera_controller> cam_controller)
     : base_noise_scene(cam_controller->camera())
     , m_cam_controller(cam_controller)
@@ -62,11 +68,10 @@ void noise1d_scene::on_render() const
         for(int32_t y = 0; y < height; y++)
         {
             pyro::quad_properties props;
+            // offsetting position to center the map around the origin (coords [0,0])
             props.position = { static_cast<float>(x - width / 2), static_cast<float>(y - height / 2), 0.f };
-            //props.size = glm::vec2(0.75f);
-            //props.position = { x, y, 0.f };
-            int32_t cell = m_surface[x * height + y];
 
+            int32_t cell = m_surface[x * height + y];
             switch(cell)
             {
             case 0: props.color = { 0.2f, 0.8, 0.2f, 1.0f }; break; // green
@@ -123,7 +128,7 @@ void noise1d_scene::on_imgui_render()
         m_noise_changed |= ImGui::SliderInt("##octaves", &m_octaves, 1, 8);
         ImGui::Text("- Bias: ");
         
-        m_noise_changed |= ImGui::SliderFloat("##bias", &m_bias, 0.1f, 2.f);
+        m_noise_changed |= ImGui::SliderFloat("##bias", &m_bias, noise1d::s_min_bias, noise1d::s_max_bias);
     }
     else if(m_noise_type == 1)
     {
@@ -214,8 +219,8 @@ void noise1d_scene::editor_update(pyro::timestep const &ts)
             m_octaves = 8;
         if(m_octaves < 1)
             m_octaves = 1;
-        if(m_bias < 0.2f)
-            m_bias = 0.2f;
+        if(m_bias < noise1d::s_min_bias)
+            m_bias = noise1d::s_min_bias;
 
         if(m_noise_type == 0)
         {

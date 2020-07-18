@@ -30,6 +30,9 @@ void board_generator::init(
     m_width = width;
     m_height = height;
  
+    // To be able to change the representation correctly
+    // the seed will have to be dependent on other aspects
+    // of the generation.
     int32_t combined_seed = rand.seed() 
                           + min_rooms + max_tries
                           + min_room_size + max_room_size;
