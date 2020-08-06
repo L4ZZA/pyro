@@ -1,4 +1,4 @@
-;Written by JPietro Lazzarotto
+;Written by Pietro Lazzarotto
 ;Credits https://youtu.be/RLv0JJKb8KU?t=1116
 
 ;--------------------------------
