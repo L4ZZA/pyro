@@ -29,11 +29,11 @@ Real-time 2D level editor written in C++ using my previously developed Pyro engi
 The keybinginds are predefined and not personalizable yet.
 
 **Camera movements**
-W           - move camera up
-A           - move camera left
-S           - move camera down
-D           - move camera right
-MOUSE WHEEL - zoom in/out
+- W           - move camera up
+- A           - move camera left
+- S           - move camera down
+- D           - move camera right
+- MOUSE WHEEL - zoom in/out
 
 **General**
-ESC - Quit application
+- ESC - Quit application
