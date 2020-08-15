@@ -6,7 +6,7 @@ namespace pyro {
     static const uint32_t s_framebuffer_max_size = 8192;
 }
 pyro::gl_frame_buffer_2d::gl_frame_buffer_2d(framebuffer_props const &properties)
-    : m_frame_buffer_id(0)
+    : m_id(0)
     , m_depth_buffer_id(0)
     , m_width(properties.width)
     , m_height(properties.height)
@@ -17,36 +17,42 @@ pyro::gl_frame_buffer_2d::gl_frame_buffer_2d(framebuffer_props const &properties
 
 pyro::gl_frame_buffer_2d::~gl_frame_buffer_2d()
 {
-    glDeleteFramebuffers(1, &m_frame_buffer_id);
+    glDeleteFramebuffers(1, &m_id);
 }
 
 void pyro::gl_frame_buffer_2d::init()
 {
-    glGenFramebuffers(1, &m_frame_buffer_id);
-    glGenRenderbuffers(1, &m_depth_buffer_id);
-    texture_parameters params;
-    params.format = e_texture_format::rgba;
-    params.filter = e_texture_filter::linear;
-    params.wrap = e_texture_wrap::clamp_to_edge;
+    if(m_id)
+    {
+        glDeleteFramebuffers(1, &m_id);
+        glDeleteTextures(1, &m_color_attachment);
+        glDeleteTextures(1, &m_depth_attachment);
+    }
 
-    m_color_attachment_texture = make_ref<gl_texture_2d>(m_width, m_height, params);
+    glCreateFramebuffers(1, &m_id);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 
-    glBindRenderbuffer(GL_RENDERBUFFER, m_depth_buffer_id);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_width, m_height);
+    glCreateTextures(GL_TEXTURE_2D, 1, &m_color_attachment);
+    glBindTexture(GL_TEXTURE_2D, m_color_attachment);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    // bind
-    glBindFramebuffer(GL_FRAMEBUFFER, m_frame_buffer_id);
-    // set texture buffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_color_attachment_texture->id(), 0);
-    // set depth buffer
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depth_buffer_id);
-    // unbind
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_color_attachment, 0);
+
+    glCreateTextures(GL_TEXTURE_2D, 1, &m_depth_attachment);
+    glBindTexture(GL_TEXTURE_2D, m_depth_attachment);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, m_width, m_height);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_depth_attachment, 0);
+
+    PYRO_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void pyro::gl_frame_buffer_2d::bind() const
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, m_frame_buffer_id);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_id);
     glViewport(0, 0, m_width, m_height);
 }
 
@@ -65,6 +71,7 @@ void pyro::gl_frame_buffer_2d::resize(uint32_t width, uint32_t height)
     }
     m_width = width;
     m_height = height;
+    init();
 }
 
 void pyro::gl_frame_buffer_2d::clear_color(glm::vec4 const &color)
@@ -91,7 +98,7 @@ uint32_t pyro::gl_frame_buffer_2d::height() const
 uint32_t
 pyro::gl_frame_buffer_2d::color_attachment() const
 {
-    return m_color_attachment_texture->id();
+    return m_color_attachment;
 }
 
 uint32_t

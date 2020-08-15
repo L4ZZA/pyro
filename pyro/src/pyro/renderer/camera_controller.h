@@ -27,6 +27,7 @@ namespace pyro
         virtual ~camera_controller() = default;
 		virtual void on_update(timestep ts) = 0;
         virtual void on_event(event &e) = 0;
+        virtual void on_resize(float width, float height) = 0;
 
         virtual ref<pyro::camera> camera() const = 0;
 
@@ -67,6 +68,8 @@ namespace pyro
             bool rotation = false);
         void on_update(timestep ts) override;
         void on_event(event& e) override;
+        void on_resize(float width, float height) override;
+
         ref<pyro::camera> camera() const override;
 
         void zoom_level(float level) override;
@@ -118,6 +121,8 @@ namespace pyro
         
         void on_update(timestep ts) override;
         void on_event(event& e) override;
+        void on_resize(float width, float height) override;
+
         ref<pyro::camera> camera() const override;
         void zoom_level(float level) override;
         float zoom_level() const override;

@@ -61,6 +61,12 @@ void pyro::orthographic_camera_controller::on_event(event &e)
     dispatcher.dispatch<window_resize_event>(BIND_EVENT_FN(orthographic_camera_controller::on_window_resized));
 }
 
+void pyro::orthographic_camera_controller::on_resize(float width, float height)
+{
+    m_aspect_ratio = width / height;
+    calculate_view();
+}
+
 pyro::ref<pyro::camera>
 pyro::orthographic_camera_controller::camera() const
 {
@@ -135,8 +141,8 @@ bool pyro::orthographic_camera_controller::on_mouse_scrolled(mouse_scrolled_even
 bool pyro::orthographic_camera_controller::on_window_resized(window_resize_event &e)
 {
 	PYRO_PROFILE_FUNCTION();
-    m_aspect_ratio = static_cast<float>(e.width()) / static_cast<float>(e.height());
-    calculate_view();
+    on_resize(static_cast<float>(e.width()), static_cast<float>(e.height()));
+
     // returns if event is handled.
     return false;
 }
@@ -183,6 +189,11 @@ void pyro::perspective_camera_controller::on_update(timestep ts)
 void pyro::perspective_camera_controller::on_event(event &e)
 {
 	PYRO_PROFILE_FUNCTION();
+}
+
+void pyro::perspective_camera_controller::on_resize(float width, float height)
+{
+    PYRO_CORE_ASSERT(false, "perspective_camera_controller::on_resize method not implemented.")
 }
 
 pyro::ref<pyro::camera>

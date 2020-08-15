@@ -22,6 +22,7 @@ private:
     pyro::ref<pyro::camera_controller> m_2d_camera_controller;
     scene_manager m_scene_manager;
     pyro::ref<pyro::frame_buffer> m_framebuffer;
+    glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 
     int32_t m_seed;
     

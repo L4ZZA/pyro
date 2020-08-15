@@ -17,6 +17,7 @@ layer_2d::layer_2d(float width, float height)
     m_scene_manager.add_scene(pyro::make_ref<noise1d_scene>(m_2d_camera_controller));
     m_scene_manager.add_scene(pyro::make_ref<noise2d_scene>(m_2d_camera_controller));
     m_scene_manager.add_scene(pyro::make_ref<roguelike_scene>(m_2d_camera_controller));
+    m_ViewportSize = { width, height };
     pyro::framebuffer_props props;
     props.width = static_cast<uint32_t>(width);
     props.height = static_cast<uint32_t>(height);
@@ -134,7 +135,7 @@ void layer_2d::on_imgui_render()
         if(current_scene->is_playing())
             return;
 
-        ImGui::Begin("Settings");
+        ImGui::Begin("Viewport");
 
         auto stats = pyro::renderer_2d::stats();
         ImGui::Text("-- 2D Renderer stats:");
@@ -167,10 +168,24 @@ void layer_2d::on_imgui_render()
         ImGui::Text("---------------------");
 
         m_scene_manager.on_imgui_render();
-
-        uint32_t textureID = m_framebuffer->color_attachment();
-        ImGui::Image((void *)textureID, ImVec2{ (float)m_framebuffer->width(), (float)m_framebuffer->height() });
+        
         ImGui::End();
+
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+        ImGui::Begin("Viewport");
+        ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+        if(m_ViewportSize.x != viewportPanelSize.x || m_ViewportSize.y != viewportPanelSize.y)
+        {
+            m_framebuffer->resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
+            m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+
+            m_2d_camera_controller->on_resize(viewportPanelSize.x, viewportPanelSize.y);
+        }
+        uint32_t textureID = m_framebuffer->color_attachment();
+        ImGui::Image((void *)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        ImGui::End();
+        ImGui::PopStyleVar();
     }
     ImGui::End();
 }

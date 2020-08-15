@@ -27,13 +27,12 @@ namespace pyro
         void init() override;
 
     private:
-        uint32_t m_frame_buffer_id;
+        uint32_t m_id;
         uint32_t m_depth_buffer_id;
         uint32_t m_width;
         uint32_t m_height;
+        uint32_t m_color_attachment;
+        uint32_t m_depth_attachment;
         glm::vec4 m_clear_color;
-        ref<texture_2d> m_color_attachment_texture;
-
-        //std::unique_ptr<texture_2d> m_depth_texture;
     };
 }
