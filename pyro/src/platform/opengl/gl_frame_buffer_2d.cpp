@@ -29,7 +29,7 @@ void pyro::gl_frame_buffer_2d::init()
     params.filter = e_texture_filter::linear;
     params.wrap = e_texture_wrap::clamp_to_edge;
 
-    m_texture = make_ref<gl_texture_2d>(m_width, m_height, params);
+    m_color_attachment_texture = make_ref<gl_texture_2d>(m_width, m_height, params);
 
     glBindRenderbuffer(GL_RENDERBUFFER, m_depth_buffer_id);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_width, m_height);
@@ -37,7 +37,7 @@ void pyro::gl_frame_buffer_2d::init()
     // bind
     glBindFramebuffer(GL_FRAMEBUFFER, m_frame_buffer_id);
     // set texture buffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture->id(), 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_color_attachment_texture->id(), 0);
     // set depth buffer
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depth_buffer_id);
     // unbind
@@ -88,8 +88,14 @@ uint32_t pyro::gl_frame_buffer_2d::height() const
     return m_width;
 }
 
-pyro::ref<pyro::texture>
-pyro::gl_frame_buffer_2d::texture() const
+uint32_t
+pyro::gl_frame_buffer_2d::color_attachment() const
 {
-    return m_texture;
+    return m_color_attachment_texture->id();
+}
+
+uint32_t
+pyro::gl_frame_buffer_2d::depth_attachment() const
+{
+    return m_depth_buffer_id;
 }

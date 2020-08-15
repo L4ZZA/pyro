@@ -19,7 +19,8 @@ namespace pyro
 
         uint32_t width() const override;
         uint32_t height() const override;
-        ref<pyro::texture> texture() const override;
+        uint32_t color_attachment() const override;
+        uint32_t depth_attachment() const override;
 
 
     private:
@@ -31,7 +32,7 @@ namespace pyro
         uint32_t m_width;
         uint32_t m_height;
         glm::vec4 m_clear_color;
-        ref<texture_2d> m_texture;
+        ref<texture_2d> m_color_attachment_texture;
 
         //std::unique_ptr<texture_2d> m_depth_texture;
     };

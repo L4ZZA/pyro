@@ -17,6 +17,10 @@ layer_2d::layer_2d(float width, float height)
     m_scene_manager.add_scene(pyro::make_ref<noise1d_scene>(m_2d_camera_controller));
     m_scene_manager.add_scene(pyro::make_ref<noise2d_scene>(m_2d_camera_controller));
     m_scene_manager.add_scene(pyro::make_ref<roguelike_scene>(m_2d_camera_controller));
+    pyro::framebuffer_props props;
+    props.width =  static_cast<uint32_t>(width);
+    props.height = static_cast<uint32_t>(height);
+    m_framebuffer = pyro::frame_buffer_2d::create(props);
 }
 
 layer_2d::~layer_2d()
@@ -50,6 +54,7 @@ void layer_2d::on_render() const
     {
         // Pre Render
         PYRO_PROFILE_SCOPE("scene::pre_render");
+        m_framebuffer->bind();
         pyro::render_command::clear_color({ 0.1f, 0.1f, 0.1f, 1.f });
         pyro::render_command::clear();
     }
@@ -57,6 +62,7 @@ void layer_2d::on_render() const
         // Render
         PYRO_PROFILE_SCOPE("layer_2d::render");
         m_scene_manager.on_render();
+        m_framebuffer->unbind();
     }
 }
 
@@ -138,10 +144,8 @@ void layer_2d::on_imgui_render()
             ImGui::Text("- Vertices: %d", stats.total_vertex_count());
             ImGui::Text("- Indices: %d", stats.total_index_count());
 
-            //ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
-
-            //uint32_t textureID = m_CheckerboardTexture->GetRendererID();
-            //ImGui::Image((void *)textureID, ImVec2{ 256.0f, 256.0f });
+            uint32_t textureID = m_framebuffer->color_attachment();
+            ImGui::Image((void *)textureID, ImVec2{ (float)m_framebuffer->width(), (float)m_framebuffer->height() });
             ImGui::End();
         }
         ImGui::End();
