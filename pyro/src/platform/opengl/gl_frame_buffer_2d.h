@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "pyro/renderer/frame_buffer_2d.h"
 #include "pyro/renderer/texture.h"
 
@@ -7,12 +7,13 @@ namespace pyro
     class gl_frame_buffer_2d final : public frame_buffer_2d
     {
     public:
-        gl_frame_buffer_2d(uint32_t width, uint32_t height);
+        gl_frame_buffer_2d(framebuffer_props const &properties);
         ~gl_frame_buffer_2d();
 
         void bind() const override;
         void unbind() const override;
 
+        void resize(uint32_t width, uint32_t height) override;
         void clear_color(glm::vec4 const& color) override;
         void clear() override;
 

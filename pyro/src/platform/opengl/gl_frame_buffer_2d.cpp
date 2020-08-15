@@ -1,14 +1,16 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "gl_frame_buffer_2d.h"
 #include "glad/glad.h"
 #include "gl_texture.h"
-
-pyro::gl_frame_buffer_2d::gl_frame_buffer_2d(uint32_t width, uint32_t height)
+namespace pyro {
+    static const uint32_t s_framebuffer_max_size = 8192;
+}
+pyro::gl_frame_buffer_2d::gl_frame_buffer_2d(framebuffer_props const &properties)
     : m_frame_buffer_id(0)
     , m_depth_buffer_id(0)
-    , m_width(width)
-    , m_height(height)
-    , m_clear_color(9.f, 0.f, 0.f, 1.f)
+    , m_width(properties.width)
+    , m_height(properties.height)
+    , m_clear_color(properties.clear_color)
 {
     init();
 }
@@ -51,6 +53,18 @@ void pyro::gl_frame_buffer_2d::bind() const
 void pyro::gl_frame_buffer_2d::unbind() const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void pyro::gl_frame_buffer_2d::resize(uint32_t width, uint32_t height)
+{
+
+    if(width == 0 || height == 0 || width > s_framebuffer_max_size || height > s_framebuffer_max_size)
+    {
+        PYRO_CORE_WARN("Attempted to rezize framebuffer to {0}, {1}", width, height);
+        return;
+    }
+    m_width = width;
+    m_height = height;
 }
 
 void pyro::gl_frame_buffer_2d::clear_color(glm::vec4 const &color)
