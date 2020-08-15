@@ -1,31 +1,29 @@
 ﻿#include "pyro_pch.h"
-#include "win_input.h"
+#include "pyro/core/input.h"
 #include "pyro/core/application.h"
 #include "GLFW/glfw3.h"
 
 namespace pyro
 {
-    // some how we'll have to delete this?
-    input* input::s_instance = new win_input();
-
-    static bool s_first_mouse = true;
+static std::pair<float, float> s_last_position;
+static bool s_first_mouse = true;
 }
 
-bool pyro::win_input::key_pressed_impl(int32_t key_code) const
+bool pyro::input::key_pressed(int32_t key_code)
 {
     auto window = application::window().native_window();
     auto state = glfwGetKey(static_cast<GLFWwindow*>(window), key_code);
     return state == GLFW_PRESS || state == GLFW_REPEAT;
 }
 
-bool pyro::win_input::mouse_button_pressed_impl(int32_t button) const
+bool pyro::input::mouse_button_pressed(int32_t button)
 {
     auto window = application::window().native_window();
     auto state = glfwGetMouseButton(static_cast<GLFWwindow*>(window), button);
     return state == GLFW_PRESS;
 }
 
-std::pair<float, float> pyro::win_input::mouse_position_impl() const
+std::pair<float, float> pyro::input::mouse_position()
 {
     auto& our_window = application::window();
     auto window = our_window.native_window();
@@ -54,7 +52,7 @@ std::pair<float, float> pyro::win_input::mouse_position_impl() const
     return { static_cast<float>(x_pos), static_cast<float>(y_pos) };
 }
 
-float pyro::win_input::mouse_x_impl() const
+float pyro::input::mouse_x()
 {
     // c++ 17 way to assign std::pair(s)
     auto window = application::window().native_window();
@@ -63,7 +61,7 @@ float pyro::win_input::mouse_x_impl() const
     return static_cast<float>(x_pos);
 }
 
-float pyro::win_input::mouse_y_impl() const
+float pyro::input::mouse_y()
 {
     auto window = application::window().native_window();
     double x_pos, y_pos;
