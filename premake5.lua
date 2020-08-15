@@ -8,7 +8,7 @@ local function premakeVersionComment(prj)
 end
 
 local function vcpkg(prj)
-    if prj.name == 'tests' then 
+    if prj.name == 'tests' then
         local triplet = '<VcpkgTriplet>x64-windows-static</VcpkgTriplet>'
         printf("Appended '%s' to '%s' project", triplet, prj.name)
         premake.w(triplet)
@@ -49,6 +49,7 @@ IncludeDir["Glad"]      = "pyro/external/Glad/include"
 IncludeDir["glm"]       = "pyro/external/glm"
 IncludeDir["stb_image"] = "pyro/external/stb_image"
 IncludeDir["ImGui"]     = "pyro/external/imgui"
+IncludeDir["entt"]     = "pyro/external/entt/include"
 IncludeDir["assimp"]    = "pyro/external/assimp/include/"
 IncludeDir["assimpcfg"] = "pyro/external/assimp/config/"
 
@@ -78,9 +79,9 @@ project "pyro"
     files
     {
         -- ** means recursively search down that folder
-        "%{prj.name}/src/**.h", 
+        "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp",
-        "%{prj.name}/external/glm/glm/**.hpp", 
+        "%{prj.name}/external/glm/glm/**.hpp",
         "%{prj.name}/external/glm/glm/**.inl",
     }
 
@@ -99,6 +100,7 @@ project "pyro"
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.stb_image}",
+        "%{IncludeDir.entt}",
     }
 
     links
@@ -154,6 +156,7 @@ project "ember"
         "pyro/external",
         "%{IncludeDir.glm}",
         "%{IncludeDir.ImGui}",
+        "%{IncludeDir.entt}",
     }
 
     links
