@@ -18,7 +18,10 @@ namespace pyro
         void begin() const;
         void end() const;
 
+        void block_events(bool block) { m_block_events = block; }
+
     private:
         float m_time{0.f};
+        bool m_block_events = true;
     };
 }

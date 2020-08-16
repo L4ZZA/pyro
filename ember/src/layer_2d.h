@@ -23,6 +23,8 @@ private:
     scene_manager m_scene_manager;
     pyro::ref<pyro::frame_buffer> m_framebuffer;
     glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+    bool m_ViewportFocused = false;
+    bool m_ViewportHovered = false;
 
     int32_t m_seed;
     

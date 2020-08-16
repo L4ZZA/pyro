@@ -8,7 +8,7 @@
 
 
 layer_2d::layer_2d(float width, float height)
-    : imgui_layer("Sandbox2D")
+    : imgui_layer("ember")
     , m_seed(0)
 {
     m_2d_camera_controller =
@@ -45,8 +45,11 @@ void layer_2d::on_update(const pyro::timestep &ts)
 {
     // Update
     PYRO_PROFILE_FUNCTION();
-    m_2d_camera_controller->on_update(ts);
-    m_scene_manager.on_update(ts);
+    if(m_ViewportFocused)
+    {
+        m_2d_camera_controller->on_update(ts);
+        m_scene_manager.on_update(ts);
+    }
 }
 
 void layer_2d::on_render() const
@@ -69,6 +72,7 @@ void layer_2d::on_render() const
 
 void layer_2d::on_imgui_render()
 {
+    // Note: Switch this to true to enable dockspace
     static bool dockspaceOpen = true;
     static bool opt_fullscreen_persistant = true;
     bool opt_fullscreen = opt_fullscreen_persistant;
@@ -100,42 +104,41 @@ void layer_2d::on_imgui_render()
     // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
+    ImGui::PopStyleVar();
+
+    if(opt_fullscreen)
+        ImGui::PopStyleVar(2);
+
+    // DockSpace
+    ImGuiIO &io = ImGui::GetIO();
+    if(io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
     {
-        ImGui::PopStyleVar();
+        ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+    }
 
-        if(opt_fullscreen)
-            ImGui::PopStyleVar(2);
-
-        // DockSpace
-        ImGuiIO &io = ImGui::GetIO();
-        if(io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+    if(ImGui::BeginMenuBar())
+    {
+        if(ImGui::BeginMenu("File"))
         {
-            ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-            ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+            // Disabling fullscreen would allow the window to be moved to the front of other windows, 
+            // which we can't undo at the moment without finer window depth/z control.
+            //ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
+
+            if(ImGui::MenuItem("Exit")) pyro::application::instance().exit();
+            ImGui::EndMenu();
         }
 
-        if(ImGui::BeginMenuBar())
-        {
-            if(ImGui::BeginMenu("File"))
-            {
-                // Disabling fullscreen would allow the window to be moved to the front of other windows, 
-                // which we can't undo at the moment without finer window depth/z control.
-                //ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
+        ImGui::EndMenuBar();
+    }
 
-                if(ImGui::MenuItem("Exit")) pyro::application::instance().exit();
-                ImGui::EndMenu();
-            }
+    auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
 
-            ImGui::EndMenuBar();
-        }
-
-        auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
-
-        // hide all ui if the scene is being played
-        if(current_scene->is_playing())
-            return;
-
-        ImGui::Begin("Viewport");
+    // hide all ui if the scene is being played
+    if(current_scene->is_playing())
+        return;
+    {
+        ImGui::Begin("Settings");
 
         auto stats = pyro::renderer_2d::stats();
         ImGui::Text("-- 2D Renderer stats:");
@@ -168,12 +171,19 @@ void layer_2d::on_imgui_render()
         ImGui::Text("---------------------");
 
         m_scene_manager.on_imgui_render();
-        
+
         ImGui::End();
+    }
 
-
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+    
+    {
         ImGui::Begin("Viewport");
+
+        m_ViewportFocused = ImGui::IsWindowFocused();
+        m_ViewportHovered = ImGui::IsWindowHovered();
+        pyro::application::instance().gui_layer()->block_events(!m_ViewportFocused || !m_ViewportHovered);
+
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
         if(m_ViewportSize.x != viewportPanelSize.x || m_ViewportSize.y != viewportPanelSize.y)
         {
@@ -185,8 +195,9 @@ void layer_2d::on_imgui_render()
         uint32_t textureID = m_framebuffer->color_attachment();
         ImGui::Image((void *)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         ImGui::End();
-        ImGui::PopStyleVar();
     }
+    ImGui::PopStyleVar();
+
     ImGui::End();
 }
 

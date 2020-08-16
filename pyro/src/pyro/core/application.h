@@ -32,6 +32,7 @@ namespace pyro
 
         /// Returns a reference to the application.
         static application &instance() { return *s_instance; }
+        ref<imgui_layer> gui_layer() { return m_imgui_layer; }
 
         static uint32_t fps() { return instance().m_FramesPerSecond; }
         static uint32_t ups() { return instance().m_UpdatesPerSecond; }
@@ -49,11 +50,14 @@ namespace pyro
         bool on_window_close(window_closed_event &e);
         bool on_window_resized(window_resize_event &e);
 
+    protected:
+        ref<imgui_layer>                m_imgui_layer = nullptr;
+
     private:
         std::unique_ptr<pyro::window>   m_window;
         layers_stack                    m_layers_stack;
         float                           m_frame_time = 0.f;
-        pyro::timer                    *m_timer = nullptr;
+        timer                          *m_timer = nullptr;
         uint32_t                        m_UpdatesPerSecond;
         uint32_t                        m_FramesPerSecond;
 
