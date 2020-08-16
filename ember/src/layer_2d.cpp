@@ -45,7 +45,15 @@ void layer_2d::on_update(const pyro::timestep &ts)
 {
     // Update
     PYRO_PROFILE_FUNCTION();
-    if(m_ViewportFocused)
+    
+    if(m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && 
+        (m_framebuffer->width() != m_ViewportSize.x 
+            || m_framebuffer->height() != m_ViewportSize.y))
+   {
+        m_framebuffer->resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+        m_2d_camera_controller->on_resize(m_ViewportSize.x, m_ViewportSize.y);
+    }
+    //if(m_ViewportFocused)
     {
         m_2d_camera_controller->on_update(ts);
         m_scene_manager.on_update(ts);
@@ -184,13 +192,7 @@ void layer_2d::on_imgui_render()
         pyro::application::instance().gui_layer()->block_events(!m_ViewportFocused || !m_ViewportHovered);
 
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-        if(m_ViewportSize.x != viewportPanelSize.x || m_ViewportSize.y != viewportPanelSize.y)
-        {
-            m_framebuffer->resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-            m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-
-            m_2d_camera_controller->on_resize(viewportPanelSize.x, viewportPanelSize.y);
-        }
+        m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
         uint32_t textureID = m_framebuffer->color_attachment();
         ImGui::Image((void *)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         ImGui::End();
