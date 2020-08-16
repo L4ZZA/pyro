@@ -135,8 +135,7 @@ void layer_2d::on_imgui_render()
     auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
 
     // hide all ui if the scene is being played
-    if(current_scene->is_playing())
-        return;
+    if(!current_scene->is_playing())
     {
         ImGui::Begin("Settings");
 
