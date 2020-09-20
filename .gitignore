@@ -1,6 +1,7 @@
 ## Folders
 .vs/
 bin/
+!vendor/premake/bin/
 inter/
 
 ## Files
