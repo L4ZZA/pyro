@@ -76,7 +76,7 @@ void pyro::application::run()
                 }
                 if(layer->is_imgui() && layer == m_imgui_layer)
                 {
-                    PYRO_CORE_ASSERT(imgui_layer, "imgui_layer couldn't be cast!");
+                    PYRO_CORE_ASSERT(m_imgui_layer, "imgui_layer couldn't be cast!");
                     m_imgui_layer->begin();
                     {
                         m_imgui_layer->on_imgui_render();

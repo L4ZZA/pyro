@@ -23,6 +23,14 @@ void pyro::renderer::begin_scene(camera const &camera, const ref<shader> &shader
     shader->set_mat4("u_view_projection", s_scene_data->view_projection_matrix);
 }
 
+void pyro::renderer::begin_scene(ref<camera> camera, const ref<shader> &shader)
+{
+    s_scene_data->view_projection_matrix = camera->view_projection_matrix();
+    s_scene_data->shader = shader;
+    shader->bind();
+    shader->set_mat4("u_view_projection", s_scene_data->view_projection_matrix);
+}
+
 void pyro::renderer::on_window_resize(uint32_t width, uint32_t height)
 {
     render_command::resize_viewport(0, 0, width, height);

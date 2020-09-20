@@ -1,9 +1,9 @@
 ﻿#include "layer_2d.h"
 #include "imgui/imgui.h"
 
-
-layer_2d::layer_2d() : imgui_layer("Sandbox2D"),
-m_2d_camera_controller(1280.0f / 720.0f, true)
+layer_2d::layer_2d(float width, float height) 
+    : imgui_layer("sandbox_2d_layer")
+    , m_2d_camera_controller(glm::vec3{0.f,0.f,0.f}, width / height, true)
 {
 }
 
@@ -16,8 +16,9 @@ void layer_2d::on_attach()
     PYRO_PROFILE_FUNCTION();
     imgui_layer::on_attach();
     
-    pyro::texture::wrap(pyro::e_texture_wrap::repeat);
-    m_checkerboard_texture = pyro::texture_2d::create_from_file("assets/textures/checkerboard.png");
+    pyro::texture_parameters params;
+    params.wrap = pyro::e_texture_wrap::repeat;
+    m_checkerboard_texture = pyro::texture_2d::create_from_file("assets/textures/checkerboard.png", params);
 }
 
 void layer_2d::on_detach()
@@ -25,13 +26,13 @@ void layer_2d::on_detach()
     PYRO_PROFILE_FUNCTION();
 }
 
-static float rotation = 0.0f;
 void layer_2d::on_update(const pyro::timestep &ts)
 {
     // Update
     PYRO_PROFILE_FUNCTION();
     m_2d_camera_controller.on_update(ts);
-    rotation += ts * 0.5f;
+    m_rect_rotation += ts * 25.f;
+    PYRO_CORE_TRACE("rotation - {}", m_rect_rotation);
 }
 
 void layer_2d::on_imgui_render()
@@ -76,7 +77,7 @@ void layer_2d::on_imgui_render()
         props.color = glm::vec4(1);
         props.position = { -2.f, 0.f, 0.0f };
         props.size = {1.f, 1.f};
-        props.rotation = rotation;
+        props.rotation = m_rect_rotation;
         props.tiling_factor = 20.f;
         props.color = { .8f, 1.f, .8f, 1.f };
         pyro::renderer_2d::draw_quad(props);
