@@ -18,10 +18,10 @@ files
 includedirs
 {
     "src",
-    "ember/src",
-    "pyro/external/spdlog/include",
-    "pyro/src",
-    "pyro/external",
+    "%{wks.location}/ember/src",
+    "%{wks.location}/pyro/external/spdlog/include",
+    "%{wks.location}/pyro/src",
+    "%{wks.location}/pyro/external",
     "%{IncludeDir.glm}",
     "%{IncludeDir.ImGui}",
 }

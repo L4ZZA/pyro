@@ -1,4 +1,4 @@
-project "Premake"
+project "premake"
 	kind "Utility"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
