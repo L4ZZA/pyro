@@ -28,6 +28,11 @@ namespace pyro
         static ref<shader> const& current_shader();
 
         // primitives
+        static void draw_quad(glm::mat4 const &transform,
+                              glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f },
+                              ref<texture_2d> texture = nullptr,
+                              float textureIndex = 0.f,
+                              float tiling_factor = 1.f);
         static void draw_quad(quad_properties const& props);
 
         static const uint32_t s_quad_vertex_count = 4;

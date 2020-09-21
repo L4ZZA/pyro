@@ -155,11 +155,32 @@ pyro::ref<pyro::shader> const &pyro::renderer_2d::current_shader()
     return s_data.texture_shader;
 }
 
+void pyro::renderer_2d::draw_quad(
+    glm::mat4 const &transform,
+    glm::vec4 color /*= { 1.0f, 1.0f, 1.0f, 1.0f }*/,
+    ref<texture_2d> texture /*= nullptr*/,
+    float textureIndex /*= 0.f*/,
+    float tiling_factor /*= 1.f*/)
+{
+    constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+    for(size_t i = 0; i < s_quad_vertex_count; i++)
+    {
+        s_data.quad_vertex_buffer_ptr->position = transform * s_data.quad_vertex_positions[i];
+        s_data.quad_vertex_buffer_ptr->color = color;
+        s_data.quad_vertex_buffer_ptr->tex_coord = textureCoords[i];
+        s_data.quad_vertex_buffer_ptr->tex_index = textureIndex;
+        s_data.quad_vertex_buffer_ptr->tiling_factor = tiling_factor;
+        s_data.quad_vertex_buffer_ptr++;
+    }
+
+    s_data.quad_index_count += 6;
+
+    s_data.stats.quad_count++;
+}
+
 void pyro::renderer_2d::draw_quad(quad_properties const &props)
 {
     PYRO_PROFILE_FUNCTION();
-
-    constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
     if(s_data.quad_index_count >= renderer_2d::s_max_indices)
         flush_and_reset();
@@ -194,19 +215,7 @@ void pyro::renderer_2d::draw_quad(quad_properties const &props)
         transform = glm::rotate(transform, glm::radians(props.rotation), { 0.0f, 0.0f, 1.0f });
     transform = glm::scale(transform, { props.size.x, props.size.y, 1.0f });
 
-    for(size_t i = 0; i < s_quad_vertex_count; i++)
-    {
-        s_data.quad_vertex_buffer_ptr->position = transform * s_data.quad_vertex_positions[i];
-        s_data.quad_vertex_buffer_ptr->color = props.color;
-        s_data.quad_vertex_buffer_ptr->tex_coord = textureCoords[i];
-        s_data.quad_vertex_buffer_ptr->tex_index = textureIndex;
-        s_data.quad_vertex_buffer_ptr->tiling_factor = props.tiling_factor;
-        s_data.quad_vertex_buffer_ptr++;
-    }
-
-    s_data.quad_index_count += 6;
-
-    s_data.stats.quad_count++;
+    draw_quad(transform, props.color, props.texture, textureIndex, props.tiling_factor);
 }
 
 void pyro::renderer_2d::reset_render_data()
