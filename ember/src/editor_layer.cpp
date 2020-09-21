@@ -1,5 +1,5 @@
 #include "pyro.h"
-#include "layer_2d.h"
+#include "editor_layer.h"
 #include "imgui/imgui.h"
 #include "scenes/noise1d_scene.h" 
 #include "scenes/noise2d_scene.h" 
@@ -7,16 +7,18 @@
 #include "utils/random.h" 
 
 
-layer_2d::layer_2d(float width, float height)
+editor_layer::editor_layer(float width, float height)
     : imgui_layer("ember")
     , m_seed(0)
 {
     m_2d_camera_controller =
         pyro::make_ref<pyro::orthographic_camera_controller>(
-            glm::vec3{ 0.f,0.f,0.f }, width / height, 10.f);
+            glm::vec3{ 0.f,0.f,0.f }, width / height);
+#if OLD_SCENE
     m_scene_manager.add_scene(pyro::make_ref<noise1d_scene>(m_2d_camera_controller));
     m_scene_manager.add_scene(pyro::make_ref<noise2d_scene>(m_2d_camera_controller));
     m_scene_manager.add_scene(pyro::make_ref<roguelike_scene>(m_2d_camera_controller));
+#endif
     m_ViewportSize = { width, height };
     pyro::framebuffer_props props;
     props.width = static_cast<uint32_t>(width);
@@ -24,61 +26,74 @@ layer_2d::layer_2d(float width, float height)
     m_framebuffer = pyro::frame_buffer_2d::create(props);
 }
 
-layer_2d::~layer_2d()
+editor_layer::~editor_layer()
 {
 }
 
 
-void layer_2d::on_attach()
+void editor_layer::on_attach()
 {
     PYRO_PROFILE_FUNCTION();
     imgui_layer::on_attach();
+#if OLD_SCENE
     m_scene_manager.init_first_scene();
+#else
+    m_active_scene = pyro::make_ref<pyro::scene>();
+    m_square_entity = m_active_scene->create_entity("green square");
+    m_square_entity.add_component<pyro::sprite_renderer_component>(glm::vec4{ 0.f,1.f,0.f,1.f });
+
+#endif
 }
 
-void layer_2d::on_detach()
+void editor_layer::on_detach()
 {
     PYRO_PROFILE_FUNCTION();
 }
 
-void layer_2d::on_update(const pyro::timestep &ts)
+void editor_layer::on_update(const pyro::timestep &ts)
 {
     // Update
     PYRO_PROFILE_FUNCTION();
-    
-    if(m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && 
-        (m_framebuffer->width() != m_ViewportSize.x 
+
+    if(m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
+        (m_framebuffer->width() != m_ViewportSize.x
             || m_framebuffer->height() != m_ViewportSize.y))
-   {
+    {
         m_framebuffer->resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         m_2d_camera_controller->on_resize(m_ViewportSize.x, m_ViewportSize.y);
     }
-    //if(m_ViewportFocused)
+    if(m_ViewportFocused)
     {
         m_2d_camera_controller->on_update(ts);
-        m_scene_manager.on_update(ts);
     }
+#if OLD_SCENE
+    m_scene_manager.on_update(ts);
+#else
+    m_active_scene->on_update(ts);
+#endif
 }
 
-void layer_2d::on_render() const
+void editor_layer::on_render() const
 {
     pyro::renderer_2d::reset_stats();
     {
-        // Pre Render
-        PYRO_PROFILE_SCOPE("scene::pre_render");
         m_framebuffer->bind();
         pyro::render_command::clear_color({ 0.1f, 0.1f, 0.1f, 1.f });
         pyro::render_command::clear();
     }
     {
-        // Render
-        PYRO_PROFILE_SCOPE("layer_2d::render");
+#if OLD_SCENE
         m_scene_manager.on_render();
+#else
+        pyro::renderer_2d::begin_scene(m_2d_camera_controller->camera());
+        m_active_scene->on_render();
+        pyro::renderer_2d::end_scene();
+#endif
         m_framebuffer->unbind();
     }
 }
 
-void layer_2d::on_imgui_render()
+void editor_layer::on_imgui_render()
 {
     // Note: Switch this to true to enable dockspace
     static bool dockspaceOpen = true;
@@ -111,7 +126,7 @@ void layer_2d::on_imgui_render()
     // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise 
     // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
+    ImGui::Begin("Editor", &dockspaceOpen, window_flags);
     ImGui::PopStyleVar();
 
     if(opt_fullscreen)
@@ -121,7 +136,7 @@ void layer_2d::on_imgui_render()
     ImGuiIO &io = ImGui::GetIO();
     if(io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
     {
-        ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+        ImGuiID dockspace_id = ImGui::GetID("DockSpace");
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
     }
 
@@ -133,13 +148,15 @@ void layer_2d::on_imgui_render()
             // which we can't undo at the moment without finer window depth/z control.
             //ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
 
-            if(ImGui::MenuItem("Exit")) pyro::application::instance().exit();
+            if(ImGui::MenuItem("Exit"))
+                pyro::application::instance().exit();
             ImGui::EndMenu();
         }
 
         ImGui::EndMenuBar();
     }
 
+#if OLD_SCENE
     auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
 
     // hide all ui if the scene is being played
@@ -179,11 +196,45 @@ void layer_2d::on_imgui_render()
 
         m_scene_manager.on_imgui_render();
 
-        ImGui::End();
     }
+#else
+
+    ImGui::Begin("Settings");
+    if(m_square_entity)
+    {
+        {
+            ImGui::Separator();
+            auto &tag = m_square_entity.get_component<pyro::tag_component>().tag;
+            ImGui::Text("%s", tag.c_str());
+
+            auto &squareColor = m_square_entity.get_component<pyro::sprite_renderer_component>().color;
+            ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
+            ImGui::Separator();
+        }
+    }
+#endif
+
+    for(auto &result : m_profile_results)
+    {
+        char label[50];
+        strcpy_s(label, "%.3fms ");
+        strcat_s(label, result.name);
+        ImGui::Text(label, result.time);
+    }
+    m_profile_results.clear();
+
+    auto stats = pyro::renderer_2d::stats();
+    ImGui::Text("-- 2D Renderer stats:");
+    ImGui::Text("- Draw calls: %d", stats.draw_calls);
+    ImGui::Text("- Quads: %d", stats.quad_count);
+    ImGui::Text("- Vertices: %d", stats.total_vertex_count());
+    ImGui::Text("- Indices: %d", stats.total_index_count());
+    ImGui::Text("---------------------");
+    ImGui::End();
+
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
-    
+
     {
         ImGui::Begin("Viewport");
 
@@ -194,7 +245,7 @@ void layer_2d::on_imgui_render()
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
         m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
         uint32_t textureID = m_framebuffer->color_attachment();
-        ImGui::Image((void *)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        ImGui::Image(reinterpret_cast<void *>(textureID), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         ImGui::End();
     }
     ImGui::PopStyleVar();
@@ -202,12 +253,13 @@ void layer_2d::on_imgui_render()
     ImGui::End();
 }
 
-void layer_2d::on_event(pyro::event &e)
+void editor_layer::on_event(pyro::event &e)
 {
     imgui_layer::on_event(e);
     m_2d_camera_controller->on_event(e);
     pyro::event_dispatcher dispatcher(e);
     // dispatch event on window X pressed 
+#if OLD_SCENE
     auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
     dispatcher.dispatch<pyro::key_pressed_event>([&](pyro::key_pressed_event ev)
         {
@@ -220,5 +272,7 @@ void layer_2d::on_event(pyro::event &e)
         });
 
     m_scene_manager.on_event(e);
+#else
+#endif
 }
 

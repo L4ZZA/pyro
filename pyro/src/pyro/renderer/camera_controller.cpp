@@ -12,7 +12,7 @@ pyro::orthographic_camera_controller::orthographic_camera_controller(
     float zoom_level /*= 1.f*/,
     bool rotation /*= false*/
     )
-    : m_zoom_speed(10.0f)
+    : m_zoom_speed(0.25f)
     , m_camera_rotation(0.f)
     , m_camera_translation_speed(1.0f)
     , m_camera_rotation_speed(180.0f)

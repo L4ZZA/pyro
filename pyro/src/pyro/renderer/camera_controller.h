@@ -87,6 +87,8 @@ namespace pyro
 
     private:
         float m_aspect_ratio;
+        // Defines the amount of space each mouse-roll moves the camera along 
+        // the front (view) vector or the other right (strafe) vector.
         float m_zoom_speed;
         float m_zoom_level;
         bool  m_rotation;
@@ -146,6 +148,8 @@ namespace pyro
         /// yaw -> rotation over y axis
         /// roll -> rotation over z axis
         glm::vec3 m_camera_rotation;
+        // Defines the amount of space each mouse-roll moves the camera along 
+        // the front (view) vector or the other right (strafe) vector.
         const float m_camera_translation_speed;
         const float m_camera_rotation_speed;
 

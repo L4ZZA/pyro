@@ -1,6 +1,6 @@
 // --------- Entry Point ---------------
 #include "pyro/core/entry_point.h"
-#include "layer_2d.h"
+#include "editor_layer.h"
 
 // Level editor
 // [Ember, a small piece burning or glowing in a fire]
@@ -19,7 +19,7 @@ public:
     {
         const float width  = static_cast<float>(window().width());
         const float height = static_cast<float>(window().height());
-        m_imgui_layer = pyro::make_ref<layer_2d>(width, height);
+        m_imgui_layer = pyro::make_ref<editor_layer>(width, height);
         push_layer(m_imgui_layer);
     }
 
