@@ -7,23 +7,25 @@
 #include "utils/random.h" 
 
 
-editor_layer::editor_layer(float width, float height)
-    : imgui_layer("ember")
-    , m_seed(0)
+namespace pyro
 {
-    m_2d_camera_controller =
-        pyro::make_ref<pyro::orthographic_camera_controller>(
-            glm::vec3{ 0.f,0.f,0.f }, width / height);
+    editor_layer::editor_layer(float width, float height)
+        : imgui_layer("ember")
+        , m_seed(0)
+    {
+        m_2d_camera_controller =
+            make_ref<orthographic_camera_controller>(
+                glm::vec3{ 0.f,0.f,0.f }, width / height);
 #if OLD_SCENE
-    m_scene_manager.add_scene(pyro::make_ref<noise1d_scene>(m_2d_camera_controller));
-    m_scene_manager.add_scene(pyro::make_ref<noise2d_scene>(m_2d_camera_controller));
-    m_scene_manager.add_scene(pyro::make_ref<roguelike_scene>(m_2d_camera_controller));
+        m_scene_manager.add_scene(make_ref<noise1d_scene>(m_2d_camera_controller));
+        m_scene_manager.add_scene(make_ref<noise2d_scene>(m_2d_camera_controller));
+        m_scene_manager.add_scene(make_ref<roguelike_scene>(m_2d_camera_controller));
 #endif
-    m_ViewportSize = { width, height };
-    pyro::framebuffer_props props;
-    props.width = static_cast<uint32_t>(width);
-    props.height = static_cast<uint32_t>(height);
-    m_framebuffer = pyro::frame_buffer_2d::create(props);
+        m_ViewportSize = { width, height };
+        framebuffer_props props;
+        props.width = static_cast<uint32_t>(width);
+        props.height = static_cast<uint32_t>(height);
+        m_framebuffer = frame_buffer_2d::create(props);
 }
 
 editor_layer::~editor_layer()
@@ -36,24 +38,26 @@ void editor_layer::on_attach()
     PYRO_PROFILE_FUNCTION();
     imgui_layer::on_attach();
 #if OLD_SCENE
-    m_scene_manager.init_first_scene();
+        m_scene_manager.init_first_scene();
 #else
-    m_active_scene = pyro::make_ref<pyro::scene>();
+        m_active_scene = make_ref<scene>();
     m_square_entity = m_active_scene->create_entity("green square");
     m_square_entity.add_component<pyro::sprite_renderer_component>(glm::vec4{ 0.f,1.f,0.f,1.f });
+        m_square_entity = m_active_scene->create_entity("Green Square");
+        m_square_entity.add_component<sprite_renderer_component>(glm::vec4{ 0.f,1.f,0.f,1.f });
 
 #endif
-}
+    }
 
 void editor_layer::on_detach()
 {
     PYRO_PROFILE_FUNCTION();
-}
+    }
 
-void editor_layer::on_update(const pyro::timestep &ts)
-{
-    // Update
-    PYRO_PROFILE_FUNCTION();
+    void editor_layer::on_update(const timestep &ts)
+    {
+        // Update
+        PYRO_PROFILE_FUNCTION();
 
     if(m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
         (m_framebuffer->width() != m_ViewportSize.x
@@ -71,17 +75,16 @@ void editor_layer::on_update(const pyro::timestep &ts)
 #else
     m_active_scene->on_update(ts);
 #endif
-}
-
-void editor_layer::on_render() const
-{
-    pyro::renderer_2d::reset_stats();
-    {
-        m_framebuffer->bind();
-        pyro::render_command::clear_color({ 0.1f, 0.1f, 0.1f, 1.f });
-        pyro::render_command::clear();
     }
+
+    void editor_layer::on_render() const
     {
+        renderer_2d::reset_stats();
+        
+        m_framebuffer->bind();
+        render_command::clear_color({ 0.1f, 0.1f, 0.1f, 1.f });
+        render_command::clear();
+
 #if OLD_SCENE
         m_scene_manager.on_render();
 #else
@@ -90,6 +93,7 @@ void editor_layer::on_render() const
         pyro::renderer_2d::end_scene();
 #endif
         m_framebuffer->unbind();
+        
     }
 }
 
@@ -138,42 +142,42 @@ void editor_layer::on_imgui_render()
     {
         ImGuiID dockspace_id = ImGui::GetID("DockSpace");
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-    }
-
-    if(ImGui::BeginMenuBar())
-    {
-        if(ImGui::BeginMenu("File"))
-        {
-            // Disabling fullscreen would allow the window to be moved to the front of other windows, 
-            // which we can't undo at the moment without finer window depth/z control.
-            //ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
-
-            if(ImGui::MenuItem("Exit"))
-                pyro::application::instance().exit();
-            ImGui::EndMenu();
         }
 
-        ImGui::EndMenuBar();
-    }
+        if(ImGui::BeginMenuBar())
+        {
+            if(ImGui::BeginMenu("File"))
+            {
+                // Disabling fullscreen would allow the window to be moved to the front of other windows, 
+                // which we can't undo at the moment without finer window depth/z control.
+                //ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
+
+                if(ImGui::MenuItem("Exit"))
+                    application::instance().exit();
+                ImGui::EndMenu();
+            }
+
+            ImGui::EndMenuBar();
+        }
 
 #if OLD_SCENE
-    auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
+        auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
 
-    // hide all ui if the scene is being played
-    if(!current_scene->is_playing())
-    {
-        ImGui::Begin("Settings");
+        // hide all ui if the scene is being played
+        if(!current_scene->is_playing())
+        {
+            ImGui::Begin("Settings");
 
-        auto stats = pyro::renderer_2d::stats();
-        ImGui::Text("-- 2D Renderer stats:");
-        float ms = pyro::application::frame_time() * 1000.f;
-        ImGui::Text("- Frame time: %f ms", ms);
-        ImGui::Text("- FPS: %d/s", pyro::application::fps());
-        ImGui::Text("- Draw calls: %d", stats.draw_calls);
-        ImGui::Text("- Quads: %d", stats.quad_count);
-        ImGui::Text("- Vertices: %d", stats.total_vertex_count());
-        ImGui::Text("- Indices: %d", stats.total_index_count());
-        ImGui::Text("---------------------");
+            auto stats = renderer_2d::stats();
+            ImGui::Text("-- 2D Renderer stats:");
+            float ms = application::frame_time() * 1000.f;
+            ImGui::Text("- Frame time: %f ms", ms);
+            ImGui::Text("- FPS: %d/s", application::fps());
+            ImGui::Text("- Draw calls: %d", stats.draw_calls);
+            ImGui::Text("- Quads: %d", stats.quad_count);
+            ImGui::Text("- Vertices: %d", stats.total_vertex_count());
+            ImGui::Text("- Indices: %d", stats.total_index_count());
+            ImGui::Text("---------------------");
 
         ImGui::Text("Select level type");
         static int scene_index = 0;
@@ -199,80 +203,80 @@ void editor_layer::on_imgui_render()
     }
 #else
 
-    ImGui::Begin("Settings");
-    if(m_square_entity)
-    {
+        ImGui::Begin("Settings");
+        if(m_square_entity)
         {
-            ImGui::Separator();
-            auto &tag = m_square_entity.get_component<pyro::tag_component>().tag;
-            ImGui::Text("%s", tag.c_str());
+            {
+                ImGui::Separator();
+                auto &tag = m_square_entity.get_component<tag_component>().tag;
+                ImGui::Text("%s", tag.c_str());
 
-            auto &squareColor = m_square_entity.get_component<pyro::sprite_renderer_component>().color;
-            ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
-            ImGui::Separator();
+                auto &squareColor = m_square_entity.get_component<sprite_renderer_component>().color;
+                ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
+                ImGui::Separator();
+            }
         }
-    }
 #endif
 
-    for(auto &result : m_profile_results)
-    {
-        char label[50];
-        strcpy_s(label, "%.3fms ");
-        strcat_s(label, result.name);
-        ImGui::Text(label, result.time);
-    }
-    m_profile_results.clear();
+        for(auto &result : m_profile_results)
+        {
+            char label[50];
+            strcpy_s(label, "%.3fms ");
+            strcat_s(label, result.name);
+            ImGui::Text(label, result.time);
+        }
+        m_profile_results.clear();
 
-    auto stats = pyro::renderer_2d::stats();
-    ImGui::Text("-- 2D Renderer stats:");
-    ImGui::Text("- Draw calls: %d", stats.draw_calls);
-    ImGui::Text("- Quads: %d", stats.quad_count);
-    ImGui::Text("- Vertices: %d", stats.total_vertex_count());
-    ImGui::Text("- Indices: %d", stats.total_index_count());
+        auto stats = renderer_2d::stats();
+        ImGui::Text("-- 2D Renderer stats:");
+        ImGui::Text("- Draw calls: %d", stats.draw_calls);
+        ImGui::Text("- Quads: %d", stats.quad_count);
+        ImGui::Text("- Vertices: %d", stats.total_vertex_count());
+        ImGui::Text("- Indices: %d", stats.total_index_count());
     ImGui::Text("---------------------");
     ImGui::End();
 
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 
-    {
-        ImGui::Begin("Viewport");
+        {
+            ImGui::Begin("Viewport");
 
-        m_ViewportFocused = ImGui::IsWindowFocused();
-        m_ViewportHovered = ImGui::IsWindowHovered();
-        pyro::application::instance().gui_layer()->block_events(!m_ViewportFocused || !m_ViewportHovered);
+            m_ViewportFocused = ImGui::IsWindowFocused();
+            m_ViewportHovered = ImGui::IsWindowHovered();
+            application::instance().gui_layer()->block_events(!m_ViewportFocused || !m_ViewportHovered);
 
-        ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-        m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-        uint32_t textureID = m_framebuffer->color_attachment();
-        ImGui::Image(reinterpret_cast<void *>(textureID), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+            ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+            m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+            uint32_t textureID = m_framebuffer->color_attachment();
+            ImGui::Image(reinterpret_cast<void *>(textureID), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+            ImGui::End();
+        }
+        ImGui::PopStyleVar();
+
         ImGui::End();
     }
-    ImGui::PopStyleVar();
 
-    ImGui::End();
-}
-
-void editor_layer::on_event(pyro::event &e)
-{
-    imgui_layer::on_event(e);
-    m_2d_camera_controller->on_event(e);
-    pyro::event_dispatcher dispatcher(e);
-    // dispatch event on window X pressed 
+    void editor_layer::on_event(event &e)
+    {
+        imgui_layer::on_event(e);
+        m_2d_camera_controller->on_event(e);
+        event_dispatcher dispatcher(e);
+        // dispatch event on window X pressed 
 #if OLD_SCENE
-    auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
-    dispatcher.dispatch<pyro::key_pressed_event>([&](pyro::key_pressed_event ev)
-        {
-            if(current_scene->is_playing() && ev.key_code() == pyro::key_codes::KEY_Q)
+        auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
+        dispatcher.dispatch<key_pressed_event>([&](key_pressed_event ev)
             {
-                current_scene->stop_playing();
-            }
-            // return if event is handled or not
-            return false;
-        });
+                if(current_scene->is_playing() && ev.key_code() == key_codes::KEY_Q)
+                {
+                    current_scene->stop_playing();
+                }
+                // return if event is handled or not
+                return false;
+            });
 
-    m_scene_manager.on_event(e);
+        m_scene_manager.on_event(e);
 #else
 #endif
+    }
 }
-
