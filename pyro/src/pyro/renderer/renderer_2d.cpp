@@ -118,6 +118,16 @@ void pyro::renderer_2d::begin_scene(ref<camera> camera)
     reset_render_data();
 }
 
+void pyro::renderer_2d::begin_scene(editor_camera const &camera, glm::mat4 const &transform)
+{
+    glm::mat4 viewProj = camera.projection_matrix() *glm::inverse(transform);
+    s_data.texture_shader->bind();
+    s_data.texture_shader->set_mat4("u_view_projection", viewProj);
+    s_data.texture_shader->set_int("u_grayscale", false);
+
+    reset_render_data();
+}
+
 void pyro::renderer_2d::end_scene()
 {
     PYRO_PROFILE_FUNCTION();

@@ -47,4 +47,17 @@ namespace pyro
 		{}
 	};
 
+
+	struct camera_component
+	{
+		inline static char *type_name = "camera_component";
+
+		editor_camera camera;
+		bool primary = true; // TODO: think about moving to Scene
+		bool fixed_aspect_ratio = false;
+
+		camera_component() = default;
+		camera_component(const camera_component &) = default;
+	};
+
 }

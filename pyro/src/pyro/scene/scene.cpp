@@ -24,14 +24,37 @@ void pyro::scene::on_update(pyro::timestep const &ts)
 
 void pyro::scene::on_render()
 {
-	// Render 2D
-	
-	auto group = m_registry.group<transform_component>(entt::get<sprite_renderer_component>);
-	for(auto entity : group)
+	// Render sprites
+	editor_camera *main_camera = nullptr;
+	glm::mat4 *camera_transform = nullptr;
 	{
-		auto &[transform, sprite] = group.get<transform_component, sprite_renderer_component>(entity);
+		auto group = m_registry.view<transform_component, camera_component>();
+		for(auto entity : group)
+		{
+			auto [transformComp, cameraComp] = group.get<transform_component, camera_component>(entity);
 
-		renderer_2d::draw_quad(transform, sprite.color);
+			if(cameraComp.primary)
+			{
+				main_camera = &cameraComp.camera;
+				camera_transform = &transformComp.transform;
+				break;
+			}
+		}
+	}
+	
+	if(main_camera)
+	{
+		renderer_2d::begin_scene(main_camera->projection_matrix(), *camera_transform);
+
+		auto group = m_registry.group<transform_component>(entt::get<sprite_renderer_component>);
+		for(auto entity : group)
+		{
+			auto &[transform, sprite] = group.get<transform_component, sprite_renderer_component>(entity);
+
+			renderer_2d::draw_quad(transform, sprite.color);
+		}
+
+		renderer_2d::end_scene();
 	}
 }
 

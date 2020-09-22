@@ -28,6 +28,7 @@ namespace pyro
         scene_manager m_scene_manager;
 #else
         ref<scene> m_active_scene;
+        entity m_camera_entity;
         entity m_square_entity;
 #endif
         ref<frame_buffer> m_framebuffer;

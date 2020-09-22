@@ -53,6 +53,7 @@ namespace pyro
         }
 
         operator bool() const { return m_entity_handle != entt::null; }
+
     private:
         entt::entity m_entity_handle{ entt::null };
         scene *m_scene = nullptr;

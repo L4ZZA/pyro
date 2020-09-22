@@ -6,10 +6,26 @@
 
 namespace pyro
 {
+    //================= SCEN CAMERA  =====================
+    class PYRO_API editor_camera
+    {
+        public:
+            editor_camera() = default;
+            editor_camera(const glm::mat4 &projection)
+                : m_projection(projection)
+            {
+            }
+
+            const glm::mat4 &projection_matrix() const { return m_projection; }
+        private:
+            glm::mat4 m_projection;
+    };
+
     //================= CAMERA INTERFACE =================
     class PYRO_API camera
     {
     public:
+        camera() = default;
         virtual ~camera() = default;
 
         virtual void             projection_matrix(glm::mat4 const &mat) = 0;

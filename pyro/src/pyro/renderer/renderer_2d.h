@@ -22,6 +22,7 @@ namespace pyro
 		static void shutdown();
 
         static void begin_scene(ref<camera> camera);
+        static void begin_scene(editor_camera const & camera, glm::mat4 const &transform);
         static void end_scene();
         static void flush();
 
