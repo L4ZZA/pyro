@@ -19,8 +19,8 @@ namespace pyro
 
     private:
         entt::registry m_registry;
-        uint32_t m_width  = 0;
-        uint32_t m_height = 0;
+        uint32_t m_viewport_width  = 0;
+        uint32_t m_viewport_height = 0;
         friend class entity;
     };
 }

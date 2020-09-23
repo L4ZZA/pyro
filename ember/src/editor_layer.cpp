@@ -15,15 +15,15 @@ namespace pyro
         : imgui_layer("ember")
         , m_seed(0)
     {
+#if OLD_SCENE
         m_2d_camera_controller =
             make_ref<orthographic_camera_controller>(
                 glm::vec3{ 0.f,0.f,0.f }, width / height);
-#if OLD_SCENE
         m_scene_manager.add_scene(make_ref<noise1d_scene>(m_2d_camera_controller));
         m_scene_manager.add_scene(make_ref<noise2d_scene>(m_2d_camera_controller));
         m_scene_manager.add_scene(make_ref<roguelike_scene>(m_2d_camera_controller));
 #endif
-        m_ViewportSize = { width, height };
+        m_viewport_size = { width, height };
         framebuffer_props props;
         props.width = static_cast<uint32_t>(width);
         props.height = static_cast<uint32_t>(height);
@@ -45,7 +45,11 @@ namespace pyro
         m_active_scene = make_ref<scene>();
         
         m_camera_entity = m_active_scene->create_entity("Camera Entity");
-        m_camera_entity.add_component<camera_component>(glm::ortho(-16.f, 16.f, -9.f, 9.f, -1.f, 1.f));
+        m_camera_entity.add_component<camera_component>();
+        
+        m_second_camera = m_active_scene->create_entity("Second Camera");
+        auto &sc = m_second_camera.add_component<camera_component>();
+        sc.primary = false;
 
         m_square_entity = m_active_scene->create_entity("Green Square");
         m_square_entity.add_component<sprite_renderer_component>(glm::vec4{ 0.f,1.f,0.f,1.f });
@@ -63,16 +67,25 @@ namespace pyro
         // Update
         PYRO_PROFILE_FUNCTION();
 
-        if(m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
-            (m_framebuffer->width() != m_ViewportSize.x
-                || m_framebuffer->height() != m_ViewportSize.y))
+        if(m_viewport_size.x > 0.0f && m_viewport_size.y > 0.0f &&
+            (m_framebuffer->width() != m_viewport_size.x
+                || m_framebuffer->height() != m_viewport_size.y))
         {
-            m_framebuffer->resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-            m_2d_camera_controller->on_resize(m_ViewportSize.x, m_ViewportSize.y);
+            uint32_t width  = static_cast<uint32_t>(m_viewport_size.x);
+            uint32_t height = static_cast<uint32_t>(m_viewport_size.y);
+            m_framebuffer->resize(width, height);
+
+#if OLD_SCENE
+            m_2d_camera_controller->on_resize(m_viewport_size.x, m_viewport_size.y);
+#else
+            m_active_scene->on_viewport_resize(width, height);
+#endif
         }
-        if(m_ViewportFocused)
+        if(m_viewport_focused)
         {
+#if OLD_SCENE
             m_2d_camera_controller->on_update(ts);
+#endif
         }
 #if OLD_SCENE
         m_scene_manager.on_update(ts);
@@ -219,6 +232,23 @@ namespace pyro
                 ImGui::Separator();
             }
         }
+
+
+        ImGui::DragFloat3("Camera Transform",
+            glm::value_ptr(m_camera_entity.get_component<transform_component>().transform[3]));
+
+        if(ImGui::Checkbox("Camera A", &m_is_primary_camera))
+        {
+            m_camera_entity.get_component<camera_component>().primary =  m_is_primary_camera;
+            m_second_camera.get_component<camera_component>().primary = !m_is_primary_camera;
+        }
+
+        {
+            auto &camera = m_second_camera.get_component<camera_component>().camera;
+            float orthoSize = camera.orthographic_size();
+            if(ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
+                camera.orthographic_size(orthoSize);
+        }
 #endif
 
         for(auto &result : m_profile_results)
@@ -245,14 +275,14 @@ namespace pyro
         {
             ImGui::Begin("Viewport");
 
-            m_ViewportFocused = ImGui::IsWindowFocused();
-            m_ViewportHovered = ImGui::IsWindowHovered();
-            application::instance().gui_layer()->block_events(!m_ViewportFocused || !m_ViewportHovered);
+            m_viewport_focused = ImGui::IsWindowFocused();
+            m_viewport_hovered = ImGui::IsWindowHovered();
+            application::instance().gui_layer()->block_events(!m_viewport_focused || !m_viewport_hovered);
 
             ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-            m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+            m_viewport_size = { viewportPanelSize.x, viewportPanelSize.y };
             uint32_t textureID = m_framebuffer->color_attachment();
-            ImGui::Image(reinterpret_cast<void *>(textureID), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+            ImGui::Image(reinterpret_cast<void *>(textureID), ImVec2{ m_viewport_size.x, m_viewport_size.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
             ImGui::End();
         }
         ImGui::PopStyleVar();
@@ -263,7 +293,9 @@ namespace pyro
     void editor_layer::on_event(event &e)
     {
         imgui_layer::on_event(e);
+#if OLD_SCENE
         m_2d_camera_controller->on_event(e);
+#endif
         event_dispatcher dispatcher(e);
         // dispatch event on window X pressed 
 #if OLD_SCENE

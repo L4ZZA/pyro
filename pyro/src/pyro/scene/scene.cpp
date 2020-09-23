@@ -49,7 +49,7 @@ void pyro::scene::on_render()
 		auto group = m_registry.group<transform_component>(entt::get<sprite_renderer_component>);
 		for(auto entity : group)
 		{
-			auto &[transform, sprite] = group.get<transform_component, sprite_renderer_component>(entity);
+			auto [transform, sprite] = group.get<transform_component, sprite_renderer_component>(entity);
 
 			renderer_2d::draw_quad(transform, sprite.color);
 		}
@@ -59,5 +59,16 @@ void pyro::scene::on_render()
 }
 
 void pyro::scene::on_viewport_resize(uint32_t width, uint32_t height)
-{ 
+{
+	m_viewport_width  = width;
+	m_viewport_height = height;
+
+	// Resize our non-FixedAspectRatio cameras
+	auto view = m_registry.view<camera_component>();
+	for(auto entity : view)
+	{
+		auto &cameraComponent = view.get<camera_component>(entity);
+		if(!cameraComponent.fixed_aspect_ratio)
+			cameraComponent.camera.viewport_size(width, height);
+	}
 }

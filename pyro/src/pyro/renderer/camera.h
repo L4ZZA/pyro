@@ -12,13 +12,14 @@ namespace pyro
         public:
             camera() = default;
             camera(const glm::mat4 &projection)
-                : m_projection(projection)
-            {
-            }
+                : m_projection(projection) {}
+
+            virtual ~camera() = default;
 
             const glm::mat4 &projection_matrix() const { return m_projection; }
-        private:
-            glm::mat4 m_projection;
+
+        protected:
+            glm::mat4 m_projection{1.f};
     };
 
     //================= CAMERA INTERFACE =================

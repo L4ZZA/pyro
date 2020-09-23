@@ -1,5 +1,5 @@
 #pragma once
-#include "pyro/renderer/camera.h"
+#include "pyro/scene/scene_camera.h"
 #include <glm/glm.hpp>
 #include <string>
 
@@ -52,7 +52,7 @@ namespace pyro
 	{
 		inline static char *type_name = "camera_component";
 
-		camera camera;
+		scene_camera camera;
 		bool primary = true; // TODO: think about moving to Scene
 		bool fixed_aspect_ratio = false;
 

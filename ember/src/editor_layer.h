@@ -21,20 +21,22 @@ namespace pyro
         void on_event(event &e) override;
 
     private:
-        ref<camera_controller> m_2d_camera_controller;
 
 #define OLD_SCENE 0
 #if OLD_SCENE
+        ref<camera_controller> m_2d_camera_controller;
         scene_manager m_scene_manager;
 #else
         ref<scene> m_active_scene;
         entity m_camera_entity;
+        entity m_second_camera;
         entity m_square_entity;
+        bool m_is_primary_camera = true;
 #endif
         ref<frame_buffer> m_framebuffer;
-        glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
-        bool m_ViewportFocused = false;
-        bool m_ViewportHovered = false;
+        glm::vec2 m_viewport_size = { 0.0f, 0.0f };
+        bool m_viewport_focused = false;
+        bool m_viewport_hovered = false;
 
         int32_t m_seed;
 
