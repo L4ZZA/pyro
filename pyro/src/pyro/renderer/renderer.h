@@ -3,6 +3,7 @@
 #include "render_command.h"
 #include "shader.h"
 #include "camera.h"
+#include <glm/glm.hpp>
 
 namespace pyro
 {

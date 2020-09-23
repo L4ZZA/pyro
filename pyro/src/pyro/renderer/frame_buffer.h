@@ -1,5 +1,6 @@
 #pragma once
 #include "pyro/renderer/texture.h"
+#include <glm/glm.hpp>
 
 namespace pyro
 {

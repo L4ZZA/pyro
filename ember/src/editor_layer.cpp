@@ -6,6 +6,8 @@
 #include "scenes/roguelike_scene.h" 
 #include "utils/random.h" 
 
+#include <glm/gtc/type_ptr.hpp>
+
 
 namespace pyro
 {
