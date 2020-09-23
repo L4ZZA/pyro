@@ -6,12 +6,12 @@
 
 namespace pyro
 {
-    //================= SCEN CAMERA  =====================
-    class PYRO_API editor_camera
+    //================= REAL-TIME CAMERA  =====================
+    class PYRO_API camera
     {
         public:
-            editor_camera() = default;
-            editor_camera(const glm::mat4 &projection)
+            camera() = default;
+            camera(const glm::mat4 &projection)
                 : m_projection(projection)
             {
             }
@@ -22,11 +22,11 @@ namespace pyro
     };
 
     //================= CAMERA INTERFACE =================
-    class PYRO_API camera
+    class PYRO_API camera_base
     {
     public:
-        camera() = default;
-        virtual ~camera() = default;
+        camera_base() = default;
+        virtual ~camera_base() = default;
 
         virtual void             projection_matrix(glm::mat4 const &mat) = 0;
         virtual glm::mat4 const &projection_matrix() const = 0;
@@ -43,7 +43,7 @@ namespace pyro
 
     //================= 2D CAMERA =================
 
-    class PYRO_API orthographic_camera final : public camera
+    class PYRO_API orthographic_camera final : public camera_base
     {
     public:
         orthographic_camera(float left, float right, float bottom, float top);
@@ -75,7 +75,7 @@ namespace pyro
 
     //================= 3D CAMERA =================
 
-    class PYRO_API perspective_camera : public camera
+    class PYRO_API perspective_camera : public camera_base
     {
     public:
         enum e_rotation

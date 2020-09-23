@@ -107,7 +107,7 @@ void pyro::renderer_2d::shutdown()
     delete[] s_data.quad_vertex_buffer_base;
 }
 
-void pyro::renderer_2d::begin_scene(ref<camera> camera)
+void pyro::renderer_2d::begin_scene(ref<camera_base> camera)
 {
     PYRO_PROFILE_FUNCTION();
     s_data.texture_shader->bind();
@@ -118,7 +118,7 @@ void pyro::renderer_2d::begin_scene(ref<camera> camera)
     reset_render_data();
 }
 
-void pyro::renderer_2d::begin_scene(editor_camera const &camera, glm::mat4 const &transform)
+void pyro::renderer_2d::begin_scene(camera const &camera, glm::mat4 const &transform)
 {
     glm::mat4 viewProj = camera.projection_matrix() *glm::inverse(transform);
     s_data.texture_shader->bind();

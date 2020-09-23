@@ -7,7 +7,7 @@
 class base_noise_scene : public scene
 {
 public:
-	base_noise_scene(pyro::ref<pyro::camera> const &camera);
+	base_noise_scene(pyro::ref<pyro::camera_base> const &camera);
 	virtual ~base_noise_scene() = default;
 	virtual void play() = 0;
 	virtual void stop_playing() = 0;
@@ -17,7 +17,7 @@ protected:
 };
 
 inline 
-base_noise_scene::base_noise_scene(pyro::ref<pyro::camera> const &camera) 
+base_noise_scene::base_noise_scene(pyro::ref<pyro::camera_base> const &camera) 
 	: scene(camera) 
 {
 }

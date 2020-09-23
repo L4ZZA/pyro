@@ -67,7 +67,7 @@ void pyro::orthographic_camera_controller::on_resize(float width, float height)
     calculate_view();
 }
 
-pyro::ref<pyro::camera>
+pyro::ref<pyro::camera_base>
 pyro::orthographic_camera_controller::camera() const
 {
     return m_camera;
@@ -196,7 +196,7 @@ void pyro::perspective_camera_controller::on_resize(float width, float height)
     PYRO_CORE_ASSERT(false, "perspective_camera_controller::on_resize method not implemented.")
 }
 
-pyro::ref<pyro::camera>
+pyro::ref<pyro::camera_base>
 pyro::perspective_camera_controller::camera() const
 {
     return m_camera;

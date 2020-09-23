@@ -29,7 +29,7 @@ namespace pyro
         virtual void on_event(event &e) = 0;
         virtual void on_resize(float width, float height) = 0;
 
-        virtual ref<pyro::camera> camera() const = 0;
+        virtual ref<pyro::camera_base> camera() const = 0;
 
         virtual void zoom_level(float level) = 0;
         virtual float zoom_level() const = 0;
@@ -70,7 +70,7 @@ namespace pyro
         void on_event(event& e) override;
         void on_resize(float width, float height) override;
 
-        ref<pyro::camera> camera() const override;
+        ref<pyro::camera_base> camera() const override;
 
         void zoom_level(float level) override;
         float zoom_level() const override;
@@ -125,7 +125,7 @@ namespace pyro
         void on_event(event& e) override;
         void on_resize(float width, float height) override;
 
-        ref<pyro::camera> camera() const override;
+        ref<pyro::camera_base> camera() const override;
         void zoom_level(float level) override;
         float zoom_level() const override;
         void position(glm::vec3 const &pos) override;

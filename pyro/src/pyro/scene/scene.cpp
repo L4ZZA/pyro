@@ -25,7 +25,7 @@ void pyro::scene::on_update(pyro::timestep const &ts)
 void pyro::scene::on_render()
 {
 	// Render sprites
-	editor_camera *main_camera = nullptr;
+	camera *main_camera = nullptr;
 	glm::mat4 *camera_transform = nullptr;
 	{
 		auto group = m_registry.view<transform_component, camera_component>();
