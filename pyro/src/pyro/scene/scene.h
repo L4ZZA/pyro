@@ -1,5 +1,5 @@
 #pragma once
-#include "entt.hpp"
+#include <entt.hpp>
 #include "pyro/core/timestep.h"
 
 namespace pyro

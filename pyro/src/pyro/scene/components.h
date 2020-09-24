@@ -1,5 +1,6 @@
 #pragma once
 #include "pyro/scene/scene_camera.h"
+#include "pyro/scene/scriptable_entity.h"
 #include <glm/glm.hpp>
 #include <string>
 
@@ -58,6 +59,31 @@ namespace pyro
 
 		camera_component() = default;
 		camera_component(const camera_component &) = default;
+	};
+
+	struct native_script_component
+	{
+		inline static char *type_name = "native_script_component";
+
+		scriptable_entity *instance = nullptr;
+
+		std::function<void()> InstantiateFunction;
+		std::function<void()> DestroyInstanceFunction;
+
+		std::function<void(scriptable_entity *)> OnCreateFunction;
+		std::function<void(scriptable_entity *)> OnDestroyFunction;
+		std::function<void(scriptable_entity *, timestep const&)> OnUpdateFunction;
+
+		template<typename T>
+		void bind()
+		{
+			InstantiateFunction = [&]() { instance = new T(); };
+			DestroyInstanceFunction = [&]() { delete (T *)instance; instance = nullptr; };
+
+			OnCreateFunction = [](scriptable_entity *instance) { ((T *)instance)->on_create(); };
+			OnDestroyFunction = [](scriptable_entity *instance) { ((T *)instance)->on_destroy(); };
+			OnUpdateFunction = [](scriptable_entity *instance, timestep const &ts) { ((T *)instance)->on_update(ts); };
+		}
 	};
 
 }

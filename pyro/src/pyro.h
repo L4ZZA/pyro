@@ -27,6 +27,7 @@
 
 #include "pyro/scene/scene.h"
 #include "pyro/scene/entity.h"
+#include "pyro/scene/scriptable_entity.h"
 #include "pyro/scene/components.h"
 
 #include "pyro/imgui/imgui_layer.h"

@@ -54,6 +54,34 @@ namespace pyro
         m_square_entity = m_active_scene->create_entity("Green Square");
         m_square_entity.add_component<sprite_renderer_component>(glm::vec4{ 0.f,1.f,0.f,1.f });
 
+        class camera_controller : public scriptable_entity
+        {
+        public:
+            void on_create()
+            {
+            }
+
+            void on_destroy(){}
+            void on_update(timestep const &ts)
+            {
+                auto &transform = get_component<transform_component>().transform;
+                float speed = 5.0f;
+
+                if(input::key_pressed(pyro::key_codes::KEY_A)) // left
+                    transform[3][0] -= speed * ts;
+                else if(input::key_pressed(pyro::key_codes::KEY_D)) // right
+                    transform[3][0] += speed * ts;
+
+                if(input::key_pressed(pyro::key_codes::KEY_W)) // up
+                    transform[3][1] += speed * ts;
+                else if(input::key_pressed(pyro::key_codes::KEY_S)) // down
+                    transform[3][1] -= speed * ts;
+            }
+
+        };
+
+        m_camera_entity.add_component<native_script_component>().bind<camera_controller>();
+
 #endif
     }
 
@@ -62,7 +90,7 @@ namespace pyro
         PYRO_PROFILE_FUNCTION();
     }
 
-    void editor_layer::on_update(const timestep &ts)
+    void editor_layer::on_update(timestep const &ts)
     {
         // Update
         PYRO_PROFILE_FUNCTION();

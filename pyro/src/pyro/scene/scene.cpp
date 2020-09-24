@@ -20,6 +20,23 @@ pyro::entity pyro::scene::create_entity(std::string const &name /*= ""*/)
 
 void pyro::scene::on_update(pyro::timestep const &ts)
 {
+	// Update scripts
+	{
+		m_registry.view<native_script_component>().each([=](auto entity, auto &nsc)
+			{
+				if(!nsc.instance)
+				{
+					nsc.InstantiateFunction();
+					nsc.instance->m_entity = pyro::entity{ entity, this };
+
+					if(nsc.OnCreateFunction)
+						nsc.OnCreateFunction(nsc.instance);
+				}
+
+				if(nsc.OnUpdateFunction)
+					nsc.OnUpdateFunction(nsc.instance, ts);
+			});
+	}
 }
 
 void pyro::scene::on_render()
