@@ -67,22 +67,19 @@ namespace pyro
 
 		scriptable_entity *instance = nullptr;
 
-		std::function<void()> InstantiateFunction;
-		std::function<void()> DestroyInstanceFunction;
-
-		std::function<void(scriptable_entity *)> OnCreateFunction;
-		std::function<void(scriptable_entity *)> OnDestroyFunction;
-		std::function<void(scriptable_entity *, timestep const&)> OnUpdateFunction;
+		//[return type] ---- [function ptr name] ----- [parameters]
+		scriptable_entity*  (*instantiate_script_func)();
+		void                (*destroy_script_func)    (native_script_component*);
 
 		template<typename T>
 		void bind()
 		{
-			InstantiateFunction = [&]() { instance = new T(); };
-			DestroyInstanceFunction = [&]() { delete (T *)instance; instance = nullptr; };
-
-			OnCreateFunction = [](scriptable_entity *instance) { ((T *)instance)->on_create(); };
-			OnDestroyFunction = [](scriptable_entity *instance) { ((T *)instance)->on_destroy(); };
-			OnUpdateFunction = [](scriptable_entity *instance, timestep const &ts) { ((T *)instance)->on_update(ts); };
+			instantiate_script_func = []() { return static_cast<scriptable_entity*>(new T()); };
+			destroy_script_func     = [](native_script_component * self) 
+			{ 
+				delete self->instance; 
+				self->instance = nullptr; 
+			};
 		}
 	};
 

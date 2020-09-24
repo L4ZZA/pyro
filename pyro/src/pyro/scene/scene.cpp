@@ -22,19 +22,17 @@ void pyro::scene::on_update(pyro::timestep const &ts)
 {
 	// Update scripts
 	{
-		m_registry.view<native_script_component>().each([=](auto entity, auto &nsc)
+		m_registry.view<native_script_component>().each([=](auto entity, native_script_component &nsc)
 			{
+				// TODO:: move on scene play 
 				if(!nsc.instance)
 				{
-					nsc.InstantiateFunction();
+					nsc.instance = nsc.instantiate_script_func();
 					nsc.instance->m_entity = pyro::entity{ entity, this };
-
-					if(nsc.OnCreateFunction)
-						nsc.OnCreateFunction(nsc.instance);
+					nsc.instance->on_create();
 				}
 
-				if(nsc.OnUpdateFunction)
-					nsc.OnUpdateFunction(nsc.instance, ts);
+				nsc.instance->on_update(ts);
 			});
 	}
 }
