@@ -16,10 +16,11 @@ namespace pyro
 		void context(ref<scene> scene_context);
 
 	private:
-		void draw_entity_node(entity &e);
+		void draw_entity_node(entity e);
+		void draw_components(entity e);
 
 	private:
 		ref<scene> m_context;
-		entity m_SelectionContext;
+		entity m_selection_context;
 	};
 }

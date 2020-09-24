@@ -57,12 +57,11 @@ namespace pyro
         class camera_controller : public scriptable_entity
         {
         public:
-            void on_create()
+            virtual void on_create() override
             {
             }
 
-            void on_destroy(){}
-            void on_update(timestep const &ts)
+            virtual void on_update(timestep const &ts) override
             {
                 auto &transform = get_component<transform_component>().transform;
                 float speed = 5.0f;
