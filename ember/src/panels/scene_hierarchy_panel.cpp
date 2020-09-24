@@ -93,6 +93,88 @@ namespace pyro
 				ImGui::TreePop();
 			}
 		}
+
+		if(e.has_component<camera_component>())
+		{
+			if(ImGui::TreeNodeEx(
+				reinterpret_cast<void *>(typeid(camera_component).hash_code()),
+				ImGuiTreeNodeFlags_DefaultOpen, "Camera"))
+			{
+				auto &camera_comp = e.get_component<camera_component>();
+				auto &camera = camera_comp.camera;
+
+				const char *projection_type_strings[]{ "Perspective", "Otrhographic" };
+				const char *current_projection_type_string =
+					projection_type_strings[static_cast<int>(camera.projection_type())];
+
+				if(ImGui::BeginCombo("Projection", current_projection_type_string))
+				{
+					for(int i = 0; i < 2; i++)
+					{
+						bool is_selected = 
+							current_projection_type_string == projection_type_strings[i];
+						if(ImGui::Selectable(projection_type_strings[i], is_selected))
+						{
+							current_projection_type_string = projection_type_strings[i];
+							camera.projection_type(static_cast<scene_camera::e_projection_type>(i));
+						}
+
+						if(is_selected)
+							ImGui::SetItemDefaultFocus();
+					}
+
+					ImGui::EndCombo();
+				}
+
+				ImGui::Checkbox("Primary", &camera_comp.primary);
+
+				if(camera.projection_type() == scene_camera::e_projection_type::perspective)
+				{
+					float perspective_vertical_fov = glm::degrees(camera.perspective_vertical_fov());
+					if(ImGui::DragFloat("Size", &perspective_vertical_fov))
+					{
+						camera.perspective_vertical_fov(glm::radians(perspective_vertical_fov));
+					}
+
+					float perspective_near = camera.perspective_near();
+					if(ImGui::DragFloat("Near", &perspective_near))
+					{
+						camera.perspective_near(perspective_near);
+					}
+
+					float perspective_far = camera.perspective_far();
+					if(ImGui::DragFloat("Far", &perspective_far))
+					{
+						camera.perspective_far(perspective_far);
+					}
+				}
+
+				if(camera.projection_type() == scene_camera::e_projection_type::orthographic)
+				{
+					ImGui::Checkbox("Fixed Aspect ratio", &camera_comp.fixed_aspect_ratio);
+
+					float ortho_size = camera.orthographic_size();
+					if(ImGui::DragFloat("Size", &ortho_size))
+					{
+						camera.orthographic_size(ortho_size);
+					}
+
+					float ortho_near = camera.orthographic_near();
+					if(ImGui::DragFloat("Near", &ortho_near))
+					{
+						camera.orthographic_near(ortho_near);
+					}
+
+					float ortho_far = camera.orthographic_far();
+					if(ImGui::DragFloat("Far", &ortho_far))
+					{
+						camera.orthographic_far(ortho_far);
+					}
+				}
+				
+				ImGui::TreePop();
+			}
+		}
 	}
 	void scene_hierarchy_panel::context(ref<scene> scene_context)
 	{

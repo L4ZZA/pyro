@@ -44,12 +44,17 @@ namespace pyro
 #else
         m_active_scene = make_ref<scene>();
 
-        m_square_entity = m_active_scene->create_entity("Green Square");
-        m_square_entity.add_component<sprite_renderer_component>(glm::vec4{ 0.f,1.f,0.f,1.f });
+        auto green_square = m_active_scene->create_entity("Green Square");
+        green_square.add_component<sprite_renderer_component>(glm::vec4{ 0.f,1.f,0.f,1.f });
+        
+        auto red_square = m_active_scene->create_entity("Red Square");
+        red_square.add_component<sprite_renderer_component>(glm::vec4{ 1.f,0.f,0.f,1.f });
         
         m_camera_entity = m_active_scene->create_entity("Camera Entity");
         m_camera_entity.add_component<camera_component>();
         
+        m_square_entity = green_square;
+
         m_second_camera = m_active_scene->create_entity("Clip-space Camera");
         auto &sc = m_second_camera.add_component<camera_component>();
         sc.primary = false;
@@ -263,21 +268,10 @@ namespace pyro
             }
         }
 
-
-        ImGui::DragFloat3("Camera Transform",
-            glm::value_ptr(m_camera_entity.get_component<transform_component>().transform[3]));
-
-        if(ImGui::Checkbox("Camera A", &m_is_primary_camera))
+        if(ImGui::Checkbox("Toggle Primary cameras", &m_is_primary_camera))
         {
             m_camera_entity.get_component<camera_component>().primary =  m_is_primary_camera;
             m_second_camera.get_component<camera_component>().primary = !m_is_primary_camera;
-        }
-
-        {
-            auto &camera = m_second_camera.get_component<camera_component>().camera;
-            float orthoSize = camera.orthographic_size();
-            if(ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
-                camera.orthographic_size(orthoSize);
         }
 #endif
 
