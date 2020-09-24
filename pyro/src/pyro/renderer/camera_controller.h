@@ -27,8 +27,9 @@ namespace pyro
         virtual ~camera_controller() = default;
 		virtual void on_update(timestep ts) = 0;
         virtual void on_event(event &e) = 0;
+        virtual void on_resize(float width, float height) = 0;
 
-        virtual ref<pyro::camera> camera() const = 0;
+        virtual ref<pyro::camera_base> camera() const = 0;
 
         virtual void zoom_level(float level) = 0;
         virtual float zoom_level() const = 0;
@@ -67,7 +68,9 @@ namespace pyro
             bool rotation = false);
         void on_update(timestep ts) override;
         void on_event(event& e) override;
-        ref<pyro::camera> camera() const override;
+        void on_resize(float width, float height) override;
+
+        ref<pyro::camera_base> camera() const override;
 
         void zoom_level(float level) override;
         float zoom_level() const override;
@@ -84,6 +87,8 @@ namespace pyro
 
     private:
         float m_aspect_ratio;
+        // Defines the amount of space each mouse-roll moves the camera along 
+        // the front (view) vector or the other right (strafe) vector.
         float m_zoom_speed;
         float m_zoom_level;
         bool  m_rotation;
@@ -118,7 +123,9 @@ namespace pyro
         
         void on_update(timestep ts) override;
         void on_event(event& e) override;
-        ref<pyro::camera> camera() const override;
+        void on_resize(float width, float height) override;
+
+        ref<pyro::camera_base> camera() const override;
         void zoom_level(float level) override;
         float zoom_level() const override;
         void position(glm::vec3 const &pos) override;
@@ -141,6 +148,8 @@ namespace pyro
         /// yaw -> rotation over y axis
         /// roll -> rotation over z axis
         glm::vec3 m_camera_rotation;
+        // Defines the amount of space each mouse-roll moves the camera along 
+        // the front (view) vector or the other right (strafe) vector.
         const float m_camera_translation_speed;
         const float m_camera_rotation_speed;
 

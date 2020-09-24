@@ -23,6 +23,12 @@
 #include "pyro/renderer/texture.h"
 #include "pyro/renderer/camera.h"
 #include "pyro/renderer/camera_controller.h"
+#include "pyro/renderer/frame_buffer_2d.h"
+
+#include "pyro/scene/scene.h"
+#include "pyro/scene/entity.h"
+#include "pyro/scene/scriptable_entity.h"
+#include "pyro/scene/components.h"
 
 #include "pyro/imgui/imgui_layer.h"
 

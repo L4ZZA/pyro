@@ -3,6 +3,7 @@
 #include "render_command.h"
 #include "shader.h"
 #include "camera.h"
+#include <glm/glm.hpp>
 
 namespace pyro
 {
@@ -12,7 +13,8 @@ namespace pyro
         static void init();
         static void shutdown();
 
-        static void begin_scene(camera const &camera, const ref<shader> &shader);
+        static void begin_scene(camera_base const &camera, const ref<shader> &shader);
+        static void begin_scene(ref<camera_base> camera, const ref<shader> &shader);
         static void end_scene();
         static void on_window_resize(uint32_t width, uint32_t height);
 

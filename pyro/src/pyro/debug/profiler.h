@@ -41,7 +41,10 @@ namespace debug{
     {
     private:
         profiler();
+        ~profiler();
     public:
+        profiler(const profiler &) = delete;
+        profiler(profiler &&) = delete;
         void begin_session(std::string const &name, std::string const &filepath = "result.json");
         void end_session();
         void write_profile(profile_result const &result);
@@ -111,6 +114,12 @@ inline
 pyro::debug::profiler::profiler()
     : m_current_session(nullptr)
 {
+}
+
+inline
+pyro::debug::profiler::~profiler()
+{
+    end_session();
 }
 
 inline
@@ -290,9 +299,10 @@ pyro::debug::profiler_timer::stop()
 
     #define PYRO_PROFILE_BEGIN_SESSION(name, filepath) ::pyro::debug::profiler::get().begin_session(name, filepath)
     #define PYRO_PROFILE_END_SESSION() ::pyro::debug::profiler::get().end_session()
-    #define PYRO_PROFILE_SCOPE(name) constexpr auto fixed_name = \
-                ::pyro::debug::profiler_utils::cleanup_output_string(name, "__cdecl ");\
-                ::pyro::debug::profiler_timer timer##__LINE__(fixed_name.data)
+    #define PYRO_PROFILE_SCOPE_LINE2(name, line) constexpr auto fixed_name##line = ::pyro::debug::profiler_utils::cleanup_output_string(name, "__cdecl ");\
+											       ::pyro::debug::profiler_timer timer##line(fixed_name##line.data)
+    #define PYRO_PROFILE_SCOPE_LINE(name, line) PYRO_PROFILE_SCOPE_LINE2(name, line)
+    #define PYRO_PROFILE_SCOPE(name) PYRO_PROFILE_SCOPE_LINE(name, __LINE__)
     #define PYRO_PROFILE_FUNCTION() PYRO_PROFILE_SCOPE(PYRO_FUNC_SIG)
 #else
     #define PYRO_PROFILE_BEGIN_SESSION(name, filepath)

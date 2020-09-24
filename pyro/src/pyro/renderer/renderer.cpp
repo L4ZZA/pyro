@@ -15,9 +15,17 @@ void pyro::renderer::shutdown()
     renderer_2d::shutdown();
 }
 
-void pyro::renderer::begin_scene(camera const &camera, const ref<shader> &shader)
+void pyro::renderer::begin_scene(camera_base const &camera, const ref<shader> &shader)
 {
     s_scene_data->view_projection_matrix = camera.view_projection_matrix();
+    s_scene_data->shader = shader;
+    shader->bind();
+    shader->set_mat4("u_view_projection", s_scene_data->view_projection_matrix);
+}
+
+void pyro::renderer::begin_scene(ref<camera_base> camera, const ref<shader> &shader)
+{
+    s_scene_data->view_projection_matrix = camera->view_projection_matrix();
     s_scene_data->shader = shader;
     shader->bind();
     shader->set_mat4("u_view_projection", s_scene_data->view_projection_matrix);

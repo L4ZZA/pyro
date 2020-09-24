@@ -1,16 +1,33 @@
 #pragma once
 #include "pyro/core/timestep.h"
 #define GLM_FORCE_CTOR_INIT
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
 
 
 namespace pyro
 {
-    //================= CAMERA INTERFACE =================
+    //================= REAL-TIME CAMERA  =====================
     class PYRO_API camera
     {
+        public:
+            camera() = default;
+            camera(const glm::mat4 &projection)
+                : m_projection(projection) {}
+
+            virtual ~camera() = default;
+
+            const glm::mat4 &projection_matrix() const { return m_projection; }
+
+        protected:
+            glm::mat4 m_projection{1.f};
+    };
+
+    //================= CAMERA INTERFACE =================
+    class PYRO_API camera_base
+    {
     public:
-        virtual ~camera() = default;
+        camera_base() = default;
+        virtual ~camera_base() = default;
 
         virtual void             projection_matrix(glm::mat4 const &mat) = 0;
         virtual glm::mat4 const &projection_matrix() const = 0;
@@ -27,7 +44,7 @@ namespace pyro
 
     //================= 2D CAMERA =================
 
-    class PYRO_API orthographic_camera final : public camera
+    class PYRO_API orthographic_camera final : public camera_base
     {
     public:
         orthographic_camera(float left, float right, float bottom, float top);
@@ -59,7 +76,7 @@ namespace pyro
 
     //================= 3D CAMERA =================
 
-    class PYRO_API perspective_camera : public camera
+    class PYRO_API perspective_camera : public camera_base
     {
     public:
         enum e_rotation

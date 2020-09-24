@@ -5,7 +5,7 @@
     class scene
     {
     public:
-        scene(pyro::ref<pyro::camera> const &camera);
+        scene(pyro::ref<pyro::camera_base> const &camera);
         virtual ~scene() = default;
 
         virtual void init() = 0;
@@ -16,5 +16,5 @@
         virtual void on_event(pyro::event &e) = 0;
 
     protected:
-        pyro::ref<pyro::camera> m_camera;
+        pyro::ref<pyro::camera_base> m_camera;
     };

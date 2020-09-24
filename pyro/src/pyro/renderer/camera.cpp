@@ -37,7 +37,7 @@ void pyro::orthographic_camera::view_matrix(glm::mat4 const& mat)
 void pyro::orthographic_camera::update_view_matrix()
 {
 	PYRO_PROFILE_FUNCTION();
-    glm::mat4 transform(1); // REMEMBER STR -> ROTATE, TRANSLATE, SCALE in reverse.
+    glm::mat4 transform(1); // REMEMBER STR -> ROTATE, SCALE, TRANSLATE in reverse.
     transform = glm::translate(transform, m_position);
     transform = glm::rotate(transform, glm::radians(m_rotation.z), glm::vec3(0, 0, 1));
 

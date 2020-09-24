@@ -74,15 +74,14 @@ void pyro::application::run()
                     tot_frame_time += m_frame_time;
                     frames++;
                 }
-                if(layer->is_imgui())
+                if(layer->is_imgui() && layer == m_imgui_layer)
                 {
-                    auto const &imgui_layer = std::dynamic_pointer_cast<pyro::imgui_layer>(layer);
-                    PYRO_CORE_ASSERT(imgui_layer, "imgui_layer couldn't be cast!");
-                    imgui_layer->begin();
+                    PYRO_CORE_ASSERT(m_imgui_layer, "imgui_layer couldn't be cast!");
+                    m_imgui_layer->begin();
                     {
-                        imgui_layer->on_imgui_render();
+                        m_imgui_layer->on_imgui_render();
                     }
-                    imgui_layer->end();
+                    m_imgui_layer->end();
                 }
             }
             tot_time += tot_frame_time;

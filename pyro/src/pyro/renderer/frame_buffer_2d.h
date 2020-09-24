@@ -9,6 +9,6 @@ namespace pyro
         virtual void clear_color(glm::vec4 const &color) = 0;
 
     public:
-        static ref<frame_buffer_2d> create(uint32_t width, uint32_t height);
+        static ref<frame_buffer_2d> create(framebuffer_props properties);
     };
 }
