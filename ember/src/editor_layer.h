@@ -2,6 +2,7 @@
 #include "pyro.h"
 #include "scenes/base_noise_scene.h"
 #include "scenes/scene_manager.h"
+#include "panels/scene_hierarchy_panel.h"
 #include "utils/perlin_noise.h" 
 
 
@@ -32,6 +33,7 @@ namespace pyro
         entity m_second_camera;
         entity m_square_entity;
         bool m_is_primary_camera = true;
+        scene_hierarchy_panel m_scene_hierarchy_panel;
 #endif
         ref<frame_buffer> m_framebuffer;
         glm::vec2 m_viewport_size = { 0.0f, 0.0f };

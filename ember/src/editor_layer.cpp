@@ -43,16 +43,16 @@ namespace pyro
         m_scene_manager.init_first_scene();
 #else
         m_active_scene = make_ref<scene>();
+
+        m_square_entity = m_active_scene->create_entity("Green Square");
+        m_square_entity.add_component<sprite_renderer_component>(glm::vec4{ 0.f,1.f,0.f,1.f });
         
         m_camera_entity = m_active_scene->create_entity("Camera Entity");
         m_camera_entity.add_component<camera_component>();
         
-        m_second_camera = m_active_scene->create_entity("Second Camera");
+        m_second_camera = m_active_scene->create_entity("Clip-space Camera");
         auto &sc = m_second_camera.add_component<camera_component>();
         sc.primary = false;
-
-        m_square_entity = m_active_scene->create_entity("Green Square");
-        m_square_entity.add_component<sprite_renderer_component>(glm::vec4{ 0.f,1.f,0.f,1.f });
 
         class camera_controller : public scriptable_entity
         {
@@ -82,6 +82,8 @@ namespace pyro
 
         m_camera_entity.add_component<native_script_component>().bind<camera_controller>();
 
+        // panels
+        m_scene_hierarchy_panel.context(m_active_scene);
 #endif
     }
 
@@ -246,6 +248,7 @@ namespace pyro
 
         }
 #else
+        m_scene_hierarchy_panel.on_imgui_render();
 
         ImGui::Begin("Settings");
         if(m_square_entity)
