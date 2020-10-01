@@ -5,15 +5,15 @@
 namespace pyro
 {
     enum class e_primitive_type;
+    
+    enum class PYRO_API e_renderer_api
+    {
+        none = 0, opengl = 1, directx11 = 2
+    };
+
     ///   
     class PYRO_API renderer_api
     {
-    public:
-        enum class e_api
-        {
-            none = 0, opengl = 1
-        };
-
     public:
         virtual ~renderer_api() = default;
         virtual void init() = 0;
@@ -26,13 +26,13 @@ namespace pyro
 
         virtual void draw_indexed(ref<vertex_array> const &vertex_array, const uint32_t index_count = 0) = 0;
         virtual void primitive_type(e_primitive_type const &type) = 0;
-        static e_api api() { return s_renderer_api; }
+        static e_renderer_api api() { return s_renderer_api; }
 
     protected:
         virtual void enable_alpha() = 0;
         virtual void enable_depth_test() = 0;
         virtual void enable_culling() = 0;
         static e_primitive_type s_primitive_type;
-        inline static e_api s_renderer_api = e_api::opengl;
+        inline static e_renderer_api s_renderer_api = e_renderer_api::opengl;
     };
 }

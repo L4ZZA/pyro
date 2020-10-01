@@ -23,7 +23,7 @@ namespace pyro
             const ref<vertex_array> &vertex_array,
             const glm::mat4 &transform = glm::mat4(1.f));
 
-        inline static renderer_api::e_api api() { return renderer_api::api(); }
+        inline static e_renderer_api api() { return renderer_api::api(); }
 
     private:
         struct scene_data

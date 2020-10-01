@@ -13,8 +13,8 @@ pyro::texture_2d::create(
 {
     switch(renderer::api())
     {
-        case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[texture_2d] e_renderer_api::none currently not supported!"); return nullptr;
-        case renderer_api::e_api::opengl: return make_ref<gl_texture_2d>(width, height, params);
+        case e_renderer_api::none: PYRO_CORE_ASSERT(false, "[texture_2d] e_renderer_api::none currently not supported!"); return nullptr;
+        case e_renderer_api::opengl: return make_ref<gl_texture_2d>(width, height, params);
     }
 
     PYRO_CORE_ASSERT(false, "[texture_2d] Unknown renderer api!");
@@ -28,8 +28,8 @@ pyro::texture_2d::create_from_file(
 {
     switch(renderer::api())
     {
-        case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[texture_2d] e_renderer_api::none currently not supported!"); return nullptr;
-        case renderer_api::e_api::opengl: return make_ref<gl_texture_2d>(path, params);
+        case e_renderer_api::none: PYRO_CORE_ASSERT(false, "[texture_2d] e_renderer_api::none currently not supported!"); return nullptr;
+        case e_renderer_api::opengl: return make_ref<gl_texture_2d>(path, params);
     }
 
     PYRO_CORE_ASSERT(false, "[texture_2d] Unknown renderer api!");

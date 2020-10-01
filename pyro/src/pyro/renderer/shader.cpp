@@ -7,8 +7,8 @@ pyro::ref<pyro::shader> pyro::shader::create(std::string const &file_path)
 {
     switch(renderer::api())
     {
-        case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[shader] e_renderer_api::none currently not supported!"); return nullptr;
-        case renderer_api::e_api::opengl: return make_ref<gl_shader>(file_path);
+        case e_renderer_api::none: PYRO_CORE_ASSERT(false, "[shader] e_renderer_api::none currently not supported!"); return nullptr;
+        case e_renderer_api::opengl: return make_ref<gl_shader>(file_path);
     }
 
     PYRO_CORE_ASSERT(false, "[shader] Unknown renderer api!");
@@ -19,8 +19,8 @@ std::shared_ptr<pyro::shader> pyro::shader::create(std::string const &name, std:
 {
     switch(renderer::api())
     {
-        case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[shader] e_renderer_api::none currently not supported!"); return nullptr;
-        case renderer_api::e_api::opengl: return make_ref<gl_shader>(name, file_path);
+        case e_renderer_api::none: PYRO_CORE_ASSERT(false, "[shader] e_renderer_api::none currently not supported!"); return nullptr;
+        case e_renderer_api::opengl: return make_ref<gl_shader>(name, file_path);
     }
 
     PYRO_CORE_ASSERT(false, "[shader] Unknown renderer api!");
@@ -31,8 +31,8 @@ pyro::ref<pyro::shader> pyro::shader::create(std::string const &name, std::strin
 {
     switch(renderer::api())
     {
-        case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[shader] e_renderer_api::none currently not supported!"); return nullptr;
-        case renderer_api::e_api::opengl: return make_ref<gl_shader>(name, vertex_source, fragment_source);
+        case e_renderer_api::none: PYRO_CORE_ASSERT(false, "[shader] e_renderer_api::none currently not supported!"); return nullptr;
+        case e_renderer_api::opengl: return make_ref<gl_shader>(name, vertex_source, fragment_source);
     }
 
     PYRO_CORE_ASSERT(false, "[shader] Unknown renderer api!");
