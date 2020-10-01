@@ -8,10 +8,11 @@ namespace pyro
 {
     struct PYRO_API window_props
     {
-        std::string m_title  = "";
-        uint32_t    m_width  = 0;
-        uint32_t    m_height = 0;
-        bool        m_vsync  = false;
+        std::string m_title       = "";
+        uint32_t    m_width       = 0;
+        uint32_t    m_height      = 0;
+        bool        m_vsync       = false;
+        bool        m_fullscreen  = false;
 
         window_props(std::string const &title = "pyro",
                      uint32_t width = 1280,

@@ -14,18 +14,14 @@ bool pyro::application::s_minimized = false;
 
 //----------------------------------------------------------------------------- 
 
-pyro::application::application(std::string const &name, uint32_t width, uint32_t height)
+pyro::application::application(window_props const &properties)
 {
     PYRO_PROFILE_FUNCTION();
 
     PYRO_CORE_ASSERT(!s_instance, "Application already exists!");
     s_instance = this;
 
-    window_props props;
-    props.m_title = name;
-    props.m_width = width;
-    props.m_height = height;
-    m_window = window::create(props);
+    m_window = window::create(properties);
     m_window->event_callback(BIND_EVENT_FN(application::on_event));
 
     renderer::init();
