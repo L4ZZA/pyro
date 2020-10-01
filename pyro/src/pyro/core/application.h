@@ -1,14 +1,15 @@
 #pragma once
 
-#include "core.h"
+#include "pyro/core/core.h"
 
-#include "window.h"
-#include "layers_stack.h"
+#include "pyro/core/window.h"
+#include "pyro/core/layers_stack.h"
 #include "pyro/events/event.h"
 #include "pyro/events/application_event.h"
 #include "pyro/imgui/imgui_layer.h"
 #include "pyro/core/timestep.h"
 #include "pyro/core/timer.h"
+#include "pyro/renderer/graphics_context.h"
 
 int main(int argc, char** argv);
 
@@ -17,7 +18,7 @@ namespace pyro
     class PYRO_API application
     {
     public:
-        application(window_props const &properties);
+        application(window_props const &properties, e_renderer_api const &api = e_renderer_api::opengl);
         virtual ~application();
 
         virtual void on_event(event &e);
@@ -39,11 +40,14 @@ namespace pyro
         // Frame time in seconds
         static float    frame_time() { return instance().m_frame_time; }
     public:
+		void start();
+		void suspend();
+		void resume();
+		void stop();
         static void exit();
 
     protected:
         virtual void init() = 0;
-        virtual void deinit() = 0;
 
     private:
         void run();
@@ -60,11 +64,11 @@ namespace pyro
         timer                          *m_timer = nullptr;
         uint32_t                        m_UpdatesPerSecond;
         uint32_t                        m_FramesPerSecond;
+        bool                            m_running;
+        bool                            m_suspended;
 
     private:
         static application   *s_instance;
-        static bool           s_running;
-        static bool           s_minimized;
 
         friend int ::main(int argc, char** argv);
     };

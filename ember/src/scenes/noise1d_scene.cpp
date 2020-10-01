@@ -39,10 +39,6 @@ void noise1d_scene::init()
     on_seed_changed();
 }
 
-void noise1d_scene::deinit()
-{
-}
-
 void noise1d_scene::on_update(pyro::timestep const &ts)
 {
     if(m_play_mode)

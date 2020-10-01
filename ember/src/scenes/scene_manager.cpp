@@ -15,7 +15,6 @@ void scene_manager::next_scene()
 {
     if(m_scene_index < m_scenes.size() - 1)
     {
-        m_scenes[m_scene_index]->deinit();
         m_scene_index++;
         m_scenes[m_scene_index]->init();
     }
@@ -29,7 +28,6 @@ void scene_manager::previous_scene()
 {
     if(m_scene_index > 0)
     {
-        m_scenes[m_scene_index]->deinit();
         m_scene_index--;
         m_scenes[m_scene_index]->init();
     }
@@ -43,7 +41,6 @@ void scene_manager::go_to(int scene_index)
 {
     if(scene_index > -1 || scene_index > m_scenes.size() - 1)
     {
-        m_scenes[m_scene_index]->deinit();
         m_scene_index = scene_index;
         m_scenes[m_scene_index]->init();
     }

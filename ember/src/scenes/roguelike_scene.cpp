@@ -31,10 +31,6 @@ void roguelike_scene::init()
     on_seed_changed();
 }
 
-void roguelike_scene::deinit()
-{
-}
-
 void roguelike_scene::on_update(pyro::timestep const &ts)
 {
     if(m_play_mode)

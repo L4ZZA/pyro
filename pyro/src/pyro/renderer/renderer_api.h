@@ -1,15 +1,11 @@
 #pragma once
 #include <glm/glm.hpp>
+#include "pyro/renderer/graphics_context.h"
 #include "pyro/renderer/vertex_array.h"
 
 namespace pyro
 {
     enum class e_primitive_type;
-    
-    enum class PYRO_API e_renderer_api
-    {
-        none = 0, opengl = 1, directx11 = 2
-    };
 
     ///   
     class PYRO_API renderer_api
@@ -26,6 +22,7 @@ namespace pyro
 
         virtual void draw_indexed(ref<vertex_array> const &vertex_array, const uint32_t index_count = 0) = 0;
         virtual void primitive_type(e_primitive_type const &type) = 0;
+        static void api(e_renderer_api api) { s_renderer_api = api; }
         static e_renderer_api api() { return s_renderer_api; }
 
     protected:

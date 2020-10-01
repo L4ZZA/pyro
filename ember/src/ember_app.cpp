@@ -11,7 +11,7 @@ namespace pyro
     {
     public:
         ember(uint32_t width, uint32_t height)
-            :application({ "Ember Editor", width, height })
+            :application({"Ember Editor", width, height})
         {
         }
 
@@ -24,10 +24,6 @@ namespace pyro
             const float height = static_cast<float>(window().height());
             m_imgui_layer = make_ref<editor_layer>(width, height);
             push_layer(m_imgui_layer);
-        }
-
-        virtual void deinit() override
-        {
         }
 
         void on_event(event &e) override
