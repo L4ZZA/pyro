@@ -8,8 +8,8 @@ pyro::frame_buffer_2d::create(framebuffer_props properties)
 {
     switch(renderer::api())
     {
-        case renderer_api::e_api::none: PYRO_CORE_ASSERT(false, "[frame_buffer_2d] e_renderer_api::none currently not supported!"); return nullptr;
-        case renderer_api::e_api::opengl: return make_ref<gl_frame_buffer_2d>(properties);
+        case e_renderer_api::none: PYRO_CORE_ASSERT(false, "[frame_buffer_2d] e_renderer_api::none currently not supported!"); return nullptr;
+        case e_renderer_api::opengl: return make_ref<gl_frame_buffer_2d>(properties);
     }
 
     PYRO_CORE_ASSERT(false, "[frame_buffer_2d] Unknown renderer api!");
