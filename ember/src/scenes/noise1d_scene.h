@@ -9,7 +9,6 @@ public:
     virtual ~noise1d_scene();
 
     void init() override;
-    void deinit() override;
     void on_update(pyro::timestep const &ts) override;
     void on_render() const override;
     void on_imgui_render() override;

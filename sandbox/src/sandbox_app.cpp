@@ -8,7 +8,7 @@ class sandbox_app : public pyro::application
 {
 public:
     sandbox_app(uint32_t width, uint32_t height)
-        :application({ "Sandbox", width, height })
+        :application({"Sandbox", width, height })
     {
     }
 
@@ -22,10 +22,6 @@ public:
         m_imgui_layer = std::make_shared<layer_2d>(width,height);
         //push_layer(new layer_3d());  
         push_layer(m_imgui_layer);
-    }
-
-    virtual void deinit() override
-    {
     }
 
     void on_event(pyro::event &event) override

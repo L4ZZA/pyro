@@ -8,25 +8,18 @@ namespace pyro
 {
     struct PYRO_API window_props
     {
-        std::string m_title       = "";
-        uint32_t    m_width       = 0;
-        uint32_t    m_height      = 0;
+        std::string m_title       = "pyro";
+        uint32_t    m_width       = 1280;
+        uint32_t    m_height      = 720;
         bool        m_vsync       = false;
         bool        m_fullscreen  = false;
-
-        window_props(std::string const &title = "pyro",
-                     uint32_t width = 1280,
-                     uint32_t height = 720)
-                : m_title(title), m_width(width), m_height(height)
-        {
-        }
     };
 
     /// Interface representing a desktop system based window.
     class PYRO_API window
     {
     public:
-        static scope<window> create(window_props const &props = window_props());
+        static scope<window> create(window_props const &props);
 
         //---------------------------------------------------------------------
 

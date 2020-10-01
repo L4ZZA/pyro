@@ -1,4 +1,4 @@
-﻿#include "pyro_pch.h"
+#include "pyro_pch.h"
 #include "application.h"
 
 #include "platform/opengl/gl_shader.h"
@@ -9,18 +9,15 @@
 //----------------------------------------------------------------------------- 
 
 pyro::application *pyro::application::s_instance = nullptr;
-bool pyro::application::s_running = true;
-bool pyro::application::s_minimized = false;
 
 //----------------------------------------------------------------------------- 
 
-pyro::application::application(window_props const &properties)
+pyro::application::application(const window_props &properties, e_renderer_api const &api /*= e_renderer_api::opengl*/)
 {
-    PYRO_PROFILE_FUNCTION();
-
     PYRO_CORE_ASSERT(!s_instance, "Application already exists!");
     s_instance = this;
 
+    renderer_api::api(api);
     m_window = window::create(properties);
     m_window->event_callback(BIND_EVENT_FN(application::on_event));
 
@@ -29,26 +26,23 @@ pyro::application::application(window_props const &properties)
 
 pyro::application::~application()
 {
-    PYRO_PROFILE_FUNCTION();
     renderer::shutdown();
 }
 
 void pyro::application::run()
 {
-    PYRO_PROFILE_FUNCTION();
-
     m_timer = new timer();
     float tot_time = 0.f;
     uint32_t frames = 0;
     uint32_t updates = 0;
 
-    while(s_running)
+    while(m_running)
     {
         PYRO_PROFILE_SCOPE("run loop");
         timestep timestep(m_timer->elapsed());
         tot_time += timestep;
         
-        if(!s_minimized)
+        if(!m_suspended)
         {
             // Total time spent for all layers to be rendered
             float tot_frame_time = 0.f;
@@ -99,7 +93,7 @@ void pyro::application::run()
 
 void pyro::application::on_event(event &e)
 {
-    PYRO_PROFILE_FUNCTION();
+    
 
     event_dispatcher dispatcher(e);
     // dispatch event on window X pressed 
@@ -121,16 +115,12 @@ void pyro::application::on_event(event &e)
 
 void pyro::application::push_layer(ref<layer> const &layer)
 {
-    PYRO_PROFILE_FUNCTION();
-
     m_layers_stack.push_layer(layer);
     layer->on_attach();
 }
 
 void pyro::application::push_overlay(ref<layer> const &overlay)
 {
-    PYRO_PROFILE_FUNCTION();
-
     m_layers_stack.push_overlay(overlay);
     overlay->on_attach();
 }
@@ -144,14 +134,14 @@ bool pyro::application::on_window_close(window_closed_event &)
 
 bool pyro::application::on_window_resized(window_resize_event &e)
 {
-    PYRO_PROFILE_FUNCTION();
+    
 
     if(e.height() == 0 || e.width() == 0)
     {
-        s_minimized = true;
+        m_suspended = true;
         return false;
     }
-    s_minimized = false;
+    m_suspended = false;
 
     renderer::on_window_resize(e.width(), e.height());
 
@@ -159,7 +149,30 @@ bool pyro::application::on_window_resized(window_resize_event &e)
     return event_handled;
 }
 
+void pyro::application::start()
+{
+    init();
+    m_running = true;
+    m_suspended = false;
+    run();
+}
+
+void pyro::application::suspend()
+{
+    m_suspended = true;
+}
+
+void pyro::application::resume()
+{
+    m_suspended = false;
+}
+
+void pyro::application::stop()
+{
+    m_running = false;
+}
+
 void pyro::application::exit()
 {
-    s_running = false;
+    instance().stop();
 }
