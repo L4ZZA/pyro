@@ -11,7 +11,7 @@ namespace pyro
     {
     public:
         ember(uint32_t width, uint32_t height)
-            :application("Ember Editor", width, height)
+            :application({ "Ember Editor", width, height })
         {
         }
 

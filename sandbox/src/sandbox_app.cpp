@@ -8,7 +8,7 @@ class sandbox_app : public pyro::application
 {
 public:
     sandbox_app(uint32_t width, uint32_t height)
-        :application("Sandbox", width, height)
+        :application({ "Sandbox", width, height })
     {
     }
 
