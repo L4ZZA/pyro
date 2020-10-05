@@ -93,6 +93,19 @@ namespace pyro
 				ImGui::TreePop();
 			}
 		}
+		
+		if(e.has_component<sprite_renderer_component>())
+		{
+			if(ImGui::TreeNodeEx(
+				reinterpret_cast<void *>(typeid(sprite_renderer_component).hash_code()),
+				ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer"))
+			{
+				auto &sprite_comp = e.get_component<sprite_renderer_component>();
+				ImGui::ColorEdit4("Color", glm::value_ptr(sprite_comp.color));
+
+				ImGui::TreePop();
+			}
+		}
 
 		if(e.has_component<camera_component>())
 		{
@@ -176,6 +189,7 @@ namespace pyro
 			}
 		}
 	}
+
 	void scene_hierarchy_panel::context(ref<scene> scene_context)
 	{
 		m_context = scene_context;
