@@ -2,10 +2,11 @@
 #include "sub_texture.h"
 
 pyro::sub_texture_2d::sub_texture_2d(
-    ref<texture> texture, 
+    ref<texture_2d> texture, 
     glm::vec2 const &min, 
     glm::vec2 const &max)
 {
+    m_texture = texture;
     m_texture_coords[0] = {min.x, min.y};
     m_texture_coords[1] = {max.x, min.y};
     m_texture_coords[2] = {max.x, max.y};
@@ -14,7 +15,7 @@ pyro::sub_texture_2d::sub_texture_2d(
 
 pyro::ref<pyro::sub_texture_2d> 
 pyro::sub_texture_2d::create_from_coords(
-    ref<texture> texture, 
+    ref<texture_2d> texture, 
     glm::vec2 const &coords, 
     glm::vec2 const &cell_size,
     glm::vec2 const &sprite_size /*= { 1.f ,1.f }*/)

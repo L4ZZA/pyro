@@ -11,8 +11,8 @@
 
 namespace pyro
 {
-    editor_layer::editor_layer(float width, float height)
-        : imgui_layer("ember")
+    editor_layer::editor_layer(uint32_t width, uint32_t height)
+        : imgui_layer(width, height, "ember")
         , m_seed(0)
     {
 #if OLD_SCENE
@@ -23,11 +23,6 @@ namespace pyro
         m_scene_manager.add_scene(make_ref<noise2d_scene>(m_2d_camera_controller));
         m_scene_manager.add_scene(make_ref<roguelike_scene>(m_2d_camera_controller));
 #endif
-        m_viewport_size = { width, height };
-        framebuffer_props props;
-        props.width = static_cast<uint32_t>(width);
-        props.height = static_cast<uint32_t>(height);
-        m_framebuffer = frame_buffer_2d::create(props);
     }
 
     editor_layer::~editor_layer()
@@ -39,16 +34,30 @@ namespace pyro
     {
         PYRO_PROFILE_FUNCTION();
         imgui_layer::on_attach();
+        
+        m_viewport_size = { static_cast<float>(m_layer_width), static_cast<float>(m_layer_height) };
+        framebuffer_props props;
+        props.width  = m_layer_width;
+        props.height = m_layer_height;
+        m_framebuffer = frame_buffer_2d::create(props);
+
 #if OLD_SCENE
         m_scene_manager.init_first_scene();
 #else
         m_active_scene = make_ref<scene>();
-
-        auto green_square = m_active_scene->create_entity("Green Square", {2.f,0.f,0.f});
-        green_square.add_component<sprite_renderer_component>(glm::vec4{ 0.f,1.f,0.f,1.f });
         
-        auto red_square = m_active_scene->create_entity("Red Square");
-        red_square.add_component<sprite_renderer_component>(glm::vec4{ 1.f,0.f,0.f,1.f });
+        m_sprite_sheet = pyro::texture_2d::create_from_file("assets/textures/RPGpack_sheet_2X.png");
+
+        m_barrel_texture = pyro::sub_texture_2d::create_from_coords(m_sprite_sheet, { 8,2 }, {128.f, 128.f});
+        m_tree_texture = pyro::sub_texture_2d::create_from_coords(m_sprite_sheet, { 2,1 }, { 128.f, 128.f }, { 1.f,2.f });
+
+        auto green_square = m_active_scene->create_entity("Green Square", {1.f,0.f,0.f});
+        green_square.add_component<sprite_renderer_component>(m_barrel_texture);
+        
+        auto red_square = m_active_scene->create_entity("Red Square", {0.f,0.5f,0.f});
+        red_square.add_component<sprite_renderer_component>(m_tree_texture);
+        auto &transform = red_square.get_component<pyro::transform_component>().transform;
+        transform = glm::scale(transform, { 1.f,2.f,0.f });
         
         m_camera_entity = m_active_scene->create_entity("Camera Entity");
         m_camera_entity.add_component<camera_component>();

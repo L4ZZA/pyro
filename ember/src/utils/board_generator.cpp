@@ -169,7 +169,7 @@ void board_generator::on_render() const
     {
         tile const &tile = m_tiles[i];
         pyro::quad_properties props;
-        props.position = { tile.x, tile.y, 0.f };
+        props.transform[3] = { tile.x, tile.y, 0.f, 0.f };
         float opacity = 0.75f;
 
         // the coordinates to the noise method have to be floating points values.
@@ -200,7 +200,7 @@ void board_generator::on_render() const
             {
                 tile const &tile = m_tiles[index];
                 pyro::quad_properties props;
-                props.position = { tile.x, tile.y, 0.1f };
+                props.transform[3] = { tile.x, tile.y, 0.1f, 0.f };
                 props.texture = m_floor_texture;
                 //props.color = { 1.f,0.f,1.f,opacity };
                 pyro::renderer_2d::draw_quad(props);
@@ -219,7 +219,7 @@ void board_generator::on_render() const
                 for(int y = y_start; y <= y_end; y++)
                 {
                     pyro::quad_properties props;
-                    props.position = { x, y, 0.1f };
+                    props.transform[3] = { x, y, 0.1f, 0.f };
                     float opacity = 0.75f;
                     // only use floor texture if the tile is geometrically
                     // part of the floor (ignoring tile-type)

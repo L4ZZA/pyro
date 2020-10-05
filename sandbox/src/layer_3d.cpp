@@ -2,7 +2,8 @@
 #include <imgui/imgui.h>
 
 layer_3d::layer_3d()
-    :m_3d_camera_controller(pyro::perspective_camera_controller::e_control_type::first_person,
+    : imgui_layer(pyro::application::window().width(), pyro::application::window().height())
+    , m_3d_camera_controller(pyro::perspective_camera_controller::e_control_type::first_person,
                         static_cast<float>(pyro::application::window().width()),
                         static_cast<float>(pyro::application::window().height()))
 {

@@ -78,7 +78,7 @@ void noise2d_scene::on_render() const
             else
                 props.color = m_bg_colors[color_map(noise)];
             
-            props.position = { x, y, 0.0f };
+            props.transform[3] = { x, y, 0.0f, 0.f };
             pyro::renderer_2d::draw_quad(props);
         }
     pyro::renderer_2d::end_scene();
@@ -88,11 +88,13 @@ void noise2d_scene::on_render() const
         pyro::renderer_2d::begin_scene(m_camera);
         pyro::renderer_2d::current_shader()->set_int("u_grayscale", true);
         {
-            pyro::quad_properties props;
             float offset = -0.5f;
-            props.position = { m_width * 1.5f + offset, m_height * .5f + offset, 0.1f };
+            glm::vec3 position = { m_width * 1.5f + offset, m_height * .5f + offset, 0.1f };
+            glm::vec3 size = { m_width, m_height, 0.f};
+
+            pyro::quad_properties props;
+            props.transform = glm::translate(glm::mat4(1.f), position) * glm::scale(glm::mat4(1.f), size);
             props.color = { 1.f, 1.0f, 1.f, 1.f };
-            props.size = { m_width, m_height};
             props.texture = m_noise_texture;
             pyro::renderer_2d::draw_quad(props);
         }

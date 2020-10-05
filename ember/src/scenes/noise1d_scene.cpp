@@ -65,7 +65,7 @@ void noise1d_scene::on_render() const
         {
             pyro::quad_properties props;
             // offsetting position to center the map around the origin (coords [0,0])
-            props.position = { static_cast<float>(x - width / 2), static_cast<float>(y - height / 2), 0.f };
+            props.transform[3]  = glm::vec4{ static_cast<float>(x - width / 2), static_cast<float>(y - height / 2), 0.f, 1.f };
 
             int32_t cell = m_surface[x * height + y];
             switch(cell)

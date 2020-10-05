@@ -166,26 +166,27 @@ pyro::ref<pyro::shader> const &pyro::renderer_2d::current_shader()
 }
 
 void pyro::renderer_2d::draw_quad(
-    glm::mat4 const &transform,
+    glm::vec3 position,
     glm::vec4 color /*= { 1.0f, 1.0f, 1.0f, 1.0f }*/,
-    ref<texture_2d> texture /*= nullptr*/,
+    glm::vec3 size /*= { 1.f, 1.f, 1.f }*/,
+    float rotation /*= 0.f*/,
+    ref<sub_texture_2d> sub_texture /*= nullptr*/,
     float textureIndex /*= 0.f*/,
     float tiling_factor /*= 1.f*/)
 {
-    constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
-    for(size_t i = 0; i < s_quad_vertex_count; i++)
-    {
-        s_data.quad_vertex_buffer_ptr->position = transform * s_data.quad_vertex_positions[i];
-        s_data.quad_vertex_buffer_ptr->color = color;
-        s_data.quad_vertex_buffer_ptr->tex_coord = textureCoords[i];
-        s_data.quad_vertex_buffer_ptr->tex_index = textureIndex;
-        s_data.quad_vertex_buffer_ptr->tiling_factor = tiling_factor;
-        s_data.quad_vertex_buffer_ptr++;
-    }
+    glm::mat4 transform(1.f); // REMEMBER STR -> ROTATE, SCALE, TRANSLATE in reverse.
+    transform = glm::translate(transform, position);
+    if(rotation != 0.f) // if no rotation avoid matrix calculation 
+        transform = glm::rotate(transform, glm::radians(rotation), { 0.0f, 0.0f, 1.0f });
+    transform = glm::scale(transform, { size.x, size.y, 1.0f });
 
-    s_data.quad_index_count += 6;
+    quad_properties props;
+    props.texture = sub_texture->get_texture();
+    props.transform = transform;
+    props.color = color;
+    props.texture_coords = sub_texture->texture_coords();
 
-    s_data.stats.quad_count++;
+    draw_quad(props);
 }
 
 void pyro::renderer_2d::draw_quad(quad_properties const &props)
@@ -220,12 +221,19 @@ void pyro::renderer_2d::draw_quad(quad_properties const &props)
         }
     }
 
-    glm::mat4 transform = glm::translate(glm::mat4(1.0f), props.position);
-    if(props.rotation != 0.f) // if no rotation avoid matrix calculation 
-        transform = glm::rotate(transform, glm::radians(props.rotation), { 0.0f, 0.0f, 1.0f });
-    transform = glm::scale(transform, { props.size.x, props.size.y, 1.0f });
+    for(size_t i = 0; i < s_quad_vertex_count; i++)
+    {
+        s_data.quad_vertex_buffer_ptr->position = props.transform * s_data.quad_vertex_positions[i];
+        s_data.quad_vertex_buffer_ptr->color = props.color;
+        s_data.quad_vertex_buffer_ptr->tex_coord = props.texture_coords[i];
+        s_data.quad_vertex_buffer_ptr->tex_index = textureIndex;
+        s_data.quad_vertex_buffer_ptr->tiling_factor = props.tiling_factor;
+        s_data.quad_vertex_buffer_ptr++;
+    }
 
-    draw_quad(transform, props.color, props.texture, textureIndex, props.tiling_factor);
+    s_data.quad_index_count += 6;
+
+    s_data.stats.quad_count++;
 }
 
 void pyro::renderer_2d::reset_render_data()

@@ -20,10 +20,11 @@ namespace pyro
         // Inherited via application
         virtual void init() override
         {
-            const float width = static_cast<float>(window().width());
-            const float height = static_cast<float>(window().height());
-            m_imgui_layer = make_ref<editor_layer>(width, height);
-            push_layer(m_imgui_layer);
+            const uint32_t width  = window().width();
+            const uint32_t height = window().height();
+            m_layer_2d = make_ref<editor_layer>(width, height);
+            push_layer(m_layer_2d);
+            m_imgui_layer = std::dynamic_pointer_cast<imgui_layer>(m_layer_2d);
         }
 
         void on_event(event &e) override
@@ -43,6 +44,8 @@ namespace pyro
             }
             return false;
         }
+    private:
+        ref<layer> m_layer_2d;
     };
 
 

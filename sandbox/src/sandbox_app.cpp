@@ -17,11 +17,14 @@ public:
     // Inherited via application
     virtual void init() override
     {
-        const float width = static_cast<float>(window().width());
-        const float height = static_cast<float>(window().height());
-        m_imgui_layer = std::make_shared<layer_2d>(width,height);
+        const uint32_t width  = window().width();
+        const uint32_t height = window().height();
+        m_layer_2d = std::make_shared<layer_2d>(width,height);
+        //m_layer_3d = std::make_shared<layer_3d>();
+
+        //m_imgui_layer = std::dynamic_pointer_cast<pyro::imgui_layer>(m_layer_3d);
+        push_layer(m_layer_2d);
         //push_layer(new layer_3d());  
-        push_layer(m_imgui_layer);
     }
 
     void on_event(pyro::event &event) override
@@ -47,6 +50,9 @@ public:
     }
 
 private:
+    pyro::ref<pyro::layer> m_layer_2d = nullptr;
+    pyro::ref<pyro::layer> m_layer_3d = nullptr;
+
 };
 
 

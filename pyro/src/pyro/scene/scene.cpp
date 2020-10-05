@@ -26,7 +26,7 @@ void pyro::scene::on_update(pyro::timestep const &ts)
 	{
 		m_registry.view<native_script_component>().each([=](auto entity, native_script_component &nsc)
 			{
-				// TODO:: move on scene play 
+				// TODO:: move to on_scene_play 
 				if(!nsc.instance)
 				{
 					nsc.instance = nsc.instantiate_script_func();
@@ -68,7 +68,12 @@ void pyro::scene::on_render()
 		{
 			auto [transform, sprite] = group.get<transform_component, sprite_renderer_component>(entity);
 
-			renderer_2d::draw_quad(transform, sprite.color);
+			quad_properties props;
+			props.transform = transform;
+			props.texture = sprite.texture;
+			props.texture_coords = sprite.texture_coords;
+			props.color = sprite.color;
+			renderer_2d::draw_quad(props);
 		}
 
 		renderer_2d::end_scene();

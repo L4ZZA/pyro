@@ -2,17 +2,22 @@
 #include "pyro/renderer/shader.h"
 #include "pyro/renderer/camera.h"
 #include "pyro/renderer/texture.h"
+#include "pyro/renderer/sub_texture.h"
 
 namespace pyro
 {
     struct PYRO_API quad_properties
     {
-        glm::vec4 color         = {1.0f, 1.0f, 1.0f, 1.0f};
-        glm::vec3 position      = {0.f,0.f,0.f};
-        glm::vec2 size          = {1.f,1.f};
-        ref<texture_2d> texture = nullptr;
-        float rotation          = 0.f;
-        float tiling_factor     = 1.f;
+        glm::mat4 transform         = glm::mat4(1.0f);
+        ref<texture_2d> texture     = nullptr;
+		std::array<glm::vec2, 4> texture_coords{
+			                            glm::vec2{0.f, 0.f},
+			                            glm::vec2{0.f, 1.f},
+			                            glm::vec2{1.f, 1.f},
+			                            glm::vec2{0.f, 1.f}
+		                            };
+        glm::vec4 color             = {1.0f, 1.0f, 1.0f, 1.0f};
+        float tiling_factor         = 1.f;
     };
 
     class PYRO_API renderer_2d
@@ -29,9 +34,11 @@ namespace pyro
         static ref<shader> const& current_shader();
 
         // primitives
-        static void draw_quad(glm::mat4 const &transform,
+        static void draw_quad(glm::vec3 position = { 0.f, 0.f, 0.f },
                               glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f },
-                              ref<texture_2d> texture = nullptr,
+                              glm::vec3 size = { 1.f, 1.f, 0.f },
+                              float rotation     = 0.f,
+                              ref<sub_texture_2d> sub_texture = nullptr,
                               float textureIndex = 0.f,
                               float tiling_factor = 1.f);
         static void draw_quad(quad_properties const& props);

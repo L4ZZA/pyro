@@ -20,6 +20,9 @@ namespace pyro
         void on_render();
         void on_viewport_resize(uint32_t width, uint32_t height);
 
+        uint32_t width () const {return m_viewport_width; }
+        uint32_t height() const {return m_viewport_width; }
+
     private:
         entt::registry m_registry;
         uint32_t m_viewport_width  = 0;

@@ -12,8 +12,10 @@
 //#include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-pyro::imgui_layer::imgui_layer(std::string const& name /*= "imgui_layer"*/)
-    : layer(name)
+pyro::imgui_layer::imgui_layer(
+    uint32_t width, uint32_t height, 
+    std::string const& name /*= "imgui_layer"*/)
+    : layer(width, height, name)
 {
 	m_imgui = true;
 }

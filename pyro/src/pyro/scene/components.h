@@ -1,8 +1,10 @@
 #pragma once
 #include "pyro/scene/scene_camera.h"
 #include "pyro/scene/scriptable_entity.h"
+#include "pyro/renderer/sub_texture.h"
 #include <glm/glm.hpp>
 #include <string>
+#include <array>
 
 namespace pyro
 {
@@ -46,11 +48,28 @@ namespace pyro
 	{
 		inline static char *type_name = "sprite_renderer_component";
 		glm::vec4 color{ 1.0f, 1.0f, 1.0f, 1.0f };
+		ref<texture_2d> texture = nullptr;
+		std::array<glm::vec2, 4> texture_coords{
+			glm::vec2{0.f, 0.f},
+			glm::vec2{0.f, 1.f},
+			glm::vec2{1.f, 1.f},
+			glm::vec2{0.f, 1.f}
+		};
 
 		sprite_renderer_component() = default;
-		sprite_renderer_component(const sprite_renderer_component &) = default;
-		sprite_renderer_component(const glm::vec4 &c)
+		sprite_renderer_component(sprite_renderer_component const &) = default;
+		sprite_renderer_component(glm::vec4 const &c)
 			: color(c)
+		{}
+		sprite_renderer_component(ref<texture_2d> tex, glm::vec4 const &c = {1.0f, 1.0f, 1.0f, 1.0f})
+			: texture(tex), color(c)
+		{}
+		sprite_renderer_component(
+			ref<sub_texture_2d> sub_tex,
+			glm::vec4 const &c = {1.0f, 1.0f, 1.0f, 1.0f})
+			: texture(sub_tex->get_texture())
+			, texture_coords(sub_tex->texture_coords())
+			, color(c)
 		{}
 	};
 

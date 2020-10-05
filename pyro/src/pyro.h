@@ -21,6 +21,7 @@
 #include "pyro/renderer/vertex_array.h"
 #include "pyro/renderer/shader.h"
 #include "pyro/renderer/texture.h"
+#include "pyro/renderer/sub_texture.h"
 #include "pyro/renderer/camera.h"
 #include "pyro/renderer/camera_controller.h"
 #include "pyro/renderer/frame_buffer_2d.h"

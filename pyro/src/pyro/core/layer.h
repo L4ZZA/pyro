@@ -10,7 +10,9 @@ namespace pyro
 	class PYRO_API layer
 	{
 	public:
-		layer(std::string const & name = "Layer");
+		layer(
+			uint32_t width, uint32_t height, 
+			std::string const &name = "Layer");
 		virtual ~layer();
 
 		/// Runs when a layer is pushed onto the layer stack
@@ -30,7 +32,9 @@ namespace pyro
 		bool is_imgui() const { return m_imgui; }
 
 	protected:
-		std::string m_debug_name = "";
+		std::string m_debug_name;
+		uint32_t m_layer_width;
+		uint32_t m_layer_height;
 
 		/// Flag to distinguish between imgui and pyro rendering calls.
 		bool		m_imgui = false ;

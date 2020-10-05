@@ -12,7 +12,7 @@ namespace pyro
     {
 
     public:
-        editor_layer(float width, float height);
+        editor_layer(uint32_t width, uint32_t height);
         ~editor_layer() override;
         void on_attach() override;
         void on_detach() override;
@@ -28,6 +28,9 @@ namespace pyro
         ref<camera_controller> m_2d_camera_controller;
         scene_manager m_scene_manager;
 #else
+        pyro::ref<pyro::texture_2d>     m_sprite_sheet; 
+        pyro::ref<pyro::sub_texture_2d> m_barrel_texture; 
+        pyro::ref<pyro::sub_texture_2d> m_tree_texture; 
         ref<scene> m_active_scene;
         entity m_camera_entity;
         entity m_second_camera;

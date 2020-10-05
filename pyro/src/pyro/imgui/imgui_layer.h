@@ -6,7 +6,7 @@ namespace pyro
     class PYRO_API imgui_layer : public pyro::layer
     {
     public:
-        imgui_layer(std::string const &name = "imgui_layer");
+        imgui_layer(uint32_t width, uint32_t height, std::string const &name = "imgui_layer");
         ~imgui_layer() = default;
 
         void on_attach() override;
