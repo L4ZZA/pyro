@@ -31,6 +31,12 @@ namespace pyro
 			: transform(t)
 		{
 		}
+		transform_component(const glm::vec3 &position)
+		{
+			transform[3].x = position.x;
+			transform[3].y = position.y;
+			transform[3].z = position.z;
+		}
 
 		operator glm::mat4 &() { return transform; }
 		operator const glm::mat4 &() const { return transform; }

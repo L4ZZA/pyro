@@ -44,7 +44,7 @@ namespace pyro
 #else
         m_active_scene = make_ref<scene>();
 
-        auto green_square = m_active_scene->create_entity("Green Square");
+        auto green_square = m_active_scene->create_entity("Green Square", {2.f,0.f,0.f});
         green_square.add_component<sprite_renderer_component>(glm::vec4{ 0.f,1.f,0.f,1.f });
         
         auto red_square = m_active_scene->create_entity("Red Square");

@@ -9,10 +9,12 @@
 pyro::scene::scene() {}
 pyro::scene::~scene() {}
 
-pyro::entity pyro::scene::create_entity(std::string const &name /*= ""*/)
+pyro::entity pyro::scene::create_entity(
+	std::string const &name /*= ""*/, 
+    glm::vec3 const &position /*= { 0.f, 0.f, 0.f }*/)
 {
 	entity entity = { m_registry.create(), this };
-	entity.add_component<transform_component>();
+	entity.add_component<transform_component>(position);
 	auto &tag = entity.add_component<tag_component>();
 	tag.tag = name.empty() ? "entity" : name;
 	return entity;
