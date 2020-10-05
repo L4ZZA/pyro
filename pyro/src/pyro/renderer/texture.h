@@ -1,4 +1,5 @@
 #pragma once
+#include "pyro/core/core.h"
 
 namespace pyro
 {
