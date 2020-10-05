@@ -209,25 +209,29 @@ namespace pyro
 
             ImGui::EndMenuBar();
         }
+        
+        
+        ImGui::Begin("Stats");
+        auto stats = renderer_2d::stats();
+        ImGui::Text("-- 2D Renderer stats:");
+        float ms = application::frame_time() * 1000.f;
+        ImGui::Text("- Frame time: %f ms", ms);
+        ImGui::Text("- FPS: %d/s", application::fps());
+        ImGui::Text("- Draw calls: %d", stats.draw_calls);
+        ImGui::Text("- Quads: %d", stats.quad_count);
+        ImGui::Text("- Vertices: %d", stats.total_vertex_count());
+        ImGui::Text("- Indices: %d", stats.total_index_count());
+        ImGui::Text("---------------------");
+        ImGui::End();
 
 #if OLD_SCENE
         auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
+        bool is_panel_visible = !current_scene->is_playing();
 
         // hide all ui if the scene is being played
-        if(!current_scene->is_playing())
+        if(is_panel_visible)
         {
             ImGui::Begin("Settings");
-
-            auto stats = renderer_2d::stats();
-            ImGui::Text("-- 2D Renderer stats:");
-            float ms = application::frame_time() * 1000.f;
-            ImGui::Text("- Frame time: %f ms", ms);
-            ImGui::Text("- FPS: %d/s", application::fps());
-            ImGui::Text("- Draw calls: %d", stats.draw_calls);
-            ImGui::Text("- Quads: %d", stats.quad_count);
-            ImGui::Text("- Vertices: %d", stats.total_vertex_count());
-            ImGui::Text("- Indices: %d", stats.total_index_count());
-            ImGui::Text("---------------------");
 
             ImGui::Text("Select level type");
             static int scene_index = 0;
@@ -249,50 +253,11 @@ namespace pyro
             ImGui::Text("---------------------");
 
             m_scene_manager.on_imgui_render();
-
         }
+        ImGui::End();
 #else
         m_scene_hierarchy_panel.on_imgui_render();
-
-        ImGui::Begin("Settings");
-        if(m_square_entity)
-        {
-            {
-                ImGui::Separator();
-                auto &tag = m_square_entity.get_component<tag_component>().tag;
-                ImGui::Text("%s", tag.c_str());
-
-                auto &squareColor = m_square_entity.get_component<sprite_renderer_component>().color;
-                ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
-                ImGui::Separator();
-            }
-        }
-
-        if(ImGui::Checkbox("Toggle Primary cameras", &m_is_primary_camera))
-        {
-            m_camera_entity.get_component<camera_component>().primary =  m_is_primary_camera;
-            m_second_camera.get_component<camera_component>().primary = !m_is_primary_camera;
-        }
 #endif
-
-        for(auto &result : m_profile_results)
-        {
-            char label[50];
-            strcpy_s(label, "%.3fms ");
-            strcat_s(label, result.name);
-            ImGui::Text(label, result.time);
-        }
-        m_profile_results.clear();
-
-        auto stats = renderer_2d::stats();
-        ImGui::Text("-- 2D Renderer stats:");
-        ImGui::Text("- Draw calls: %d", stats.draw_calls);
-        ImGui::Text("- Quads: %d", stats.quad_count);
-        ImGui::Text("- Vertices: %d", stats.total_vertex_count());
-        ImGui::Text("- Indices: %d", stats.total_index_count());
-        ImGui::Text("---------------------");
-        ImGui::End();
-
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 
