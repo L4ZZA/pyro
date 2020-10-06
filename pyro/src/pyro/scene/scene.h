@@ -23,7 +23,7 @@ namespace pyro
         void on_viewport_resize(uint32_t width, uint32_t height);
 
         uint32_t width () const {return m_viewport_width; }
-        uint32_t height() const {return m_viewport_width; }
+        uint32_t height() const {return m_viewport_height; }
 
     private:
         entt::registry m_registry;
