@@ -11,6 +11,7 @@ public:
 private:
     bool on_mouse_scrolled(pyro::mouse_scrolled_event& e);
     bool on_window_resized(pyro::window_resize_event &e);
+    bool on_key_pressed(pyro::key_pressed_event &e);
 
 private:
     // Defines the amount of space each mouse-roll moves the camera along 
