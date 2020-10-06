@@ -279,7 +279,7 @@ namespace pyro
 
             ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
             m_viewport_size = { viewportPanelSize.x, viewportPanelSize.y };
-            uint32_t textureID = m_framebuffer->color_attachment();
+            uint32_t textureID = m_framebuffer->color_attachment()->id();
             ImGui::Image(reinterpret_cast<void *>(textureID), ImVec2{ m_viewport_size.x, m_viewport_size.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
             ImGui::End();
         }

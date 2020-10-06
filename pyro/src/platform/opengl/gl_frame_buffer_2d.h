@@ -1,6 +1,5 @@
 #pragma once
 #include "pyro/renderer/frame_buffer_2d.h"
-#include "pyro/renderer/texture.h"
 
 namespace pyro
 {
@@ -19,7 +18,7 @@ namespace pyro
 
         uint32_t width() const override;
         uint32_t height() const override;
-        uint32_t color_attachment() const override;
+        ref<texture_2d> const& color_attachment() const override;
         uint32_t depth_attachment() const override;
 
 
@@ -31,7 +30,7 @@ namespace pyro
         uint32_t m_depth_buffer_id;
         uint32_t m_width;
         uint32_t m_height;
-        uint32_t m_color_attachment;
+        ref<texture_2d> m_color_attachment;
         uint32_t m_depth_attachment;
         glm::vec4 m_clear_color;
     };

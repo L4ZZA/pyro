@@ -25,20 +25,21 @@ void pyro::gl_frame_buffer_2d::init()
     if(m_id)
     {
         glDeleteFramebuffers(1, &m_id);
-        glDeleteTextures(1, &m_color_attachment);
+        m_color_attachment.reset();
+        //glDeleteTextures(1, &m_color_attachment);
         glDeleteTextures(1, &m_depth_attachment);
     }
 
     glCreateFramebuffers(1, &m_id);
     glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 
-    glCreateTextures(GL_TEXTURE_2D, 1, &m_color_attachment);
-    glBindTexture(GL_TEXTURE_2D, m_color_attachment);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    texture_parameters params;
+    params.min_filter = e_texture_filter::linear;
+    params.mag_filter = e_texture_filter::linear;
+    params.format = e_texture_format::rgba;
+    m_color_attachment = texture_2d::create(m_width, m_height, params);
 
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_color_attachment, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_color_attachment->id(), 0);
 
     glCreateTextures(GL_TEXTURE_2D, 1, &m_depth_attachment);
     glBindTexture(GL_TEXTURE_2D, m_depth_attachment);
@@ -95,7 +96,7 @@ uint32_t pyro::gl_frame_buffer_2d::height() const
     return m_width;
 }
 
-uint32_t
+pyro::ref<pyro::texture_2d> const&
 pyro::gl_frame_buffer_2d::color_attachment() const
 {
     return m_color_attachment;

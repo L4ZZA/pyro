@@ -16,7 +16,8 @@ layer_2d::~layer_2d()
 void layer_2d::on_attach()
 {
     //imgui_layer::on_attach();
-    
+
+    // TODO: figure out how to render framebuffer to texture
     //pyro::framebuffer_props props;
     //props.width = static_cast<uint32_t>(m_layer_width);
     //props.height = static_cast<uint32_t>(m_layer_height);
@@ -116,7 +117,7 @@ void layer_2d::on_render() const
     pyro::renderer_2d::reset_stats();
     {
         // Pre Render
-        //m_framebuffer->bind();
+        m_framebuffer->bind();
         pyro::render_command::clear_color({0.1f, 0.1f, 0.1f, 1});
         pyro::render_command::clear();
     }
@@ -124,7 +125,7 @@ void layer_2d::on_render() const
         // Render
         m_active_scene->on_render();
         
-        //m_framebuffer->unbind();
+        m_framebuffer->unbind();
     }
 }
 
