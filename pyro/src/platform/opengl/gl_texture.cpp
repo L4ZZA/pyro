@@ -12,7 +12,8 @@ pyro::gl_texture_2d::gl_texture_2d(
     , m_width(width)
     , m_height(height)
     , m_format(params.format)
-    , m_filter(params.filter)
+    , m_min_filter(params.min_filter)
+    , m_mag_filter(params.mag_filter)
     , m_wrap(params.wrap)
 {
 	PYRO_PROFILE_FUNCTION();
@@ -29,9 +30,9 @@ pyro::gl_texture_2d::gl_texture_2d(
 
     // set texture params
     glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, 
-        texture_filter_to_gl(m_filter));
+        texture_filter_to_gl(m_min_filter));
     glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, 
-        texture_filter_to_gl(m_filter));
+        texture_filter_to_gl(m_mag_filter));
 
     glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, texture_wrap_to_gl(m_wrap));
     glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, texture_wrap_to_gl(m_wrap));
@@ -44,7 +45,8 @@ pyro::gl_texture_2d::gl_texture_2d(
     texture_parameters const &params)
     : m_path(path)
     , m_format(params.format)
-    , m_filter(params.filter)
+    , m_min_filter(params.min_filter)
+    , m_mag_filter(params.mag_filter)
     , m_wrap(params.wrap)
 {
 	PYRO_PROFILE_FUNCTION();
@@ -77,9 +79,9 @@ pyro::gl_texture_2d::gl_texture_2d(
 
     // set texture params 
     glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, 
-        texture_filter_to_gl(m_filter));
+        texture_filter_to_gl(m_min_filter));
     glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, 
-        texture_filter_to_gl(e_texture_filter::nearest));
+        texture_filter_to_gl(m_mag_filter));
 
     glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, texture_wrap_to_gl(m_wrap));
     glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, texture_wrap_to_gl(m_wrap));

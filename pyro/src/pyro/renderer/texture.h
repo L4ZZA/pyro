@@ -25,7 +25,8 @@ namespace pyro
     struct PYRO_API texture_parameters
     {
         e_texture_format format = e_texture_format::rgba;
-        e_texture_filter filter = e_texture_filter::linear;
+        e_texture_filter min_filter = e_texture_filter::linear;
+        e_texture_filter mag_filter = e_texture_filter::linear;
         e_texture_wrap   wrap   = e_texture_wrap::clamp_to_edge;
     };
 

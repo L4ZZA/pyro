@@ -30,7 +30,8 @@ void noise2d_scene::init()
 
     pyro::texture_parameters params;
     params.format = pyro::e_texture_format::red;
-    params.filter = pyro::e_texture_filter::nearest;
+    params.min_filter = pyro::e_texture_filter::nearest;
+    params.mag_filter = pyro::e_texture_filter::nearest;
     m_noise_texture =
         pyro::texture_2d::create(m_width, m_height, params);
 

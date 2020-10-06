@@ -24,7 +24,8 @@ namespace pyro
         uint32_t m_width;
         uint32_t m_height;
         e_texture_format m_format;
-        e_texture_filter m_filter;
+        e_texture_filter m_min_filter;
+        e_texture_filter m_mag_filter;
         e_texture_wrap m_wrap;
 
 
