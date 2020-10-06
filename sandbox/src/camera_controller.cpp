@@ -42,8 +42,8 @@ bool camera_controller_ortho::on_mouse_scrolled(pyro::mouse_scrolled_event &e)
 
 bool camera_controller_ortho::on_window_resized(pyro::window_resize_event &e)
 {
-    m_width  = static_cast<float>(e.width()  * m_zoom_level); 
-    m_height = static_cast<float>(e.height() * m_zoom_level);
+    m_width  = static_cast<float>(e.width()); 
+    m_height = static_cast<float>(e.height());
     m_camera_component->camera.viewport_size((uint32_t)m_width, (uint32_t)m_height);
     // returns if event is handled.
     return false;
