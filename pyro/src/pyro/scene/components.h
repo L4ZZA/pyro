@@ -92,7 +92,7 @@ namespace pyro
 
 		scriptable_entity *instance = nullptr;
 
-		//[return type] ---- [function ptr name] ----- [parameters]
+		//[return type] --- [function ptr name] ----- [parameters]
 		scriptable_entity*  (*instantiate_script_func)();
 		void                (*destroy_script_func)    (native_script_component*);
 

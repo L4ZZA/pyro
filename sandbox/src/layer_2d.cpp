@@ -1,4 +1,4 @@
-﻿#include "layer_2d.h"
+#include "layer_2d.h"
 #include "imgui/imgui.h"
 
 #include <glm/gtc/type_ptr.hpp>
@@ -154,9 +154,5 @@ void layer_2d::on_render() const
 
 void layer_2d::on_event(pyro::event &e)
 {
-    if(e.event_type() == pyro::e_event_type::window_resize)
-    {
-        //auto resized_e = static_cast<pyro::window_resize_event>(e);
-    }
-    //m_active_scene->on_event(e);
+    m_active_scene->on_event(e);
 }

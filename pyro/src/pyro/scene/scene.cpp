@@ -80,6 +80,18 @@ void pyro::scene::on_render()
 	}
 }
 
+void pyro::scene::on_event(pyro::event &e)
+{
+	m_registry.view<native_script_component>().each([&](native_script_component &nsc)
+		{
+			if(nsc.instance)
+			{
+				nsc.instance->on_event(e);
+			}
+
+		});
+}
+
 void pyro::scene::on_viewport_resize(uint32_t width, uint32_t height)
 {
 	m_viewport_width  = width;

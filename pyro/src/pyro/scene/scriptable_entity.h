@@ -18,6 +18,7 @@ namespace pyro
         virtual void on_create(){}
         virtual void on_destroy() {}
         virtual void on_update(timestep const &ts){}
+        virtual void on_event(pyro::event &e){}
 
     private:
         entity m_entity;
