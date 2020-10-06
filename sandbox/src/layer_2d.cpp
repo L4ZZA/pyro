@@ -1,4 +1,5 @@
-#include "layer_2d.h"
+﻿#include "layer_2d.h"
+#include "camera_controller.h"
 #include "imgui/imgui.h"
 
 #include <glm/gtc/type_ptr.hpp>
@@ -41,32 +42,7 @@ void layer_2d::on_attach()
     m_camera_entity = m_active_scene->create_entity("Camera Entity");
     m_camera_entity.add_component<pyro::camera_component>();
 
-    class camera_controller : public pyro::scriptable_entity
-    {
-    public:
-        virtual void on_create() override
-        {
-        }
-
-        virtual void on_update(pyro::timestep const &ts) override
-        {
-            auto &transform = get_component<pyro::transform_component>().transform;
-            float speed = 5.0f;
-
-            if(pyro::input::key_pressed(pyro::key_codes::KEY_A)) // left
-                transform[3][0] -= speed * ts;
-            else if(pyro::input::key_pressed(pyro::key_codes::KEY_D)) // right
-                transform[3][0] += speed * ts;
-
-            if(pyro::input::key_pressed(pyro::key_codes::KEY_W)) // up
-                transform[3][1] += speed * ts;
-            else if(pyro::input::key_pressed(pyro::key_codes::KEY_S)) // down
-                transform[3][1] -= speed * ts;
-        }
-
-    };
-
-    m_camera_entity.add_component<pyro::native_script_component>().bind<camera_controller>();
+    m_camera_entity.add_component<pyro::native_script_component>().bind<camera_controller_ortho>();
 }
 
 void layer_2d::on_detach()

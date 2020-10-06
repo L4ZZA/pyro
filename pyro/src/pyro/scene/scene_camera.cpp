@@ -42,10 +42,12 @@ void pyro::scene_camera::recalculate_projection()
 	}
 	else
 	{
-		float ortho_left = -m_orthographic_size * m_aspect_ratio * 0.5f;
-		float ortho_right = m_orthographic_size * m_aspect_ratio * 0.5f;
-		float ortho_bottom = -m_orthographic_size * 0.5f;
-		float ortho_top = m_orthographic_size * 0.5f;
+		float half = 0.5f;
+		
+		float ortho_left   = -m_orthographic_size * m_aspect_ratio * half * m_orthographic_zoom_level;
+		float ortho_right  =  m_orthographic_size * m_aspect_ratio * half * m_orthographic_zoom_level;
+		float ortho_bottom = -m_orthographic_size * half * m_orthographic_zoom_level;
+		float ortho_top    =  m_orthographic_size * half * m_orthographic_zoom_level;
 
 		m_projection = glm::ortho(
 			ortho_left, ortho_right,

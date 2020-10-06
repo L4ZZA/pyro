@@ -1,4 +1,4 @@
-#pragma once
+	#pragma once
 #include "pyro/renderer/camera.h"
 
 namespace pyro
@@ -36,6 +36,9 @@ namespace pyro
 		
 		float orthographic_far() const { return m_orthographic_far; }
 		void  orthographic_far(float far_clip) { m_orthographic_far = far_clip; recalculate_projection(); }
+		
+		float orthographic_zoom_level() const { return m_orthographic_zoom_level; }
+		void  orthographic_zoom_level(float zoom_level) { m_orthographic_zoom_level = zoom_level; recalculate_projection(); }
 
 		e_projection_type projection_type() const { return m_projection_type; }
 		void projection_type(e_projection_type const &t) { m_projection_type = t; }
@@ -53,6 +56,7 @@ namespace pyro
 		float m_orthographic_size = 10.0f;
 		float m_orthographic_near = -1.0f;
 		float m_orthographic_far = 1.0f;
+		float m_orthographic_zoom_level = 1.0f;
 
 		float m_aspect_ratio = 0.0f;
 	};
