@@ -1,4 +1,4 @@
-﻿#include "layer_2d.h"
+#include "layer_2d.h"
 #include "camera_controller.h"
 #include "imgui/imgui.h"
 
@@ -117,7 +117,7 @@ void layer_2d::on_render() const
     pyro::renderer_2d::reset_stats();
     {
         // Pre Render
-        m_framebuffer->bind();
+        //m_framebuffer->bind();
         pyro::render_command::clear_color({0.1f, 0.1f, 0.1f, 1});
         pyro::render_command::clear();
     }
@@ -125,7 +125,7 @@ void layer_2d::on_render() const
         // Render
         m_active_scene->on_render();
         
-        m_framebuffer->unbind();
+        //m_framebuffer->unbind();
     }
 }
 
