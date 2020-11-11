@@ -51,13 +51,13 @@ namespace pyro
         m_barrel_texture = pyro::sub_texture_2d::create_from_coords(m_sprite_sheet, { 8,2 }, {128.f, 128.f});
         m_tree_texture = pyro::sub_texture_2d::create_from_coords(m_sprite_sheet, { 2,1 }, { 128.f, 128.f }, { 1.f,2.f });
 
-        auto green_square = m_active_scene->create_entity("Green Square", {1.f,0.f,0.f});
+        auto green_square = m_active_scene->create_entity("Barrel", {1.f,0.f,0.f});
         green_square.add_component<sprite_renderer_component>(m_barrel_texture);
         
-        auto red_square = m_active_scene->create_entity("Red Square", {0.f,0.5f,0.f});
+        auto red_square = m_active_scene->create_entity("Tree", {0.f,0.5f,0.f});
         red_square.add_component<sprite_renderer_component>(m_tree_texture);
-        auto &transform = red_square.get_component<pyro::transform_component>().transform;
-        transform = glm::scale(transform, { 1.f,2.f,0.f });
+        auto &scale = red_square.get_component<pyro::transform_component>().scale;
+        scale = { 1.f,2.f,0.f };
         
         m_camera_entity = m_active_scene->create_entity("Camera Entity");
         m_camera_entity.add_component<camera_component>();
@@ -77,18 +77,18 @@ namespace pyro
 
             virtual void on_update(timestep const &ts) override
             {
-                auto &transform = get_component<transform_component>().transform;
+                auto &translation = get_component<transform_component>().translation;
                 float speed = 5.0f;
 
                 if(input::key_pressed(pyro::key_codes::KEY_A)) // left
-                    transform[3][0] -= speed * ts;
+                    translation.x -= speed * ts;
                 else if(input::key_pressed(pyro::key_codes::KEY_D)) // right
-                    transform[3][0] += speed * ts;
+                    translation.x += speed * ts;
 
                 if(input::key_pressed(pyro::key_codes::KEY_W)) // up
-                    transform[3][1] += speed * ts;
+                    translation.y += speed * ts;
                 else if(input::key_pressed(pyro::key_codes::KEY_S)) // down
-                    transform[3][1] -= speed * ts;
+                    translation.y -= speed * ts;
             }
 
         };

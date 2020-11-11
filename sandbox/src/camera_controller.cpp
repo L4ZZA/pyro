@@ -9,18 +9,18 @@ void camera_controller_ortho::on_create()
 
 void camera_controller_ortho::on_update(pyro::timestep const &ts)
 {
-    auto &transform = get_component<pyro::transform_component>().transform;
+    auto &position = get_component<pyro::transform_component>().translation;
     float speed = 5.0f;
 
     if(pyro::input::key_pressed(pyro::key_codes::KEY_A)) // left
-        transform[3][0] -= speed * ts;
+        position.x -= speed * ts;
     else if(pyro::input::key_pressed(pyro::key_codes::KEY_D)) // right
-        transform[3][0] += speed * ts;
+        position.x += speed * ts;
 
     if(pyro::input::key_pressed(pyro::key_codes::KEY_W)) // up
-        transform[3][1] += speed * ts;
+        position.y += speed * ts;
     else if(pyro::input::key_pressed(pyro::key_codes::KEY_S)) // down
-        transform[3][1] -= speed * ts;
+        position.y -= speed * ts;
 }
 
 void camera_controller_ortho::on_event(pyro::event &e)

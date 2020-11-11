@@ -3,6 +3,7 @@
 #include "pyro/scene/scriptable_entity.h"
 #include "pyro/renderer/sub_texture.h"
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <string>
 #include <array>
 
@@ -25,23 +26,29 @@ namespace pyro
 	struct transform_component
 	{
 		inline static char *type_name = "transform_component";
-		glm::mat4 transform{ 1.0f };
+		glm::vec3 translation = { 0.f,0.f,0.f };
+		glm::vec3 rotation = { 0.f,0.f,0.f };
+		glm::vec3 scale = { 1.f,1.f,1.f };
 
 		transform_component() = default;
 		transform_component(const transform_component &) = default;
-		transform_component(const glm::mat4 &t)
-			: transform(t)
+		transform_component(const glm::vec3 &pos)
+			: translation(pos)
 		{
-		}
-		transform_component(const glm::vec3 &position)
-		{
-			transform[3].x = position.x;
-			transform[3].y = position.y;
-			transform[3].z = position.z;
 		}
 
-		operator glm::mat4 &() { return transform; }
-		operator const glm::mat4 &() const { return transform; }
+		glm::mat4 transform() const 
+		{ 
+			glm::mat4 rot = 
+				  glm::rotate(glm::mat4(1.0f), rotation.x, { 1, 0, 0 })
+				* glm::rotate(glm::mat4(1.0f), rotation.y, { 0, 1, 0 })
+				* glm::rotate(glm::mat4(1.0f), rotation.z, { 0, 0, 1 });
+
+			return 
+				glm::translate(glm::mat4(1.f), translation) 
+				* rot 
+				* glm::scale(glm::mat4(1.f), scale);
+		}
 	};
 
 	struct sprite_renderer_component

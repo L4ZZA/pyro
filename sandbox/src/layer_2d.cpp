@@ -1,4 +1,4 @@
-#include "layer_2d.h"
+﻿#include "layer_2d.h"
 #include "camera_controller.h"
 #include "imgui/imgui.h"
 
@@ -37,8 +37,8 @@ void layer_2d::on_attach()
     green_square.add_component<pyro::sprite_renderer_component>(m_barrel_texture);
     auto red_square = m_active_scene->create_entity("Red Square", {0.f,.5f,0.f});
     red_square.add_component<pyro::sprite_renderer_component>(m_tree_texture);
-    auto &transform = red_square.get_component<pyro::transform_component>().transform;
-    transform = glm::scale(transform, { 1.f,2.f,0.f });
+    auto &scale = red_square.get_component<pyro::transform_component>().scale;
+    scale = { 1.f,2.f,0.f };
     
     m_camera_entity = m_active_scene->create_entity("Camera Entity");
     m_camera_entity.add_component<pyro::camera_component>();

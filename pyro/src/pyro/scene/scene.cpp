@@ -43,7 +43,7 @@ void pyro::scene::on_render()
 {
 	// Render sprites
 	camera *main_camera = nullptr;
-	glm::mat4 *camera_transform = nullptr;
+	glm::mat4 camera_transform;
 	{
 		auto group = m_registry.view<transform_component, camera_component>();
 		for(auto entity : group)
@@ -53,7 +53,7 @@ void pyro::scene::on_render()
 			if(cameraComp.primary)
 			{
 				main_camera = &cameraComp.camera;
-				camera_transform = &transformComp.transform;
+				camera_transform = transformComp.transform();
 				break;
 			}
 		}
@@ -61,15 +61,15 @@ void pyro::scene::on_render()
 	
 	if(main_camera)
 	{
-		renderer_2d::begin_scene(main_camera->projection_matrix(), *camera_transform);
+		renderer_2d::begin_scene(main_camera->projection_matrix(), camera_transform);
 
 		auto group = m_registry.group<transform_component>(entt::get<sprite_renderer_component>);
 		for(auto entity : group)
 		{
-			auto [transform, sprite] = group.get<transform_component, sprite_renderer_component>(entity);
+			auto [transformComp, sprite] = group.get<transform_component, sprite_renderer_component>(entity);
 
 			quad_properties props;
-			props.transform = transform;
+			props.transform = transformComp.transform();
 			props.texture = sprite.texture;
 			props.texture_coords = sprite.texture_coords;
 			props.color = sprite.color;
