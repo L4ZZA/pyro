@@ -17,6 +17,8 @@ namespace pyro
         entity create_entity(
             std::string const &name = std::string(), 
             glm::vec3 const &position = { 0.f, 0.f, 0.f });
+        void destroy_entity(entity const &ent);
+
         void on_update(timestep const &ts);
         void on_render();
         void on_event(pyro::event &e);

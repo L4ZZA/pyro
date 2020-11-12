@@ -39,6 +39,11 @@ void pyro::scene::on_update(pyro::timestep const &ts)
 	}
 }
 
+void pyro::scene::destroy_entity(entity const &ent)
+{
+	m_registry.destroy(ent);
+}
+
 void pyro::scene::on_render()
 {
 	// Render sprites

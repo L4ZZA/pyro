@@ -53,6 +53,7 @@ namespace pyro
         }
 
         operator bool() const { return m_entity_handle != entt::null; }
+        operator entt::entity() const { return m_entity_handle; }
         operator uint32_t() const { return static_cast<uint32_t>(m_entity_handle); }
 
         bool operator==(const entity &other) const

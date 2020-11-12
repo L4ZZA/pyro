@@ -7,7 +7,8 @@
 namespace pyro
 {
 	
-	static void draw_vec3_control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f)
+	static void draw_vec3_control(const std::string& label, glm::vec3& values, 
+		float resetValue = 0.0f, float columnWidth = 100.0f)
 	{
 		ImGui::PushID(label.c_str());
 
@@ -86,6 +87,15 @@ namespace pyro
 		// ability to deselect node 
 		if(ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 			m_selection_context = {};
+		
+		// Right-click on blank space
+		if (ImGui::BeginPopupContextWindow(0, 1, false))
+		{
+			if (ImGui::MenuItem("Create Empty Entity"))
+				m_context->create_entity("Empty Entity");
+
+			ImGui::EndPopup();
+		}
 
 		ImGui::End();
 
@@ -107,6 +117,15 @@ namespace pyro
 		{
 			m_selection_context = e;
 		}
+		
+		bool entityDeleted = false;
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete Entity"))
+				entityDeleted = true;
+
+			ImGui::EndPopup();
+		}
 
 		if(opened)
 		{
@@ -116,6 +135,13 @@ namespace pyro
 			if(opened)
 				ImGui::TreePop();
 			ImGui::TreePop();
+		}
+		
+		if (entityDeleted)
+		{
+			m_context->destroy_entity(e);
+			if (m_selection_context == e)
+				m_selection_context = {};
 		}
 	}
 
