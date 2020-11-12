@@ -103,6 +103,27 @@ namespace pyro
 		if(m_selection_context)
 		{
 			draw_components(m_selection_context);
+
+			if (ImGui::Button("Add Component"))
+				ImGui::OpenPopup("AddComponent");
+
+			if (ImGui::BeginPopup("AddComponent"))
+			{
+				if (ImGui::MenuItem("Camera"))
+				{
+					m_selection_context.add_component<camera_component>();
+					ImGui::CloseCurrentPopup();
+				}
+
+				if (ImGui::MenuItem("Sprite Renderer"))
+				{
+					m_selection_context.add_component<sprite_renderer_component>();
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::EndPopup();
+			}
+
 		}
 		ImGui::End();
 	}
@@ -147,6 +168,10 @@ namespace pyro
 
 	void scene_hierarchy_panel::draw_components(entity e)
 	{
+		const ImGuiTreeNodeFlags treeNodeFlags = 
+			ImGuiTreeNodeFlags_DefaultOpen | 
+			ImGuiTreeNodeFlags_AllowItemOverlap;
+
 		if(e.has_component<tag_component>())
 		{
 			auto &tag = e.get_component<tag_component>().tag;
@@ -164,7 +189,7 @@ namespace pyro
 		{
 			if(ImGui::TreeNodeEx(
 				reinterpret_cast<void *>(typeid(transform_component).hash_code()), 
-				ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
+				treeNodeFlags, "Transform"))
 			{
 				auto &tc = e.get_component<transform_component>();
 				draw_vec3_control("Translation", tc.translation);
@@ -179,22 +204,45 @@ namespace pyro
 		
 		if(e.has_component<sprite_renderer_component>())
 		{
-			if(ImGui::TreeNodeEx(
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+
+			bool open = ImGui::TreeNodeEx(
 				reinterpret_cast<void *>(typeid(sprite_renderer_component).hash_code()),
-				ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer"))
+				treeNodeFlags, "Sprite Renderer");
+
+			ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
+			if (ImGui::Button("+", ImVec2{ 20, 20 }))
+			{
+				ImGui::OpenPopup("ComponentSettings");
+			}
+			ImGui::PopStyleVar();
+
+			bool removeComponent = false;
+			if (ImGui::BeginPopup("ComponentSettings"))
+			{
+				if (ImGui::MenuItem("Remove component"))
+					removeComponent = true;
+
+				ImGui::EndPopup();
+			}
+
+			if(open)
 			{
 				auto &sprite_comp = e.get_component<sprite_renderer_component>();
 				ImGui::ColorEdit4("Color", glm::value_ptr(sprite_comp.color));
 
 				ImGui::TreePop();
 			}
+			
+			if (removeComponent)
+				e.remove_component<sprite_renderer_component>();
 		}
 
 		if(e.has_component<camera_component>())
 		{
 			if(ImGui::TreeNodeEx(
 				reinterpret_cast<void *>(typeid(camera_component).hash_code()),
-				ImGuiTreeNodeFlags_DefaultOpen, "Camera"))
+				treeNodeFlags, "Camera"))
 			{
 				auto &camera_comp = e.get_component<camera_component>();
 				auto &camera = camera_comp.camera;
