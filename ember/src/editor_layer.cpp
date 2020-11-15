@@ -197,11 +197,16 @@ namespace pyro
 
         // DockSpace
         ImGuiIO &io = ImGui::GetIO();
+        // setting min width for dock panels
+        ImGuiStyle &style = ImGui::GetStyle();
+        float min_win_size_x = style.WindowMinSize.x;
+        style.WindowMinSize.x = 370.f;
         if(io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
         {
             ImGuiID dockspace_id = ImGui::GetID("DockSpace");
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
+        style.WindowMinSize.x = min_win_size_x;
 
         if(ImGui::BeginMenuBar())
         {
