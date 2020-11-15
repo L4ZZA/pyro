@@ -79,24 +79,27 @@ namespace pyro
 	{
 		const ImGuiTreeNodeFlags treeNodeFlags = 
 			ImGuiTreeNodeFlags_DefaultOpen | 
-			ImGuiTreeNodeFlags_AllowItemOverlap;
+			ImGuiTreeNodeFlags_Framed | 
+			ImGuiTreeNodeFlags_SpanAvailWidth | 
+			ImGuiTreeNodeFlags_AllowItemOverlap | 
+			ImGuiTreeNodeFlags_FramePadding;
 
 		if(e.has_component<T>())
 		{
 			auto &comp = e.get_component<T>();
+			ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
 
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
-
-			bool open = ImGui::TreeNodeEx(
-				reinterpret_cast<void *>(typeid(T).hash_code()),
-				treeNodeFlags, name.c_str());
-
-			ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
-			if(ImGui::Button("+", ImVec2{ 20, 20 }))
+			float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+			ImGui::Separator();
+			bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags, name.c_str());
+			ImGui::PopStyleVar(
+			);
+			ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
+			if (ImGui::Button("+", ImVec2{ lineHeight, lineHeight }))
 			{
 				ImGui::OpenPopup("ComponentSettings");
 			}
-			ImGui::PopStyleVar();
 
 			bool removeComponent = false;
 			if(ImGui::BeginPopup("ComponentSettings"))
