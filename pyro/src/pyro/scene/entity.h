@@ -38,7 +38,7 @@ namespace pyro
         }
 
         template<typename T>
-        bool has_component()
+        bool has_component() const
         {
             return m_scene->m_registry.has<T>(m_entity_handle);
         }
