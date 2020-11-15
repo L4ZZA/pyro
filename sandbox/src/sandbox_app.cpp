@@ -58,5 +58,5 @@ private:
 
 pyro::application *pyro::create_application()
 {
-    return new sandbox_app(1280, 720);
+    return new sandbox_app(1600, 900);
 }

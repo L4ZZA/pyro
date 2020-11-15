@@ -51,7 +51,7 @@ namespace pyro
 
     application *create_application()
     {
-        return new ember(1280, 720);
+        return new ember(1600, 900);
     }
 
 }
