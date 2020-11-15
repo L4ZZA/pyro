@@ -74,6 +74,50 @@ namespace pyro
 		ImGui::PopID();
 	}
 
+	template <typename T, typename UI_FUNCTION>
+	static void draw_component(std::string const &name, entity e, UI_FUNCTION uiFunction)
+	{
+		const ImGuiTreeNodeFlags treeNodeFlags = 
+			ImGuiTreeNodeFlags_DefaultOpen | 
+			ImGuiTreeNodeFlags_AllowItemOverlap;
+
+		if(e.has_component<T>())
+		{
+			auto &comp = e.get_component<T>();
+
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+
+			bool open = ImGui::TreeNodeEx(
+				reinterpret_cast<void *>(typeid(T).hash_code()),
+				treeNodeFlags, name.c_str());
+
+			ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
+			if(ImGui::Button("+", ImVec2{ 20, 20 }))
+			{
+				ImGui::OpenPopup("ComponentSettings");
+			}
+			ImGui::PopStyleVar();
+
+			bool removeComponent = false;
+			if(ImGui::BeginPopup("ComponentSettings"))
+			{
+				if(ImGui::MenuItem("Remove component"))
+					removeComponent = true;
+
+				ImGui::EndPopup();
+			}
+
+			if(open)
+			{
+				uiFunction(comp);
+				ImGui::TreePop();
+			}
+
+			if(removeComponent)
+				e.remove_component<T>();
+		}
+	}
+
 	scene_hierarchy_panel::scene_hierarchy_panel(ref<scene> scene_context)
 	{
 		context(scene_context);
@@ -178,9 +222,6 @@ namespace pyro
 
 	void scene_hierarchy_panel::draw_components(entity e)
 	{
-		const ImGuiTreeNodeFlags treeNodeFlags = 
-			ImGuiTreeNodeFlags_DefaultOpen | 
-			ImGuiTreeNodeFlags_AllowItemOverlap;
 
 		if(e.has_component<tag_component>())
 		{
@@ -195,140 +236,95 @@ namespace pyro
 			}
 		}
 
-		if(e.has_component<transform_component>())
+		draw_component<transform_component>("Transform", e, [](auto &tc) 
 		{
-			if(ImGui::TreeNodeEx(
-				reinterpret_cast<void *>(typeid(transform_component).hash_code()), 
-				treeNodeFlags, "Transform"))
-			{
-				auto &tc = e.get_component<transform_component>();
-				draw_vec3_control("Translation", tc.translation);
-				glm::vec3 rotation = glm::degrees(tc.rotation);
-				draw_vec3_control("Rotation", rotation);
-				tc.rotation = glm::radians(rotation);
-				draw_vec3_control("Scale", tc.scale, 1.0f);
-
-				ImGui::TreePop();
-			}
-		}
+			draw_vec3_control("Translation", tc.translation);
+			glm::vec3 rotation = glm::degrees(tc.rotation);
+			draw_vec3_control("Rotation", rotation);
+			tc.rotation = glm::radians(rotation);
+			draw_vec3_control("Scale", tc.scale, 1.0f);
+		});
 		
-		if(e.has_component<sprite_renderer_component>())
+		draw_component<sprite_renderer_component>("Sprite Renderer", e, [](auto &comp)
 		{
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
-
-			bool open = ImGui::TreeNodeEx(
-				reinterpret_cast<void *>(typeid(sprite_renderer_component).hash_code()),
-				treeNodeFlags, "Sprite Renderer");
-
-			ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
-			if (ImGui::Button("+", ImVec2{ 20, 20 }))
-			{
-				ImGui::OpenPopup("ComponentSettings");
-			}
-			ImGui::PopStyleVar();
-
-			bool removeComponent = false;
-			if (ImGui::BeginPopup("ComponentSettings"))
-			{
-				if (ImGui::MenuItem("Remove component"))
-					removeComponent = true;
-
-				ImGui::EndPopup();
-			}
-
-			if(open)
-			{
-				auto &sprite_comp = e.get_component<sprite_renderer_component>();
-				ImGui::ColorEdit4("Color", glm::value_ptr(sprite_comp.color));
-
-				ImGui::TreePop();
-			}
-			
-			if (removeComponent)
-				e.remove_component<sprite_renderer_component>();
-		}
-
-		if(e.has_component<camera_component>())
+			ImGui::ColorEdit4("Color", glm::value_ptr(comp.color));
+		});
+		
+		draw_component<camera_component>("Camera", e, [](auto &comp)
 		{
-			if(ImGui::TreeNodeEx(
-				reinterpret_cast<void *>(typeid(camera_component).hash_code()),
-				treeNodeFlags, "Camera"))
-			{
-				auto &camera_comp = e.get_component<camera_component>();
-				auto &camera = camera_comp.camera;
-
-				const char *projection_type_strings[]{ "Perspective", "Otrhographic" };
-				const char *current_projection_type_string =
-					projection_type_strings[static_cast<int>(camera.projection_type())];
-
-				if(ImGui::BeginCombo("Projection", current_projection_type_string))
-				{
-					for(int i = 0; i < 2; i++)
-					{
-						bool is_selected = 
-							current_projection_type_string == projection_type_strings[i];
-						if(ImGui::Selectable(projection_type_strings[i], is_selected))
-						{
-							current_projection_type_string = projection_type_strings[i];
-							camera.projection_type(static_cast<scene_camera::e_projection_type>(i));
-						}
-
-						if(is_selected)
-							ImGui::SetItemDefaultFocus();
-					}
-
-					ImGui::EndCombo();
-				}
-
-				ImGui::Checkbox("Primary", &camera_comp.primary);
-
-				if(camera.projection_type() == scene_camera::e_projection_type::perspective)
-				{
-					float perspective_vertical_fov = glm::degrees(camera.perspective_vertical_fov());
-					if(ImGui::DragFloat("Size", &perspective_vertical_fov))
-					{
-						camera.perspective_vertical_fov(glm::radians(perspective_vertical_fov));
-					}
-
-					float perspective_near = camera.perspective_near();
-					if(ImGui::DragFloat("Near", &perspective_near))
-					{
-						camera.perspective_near(perspective_near);
-					}
-
-					float perspective_far = camera.perspective_far();
-					if(ImGui::DragFloat("Far", &perspective_far))
-					{
-						camera.perspective_far(perspective_far);
-					}
-				}
-
-				if(camera.projection_type() == scene_camera::e_projection_type::orthographic)
-				{
-					ImGui::Checkbox("Fixed Aspect ratio", &camera_comp.fixed_aspect_ratio);
-
-					float ortho_size = camera.orthographic_size();
-					if(ImGui::DragFloat("Size", &ortho_size))
-					{
-						camera.orthographic_size(ortho_size);
-					}
-
-					float ortho_near = camera.orthographic_near();
-					if(ImGui::DragFloat("Near", &ortho_near))
-					{
-						camera.orthographic_near(ortho_near);
-					}
-
-					float ortho_far = camera.orthographic_far();
-					if(ImGui::DragFloat("Far", &ortho_far))
-					{
-						camera.orthographic_far(ortho_far);
-					}
-				}
 				
-				ImGui::TreePop();
+			auto &camera = comp.camera;
+
+			const char *projection_type_strings[]{ "Perspective", "Otrhographic" };
+			const char *current_projection_type_string =
+				projection_type_strings[static_cast<int>(camera.projection_type())];
+
+			if(ImGui::BeginCombo("Projection", current_projection_type_string))
+			{
+				for(int i = 0; i < 2; i++)
+				{
+					bool is_selected = 
+						current_projection_type_string == projection_type_strings[i];
+					if(ImGui::Selectable(projection_type_strings[i], is_selected))
+					{
+						current_projection_type_string = projection_type_strings[i];
+						camera.projection_type(static_cast<scene_camera::e_projection_type>(i));
+					}
+
+					if(is_selected)
+						ImGui::SetItemDefaultFocus();
+				}
+
+				ImGui::EndCombo();
 			}
-		}
+
+			ImGui::Checkbox("Primary", &comp.primary);
+
+			if(camera.projection_type() == scene_camera::e_projection_type::perspective)
+			{
+				float perspective_vertical_fov = glm::degrees(camera.perspective_vertical_fov());
+				if(ImGui::DragFloat("Size", &perspective_vertical_fov))
+				{
+					camera.perspective_vertical_fov(glm::radians(perspective_vertical_fov));
+				}
+
+				float perspective_near = camera.perspective_near();
+				if(ImGui::DragFloat("Near", &perspective_near))
+				{
+					camera.perspective_near(perspective_near);
+				}
+
+				float perspective_far = camera.perspective_far();
+				if(ImGui::DragFloat("Far", &perspective_far))
+				{
+					camera.perspective_far(perspective_far);
+				}
+			}
+
+			if(camera.projection_type() == scene_camera::e_projection_type::orthographic)
+			{
+				ImGui::Checkbox("Fixed Aspect ratio", &comp.fixed_aspect_ratio);
+
+				float ortho_size = camera.orthographic_size();
+				if(ImGui::DragFloat("Size", &ortho_size))
+				{
+					camera.orthographic_size(ortho_size);
+				}
+
+				float ortho_near = camera.orthographic_near();
+				if(ImGui::DragFloat("Near", &ortho_near))
+				{
+					camera.orthographic_near(ortho_near);
+				}
+
+				float ortho_far = camera.orthographic_far();
+				if(ImGui::DragFloat("Far", &ortho_far))
+				{
+					camera.orthographic_far(ortho_far);
+				}
+			}
+		});
+
 	}
 
 	void scene_hierarchy_panel::context(ref<scene> scene_context)
