@@ -142,6 +142,7 @@ namespace pyro
 		auto &tag = e.get_component<tag_component>().tag;
 
 		ImGuiTreeNodeFlags flags = ((m_selection_context == e) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool opened = ImGui::TreeNodeEx(reinterpret_cast<void *>((uint64_t)(uint32_t)e), flags, tag.c_str());
 		if(ImGui::IsItemClicked())
 		{
@@ -159,8 +160,8 @@ namespace pyro
 
 		if(opened)
 		{
-			// TODO: remove this duplicated tag text
-			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
+			// TODO: remove this duplicated tag text when parenting is implemented.
+			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 			bool opened = ImGui::TreeNodeEx(reinterpret_cast<void*>(9817239), flags, tag.c_str());
 			if(opened)
 				ImGui::TreePop();
