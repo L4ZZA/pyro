@@ -34,6 +34,8 @@ void pyro::imgui_layer::on_attach()
     //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskbarIcons;
     //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
+    io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", 18.f);
+
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsClassic();

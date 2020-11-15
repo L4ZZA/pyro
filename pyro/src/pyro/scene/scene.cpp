@@ -10,89 +10,89 @@ pyro::scene::scene() {}
 pyro::scene::~scene() {}
 
 pyro::entity pyro::scene::create_entity(
-	std::string const &name /*= ""*/, 
+    std::string const &name /*= ""*/,
     glm::vec3 const &position /*= { 0.f, 0.f, 0.f }*/)
 {
-	entity entity = { m_registry.create(), this };
-	entity.add_component<transform_component>(position);
-	auto &tag = entity.add_component<tag_component>();
-	tag.tag = name.empty() ? "entity" : name;
-	return entity;
+    entity entity = { m_registry.create(), this };
+    entity.add_component<transform_component>(position);
+    auto &tag = entity.add_component<tag_component>();
+    tag.tag = name.empty() ? "entity" : name;
+    return entity;
 }
 
 void pyro::scene::on_update(pyro::timestep const &ts)
 {
-	// Update scripts
-	{
-		m_registry.view<native_script_component>().each([=](auto entity, native_script_component &nsc)
-			{
-				// TODO:: move to on_scene_play 
-				if(!nsc.instance)
-				{
-					nsc.instance = nsc.instantiate_script_func();
-					nsc.instance->m_entity = pyro::entity{ entity, this };
-					nsc.instance->on_create();
-				}
+    // Update scripts
+    {
+        m_registry.view<native_script_component>().each([=](auto entity, native_script_component &nsc)
+            {
+                // TODO:: move to on_scene_play 
+                if(!nsc.instance)
+                {
+                    nsc.instance = nsc.instantiate_script_func();
+                    nsc.instance->m_entity = pyro::entity{ entity, this };
+                    nsc.instance->on_create();
+                }
 
-				nsc.instance->on_update(ts);
-			});
-	}
+                nsc.instance->on_update(ts);
+            });
+    }
 }
 
 void pyro::scene::destroy_entity(entity const &ent)
 {
-	m_registry.destroy(ent);
+    m_registry.destroy(ent);
 }
 
 void pyro::scene::on_render()
 {
-	// Render sprites
-	camera *main_camera = nullptr;
-	glm::mat4 camera_transform;
-	{
-		auto group = m_registry.view<transform_component, camera_component>();
-		for(auto entity : group)
-		{
-			auto [transformComp, cameraComp] = group.get<transform_component, camera_component>(entity);
+    // Render sprites
+    camera *main_camera = nullptr;
+    glm::mat4 camera_transform;
+    {
+        auto group = m_registry.view<transform_component, camera_component>();
+        for(auto entity : group)
+        {
+            auto [transformComp, cameraComp] = group.get<transform_component, camera_component>(entity);
 
-			if(cameraComp.primary)
-			{
-				main_camera = &cameraComp.camera;
-				camera_transform = transformComp.transform();
-				break;
-			}
-		}
-	}
-	
-	if(main_camera)
-	{
-		renderer_2d::begin_scene(main_camera->projection_matrix(), camera_transform);
+            if(cameraComp.primary)
+            {
+                main_camera = &cameraComp.camera;
+                camera_transform = transformComp.transform();
+                break;
+            }
+        }
+    }
 
-		auto group = m_registry.group<transform_component>(entt::get<sprite_renderer_component>);
-		for(auto entity : group)
-		{
-			auto [transformComp, sprite] = group.get<transform_component, sprite_renderer_component>(entity);
+    if(main_camera)
+    {
+        renderer_2d::begin_scene(main_camera->projection_matrix(), camera_transform);
 
-			quad_properties props;
-			props.transform = transformComp.transform();
-			props.texture = sprite.texture;
-			props.texture_coords = sprite.texture_coords;
-			props.color = sprite.color;
-			renderer_2d::draw_quad(props);
-		}
+        auto group = m_registry.group<transform_component>(entt::get<sprite_renderer_component>);
+        for(auto entity : group)
+        {
+            auto [transformComp, sprite] = group.get<transform_component, sprite_renderer_component>(entity);
 
-		renderer_2d::end_scene();
-	}
+            quad_properties props;
+            props.transform = transformComp.transform();
+            props.texture = sprite.texture;
+            props.texture_coords = sprite.texture_coords;
+            props.color = sprite.color;
+            renderer_2d::draw_quad(props);
+        }
+
+        renderer_2d::end_scene();
+    }
 }
 
 void pyro::scene::on_event(pyro::event &e)
 {
-	m_registry.view<native_script_component>().each([&](native_script_component &nsc)
-		{
-			if(nsc.instance)
-			{
-				nsc.instance->on_event(e);
-			}
+    m_registry.view<native_script_component>().each([&](native_script_component &nsc)
+        {
+            if(nsc.instance)
+            {
+                nsc.instance->on_event(e);
+            }
 
 		});
 }
@@ -107,15 +107,15 @@ void pyro::scene::on_viewport_resize(uint32_t width, uint32_t height)
 	for(auto entity : view)
 	{
 		auto &cameraComponent = view.get<camera_component>(entity);
-		if(!cameraComponent.fixed_aspect_ratio)
-			cameraComponent.camera.viewport_size(width, height);
-	}
+        if(!cameraComponent.fixed_aspect_ratio)
+            cameraComponent.camera.viewport_size(width, height);
+    }
 }
 
 template <typename T>
 void pyro::scene::on_component_added(entity e, T &component)
 {
-	static_assert(false);
+    static_assert(false);
 }
 
 template <>
@@ -139,7 +139,7 @@ void pyro::scene::on_component_added<pyro::sprite_renderer_component>(entity e, 
 template <>
 void pyro::scene::on_component_added<pyro::camera_component>(entity e, camera_component &component)
 {
-	component.camera.viewport_size(m_viewport_width, m_viewport_height);
+    component.camera.viewport_size(m_viewport_width, m_viewport_height);
 }
 
 template <>
