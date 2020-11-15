@@ -20,6 +20,8 @@ namespace pyro
 
         void block_events(bool block) { m_block_events = block; }
 
+        void dark_theme();
+
     private:
         float m_time{0.f};
         bool m_block_events = true;
