@@ -10,6 +10,9 @@ namespace pyro
 	static void draw_vec3_control(const std::string& label, glm::vec3& values, 
 		float resetValue = 0.0f, float columnWidth = 100.0f)
 	{
+		ImGuiIO &io = ImGui::GetIO();
+		auto bold_font = io.Fonts->Fonts[1];
+
 		ImGui::PushID(label.c_str());
 
 		ImGui::Columns(2);
@@ -26,8 +29,10 @@ namespace pyro
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+		ImGui::PushFont(bold_font);
 		if (ImGui::Button("X", buttonSize))
 			values.x = resetValue;
+		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
@@ -38,8 +43,10 @@ namespace pyro
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+		ImGui::PushFont(bold_font);
 		if (ImGui::Button("Y", buttonSize))
 			values.y = resetValue;
+		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
@@ -50,8 +57,10 @@ namespace pyro
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+		ImGui::PushFont(bold_font);
 		if (ImGui::Button("Z", buttonSize))
 			values.z = resetValue;
+		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
