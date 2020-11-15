@@ -28,6 +28,10 @@ namespace pyro
         uint32_t height() const {return m_viewport_height; }
 
     private:
+        template<typename T>
+        void on_component_added(entity e, T &component);
+
+    private:
         entt::registry m_registry;
         uint32_t m_viewport_width  = 0;
         uint32_t m_viewport_height = 0;

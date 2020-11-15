@@ -21,7 +21,9 @@ namespace pyro
             message += obj.type_name;
             message += " component!";
             PYRO_CORE_ASSERT(!has_component<T>(), message);
-            return m_scene->m_registry.emplace<T>(m_entity_handle, std::forward<Args>(args)...);
+            T &component = m_scene->m_registry.emplace<T>(m_entity_handle, std::forward<Args>(args)...);
+            m_scene->on_component_added<T>(*this, component);
+            return component;
         }
 
         template<typename T>

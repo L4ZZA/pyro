@@ -111,3 +111,39 @@ void pyro::scene::on_viewport_resize(uint32_t width, uint32_t height)
 			cameraComponent.camera.viewport_size(width, height);
 	}
 }
+
+template <typename T>
+void pyro::scene::on_component_added(entity e, T &component)
+{
+	static_assert(false);
+}
+
+template <>
+void pyro::scene::on_component_added<pyro::tag_component>(entity e, tag_component &component)
+{
+
+}
+
+template <>
+void pyro::scene::on_component_added<pyro::transform_component>(entity e, transform_component &component)
+{
+
+}
+
+template <>
+void pyro::scene::on_component_added<pyro::sprite_renderer_component>(entity e, sprite_renderer_component &component)
+{
+
+}
+
+template <>
+void pyro::scene::on_component_added<pyro::camera_component>(entity e, camera_component &component)
+{
+	component.camera.viewport_size(m_viewport_width, m_viewport_height);
+}
+
+template <>
+void pyro::scene::on_component_added<pyro::native_script_component>(entity e, native_script_component &component)
+{
+
+}
