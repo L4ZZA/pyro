@@ -12,6 +12,9 @@ workspace "pyro"
         "Dist" -- distribution build
     }
 
+-- This global variable controls the output directory of all the external library projects
+externalsOutputDir = "/external/%{prj.name}"
+
 -- example: debug-win-x64
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 

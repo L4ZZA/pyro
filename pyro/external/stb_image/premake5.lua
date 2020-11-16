@@ -2,8 +2,8 @@ project "stb_image"
     kind "StaticLib"
     language "C++"
 
-    targetdir ("%{wks.location}/bin/" .. outputdir .. "/external/%{prj.name}")
-    objdir ("%{wks.location}/inter/" .. outputdir .. "/external/%{prj.name}")
+    targetdir ("%{wks.location}/bin/" .. outputdir .. externalsOutputDir)
+    objdir ("%{wks.location}/inter/" .. outputdir .. externalsOutputDir)
 
     files {
     "stb_image.h",
