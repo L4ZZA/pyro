@@ -28,7 +28,6 @@ namespace pyro
         ref<camera_controller> m_2d_camera_controller;
         scene_manager m_scene_manager;
 #else
-        pyro::ref<pyro::texture_2d>     m_sprite_sheet; 
         pyro::ref<pyro::sub_texture_2d> m_barrel_texture; 
         pyro::ref<pyro::sub_texture_2d> m_tree_texture; 
         ref<scene> m_active_scene;

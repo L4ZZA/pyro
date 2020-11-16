@@ -55,7 +55,7 @@ namespace pyro
 	{
 		inline static char *type_name = "sprite_renderer_component";
 		glm::vec4 color{ 1.0f, 1.0f, 1.0f, 1.0f };
-		ref<texture_2d> texture = nullptr;
+		ref<sub_texture_2d> sub_texture = nullptr;
 		std::array<glm::vec2, 4> texture_coords{
 			glm::vec2{0.f, 0.f},
 			glm::vec2{0.f, 1.f},
@@ -68,16 +68,23 @@ namespace pyro
 		sprite_renderer_component(glm::vec4 const &c)
 			: color(c)
 		{}
-		sprite_renderer_component(ref<texture_2d> tex, glm::vec4 const &c = {1.0f, 1.0f, 1.0f, 1.0f})
-			: texture(tex), color(c)
-		{}
+		sprite_renderer_component( 
+			ref<sub_texture_2d> sub_tex, 
+			glm::vec4 const &c = {1.0f, 1.0f, 1.0f, 1.0f}) 
+			: sub_texture(sub_tex) 
+			, texture_coords(sub_tex->texture_coords()) 
+			, color(c) 
+		{} 
 		sprite_renderer_component(
-			ref<sub_texture_2d> sub_tex,
+			std::string const &spritesheet_path,
+			glm::vec2 const &min,
+			glm::vec2 const &max,
 			glm::vec4 const &c = {1.0f, 1.0f, 1.0f, 1.0f})
-			: texture(sub_tex->get_texture())
-			, texture_coords(sub_tex->texture_coords())
-			, color(c)
-		{}
+			: color(c)
+		{
+			sub_texture = sub_texture_2d::create_from_edges(spritesheet_path, min, max);
+			texture_coords = sub_texture->texture_coords();
+		}
 	};
 
 

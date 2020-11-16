@@ -3,7 +3,7 @@
 #include "imgui/imgui.h"
 #include "scenes/noise1d_scene.h" 
 #include "scenes/noise2d_scene.h" 
-#include "scenes/roguelike_scene.h" 
+#include "scenes/roguelike_scene.h"
 #include "utils/random.h" 
 
 #include <glm/gtc/type_ptr.hpp>
@@ -46,10 +46,10 @@ namespace pyro
 #else
         m_active_scene = make_ref<scene>();
         
-        m_sprite_sheet = pyro::texture_2d::create_from_file("assets/textures/RPGpack_sheet_2X.png");
-
-        m_barrel_texture = pyro::sub_texture_2d::create_from_coords(m_sprite_sheet, { 8,2 }, {128.f, 128.f});
-        m_tree_texture = pyro::sub_texture_2d::create_from_coords(m_sprite_sheet, { 2,1 }, { 128.f, 128.f }, { 1.f,2.f });
+#if 0 
+        const char* spritesheet_path = "assets/textures/RPGpack_sheet_2X.png";
+        m_barrel_texture = pyro::sub_texture_2d::create_from_coords(spritesheet_path, { 8,2 }, {128.f, 128.f});
+        m_tree_texture = pyro::sub_texture_2d::create_from_coords(spritesheet_path, { 2,1 }, { 128.f, 128.f }, { 1.f,2.f });
 
         auto green_square = m_active_scene->create_entity("Barrel", {1.f,0.f,0.f});
         green_square.add_component<sprite_renderer_component>(m_barrel_texture);
@@ -94,7 +94,7 @@ namespace pyro
         };
 
         m_camera_entity.add_component<native_script_component>().bind<camera_controller>();
-
+#endif
         // panels
         m_scene_hierarchy_panel.context(m_active_scene);
 #endif
@@ -215,6 +215,18 @@ namespace pyro
                 // Disabling fullscreen would allow the window to be moved to the front of other windows, 
                 // which we can't undo at the moment without finer window depth/z control.
                 //ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
+                
+				if (ImGui::MenuItem("Serialize"))
+				{
+					scene_serializer serializer(m_active_scene);
+					serializer.serialize("assets/scenes/example.pyro");
+				}
+
+				if (ImGui::MenuItem("Deserialize"))
+				{
+					scene_serializer serializer(m_active_scene);
+					serializer.deserialize("assets/scenes/example.pyro");
+				}
 
                 if(ImGui::MenuItem("Exit"))
                     application::instance().exit();

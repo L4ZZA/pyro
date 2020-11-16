@@ -75,7 +75,7 @@ void pyro::scene::on_render()
 
             quad_properties props;
             props.transform = transformComp.transform();
-            props.texture = sprite.texture;
+            props.texture = sprite.sub_texture->get_texture();
             props.texture_coords = sprite.texture_coords;
             props.color = sprite.color;
             renderer_2d::draw_quad(props);

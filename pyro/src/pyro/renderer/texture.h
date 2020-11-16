@@ -62,4 +62,20 @@ namespace pyro
             std::string const &path,
             texture_parameters const &params = texture_parameters());
     };
+
+    //-------------------------------------------------------------------------
+    
+
+    class PYRO_API texture_library final
+    {
+    public:
+        static void add(ref<texture_2d> const &shader);
+        static ref<texture_2d> load(std::string const &filepath);
+
+        static ref<texture_2d> get(std::string const &path);
+
+        static bool exists(std::string const &path);
+    private:
+        static inline std::unordered_map<std::string, ref<texture_2d>> m_textures;
+    };
 }

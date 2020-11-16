@@ -35,3 +35,48 @@ pyro::texture_2d::create_from_file(
     PYRO_CORE_ASSERT(false, "[texture_2d] Unknown renderer api!");
     return nullptr;
 }
+
+//------------------------------------------------------------------------------------------------
+
+void 
+pyro::texture_library::add(const ref<texture_2d> &shader)
+{
+    std::string path = shader->path();
+    if(!exists(path))
+    {
+        m_textures[path] = shader;
+    }
+    else
+    {
+        PYRO_CORE_WARN("[texture_library] {} shader already exists!", path);
+    }
+}
+
+pyro::ref<pyro::texture_2d> 
+pyro::texture_library::load(std::string const &filepath)
+{
+    ref<texture_2d> texture = get(filepath);
+    if(!texture)
+    {
+        texture = texture_2d::create_from_file(filepath);
+        add(texture);
+    }
+    return texture;
+}
+
+pyro::ref<pyro::texture_2d> 
+pyro::texture_library::get(std::string const &name)
+{
+    if(!exists(name))
+    {
+        return nullptr;
+        //PYRO_CORE_DEBUG("[texture_library] shader not found!");
+    }
+    return m_textures[name];
+}
+
+bool 
+pyro::texture_library::exists(std::string const &name)
+{
+    return m_textures.find(name) != m_textures.end();
+}
