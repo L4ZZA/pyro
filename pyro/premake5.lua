@@ -37,6 +37,7 @@ includedirs
     "%{IncludeDir.glm}",
     "%{IncludeDir.stb_image}",
     "%{IncludeDir.entt}",
+    "%{IncludeDir.yaml_cpp}",
 }
 
 links
@@ -46,6 +47,7 @@ links
     "ImGui",
     "opengl32.lib",
     "stb_image",
+    "yaml-cpp",
 }
 
 -- filters are used to apply property to some specific configurations only
