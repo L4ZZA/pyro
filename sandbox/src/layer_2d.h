@@ -21,8 +21,7 @@ private:
     bool m_viewport_hovered = false;
         
     pyro::ref<pyro::shader>         m_flat_color_shader; 
-    pyro::ref<pyro::texture_2d>     m_checkerboard_texture; 
-    pyro::ref<pyro::texture_2d>     m_sprite_sheet; 
+    pyro::ref<pyro::texture_2d>     m_checkerboard_texture;
     pyro::ref<pyro::sub_texture_2d> m_barrel_texture; 
     pyro::ref<pyro::sub_texture_2d> m_tree_texture; 
  
