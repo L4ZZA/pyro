@@ -5,6 +5,7 @@
 #include "scenes/noise2d_scene.h" 
 #include "scenes/roguelike_scene.h"
 #include "utils/random.h" 
+#include "pyro/utils/platform_helpers.h" 
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -215,18 +216,14 @@ namespace pyro
                 // Disabling fullscreen would allow the window to be moved to the front of other windows, 
                 // which we can't undo at the moment without finer window depth/z control.
                 //ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
-                
-				if (ImGui::MenuItem("Serialize"))
-				{
-					scene_serializer serializer(m_active_scene);
-					serializer.serialize("assets/scenes/example.pyro");
-				}
+                if(ImGui::MenuItem("New", "Ctrl+N"))
+					new_scene();
 
-				if (ImGui::MenuItem("Deserialize"))
-				{
-					scene_serializer serializer(m_active_scene);
-					serializer.deserialize("assets/scenes/example.pyro");
-				}
+                if(ImGui::MenuItem("Open..", "Ctrl+O"))
+                    open_scene();
+
+                if(ImGui::MenuItem("Save As..", "Ctrl+Shift+S"))
+                    save_scene_as();
 
                 if(ImGui::MenuItem("Exit"))
                     application::instance().exit();
@@ -312,6 +309,7 @@ namespace pyro
         m_2d_camera_controller->on_event(e);
 #endif
         event_dispatcher dispatcher(e);
+		dispatcher.dispatch<key_pressed_event>(BIND_EVENT_FN(editor_layer::on_key_pressed));
         // dispatch event on window X pressed 
 #if OLD_SCENE
         auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
@@ -328,5 +326,65 @@ namespace pyro
         m_scene_manager.on_event(e);
 #else
 #endif
+    }
+    bool editor_layer::on_key_pressed(key_pressed_event &e)
+    {
+		// Shortcuts
+		if (e.repeats_count() > 0)
+			return false;
+
+		bool control = input::key_pressed(key_codes::KEY_LEFT_CONTROL) || input::key_pressed(key_codes::KEY_RIGHT_CONTROL);
+		bool shift = input::key_pressed(key_codes::KEY_LEFT_SHIFT) || input::key_pressed(key_codes::KEY_RIGHT_SHIFT);
+		switch (e.key_code())
+		{
+        case key_codes::KEY_N:
+			{
+				if (control)
+					new_scene();
+
+				break;
+			}
+            case key_codes::KEY_O:
+			{
+				if (control)
+					open_scene();
+
+				break;
+			}
+			case key_codes::KEY_S:
+			{
+				if (control && shift)
+					save_scene_as();
+
+				break;
+			}
+		}
+    }
+    void editor_layer::new_scene()
+    {
+		m_active_scene = make_ref<scene>();
+		m_active_scene->on_viewport_resize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
+		m_scene_hierarchy_panel.context(m_active_scene);
+    }
+
+    void editor_layer::open_scene()
+    {
+		std::string filepath = FileDialogs::OpenFile("Pyro Scene (*.pyro)\0*.pyro\0");
+        if(!filepath.empty())
+        {
+            new_scene();
+			scene_serializer serializer(m_active_scene);
+			serializer.deserialize(filepath);
+        }
+    }
+    
+    void editor_layer::save_scene_as()
+    {
+		std::string filepath = FileDialogs::SaveFile("Pyro Scene (*.pyro)\0*.pyro\0");
+		if (!filepath.empty())
+		{
+			scene_serializer serializer(m_active_scene);
+			serializer.serialize(filepath);
+		}
     }
 }

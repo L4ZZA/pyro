@@ -8,12 +8,11 @@ inter/
 *.user
 *.filters
 **\.ini
+pyro_profile*.json
+*.lnk
+*.pyro
 
 ## VisualStudio Specific
 *.vcxproj
 *.sln
 enc_temp_folder/
-
-pyro_profile*.json
-
-*.lnk

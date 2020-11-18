@@ -333,5 +333,6 @@ namespace pyro
 	void scene_hierarchy_panel::context(ref<scene> scene_context)
 	{
 		m_context = scene_context;
+		m_selection_context = {};
 	}
 }

@@ -21,6 +21,13 @@ namespace pyro
         void on_imgui_render() override;
         void on_event(event &e) override;
 
+	private:
+		bool on_key_pressed(key_pressed_event& e);
+
+		void new_scene();
+		void open_scene();
+		void save_scene_as();
+
     private:
 
 #define OLD_SCENE 0
