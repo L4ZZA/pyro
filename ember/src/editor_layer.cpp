@@ -8,6 +8,7 @@
 #include "pyro/utils/platform_helpers.h" 
 
 #include <glm/gtc/type_ptr.hpp>
+#include <filesystem>
 
 
 namespace pyro
@@ -382,6 +383,9 @@ namespace pyro
     void editor_layer::save_scene_as()
     {
 		std::string filepath = FileDialogs::SaveFile("Pyro Scene (*.pyro)\0*.pyro\0");
+	    bool has_extenstion = std::filesystem::path(filepath).has_extension();
+        if(!has_extenstion)
+            filepath += ".pyro";
 		if (!filepath.empty())
 		{
 			scene_serializer serializer(m_active_scene);
