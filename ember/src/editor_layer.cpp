@@ -81,14 +81,14 @@ namespace pyro
                 auto &translation = get_component<transform_component>().translation;
                 float speed = 5.0f;
 
-                if(input::key_pressed(pyro::key_codes::KEY_A)) // left
+                if(input::key_pressed(pyro::key_codes::A)) // left
                     translation.x -= speed * ts;
-                else if(input::key_pressed(pyro::key_codes::KEY_D)) // right
+                else if(input::key_pressed(pyro::key_codes::D)) // right
                     translation.x += speed * ts;
 
-                if(input::key_pressed(pyro::key_codes::KEY_W)) // up
+                if(input::key_pressed(pyro::key_codes::W)) // up
                     translation.y += speed * ts;
-                else if(input::key_pressed(pyro::key_codes::KEY_S)) // down
+                else if(input::key_pressed(pyro::key_codes::S)) // down
                     translation.y -= speed * ts;
             }
 
@@ -315,7 +315,7 @@ namespace pyro
         auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
         dispatcher.dispatch<key_pressed_event>([&](key_pressed_event ev)
             {
-                if(current_scene->is_playing() && ev.key_code() == key_codes::KEY_Q)
+                if(current_scene->is_playing() && ev.key_code() == key_codes::Q)
                 {
                     current_scene->stop_playing();
                 }
@@ -333,25 +333,25 @@ namespace pyro
 		if (e.repeats_count() > 0)
 			return false;
 
-		bool control = input::key_pressed(key_codes::KEY_LEFT_CONTROL) || input::key_pressed(key_codes::KEY_RIGHT_CONTROL);
-		bool shift = input::key_pressed(key_codes::KEY_LEFT_SHIFT) || input::key_pressed(key_codes::KEY_RIGHT_SHIFT);
+		bool control = input::key_pressed(key_codes::LEFT_CONTROL) || input::key_pressed(key_codes::RIGHT_CONTROL);
+		bool shift = input::key_pressed(key_codes::LEFT_SHIFT) || input::key_pressed(key_codes::RIGHT_SHIFT);
 		switch (e.key_code())
 		{
-        case key_codes::KEY_N:
+        case key_codes::N:
 			{
 				if (control)
 					new_scene();
 
 				break;
 			}
-            case key_codes::KEY_O:
+            case key_codes::O:
 			{
 				if (control)
 					open_scene();
 
 				break;
 			}
-			case key_codes::KEY_S:
+			case key_codes::S:
 			{
 				if (control && shift)
 					save_scene_as();
@@ -360,6 +360,7 @@ namespace pyro
 			}
 		}
     }
+
     void editor_layer::new_scene()
     {
 		m_active_scene = make_ref<scene>();

@@ -40,7 +40,7 @@ public:
     {
         if(event.event_type() == pyro::e_event_type::key_pressed)
         {
-            if(event.key_code() == pyro::key_codes::KEY_ESCAPE)
+            if(event.key_code() == pyro::key_codes::ESCAPE)
             {
                 exit();
             }
