@@ -29,21 +29,21 @@ pyro::orthographic_camera_controller::orthographic_camera_controller(
 void pyro::orthographic_camera_controller::on_update(timestep ts)
 {
 	PYRO_PROFILE_FUNCTION();
-    if(input::key_pressed(pyro::key_codes::KEY_A)) // left
+    if(input::key_pressed(pyro::key_codes::A)) // left
         move(e_direction::left, ts);
-    else if(input::key_pressed(pyro::key_codes::KEY_D)) // right
+    else if(input::key_pressed(pyro::key_codes::D)) // right
         move(e_direction::right, ts);
 
-    if(input::key_pressed(pyro::key_codes::KEY_W)) // up
+    if(input::key_pressed(pyro::key_codes::W)) // up
         move(e_direction::up, ts);
-    else if(input::key_pressed(pyro::key_codes::KEY_S)) // down
+    else if(input::key_pressed(pyro::key_codes::S)) // down
         move(e_direction::down, ts);
 
     if(m_rotation)
     {
-        if(input::key_pressed(pyro::key_codes::KEY_Q)) // up
+        if(input::key_pressed(pyro::key_codes::Q)) // up
             rotate(e_rotation::anticlock_wise, e_axis::z, ts);
-        else if(input::key_pressed(pyro::key_codes::KEY_E)) // down
+        else if(input::key_pressed(pyro::key_codes::E)) // down
             rotate(e_rotation::clock_wise, e_axis::z, ts);
 
         m_camera->rotation({0.f,0.f,m_camera_rotation.z});
@@ -169,14 +169,14 @@ pyro::perspective_camera_controller::perspective_camera_controller(
 void pyro::perspective_camera_controller::on_update(timestep ts)
 {
 	PYRO_PROFILE_FUNCTION();
-    if(input::key_pressed(pyro::key_codes::KEY_A)) // left 
+    if(input::key_pressed(pyro::key_codes::A)) // left 
         move(perspective_camera::e_direction::left, ts);
-    else if(input::key_pressed(pyro::key_codes::KEY_D)) // right 
+    else if(input::key_pressed(pyro::key_codes::D)) // right 
         move(perspective_camera::e_direction::right, ts);
 
-    if(input::key_pressed(pyro::key_codes::KEY_S)) // down 
+    if(input::key_pressed(pyro::key_codes::S)) // down 
         move(perspective_camera::e_direction::backward, ts);
-    else if(pyro::input::key_pressed(pyro::key_codes::KEY_W)) // up 
+    else if(pyro::input::key_pressed(pyro::key_codes::W)) // up 
         move(perspective_camera::e_direction::forward, ts);
 
     auto [mouse_delta_x, mouse_delta_y] = input::mouse_position();

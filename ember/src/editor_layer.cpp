@@ -3,10 +3,12 @@
 #include "imgui/imgui.h"
 #include "scenes/noise1d_scene.h" 
 #include "scenes/noise2d_scene.h" 
-#include "scenes/roguelike_scene.h" 
+#include "scenes/roguelike_scene.h"
 #include "utils/random.h" 
+#include "pyro/utils/platform_helpers.h" 
 
 #include <glm/gtc/type_ptr.hpp>
+#include <filesystem>
 
 
 namespace pyro
@@ -46,10 +48,10 @@ namespace pyro
 #else
         m_active_scene = make_ref<scene>();
         
-        m_sprite_sheet = pyro::texture_2d::create_from_file("assets/textures/RPGpack_sheet_2X.png");
-
-        m_barrel_texture = pyro::sub_texture_2d::create_from_coords(m_sprite_sheet, { 8,2 }, {128.f, 128.f});
-        m_tree_texture = pyro::sub_texture_2d::create_from_coords(m_sprite_sheet, { 2,1 }, { 128.f, 128.f }, { 1.f,2.f });
+#if 0 
+        const char* spritesheet_path = "assets/textures/RPGpack_sheet_2X.png";
+        m_barrel_texture = pyro::sub_texture_2d::create_from_coords(spritesheet_path, { 8,2 }, {128.f, 128.f});
+        m_tree_texture = pyro::sub_texture_2d::create_from_coords(spritesheet_path, { 2,1 }, { 128.f, 128.f }, { 1.f,2.f });
 
         auto green_square = m_active_scene->create_entity("Barrel", {1.f,0.f,0.f});
         green_square.add_component<sprite_renderer_component>(m_barrel_texture);
@@ -80,21 +82,21 @@ namespace pyro
                 auto &translation = get_component<transform_component>().translation;
                 float speed = 5.0f;
 
-                if(input::key_pressed(pyro::key_codes::KEY_A)) // left
+                if(input::key_pressed(pyro::key_codes::A)) // left
                     translation.x -= speed * ts;
-                else if(input::key_pressed(pyro::key_codes::KEY_D)) // right
+                else if(input::key_pressed(pyro::key_codes::D)) // right
                     translation.x += speed * ts;
 
-                if(input::key_pressed(pyro::key_codes::KEY_W)) // up
+                if(input::key_pressed(pyro::key_codes::W)) // up
                     translation.y += speed * ts;
-                else if(input::key_pressed(pyro::key_codes::KEY_S)) // down
+                else if(input::key_pressed(pyro::key_codes::S)) // down
                     translation.y -= speed * ts;
             }
 
         };
 
         m_camera_entity.add_component<native_script_component>().bind<camera_controller>();
-
+#endif
         // panels
         m_scene_hierarchy_panel.context(m_active_scene);
 #endif
@@ -215,6 +217,14 @@ namespace pyro
                 // Disabling fullscreen would allow the window to be moved to the front of other windows, 
                 // which we can't undo at the moment without finer window depth/z control.
                 //ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
+                if(ImGui::MenuItem("New", "Ctrl+N"))
+					new_scene();
+
+                if(ImGui::MenuItem("Open..", "Ctrl+O"))
+                    open_scene();
+
+                if(ImGui::MenuItem("Save As..", "Ctrl+Shift+S"))
+                    save_scene_as();
 
                 if(ImGui::MenuItem("Exit"))
                     application::instance().exit();
@@ -300,12 +310,13 @@ namespace pyro
         m_2d_camera_controller->on_event(e);
 #endif
         event_dispatcher dispatcher(e);
+		dispatcher.dispatch<key_pressed_event>(BIND_EVENT_FN(editor_layer::on_key_pressed));
         // dispatch event on window X pressed 
 #if OLD_SCENE
         auto current_scene = std::static_pointer_cast<base_noise_scene>(m_scene_manager.current_scene());
         dispatcher.dispatch<key_pressed_event>([&](key_pressed_event ev)
             {
-                if(current_scene->is_playing() && ev.key_code() == key_codes::KEY_Q)
+                if(current_scene->is_playing() && ev.key_code() == key_codes::Q)
                 {
                     current_scene->stop_playing();
                 }
@@ -316,5 +327,69 @@ namespace pyro
         m_scene_manager.on_event(e);
 #else
 #endif
+    }
+    bool editor_layer::on_key_pressed(key_pressed_event &e)
+    {
+		// Shortcuts
+		if (e.repeats_count() > 0)
+			return false;
+
+		bool control = input::key_pressed(key_codes::LEFT_CONTROL) || input::key_pressed(key_codes::RIGHT_CONTROL);
+		bool shift = input::key_pressed(key_codes::LEFT_SHIFT) || input::key_pressed(key_codes::RIGHT_SHIFT);
+		switch (e.key_code())
+		{
+        case key_codes::N:
+			{
+				if (control)
+					new_scene();
+
+				break;
+			}
+            case key_codes::O:
+			{
+				if (control)
+					open_scene();
+
+				break;
+			}
+			case key_codes::S:
+			{
+				if (control && shift)
+					save_scene_as();
+
+				break;
+			}
+		}
+    }
+
+    void editor_layer::new_scene()
+    {
+		m_active_scene = make_ref<scene>();
+		m_active_scene->on_viewport_resize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
+		m_scene_hierarchy_panel.context(m_active_scene);
+    }
+
+    void editor_layer::open_scene()
+    {
+		std::string filepath = FileDialogs::OpenFile("Pyro Scene (*.pyro)\0*.pyro\0");
+        if(!filepath.empty())
+        {
+            new_scene();
+			scene_serializer serializer(m_active_scene);
+			serializer.deserialize(filepath);
+        }
+    }
+    
+    void editor_layer::save_scene_as()
+    {
+		std::string filepath = FileDialogs::SaveFile("Pyro Scene (*.pyro)\0*.pyro\0");
+	    bool has_extenstion = std::filesystem::path(filepath).has_extension();
+        if(!has_extenstion)
+            filepath += ".pyro";
+		if (!filepath.empty())
+		{
+			scene_serializer serializer(m_active_scene);
+			serializer.serialize(filepath);
+		}
     }
 }

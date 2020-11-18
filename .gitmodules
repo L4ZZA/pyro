@@ -18,3 +18,6 @@
 	path = pyro/external/assimp
 	url = https://github.com/L4ZZA/assimp/
 	branch = premake
+[submodule "pyro/external/yaml-cpp"]
+	path = pyro/external/yaml-cpp
+	url = https://github.com/L4ZZA/yaml-cpp/

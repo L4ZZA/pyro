@@ -12,6 +12,9 @@ workspace "pyro"
         "Dist" -- distribution build
     }
 
+-- This global variable controls the output directory of all the external library projects
+externalsOutputDir = "/external/%{prj.name}"
+
 -- example: debug-win-x64
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
@@ -23,6 +26,7 @@ IncludeDir["glm"]       = "%{wks.location}/pyro/external/glm"
 IncludeDir["stb_image"] = "%{wks.location}/pyro/external/stb_image"
 IncludeDir["ImGui"]     = "%{wks.location}/pyro/external/imgui"
 IncludeDir["entt"]      = "%{wks.location}/pyro/external/entt/include"
+IncludeDir["yaml_cpp"]  = "%{wks.location}/pyro/external/yaml-cpp/include"
 IncludeDir["assimp"]    = "%{wks.location}/pyro/external/assimp/include/"
 IncludeDir["assimpcfg"] = "%{wks.location}/pyro/external/assimp/config/"
 
@@ -32,6 +36,7 @@ group "dependencies"
     include "pyro/external/Glad"
     include "pyro/external/imgui"
     include "pyro/external/stb_image"
+    include "pyro/external/yaml-cpp"
     -- include "pyro/external/assimp"
 group ""
 

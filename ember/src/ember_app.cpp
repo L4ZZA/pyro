@@ -38,7 +38,7 @@ namespace pyro
 
         bool on_key_pressed(key_pressed_event &e)
         {
-            if(e.key_code() == key_codes::KEY_ESCAPE)
+            if(e.key_code() == key_codes::ESCAPE)
             {
                 exit();
             }

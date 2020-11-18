@@ -159,7 +159,7 @@ void layer_3d::on_event(pyro::event &event)
     if(event.event_type() == pyro::e_event_type::key_pressed)
     {
         auto &e = dynamic_cast<pyro::key_pressed_event &>(event);
-        if(e.key_code() == pyro::key_codes::KEY_TAB)
+        if(e.key_code() == pyro::key_codes::TAB)
         {
             pyro::render_command::toggle_wireframe();
         }

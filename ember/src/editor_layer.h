@@ -21,6 +21,13 @@ namespace pyro
         void on_imgui_render() override;
         void on_event(event &e) override;
 
+	private:
+		bool on_key_pressed(key_pressed_event& e);
+
+		void new_scene();
+		void open_scene();
+		void save_scene_as();
+
     private:
 
 #define OLD_SCENE 0
@@ -28,7 +35,6 @@ namespace pyro
         ref<camera_controller> m_2d_camera_controller;
         scene_manager m_scene_manager;
 #else
-        pyro::ref<pyro::texture_2d>     m_sprite_sheet; 
         pyro::ref<pyro::sub_texture_2d> m_barrel_texture; 
         pyro::ref<pyro::sub_texture_2d> m_tree_texture; 
         ref<scene> m_active_scene;

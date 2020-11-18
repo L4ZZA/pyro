@@ -12,14 +12,14 @@ void camera_controller_ortho::on_update(pyro::timestep const &ts)
     auto &position = get_component<pyro::transform_component>().translation;
     float speed = 5.0f;
 
-    if(pyro::input::key_pressed(pyro::key_codes::KEY_A)) // left
+    if(pyro::input::key_pressed(pyro::key_codes::A)) // left
         position.x -= speed * ts;
-    else if(pyro::input::key_pressed(pyro::key_codes::KEY_D)) // right
+    else if(pyro::input::key_pressed(pyro::key_codes::D)) // right
         position.x += speed * ts;
 
-    if(pyro::input::key_pressed(pyro::key_codes::KEY_W)) // up
+    if(pyro::input::key_pressed(pyro::key_codes::W)) // up
         position.y += speed * ts;
-    else if(pyro::input::key_pressed(pyro::key_codes::KEY_S)) // down
+    else if(pyro::input::key_pressed(pyro::key_codes::S)) // down
         position.y -= speed * ts;
 }
 
@@ -52,7 +52,7 @@ bool camera_controller_ortho::on_window_resized(pyro::window_resize_event &e)
 
 bool camera_controller_ortho::on_key_pressed(pyro::key_pressed_event &e)
 {
-    if(e.key_code() == pyro::key_codes::KEY_R)
+    if(e.key_code() == pyro::key_codes::R)
     {
         // resets zoom to default
         m_zoom_level = 1.f;

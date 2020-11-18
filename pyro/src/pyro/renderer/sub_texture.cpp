@@ -15,11 +15,12 @@ pyro::sub_texture_2d::sub_texture_2d(
 
 pyro::ref<pyro::sub_texture_2d> 
 pyro::sub_texture_2d::create_from_coords(
-    ref<texture_2d> texture, 
+    std::string const &spritesheet_path, 
     glm::vec2 const &coords, 
-    glm::vec2 const &cell_size,
+    glm::vec2 const &cell_size, 
     glm::vec2 const &sprite_size /*= { 1.f ,1.f }*/)
 {
+    auto texture = texture_library::load(spritesheet_path);
     const float sprite_width  = cell_size.x;
     const float sprite_height = cell_size.y;
     
@@ -34,5 +35,15 @@ pyro::sub_texture_2d::create_from_coords(
         ((coords.y + sprite_size.y) * sprite_height) / texture_height 
     };
 
+    return make_ref<sub_texture_2d>(texture, min, max);
+}
+
+pyro::ref<pyro::sub_texture_2d> 
+pyro::sub_texture_2d::create_from_edges(
+    std::string const &spritesheet_path,
+    glm::vec2 const &min,
+    glm::vec2 const &max)
+{
+    auto texture = texture_library::load(spritesheet_path);
     return make_ref<sub_texture_2d>(texture, min, max);
 }

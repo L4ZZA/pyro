@@ -26,10 +26,10 @@ void layer_2d::on_attach()
     pyro::texture_parameters params;
     params.wrap = pyro::e_texture_wrap::repeat;
     m_checkerboard_texture = pyro::texture_2d::create_from_file("assets/textures/checkerboard.png", params);
-    m_sprite_sheet = pyro::texture_2d::create_from_file("assets/textures/RPGpack_sheet_2X.png", params);
+    const char *sprite_sheet_path = "assets/textures/RPGpack_sheet_2X.png";
 
-    m_barrel_texture = pyro::sub_texture_2d::create_from_coords(m_sprite_sheet, { 8,2 }, {128.f, 128.f});
-    m_tree_texture = pyro::sub_texture_2d::create_from_coords(m_sprite_sheet, { 2,1 }, { 128.f, 128.f }, { 1.f,2.f });
+    m_barrel_texture = pyro::sub_texture_2d::create_from_coords(sprite_sheet_path, { 8,2 }, {128.f, 128.f});
+    m_tree_texture = pyro::sub_texture_2d::create_from_coords(sprite_sheet_path, { 2,1 }, { 128.f, 128.f }, { 1.f,2.f });
     
     m_active_scene = pyro::make_ref<pyro::scene>();
     

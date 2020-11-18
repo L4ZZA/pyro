@@ -36,6 +36,7 @@ namespace pyro
         uint32_t m_viewport_width  = 0;
         uint32_t m_viewport_height = 0;
         friend class entity;
+        friend class scene_serializer;
         friend class scene_hierarchy_panel;
     };
 }
